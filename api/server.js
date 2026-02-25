@@ -9,9 +9,14 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-  origin: ['https://breathe-two-plum.vercel.app', 'http://localhost:5173'], 
-  methods: ['GET', 'POST', 'OPTIONS'],
-  credentials: true 
+  origin: [
+    'https://breathe-two-plum.vercel.app',
+    'http://localhost:3000',  
+    'http://localhost:5173',
+  ],
+  methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
 app.use(express.json());
 
@@ -42,7 +47,7 @@ const sessionsRouter = require('./routes/sessions');
 const statsRouter = require('./routes/stats');
 const authRouter = require('./routes/auth');
 
-app.use('./api/auth', authRouter);
+app.use('/api/auth', authRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/api/stats', statsRouter);
 
@@ -51,5 +56,5 @@ app.get('/', (req, res) => {
   res.send('Breathe server is running and connected to MongoDB!');
 });
 
-// app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 module.exports = app;

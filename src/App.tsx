@@ -13,7 +13,6 @@ import './index.css';
 import { GlobalAudioPlayer } from './components/AudioPlayer/GlobalAudioPlayer';
 import { MusicLibrary } from './components/AudioPlayer/MusicLibrary';
 import { MusicProvider } from './components/contexts/MusicContext';
-import Auth from '../server/middleware/auth';
 import { AuthProvider } from './components/contexts/AuthContext';
 
 export default function App() {
