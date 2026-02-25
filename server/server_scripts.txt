@@ -1,0 +1,56 @@
+//login with dev tokens
+$token = "<MySuperSecretKey_123!@#2025>"
+$response = Invoke-RestMethod -Uri "http://localhost:5000/api/sessions" -Headers @{ Authorization = "Bearer $token" }
+$response | ConvertTo-Json
+
+
+
+//Generate new token with the test@example.com
+# login и получение ответа
+$resp = Invoke-WebRequest -Uri "http://localhost:5000/api/auth/login" `
+  -Method POST `
+  -Headers @{ "Content-Type" = "application/json" } `
+  -Body '{"email":"test@example.com","password":"password123"}'
+
+# распарсим JSON и сохраним токен в переменную
+$json = $resp.Content | ConvertFrom-Json
+$token = $json.token
+
+# покажем начало/конец токена, чтобы убедиться, что строка целая
+$token.Substring(0,20) + "..." + $token.Substring($token.Length-10)
+
+
+// server request with the token
+Invoke-WebRequest -Uri "http://localhost:5000/api/sessions" `
+  -Method GET `
+  -Headers @{
+    "Authorization" = "Bearer $token";
+    "Content-Type" = "application/json"
+  }
+
+
+//create a sesstion
+$body = @{
+  sessionDate = (Get-Date).ToString("s")
+  moodBefore = 5
+  moodAfter = 8
+  focusLevel = 4
+  stressLevel = 3
+  breathingDepth = 5
+  calmnessScore = 6
+  distractionCount = 1
+  timeOfDay = "Evening"
+  noiseLevel = "Low"
+  sessionLength = 10
+  cycles = 5
+  notes = "First test session"
+} | ConvertTo-Json
+
+Invoke-WebRequest -Uri "http://localhost:5000/api/sessions" `
+  -Method POST `
+  -Headers @{
+    "Authorization" = "Bearer $token";
+    "Content-Type" = "application/json"
+  } `
+  -Body $body
+
