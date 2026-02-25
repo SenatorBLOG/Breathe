@@ -139,25 +139,43 @@ export default function SignUpPage() {
                 </div>
 
                 {/* Social */}
-                <div className="text-center">
-                  <p className="text-[#88AACC] mb-4">Or sign up with</p>
-                    <div className="flex justify-center gap-8">
+                <div className="text-center pt-6 border-t border-white/10">
+                  <p className="text-[#88AACC] mb-6">Or log in via</p>
+
+                  <div className="flex justify-center gap-10 items-center">
+                    
+                    {/* Заглушки под другие соцсети */}
+                    {['Facebook', 'Apple'].map((social) => (
+                      <button
+                        key={social}
+                        className="text-[#70B8FF] font-bold text-lg hover:text-[#AEE6FF] hover:scale-110 transition-all"
+                      >
+                        {social}
+                      </button>
+                    ))}
+
+                    {/* Google OAuth */}
+                    <div className="hover:scale-110 transition-all">
                       <GoogleLogin
-                        onSuccess={credentialResponse => {
-                          console.log(credentialResponse); // credential = id_token
+                        onSuccess={(credentialResponse) => {
+                          console.log(credentialResponse);
                           handleGoogleSignIn(credentialResponse.credential);
                         }}
                         onError={() => {
-                          console.log('Login Failed');
-                          toast.error('Google login failed');
+                          console.log('Google Sign Up Failed');
+                          toast.error('Google sign up failed');
                         }}
-                        useOneTap // опционально — авто-попап
-                        theme="filled_black"
-                        text="signup_with"
+                        useOneTap={false}
+                        theme="outline"
+                        text="signin_with"
                         shape="rectangular"
                         size="large"
+                        logo_alignment="left"
+                        width="220"
                       />
                     </div>
+
+                  </div>
                 </div>
               </form>
             </div>

@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import NavBar from '../components/NavBar';
 import api from '../api';
 import { toast } from 'sonner';
@@ -34,6 +35,21 @@ description: 'You have entered your world of peace'
       setLoading(false);
     }
   };
+  const handleGoogleSignIn = async (credential: string) => {
+  try {
+    const res = await api.post('/auth/google', {
+      credential
+    });
+
+    login(res.data.token, res.data.user);
+
+    toast.success('Welcome to Breathe');
+
+    navigate('/home-page');
+  } catch (err: any) {
+    toast.error('Google login failed');
+  }
+};
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
@@ -156,17 +172,39 @@ Registration
                 </div>
 
                 {/* Social Networks */}
-<div className="text-center pt-6 border-t border-white/10">
-<p className="text-[#88AACC] mb-6">Or log in via </p>
-                  <div className="flex justify-center gap-10">
-                    {['Facebook', 'Google', 'Apple'].map((social) => (
-                      <button
-                        key={social}
-                        className="text-[#70B8FF] font-bold text-lg hover:text-[#AEE6FF] hover:scale-110 transition-all"
-                      >
-                        {social}
-                      </button>
-                    ))}
+                <div className="text-center pt-6 border-t border-white/10">
+                  <p className="text-[#88AACC] mb-6">Or log in via</p>
+
+                  <div className="flex justify-center gap-10 items-center">
+
+                    {/* Facebook placeholder */}
+                    <button className="text-[#70B8FF] font-bold text-lg hover:text-[#AEE6FF] hover:scale-110 transition-all">
+                      Facebook
+                    </button>
+
+                    {/* Google OAuth */}
+                    <div className="hover:scale-110 transition-all">
+                      <GoogleLogin
+                        onSuccess={(credentialResponse) => {
+                          console.log(credentialResponse);
+                          handleGoogleSignIn(credentialResponse.credential!);
+                        }}
+                        onError={() => {
+                          toast.error('Google login failed');
+                        }}
+                        useOneTap={false}
+                        theme="outline"
+                        text="signin_with"
+                        size="large"
+                        width="220"
+                      />
+                    </div>
+
+                    {/* Apple placeholder */}
+                    <button className="text-[#70B8FF] font-bold text-lg hover:text-[#AEE6FF] hover:scale-110 transition-all">
+                      Apple
+                    </button>
+
                   </div>
                 </div>
               </form>
