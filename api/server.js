@@ -25,12 +25,14 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "accounts.google.com"],
+      scriptSrc: ["'self'", "accounts.google.com", "'unsafe-inline'"],
       frameSrc: ["'self'", "accounts.google.com"],
+      connectSrc: ["'self'", "accounts.google.com", "https://*.googleapis.com"],
     },
   },
   crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
   crossOriginEmbedderPolicy: { policy: 'require-corp' },
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 
 const rateLimit = require('express-rate-limit');
