@@ -11,17 +11,22 @@ const app = express();
 app.use(cors({
   origin: [
     'https://breathe-two-plum.vercel.app',
-    'http://localhost:3000',  
+    'http://localhost:3000',
+    'https://localhost:3000',
     'http://localhost:5173',
+    'https://localhost:5173',
   ],
-  methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
 app.use(express.json());
 
 const helmet = require('helmet');
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginOpenerPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  })
+);
 
 const rateLimit = require('express-rate-limit');
 const limiter = rateLimit({
