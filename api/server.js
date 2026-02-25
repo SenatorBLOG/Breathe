@@ -21,12 +21,17 @@ app.use(cors({
 app.use(express.json());
 
 const helmet = require('helmet');
-app.use(
-  helmet({
-    crossOriginOpenerPolicy: false,
-    crossOriginEmbedderPolicy: false,
-  })
-);
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "accounts.google.com"],
+      frameSrc: ["'self'", "accounts.google.com"],
+    },
+  },
+  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+  crossOriginEmbedderPolicy: { policy: 'require-corp' },
+}));
 
 const rateLimit = require('express-rate-limit');
 const limiter = rateLimit({
