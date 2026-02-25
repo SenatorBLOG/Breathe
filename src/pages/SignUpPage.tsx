@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import NavBar from '../components/NavBar';
 import api from '../api';
 import { toast } from 'sonner';
@@ -29,6 +30,22 @@ export default function SignUpPage() {
       setLoading(false);
     }
   };
+  const handleGoogleSignIn = async (credential?: string) => {
+  if (!credential) return;
+  setLoading(true);
+  try {
+    const res = await api.post('/auth/google', { credential });
+    localStorage.setItem('token', res.data.token);
+    toast.success('Signed in with Google! Welcome to Breathe');
+    navigate('/');
+  } catch (err: any) {
+    const msg = err.response?.data?.error || 'Google sign in failed';
+    setError(msg);
+    toast.error(msg);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
@@ -124,16 +141,23 @@ export default function SignUpPage() {
                 {/* Social */}
                 <div className="text-center">
                   <p className="text-[#88AACC] mb-4">Or sign up with</p>
-                  <div className="flex justify-center gap-8">
-                    {['Facebook', 'LinkedIn', 'Google'].map((social) => (
-                      <button
-                        key={social}
-                        className="text-[#70B8FF] font-bold text-lg hover:underline hover:text-[#AEE6FF] transition-all"
-                      >
-                        {social}
-                      </button>
-                    ))}
-                  </div>
+                    <div className="flex justify-center gap-8">
+                      <GoogleLogin
+                        onSuccess={credentialResponse => {
+                          console.log(credentialResponse); // credential = id_token
+                          handleGoogleSignIn(credentialResponse.credential);
+                        }}
+                        onError={() => {
+                          console.log('Login Failed');
+                          toast.error('Google login failed');
+                        }}
+                        useOneTap // опционально — авто-попап
+                        theme="filled_black"
+                        text="signup_with"
+                        shape="rectangular"
+                        size="large"
+                      />
+                    </div>
                 </div>
               </form>
             </div>

@@ -5,6 +5,9 @@
 export default defineConfig({
   plugins: [react()],
   base: '/',
+  define: {
+    'import.meta.env.VITE_API_URL': JSON.stringify('https://breathe-two-plum.vercel.app/api')
+  },  
   resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
       alias: {
