@@ -8,7 +8,11 @@ const path = require('path');
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['https://breathe-two-plum.vercel.app', 'http://localhost:5173'], 
+  methods: ['GET', 'POST', 'OPTIONS'],
+  credentials: true 
+}));
 app.use(express.json());
 
 const helmet = require('helmet');

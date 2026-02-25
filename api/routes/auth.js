@@ -52,4 +52,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
+//Google Auth
+router.post('/google', googleAuth);
+
 module.exports = router;

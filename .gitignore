@@ -26,3 +26,4 @@ dist-ssr
 
 BreatheDB_keys.txt
 .env
+api/.env
