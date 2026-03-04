@@ -6,9 +6,6 @@ import path from 'path';
 export default defineConfig({
   plugins: [react(), mkcert()],
   base: '/',
-  define: {
-    'import.meta.env.VITE_API_URL': JSON.stringify('https://breathe-two-plum.vercel.app/api')
-  },  
   
   resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
@@ -25,6 +22,13 @@ export default defineConfig({
     server: {
       port: 3000,
       open: true,
+      proxy: {
+        '/api': {
+          target: 'http://localhost:5000',
+          changeOrigin: true,
+          secure: false,
+        },
+      },
     },
     css: {
       postcss: './postcss.config.js',
