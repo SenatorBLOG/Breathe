@@ -1,8 +1,9 @@
-// server/server.js
+// api/server.js
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const serverless = require('serverless-http');
 const path = require('path');
 
 dotenv.config();
@@ -15,7 +16,7 @@ app.use(cors({
     'https://localhost:3000',
     'http://localhost:5173',
     'https://localhost:5173',
-    'https://breatheonline.app/',
+    'https://breatheonline.app',
   ],
   credentials: true,
 }));
