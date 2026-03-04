@@ -36,7 +36,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// POST /api/auth/login - login
+// POST /api/auth/login - login 
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -100,7 +100,15 @@ router.post('/google', async (req, res) => {
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
-    res.json({ token, message: 'Signed in with Google' });
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        picture: user.picture
+      }
+    });
   } catch (err) {
     console.error('Google auth error:', err.message || err);
     res.status(401).json({ error: 'Google authentication failed: ' + (err.message || 'Unknown error') });

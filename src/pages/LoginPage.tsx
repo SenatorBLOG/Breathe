@@ -42,7 +42,7 @@ description: 'You have entered your world of peace'
     });
 
     login(res.data.token, res.data.user);
-
+    localStorage.setItem('token', res.data.token);
     toast.success('Welcome to Breathe');
 
     navigate('/home-page');
