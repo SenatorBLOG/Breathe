@@ -13,6 +13,7 @@ app.use(cors({
   origin: [
     'https://breathe-two-plum.vercel.app',
     'http://localhost:3000',
+    'https://www.breatheonline.app',
     'https://localhost:3000',
     'http://localhost:5173',
     'https://localhost:5173',
@@ -32,7 +33,7 @@ app.use(helmet({
       connectSrc: ["'self'", "accounts.google.com", "https://*.googleapis.com"],
     },
   },
-  crossOriginOpenerPolicy: false,
+  crossOriginOpenerPolicy: { policy: "unsafe-none" },
   crossOriginEmbedderPolicy: false,
 }));
 
