@@ -71,26 +71,36 @@ const MONGO_URI = process.env.MONGO_URI;
 console.log("DEBUG: connecting to", MONGO_URI);
 // console.log("BASE URL IS:", api.defaults.baseURL);
 
-mongoose
-  .connect(MONGO_URI)
-  .then(() => console.log("Connected to MongoDB Atlas"))
-  .catch((err) => console.error("MongoDB connection error:", err.message));
+let isConnected = false;
 
-// routes
-const sessionsRouter = require('./routes/sessions');
-const statsRouter = require('./routes/stats');
-const authRouter = require('./routes/auth');
+async function connectDB() {
+  if (isConnected) return;
+  await mongoose.connect(MONGO_URI);
+  isConnected = true;
+  console.log("Connected to MongoDB Atlas");
+}
 
+// Replace app.use(express.json()) and routes section with:
+app.use(express.json());
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
+
+// Keep all your routes as-is
 app.use('/api/auth', authRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/api/stats', statsRouter);
 
-// test
 app.get('/', (req, res) => {
-  res.send('Breathe server is running and connected to MongoDB!');
+  res.send('Breathe server is running!');
 });
+//test endpoint
+app.get('/api/ping', (req, res) => res.json({ ok: true }));
 
+// REMOVE app.listen entirely — replace with:
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 }
+
 module.exports = serverless(app);
