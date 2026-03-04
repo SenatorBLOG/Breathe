@@ -58,14 +58,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.options('/google', (req, res) => {
-  const origin = req.headers.origin || '';
-  res.setHeader('Access-Control-Allow-Origin', origin);
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  return res.sendStatus(204);
-});
 
 // Google Auth
 router.post('/google', async (req, res) => {
