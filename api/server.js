@@ -52,7 +52,7 @@ app.use(helmet({
       imgSrc: ["'self'", "data:", "https://lh3.googleusercontent.com"],
     },
   },
-  crossOriginOpenerPolicy: { policy: "unsafe-none" },
+  crossOriginOpenerPolicy: false,
   crossOriginEmbedderPolicy: false,
 }));
 
