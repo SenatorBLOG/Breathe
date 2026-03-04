@@ -1,4 +1,4 @@
-//server/routes/auth.js
+//api/routes/auth.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
