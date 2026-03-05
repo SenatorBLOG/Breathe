@@ -92,6 +92,7 @@ router.post('/google', async (req, res) => {
         name,
         picture,
         googleId,
+        authType: 'google'
       });
       await user.save();
       console.log('Создан новый юзер по Google:', user.email);
