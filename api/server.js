@@ -86,4 +86,4 @@ if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 }
 
-module.exports = serverless(app);
+module.exports = require('serverless-http')(app);
