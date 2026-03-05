@@ -14,8 +14,15 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
-      minlength: 8,
+      required: function () {
+        return this.authType === 'password';
+      },
+      minlength: 6,
+    },
+    authType: {
+      type: String,
+      enum: ['password', 'google'],
+      default: 'password'
     },
   },
   { timestamps: true }
