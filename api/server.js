@@ -70,9 +70,9 @@ app.use(async (req, res, next) => {
 });
 
 // Routes — point to server-src
-const authRouter = require('../server-src/routes/auth');
-const sessionsRouter = require('../server-src/routes/sessions');
-const statsRouter = require('../server-src/routes/stats');
+const authRouter = require('../routes/auth');
+const sessionsRouter = require('../routes/sessions');
+const statsRouter = require('../routes/stats');
 
 app.use('/api/auth', authRouter);
 app.use('/api/sessions', sessionsRouter);
