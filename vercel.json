@@ -1,21 +1,18 @@
 {
   "version": 2,
-  "routes": [
+  "functions": {
+    "api/server.js": {
+      "includeFiles": "node_modules/mongoose/**"
+    }
+  },
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/server.js",
-      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"]
+      "source": "/api/(.*)",
+      "destination": "/api/server.js"
     },
     {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
