@@ -4,6 +4,12 @@
       "type": "module",
       "private": true,
       "dependencies": {
+            "express": "^4.21.0",
+  "mongoose": "^8.10.0",
+  "iconv-lite": "^0.6.3",
+  "cors": "^2.8.5",
+  "dotenv": "^16.4.5",
+  "serverless-http": "^3.2.0",
             "@radix-ui/react-accordion": "^1.2.3",
             "@radix-ui/react-alert-dialog": "^1.1.6",
             "@radix-ui/react-aspect-ratio": "^1.1.2",
