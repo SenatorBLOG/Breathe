@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema(
       enum: ['password', 'google'],
       default: 'password'
     },
+    googleId: { type: String, unique: true, sparse: true },
   },
   { timestamps: true }
 );
