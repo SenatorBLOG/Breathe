@@ -62,6 +62,8 @@ router.post('/login', async (req, res) => {
 // Google Auth
 router.post('/google', async (req, res) => {
   const { credential } = req.body;
+  console.log("ENV GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+  console.log("JWT_SECRET exists:", !!process.env.JWT_SECRET);
 
   if (!credential) {
     return res.status(400).json({ error: 'No Google credential provided' });
