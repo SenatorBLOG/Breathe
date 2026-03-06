@@ -10,6 +10,9 @@ dotenv.config();
 
 const app = express();
 app.set('trust proxy', 1); //for vercel
+// Rate limit с безопасной генерацией ключа для IPv4/IPv6
+const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 
 const allowedOrigins = [
   'https://breatheonline.app',
@@ -49,9 +52,7 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   message: 'Too many requests',
-  keyGenerator: (req) => {
-    return req.headers['x-forwarded-for'] || req.ip || 'anonymous';
-  }
+ keyGenerator: (req, res) => ipKeyGenerator(req),
 });
 app.use(limiter);
 
