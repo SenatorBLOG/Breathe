@@ -86,7 +86,7 @@ router.post('/google', async (req, res) => {
 
     console.log('Google payload:', { email, name, googleId });
 
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ email }).maxTimeMS(60000);
 
     if (!user) {
       user = new User({

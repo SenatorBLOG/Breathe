@@ -65,15 +65,41 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // --- MongoDB connection ---
+let isConnected = false;
+let connectionPromise = null;
+
 async function connectDB() {
-  if (global.__mongooseConnected) return;
-  await mongoose.connect(process.env.MONGO_URI, {
-    // useNewUrlParser: true,
-    // useUnifiedTopology: true,
+  if (isConnected) return;
+  if (connectionPromise) return connectionPromise;  // ждём, если уже коннектится
+
+  connectionPromise = mongoose.connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 60000,  // 60 сек на выбор сервера
+    socketTimeoutMS: 90000,  // 90 сек на сокет
+    connectTimeoutMS: 60000,  // 60 сек на коннект
+    retryWrites: true,
+    retryReads: true,  // retry на чтение
+    w: 'majority',
+  }).then(() => {
+    isConnected = true;
+    console.log("MongoDB Atlas connected");
+  }).catch(err => {
+    console.error("MongoDB connection error:", err.message);
+    isConnected = false;
+    connectionPromise = null;
+    throw err;
   });
-  global.__mongooseConnected = true;
-  console.log("Connected to MongoDB Atlas");
+
+  return connectionPromise;
 }
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({ error: 'DB connection failed' });
+  }
+});
 
 // Middleware to ensure DB connected
 app.use(async (req, res, next) => {
