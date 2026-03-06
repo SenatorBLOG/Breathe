@@ -8,7 +8,7 @@ const rateLimit = require('express-rate-limit');
 
 dotenv.config();
 
-const app = express();
+const app = require("./app");
 
 const allowedOrigins = [
   'https://breatheonline.app',
@@ -86,4 +86,4 @@ if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 }
 
-module.exports = require('serverless-http')(app);
+module.exports = serverless(app);

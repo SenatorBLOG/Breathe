@@ -3,10 +3,7 @@
   "builds": [
     {
       "src": "api/server.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["node_modules/mongoose/**"]
-      }
+      "use": "@vercel/node"
     },
     {
       "src": "build/**",
