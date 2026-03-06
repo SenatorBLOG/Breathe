@@ -54,6 +54,7 @@ const limiter = rateLimit({
  keyGenerator: (req, res) => ipKeyGenerator(req),
 });
 app.use(limiter);
+app.get('/api/ping', (req, res) => res.json({ ok: true, time: Date.now() }));
 
 // DB connection
 let isConnected = false;
