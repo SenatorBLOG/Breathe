@@ -1,4 +1,3 @@
-// api/server.js
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
@@ -7,26 +6,21 @@ const serverless = require('serverless-http');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
-// --- Load env ---
 dotenv.config();
 
 const app = express();
-app.set('trust proxy', 1); // for Vercel serverless
+app.set('trust proxy', 1); //for vercel
+// Rate limit с безопасной генерацией ключа для IPv4/IPv6
+const { ipKeyGenerator } = require('express-rate-limit');
 
-// --- DEBUG: show env ---
-console.log('ENV GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
-console.log('ENV MONGO_URI present:', !!process.env.MONGO_URI);
-console.log('ENV JWT_SECRET present:', !!process.env.JWT_SECRET);
-
-// --- Allowed origins for CORS ---
 const allowedOrigins = [
   'https://breatheonline.app',
   'https://www.breatheonline.app',
   'https://breathe-two-plum.vercel.app',
   'http://localhost:3000',
-  'https://localhost:3000',
+  'https://localhost:3000',  // ← add this
   'http://localhost:5173',
-  'https://localhost:5173',
+  'https://localhost:5173',  // ← add this too
   'http://localhost:5174',
   'https://localhost:5174',
 ];
@@ -41,8 +35,8 @@ app.use(cors({
     }
   },
   credentials: true,
-  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
-  allowedHeaders: ['Content-Type','Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(helmet({
@@ -53,55 +47,22 @@ app.use(helmet({
 
 app.use(express.json());
 
-// --- Rate limit with safe IPv6 key generator ---
-const { ipKeyGenerator } = require('express-rate-limit');
-
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 min
+  windowMs: 15 * 60 * 1000,
   max: 100,
   message: 'Too many requests',
-  keyGenerator: (req) => ipKeyGenerator(req),
+ keyGenerator: (req, res) => ipKeyGenerator(req),
 });
 app.use(limiter);
 
-// --- MongoDB connection ---
+// DB connection
 let isConnected = false;
-let connectionPromise = null;
-
 async function connectDB() {
   if (isConnected) return;
-  if (connectionPromise) return connectionPromise;  // ждём, если уже коннектится
-
-  connectionPromise = mongoose.connect(process.env.MONGO_URI, {
-    serverSelectionTimeoutMS: 60000,  // 60 сек на выбор сервера
-    socketTimeoutMS: 90000,  // 90 сек на сокет
-    connectTimeoutMS: 60000,  // 60 сек на коннект
-    retryWrites: true,
-    retryReads: true,  // retry на чтение
-    w: 'majority',
-  }).then(() => {
-    isConnected = true;
-    console.log("MongoDB Atlas connected");
-  }).catch(err => {
-    console.error("MongoDB connection error:", err.message);
-    isConnected = false;
-    connectionPromise = null;
-    throw err;
-  });
-
-  return connectionPromise;
+  await mongoose.connect(process.env.MONGO_URI);
+  isConnected = true;
+  console.log("Connected to MongoDB Atlas");
 }
-
-app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (err) {
-    res.status(500).json({ error: 'DB connection failed' });
-  }
-});
-
-// Middleware to ensure DB connected
 app.use(async (req, res, next) => {
   try {
     await connectDB();
@@ -112,7 +73,7 @@ app.use(async (req, res, next) => {
   }
 });
 
-// --- Routes ---
+// Routes — point to server-src
 const authRouter = require('./routes/auth');
 const sessionsRouter = require('./routes/sessions');
 const statsRouter = require('./routes/stats');
@@ -121,15 +82,12 @@ app.use('/api/auth', authRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/api/stats', statsRouter);
 
-// --- Test / Ping ---
 app.get('/api/ping', (req, res) => res.json({ ok: true }));
 app.get('/', (req, res) => res.send('Breathe server is running!'));
 
-// --- Local dev server ---
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 }
 
-// --- Export for Vercel ---
-module.exports = serverless(app);
+module.exports = require('serverless-http')(app);
