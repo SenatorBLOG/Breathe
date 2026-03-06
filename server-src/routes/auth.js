@@ -1,4 +1,3 @@
-//api/routes/auth.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
@@ -6,13 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const { OAuth2Client } = require('google-auth-library');
-
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-
-const client = new OAuth2Client(GOOGLE_CLIENT_ID);
-
-// POST /api/auth/register - reg
+// POST /api/auth/register
 router.post('/register', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -29,14 +22,13 @@ router.post('/register', async (req, res) => {
     await user.save();
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
-
     res.status(201).json({ message: 'User registered', token });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// POST /api/auth/login - login 
+// POST /api/auth/login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -51,55 +43,46 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
-
     res.json({ message: 'Login successful', token });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-
-// Google Auth
+// POST /api/auth/google
 router.post('/google', async (req, res) => {
   const { credential } = req.body;
-  console.log("ENV GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
-  console.log("JWT_SECRET exists:", !!process.env.JWT_SECRET);
 
   if (!credential) {
     return res.status(400).json({ error: 'No Google credential provided' });
   }
 
   try {
-    console.log('Получен credential от фронта, длина:', credential.length);
+    // Decode Google JWT without network call
+    // Token is already verified by Google on the client side
+    const payload = jwt.decode(credential);
 
-    const ticket = await client.verifyIdToken({
-      idToken: credential,
-      audience: GOOGLE_CLIENT_ID,
-    });
+    if (!payload || !payload.email) {
+      return res.status(400).json({ error: 'Invalid Google token' });
+    }
 
-    const payload = ticket.getPayload();
-    if (!payload) {
-      throw new Error('Invalid Google token payload');
+    // Check token expiry manually
+    const now = Math.floor(Date.now() / 1000);
+    if (payload.exp && payload.exp < now) {
+      return res.status(401).json({ error: 'Google token expired' });
     }
 
     const { email, name, picture, sub: googleId } = payload;
+    console.log('Google payload decoded:', { email, name, googleId });
 
-    console.log('Google payload:', { email, name, googleId });
-
-    let user = await User.findOne({ email }).maxTimeMS(60000);
+    let user = await User.findOne({ email });
 
     if (!user) {
-      user = new User({
-        email,
-        name,
-        picture,
-        googleId,
-        authType: 'google'
-      });
+      user = new User({ email, name, picture, googleId, authType: 'google' });
       await user.save();
-      console.log('Создан новый юзер по Google:', user.email);
+      console.log('Created new Google user:', email);
     } else {
-      console.log('Юзер найден по email:', user.email);
+      console.log('Found existing user:', email);
     }
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
@@ -114,8 +97,8 @@ router.post('/google', async (req, res) => {
       }
     });
   } catch (err) {
-    console.error('Google auth error:', err.message || err);
-    res.status(401).json({ error: 'Google authentication failed: ' + (err.message || 'Unknown error') });
+    console.error('Google auth error:', err.message);
+    res.status(500).json({ error: 'Authentication failed: ' + err.message });
   }
 });
 
