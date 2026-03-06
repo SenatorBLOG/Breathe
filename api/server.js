@@ -73,6 +73,15 @@ app.use(async (req, res, next) => {
   }
 });
 
+app.get('/api/test-google', async (req, res) => {
+  try {
+    const response = await fetch('https://www.googleapis.com/oauth2/v1/certs');
+    res.json({ ok: true, status: response.status });
+  } catch (err) {
+    res.json({ ok: false, error: err.message });
+  }
+});
+
 // Routes — point to server-src
 const authRouter = require('../server-src/routes/auth');
 const sessionsRouter = require('../server-src/routes/sessions');
