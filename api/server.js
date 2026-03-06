@@ -11,7 +11,6 @@ dotenv.config();
 const app = express();
 app.set('trust proxy', 1); //for vercel
 // Rate limit с безопасной генерацией ключа для IPv4/IPv6
-const rateLimit = require('express-rate-limit');
 const { ipKeyGenerator } = require('express-rate-limit');
 
 const allowedOrigins = [
