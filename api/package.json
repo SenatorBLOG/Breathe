@@ -10,7 +10,7 @@
     "helmet": "^8.1.0",
     "iconv-lite": "^0.6.3",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^7.8.0",
+    "mongoose": "8.10.0",
     "serverless-http": "^4.0.0"
   }
 }
