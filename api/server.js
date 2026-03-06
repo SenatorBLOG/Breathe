@@ -48,7 +48,10 @@ app.use(express.json());
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
-  message: 'Too many requests'
+  message: 'Too many requests',
+  keyGenerator: (req) => {
+    return req.headers['x-forwarded-for'] || req.ip || 'anonymous';
+  }
 });
 app.use(limiter);
 
