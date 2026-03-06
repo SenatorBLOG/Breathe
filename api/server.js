@@ -5,6 +5,8 @@ const cors = require("cors");
 const serverless = require('serverless-http');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+// Фикс для Vercel — явно подгружаем внутренний модуль mongoose
+require('mongoose/lib/helpers/document/isInPathsToSave');
 
 dotenv.config();
 
