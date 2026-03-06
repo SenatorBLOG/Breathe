@@ -5,9 +5,11 @@ const cors = require("cors");
 const serverless = require('serverless-http');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-// Фикс для Vercel — явно подгружаем внутренний модуль mongoose
-require('mongoose/lib/helpers/document/isInPathsToSave');
 
+// Фикс для Vercel — явно подгружаем внутренний модуль mongoose
+require('mongoose/lib/connectionstate');  // ← новый, для collection.js
+require('mongoose/lib/helpers/document/isInPathsToSave');
+require('mongoose/lib/helpers/promiseOrCallback');
 dotenv.config();
 
 const app = express();
