@@ -44,7 +44,7 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
-
+console.log("MONGO_URI =", process.env.MONGO_URI);
 // Mongo connection
 let isConnected = false;
 
