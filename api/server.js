@@ -81,6 +81,7 @@ const statsRouter = require("./routes/stats");
 app.use("/api/auth", authRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/stats", statsRouter);
+app.use('/api/support', require('./routes/support'));
 
 // Healthcheck
 app.get("/api/ping", (req, res) => {

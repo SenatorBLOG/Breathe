@@ -82,6 +82,7 @@ export default function NavBar() {
             <NavLink to="/home-page">Home</NavLink>
             <NavLink to="/breathing">Meditate</NavLink>
             <NavLink to="/music-library">Sounds</NavLink>
+            <NavLink to="/community">Community</NavLink>
             {isAuthenticated ? (
               <>
                 <NavLink to="/sessions">Sessions</NavLink>
@@ -155,6 +156,7 @@ export default function NavBar() {
                 { to: '/home-page', label: 'Home' },
                 { to: '/breathing', label: 'Meditate' },
                 { to: '/music-library', label: 'Sounds' },
+                { to: '/community', label: 'Community' },
                 ...(isAuthenticated
                   ? [{ to: '/sessions', label: 'Sessions' }, { to: '/statistics', label: 'Progress' }]
                   : [{ to: '/faq', label: 'Learn' }, { to: '/support', label: 'Support' }]

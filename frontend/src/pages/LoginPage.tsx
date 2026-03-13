@@ -1,20 +1,24 @@
+// src/pages/LoginPage.tsx
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import NavBar from '../components/NavBar';
+import Footer from '../components/Footer';
 import api from '../api';
 import { toast } from 'sonner';
 import { AuthContext } from '../components/contexts/AuthContext';
-import Footer from '../components/Footer';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
+  const [email,      setEmail]      = useState('');
+  const [password,   setPassword]   = useState('');
+  const [showPass,   setShowPass]   = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [error,      setError]      = useState('');
+  const [loading,    setLoading]    = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,9 +27,8 @@ export default function LoginPage() {
     try {
       const res = await api.post('/auth/login', { email, password });
       login(res.data.token, res.data.user);
-      toast.success('Welcome back to Breathe', {
-description: 'You have entered your world of peace'
-      });
+      localStorage.setItem('userId', res.data.user?._id ?? '');
+      toast.success('Welcome back to Breathe', { description: 'Your journey continues' });
       navigate('/home-page');
     } catch (err: any) {
       const msg = err.response?.data?.error || 'Invalid email or password';
@@ -35,185 +38,208 @@ description: 'You have entered your world of peace'
       setLoading(false);
     }
   };
-  const handleGoogleSignIn = async (credential: string) => {
-  try {
-    const res = await api.post('/auth/google', {
-      credential
-    });
 
-    login(res.data.token, res.data.user);
-    localStorage.setItem('token', res.data.token);
-    toast.success('Welcome to Breathe');
-
-    navigate('/home-page');
-  } catch (err: any) {
-    toast.error('Google login failed');
-  }
-};
+  const handleGoogle = async (credential: string) => {
+    setLoading(true);
+    try {
+      const res = await api.post('/auth/google', { credential });
+      login(res.data.token, res.data.user);
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('userId', res.data.user?._id ?? '');
+      toast.success('Welcome to Breathe');
+      navigate('/home-page');
+    } catch {
+      toast.error('Google login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="relative min-h-screen bg-black text-white overflow-hidden">
-      {/* Background — space + blue */}
-      
-      {/* Stars (animation) */}
-      <div className="absolute inset-0">
-{[...Array(80)].map((_, i) => (
-<div
-            key={i}
-            className="absolute animate-pulse"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 6}s`,
-              animationDuration: `${3 + Math.random() * 4}s`
-            }}
-          >
-            <div className={`w-${i % 3 === 0 ? 1 : 0.5} h-${i % 3 === 0 ? 1 : 0.5} bg-[#70B8FF] rounded-full ${i % 5 === 0 ? 'opacity-100' : 'opacity-60'}`} />
-          </div>
-        ))}
-      </div>
+    <div className="relative min-h-screen bg-[#010814] font-montserrat overflow-x-hidden">
+      <style>{`
+        @keyframes loginFadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes orbPulse {
+          0%,100% { transform: scale(1);    box-shadow: 0 0 60px rgba(74,158,255,0.35); }
+          50%      { transform: scale(1.08); box-shadow: 0 0 90px rgba(74,158,255,0.55); }
+        }
+        .lfu  { animation: loginFadeUp 0.7s ease forwards; }
+        .lfu1 { animation-delay: 0.1s; opacity: 0; }
+        .lfu2 { animation-delay: 0.22s; opacity: 0; }
+        .lfu3 { animation-delay: 0.34s; opacity: 0; }
+        .lfu4 { animation-delay: 0.46s; opacity: 0; }
+      `}</style>
 
-      <NavBar />
+      {/* Background */}
+      <div className="fixed inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url('/Background_img_Meditation.jpg')`, opacity: 0.4 }} />
+      <div className="fixed inset-0"
+        style={{ background: 'radial-gradient(ellipse at 60% 0%, rgba(26,95,204,0.12) 0%, rgba(1,8,20,0.95) 65%)' }} />
 
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-6">
-        <div className="w-full max-w-5xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            
-            {/* The left part is magic */}
-<div className="space-y-10">
-<div>
-                <h1 className="text-5xl md:text-7xl font-extralight leading-tight">
-                  <span className="text-[#70B8FF]">Welcome back</span>
-                  <br />
-                  <span className="text-[#AEE6FF] font-bold">to Breathe</span>
-                </h1>
-                <p className="text-2xl text-[#88AACC] mt-6 font-light">
-                  Continue your journey to inner peace.
-                </p>
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <NavBar />
+
+        <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12">
+          <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+
+            {/* ── Left: branding ── */}
+            <div className="hidden lg:flex flex-col gap-10">
+              {/* Orb */}
+              <div className="lfu lfu1 flex items-center gap-4">
+                <div className="w-14 h-14 rounded-full flex-shrink-0"
+                  style={{
+                    background: 'radial-gradient(circle at 35% 35%, #7AC4FF, #1A5FCC 65%, #0A1A3F)',
+                    animation: 'orbPulse 4s ease-in-out infinite',
+                  }} />
+                <div>
+                  <p className="text-[#B8D9FF] text-xl font-light tracking-wide">Breathe</p>
+                  <p className="text-[#2A4060] text-xs tracking-[0.2em] uppercase mt-0.5">Mindful breathing app</p>
+                </div>
               </div>
-              
-              <div className="text-[#88AACC] space-y-3">
-                <p className="text-lg">Your sessions are waiting for you</p>
-                <p className="text-lg">Your progress is saved</p>
-                <p className="text-lg">You're already halfway to nirvana</p>
+
+              <div className="lfu lfu2 flex flex-col gap-3">
+                <h1 className="text-4xl xl:text-5xl font-light text-[#B8D9FF] leading-tight tracking-wide">
+                  Welcome back.<br />
+                  <span className="text-[#4A9EFF]">Your sessions</span><br />
+                  are waiting.
+                </h1>
+              </div>
+
+              {/* Stats */}
+              <div className="lfu lfu3 flex flex-col gap-3">
+                {[
+                  { icon: '🔥', text: 'Your streak is still alive' },
+                  { icon: '📊', text: 'Progress saved from last time' },
+                  { icon: '🌊', text: 'Community posts to catch up on' },
+                ].map(({ icon, text }) => (
+                  <div key={text} className="flex items-center gap-3">
+                    <span className="text-base">{icon}</span>
+                    <p className="text-[#3D6080] text-sm">{text}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="lfu lfu4">
+                <p className="text-[#1E3358] text-xs">
+                  No account?{' '}
+                  <Link to="/signup" className="text-[#4A9EFF] hover:underline">Create one free →</Link>
+                </p>
               </div>
             </div>
 
-            {/* The right part is a shape */}
-            <div className="backdrop-blur-2xl bg-white/5 border border-white/10 rounded-3xl p-12 shadow-2xl ring-1 ring-white/20">
-              <form onSubmit={handleLogin} className="space-y-8">
-                <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-[#70B8FF]">Log in to your account</h2>
-</div>
+            {/* ── Right: form ── */}
+            <div className="lfu lfu2 w-full">
+              <div className="relative rounded-3xl overflow-hidden"
+                style={{
+                  background: 'linear-gradient(160deg, rgba(11,22,40,0.92) 0%, rgba(6,12,26,0.96) 100%)',
+                  border: '1px solid rgba(30,51,88,0.6)',
+                  boxShadow: '0 0 80px rgba(74,158,255,0.06), 0 24px 60px rgba(0,0,0,0.5)',
+                }}>
 
-                {/* Email */}
-                <div>
-                  <label className="block text-[#70B8FF] text-lg font-medium mb-3">Email</label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full px-6 py-5 bg-white/10 border border-white/20 rounded-2xl text-[#AEE6FF] text-lg placeholder-[#88AACC]/60 focus:outline-none focus:border-[#70B8FF] focus:ring-4 focus:ring-[#70B8FF]/30 transition-all"
-                    placeholder="you@example.com"
-                  />
-                </div>
+                {/* Top glow line */}
+                <div className="h-px bg-gradient-to-r from-transparent via-[#4A9EFF]/40 to-transparent" />
 
-                {/* Password */}
-                <div>
-                  <label className="block text-[#70B8FF] text-lg font-medium mb-3">Password</label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full px-6 py-5 bg-white/10 border border-white/20 rounded-2xl text-[#AEE6FF] text-lg placeholder-[#88AACC]/60 focus:outline-none focus:border-[#70B8FF] focus:ring-4 focus:ring-[#70B8FF]/30 transition-all"
-                    placeholder="••••••••"
-                  />
-                </div>
-
-                {/* Remember + Forgot */}
-                <div className="flex justify-between items-center">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-5 h-5 rounded border-white/30 bg-white/10 checked:bg-[#70B8FF] focus:ring-2 focus:ring-[#70B8FF]/50"
-                    />
-                    <span className="text-[#AEE6FF]">Remember me</span>
-                  </label>
-                  <Link to="/forgot-password" className="text-[#70B8FF] hover:underline text-sm">
-                    Forgot your password?
-                  </Link>
-                </div>
-
-                {error && (
-                  <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-red-300 text-center backdrop-blur-sm">
-                    {error}
+                <div className="p-7 sm:p-9 flex flex-col gap-6">
+                  {/* Header */}
+                  <div>
+                    <h2 className="text-xl font-medium text-[#B8D9FF] tracking-wide">Sign in</h2>
+                    <p className="text-[#2A4060] text-xs mt-1">
+                      New here?{' '}
+                      <Link to="/signup" className="text-[#4A9EFF] hover:underline">Create an account</Link>
+                    </p>
                   </div>
-                )}
 
-                {/* Buttons */}
-                <div className="flex gap-4">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex-1 py-5 bg-gradient-to-r from-[#3A82F7] via-[#549BF6] to-[#70B8FF] rounded-2xl font-bold text-white text-lg hover:shadow-2xl hover:shadow-[#70B8FF]/40 transform hover:scale-105 transition-all disabled:opacity-70 disabled:transform-none"
-                  >
-                    {loading ? 'Entering...' : 'Enter'}
-                  </button>
-                  <Link
-                    to="/signup"
-                    className="flex-1 py-5 border-2 border-[#70B8FF] rounded-2xl font-bold text-[#70B8FF] text-lg hover:bg-[#70B8FF]/10 hover:text-[#AEE6FF] transition-all text-center"
-                  >
-Registration
-                  </Link>
-                </div>
-
-                {/* Social Networks */}
-                <div className="text-center pt-6 border-t border-white/10">
-                  <p className="text-[#88AACC] mb-6">Or log in via</p>
-
-                  <div className="flex justify-center gap-10 items-center">
-
-                    {/* Facebook placeholder */}
-                    <button className="text-[#70B8FF] font-bold text-lg hover:text-[#AEE6FF] hover:scale-110 transition-all">
-                      Facebook
-                    </button>
-
-                    {/* Google OAuth */}
-                    <div className="hover:scale-110 transition-all">
-                      <GoogleLogin
-                        onSuccess={(credentialResponse) => {
-                          console.log(credentialResponse);
-                          handleGoogleSignIn(credentialResponse.credential!);
-                        }}
-                        onError={() => {
-                          toast.error('Google login failed');
-                        }}
-                        useOneTap={false}
-                        theme="outline"
-                        text="signin_with"
-                        size="large"
-                        width="220"
+                  <form onSubmit={handleLogin} className="flex flex-col gap-4">
+                    {/* Email */}
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] uppercase tracking-widest text-[#2A4060]">Email</label>
+                      <input
+                        type="email" value={email} onChange={e => setEmail(e.target.value)} required
+                        placeholder="you@example.com"
+                        className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors"
                       />
                     </div>
 
-                    {/* Apple placeholder */}
-                    <button className="text-[#70B8FF] font-bold text-lg hover:text-[#AEE6FF] hover:scale-110 transition-all">
-                      Apple
-                    </button>
+                    {/* Password */}
+                    <div className="flex flex-col gap-1.5">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[10px] uppercase tracking-widest text-[#2A4060]">Password</label>
+                        <Link to="/forgot-password" className="text-[9px] text-[#2A5499] hover:text-[#4A9EFF] transition-colors">
+                          Forgot password?
+                        </Link>
+                      </div>
+                      <div className="relative">
+                        <input
+                          type={showPass ? 'text' : 'password'} value={password}
+                          onChange={e => setPassword(e.target.value)} required
+                          placeholder="••••••••"
+                          className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 pr-10 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors"
+                        />
+                        <button type="button" onClick={() => setShowPass(v => !v)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2A4060] hover:text-[#4A9EFF] transition-colors">
+                          {showPass ? <EyeOff size={14} /> : <Eye size={14} />}
+                        </button>
+                      </div>
+                    </div>
 
+                    {/* Remember me */}
+                    <label className="flex items-center gap-2.5 cursor-pointer w-fit">
+                      <div onClick={() => setRememberMe(v => !v)}
+                        className={`w-4 h-4 rounded flex items-center justify-center border transition-all ${
+                          rememberMe ? 'bg-[#1A5FCC] border-[#3A82F7]' : 'border-[#1E3358]/60 bg-[#060C1A]/60'
+                        }`}>
+                        {rememberMe && <div className="w-2 h-2 rounded-sm bg-white" />}
+                      </div>
+                      <span className="text-[#2A4060] text-xs">Remember me</span>
+                    </label>
+
+                    {/* Error */}
+                    {error && (
+                      <div className="px-4 py-3 rounded-xl bg-[#FF8A8A]/10 border border-[#FF8A8A]/25 text-[#FF8A8A] text-xs text-center">
+                        {error}
+                      </div>
+                    )}
+
+                    {/* Submit */}
+                    <button type="submit" disabled={loading}
+                      className="w-full py-3 rounded-xl text-sm text-white font-medium tracking-wide transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.45)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 mt-1"
+                      style={{ background: 'linear-gradient(135deg, #1A5FCC 0%, #3A82F7 50%, #2266D4 100%)' }}>
+                      {loading ? 'Signing in…' : 'Sign in →'}
+                    </button>
+                  </form>
+
+                  {/* Divider */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-px bg-[#1E3358]/40" />
+                    <span className="text-[9px] uppercase tracking-widest text-[#1E3358]">or continue with</span>
+                    <div className="flex-1 h-px bg-[#1E3358]/40" />
+                  </div>
+
+                  {/* Google */}
+                  <div className="flex justify-center">
+                    <div className="opacity-80 hover:opacity-100 transition-opacity">
+                      <GoogleLogin
+                        onSuccess={cr => { if (cr.credential) handleGoogle(cr.credential); }}
+                        onError={() => toast.error('Google login failed')}
+                        useOneTap={false}
+                        theme="filled_black"
+                        text="signin_with"
+                        shape="pill"
+                        size="medium"
+                      />
+                    </div>
                   </div>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </main>
 
-      <Footer />
+        <Footer />
+      </div>
     </div>
   );
 }
