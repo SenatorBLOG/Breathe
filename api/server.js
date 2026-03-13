@@ -69,6 +69,10 @@ app.use(async (req, res, next) => {
   }
 });
 
+// community posts
+const postsRouter = require('./routes/posts');
+app.use('/api/posts', postsRouter);
+
 // Routes
 const authRouter = require("./routes/auth");
 const sessionsRouter = require("./routes/sessions");
