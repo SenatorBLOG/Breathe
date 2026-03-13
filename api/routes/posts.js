@@ -6,6 +6,14 @@ const Comment = require('../models/Comment');
 const auth         = require('../middleware/auth'); // your existing JWT middleware
 const optionalAuth = require('../middleware/optionalAuth');
 
+// ─── Helper: get user id regardless of middleware format ─────────────────────
+// Old middleware sets req.user = JWT payload { userId }
+// New middleware sets req.user = Mongoose doc { _id }
+function uid(req) {
+  if (!req.user) return null;
+  return req.user._id ?? req.user.userId ?? req.user.id ?? null;
+}
+
 // ─── Helper: attach like/comment counts + viewer's like status ───────────────
 function formatPost(post, userId) {
   const obj = post.toObject ? post.toObject() : { ...post };
@@ -39,7 +47,7 @@ router.get('/', optionalAuth, async (req, res) => {
     ]);
     const commentMap  = Object.fromEntries(commentAggs.map(a => [a._id.toString(), a.count]));
 
-    const userId  = req.user?._id; // may be undefined for unauthenticated
+    const userId  = uid(req); // may be undefined for unauthenticated
     const payload = posts.map(p => ({
       ...formatPost(p, userId),
       commentCount: commentMap[p._id.toString()] || 0,
@@ -64,18 +72,25 @@ router.post('/', auth, async (req, res) => {
       : [];
 
     const post = await Post.create({
-      author: req.user._id,
+      author: uid(req),
       text: text.trim(),
       category: category || 'experience',
       tags: cleanTags,
       sessionRef: sessionRef || null,
     });
 
-    await post.populate('author', 'username name');
-    res.status(201).json(formatPost(post, req.user._id));
+    await post.populate('author', 'username name email');
+
+    // formatPost is safe even if populate fields are missing
+    const formatted = formatPost(post, uid(req));
+    // Ensure author always has a displayable name
+    if (formatted.author && !formatted.author.name && !formatted.author.username) {
+      formatted.author.username = formatted.author.email?.split('@')[0] ?? 'User';
+    }
+    res.status(201).json(formatted);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to create post' });
+    console.error('POST /posts error:', err.message, err.stack);
+    res.status(500).json({ error: 'Failed to create post', detail: err.message });
   }
 });
 
@@ -84,7 +99,7 @@ router.delete('/:id', auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ error: 'Post not found' });
-    if (post.author.toString() !== req.user._id.toString())
+    if (post.author.toString() !== uid(req).toString())
       return res.status(403).json({ error: 'Not your post' });
 
     await Post.findByIdAndDelete(req.params.id);
@@ -101,9 +116,9 @@ router.post('/:id/like', auth, async (req, res) => {
     const post   = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ error: 'Post not found' });
 
-    const uid    = req.user._id.toString();
-    const idx    = post.likes.findIndex(id => id.toString() === uid);
-    if (idx === -1) post.likes.push(req.user._id);
+    const userIdStr = uid(req).toString();
+    const idx    = post.likes.findIndex(id => id.toString() === userIdStr);
+    if (idx === -1) post.likes.push(uid(req));
     else            post.likes.splice(idx, 1);
 
     await post.save();
@@ -134,7 +149,7 @@ router.get('/:id/comments', optionalAuth, async (req, res) => {
       .sort({ createdAt: 1 })
       .populate('author', 'username name');
 
-    const userId  = req.user?._id;
+    const userId  = uid(req);
     const payload = comments.map(c => {
       const obj       = c.toObject();
       obj.likeCount   = obj.likes.length;
@@ -158,7 +173,7 @@ router.post('/:id/comments', auth, async (req, res) => {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ error: 'Post not found' });
 
-    const comment = await Comment.create({ post: req.params.id, author: req.user._id, text: text.trim() });
+    const comment = await Comment.create({ post: req.params.id, author: uid(req), text: text.trim() });
     await comment.populate('author', 'username name');
 
     const obj       = comment.toObject();
@@ -176,7 +191,7 @@ router.delete('/:postId/comments/:commentId', auth, async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.commentId);
     if (!comment) return res.status(404).json({ error: 'Comment not found' });
-    if (comment.author.toString() !== req.user._id.toString())
+    if (comment.author.toString() !== uid(req).toString())
       return res.status(403).json({ error: 'Not your comment' });
 
     await Comment.findByIdAndDelete(req.params.commentId);
@@ -192,9 +207,9 @@ router.post('/:postId/comments/:commentId/like', auth, async (req, res) => {
     const comment = await Comment.findById(req.params.commentId);
     if (!comment) return res.status(404).json({ error: 'Comment not found' });
 
-    const uid = req.user._id.toString();
-    const idx = comment.likes.findIndex(id => id.toString() === uid);
-    if (idx === -1) comment.likes.push(req.user._id);
+    const userIdStr2 = uid(req).toString();
+    const idx = comment.likes.findIndex(id => id.toString() === userIdStr2);
+    if (idx === -1) comment.likes.push(uid(req));
     else            comment.likes.splice(idx, 1);
 
     await comment.save();
