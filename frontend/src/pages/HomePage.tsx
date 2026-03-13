@@ -402,7 +402,7 @@ export default function HomePage() {
             {/* Pool 1 */}
             <div className="bg-[#0B1628]/70 border border-[#1E3358]/50 rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl">🌙</span>
+                <img src="/icons/5.ColdMesyats.png" alt="Sleep" className="w-5 h-5 object-contain" />
                 <h3 className="text-sm font-medium text-[#B8D9FF]">Sleep Pool</h3>
               </div>
               <ul className="flex flex-col gap-2.5">
@@ -414,7 +414,7 @@ export default function HomePage() {
             {/* Pool 2 */}
             <div className="bg-[#0B1628]/70 border border-[#1E3358]/50 rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl">⚡</span>
+                <img src="/icons/9.Molnia.png" alt="Sleep" className="w-5 h-5 object-contain" />
                 <h3 className="text-sm font-medium text-[#B8D9FF]">Focus Pool</h3>
               </div>
               <ul className="flex flex-col gap-2.5">
@@ -426,7 +426,7 @@ export default function HomePage() {
             {/* Pool 3 */}
             <div className="bg-[#0B1628]/70 border border-[#1E3358]/50 rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl">💚</span>
+                <img src="/icons/10.HeartGreen.png" alt="Beginner" className="w-5 h-5 object-contain" />
                 <h3 className="text-sm font-medium text-[#B8D9FF]">Beginner Pool</h3>
               </div>
               <ul className="flex flex-col gap-2.5">
