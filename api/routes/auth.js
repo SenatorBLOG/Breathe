@@ -41,7 +41,6 @@ router.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid email or password' });
     }
-    localStorage.setItem('userId', user._id);
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
     res.json({ message: 'Login successful', token });
   } catch (err) {
@@ -84,7 +83,6 @@ router.post('/google', async (req, res) => {
     } else {
       console.log('Found existing user:', email);
     }
-    localStorage.setItem('userId', user._id);
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
     res.json({
