@@ -3,7 +3,8 @@ const express = require('express');
 const router  = express.Router();
 const Post    = require('../models/Post');
 const Comment = require('../models/Comment');
-const auth    = require('../middleware/auth'); // your existing JWT middleware
+const auth         = require('../middleware/auth'); // your existing JWT middleware
+const optionalAuth = require('../middleware/optionalAuth');
 
 // ─── Helper: attach like/comment counts + viewer's like status ───────────────
 function formatPost(post, userId) {
@@ -15,7 +16,7 @@ function formatPost(post, userId) {
 }
 
 // ─── GET /api/posts — public feed ────────────────────────────────────────────
-router.get('/', async (req, res) => {
+router.get('/', optionalAuth, async (req, res) => {
   try {
     const { category, tag, page = 1, limit = 20 } = req.query;
     const filter = {};
@@ -127,7 +128,7 @@ router.post('/:id/report', auth, async (req, res) => {
 // ════════════════════════════════════════════════════════
 
 // ─── GET /api/posts/:id/comments — public ────────────────────────────────────
-router.get('/:id/comments', async (req, res) => {
+router.get('/:id/comments', optionalAuth, async (req, res) => {
   try {
     const comments = await Comment.find({ post: req.params.id })
       .sort({ createdAt: 1 })
