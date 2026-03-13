@@ -1,189 +1,290 @@
+// src/pages/SignUpPage.tsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import NavBar from '../components/NavBar';
+import Footer from '../components/Footer';
 import api from '../api';
 import { toast } from 'sonner';
-import Footer from '../components/Footer';
+import { Eye, EyeOff, Check } from 'lucide-react';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+
+  const [name,       setName]       = useState('');
+  const [email,      setEmail]      = useState('');
+  const [password,   setPassword]   = useState('');
+  const [showPass,   setShowPass]   = useState(false);
+  const [agreed,     setAgreed]     = useState(false);
+  const [error,      setError]      = useState('');
+  const [loading,    setLoading]    = useState(false);
+
+  // Password strength
+  const strength = [
+    password.length >= 8,
+    /[A-Z]/.test(password),
+    /[0-9]/.test(password),
+  ];
+  const strengthScore = strength.filter(Boolean).length;
+  const strengthLabel = ['', 'Weak', 'Fair', 'Strong'][strengthScore];
+  const strengthColor = ['', '#FF8A8A', '#FFD97D', '#4AE8A0'][strengthScore];
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!agreed) { setError('Please accept the terms to continue'); return; }
     setLoading(true);
     setError('');
     try {
-      const res = await api.post('/auth/register', { email, password });
+      const res = await api.post('/auth/register', { name, email, password });
       localStorage.setItem('token', res.data.token);
-      toast.success('Account created! Welcome to Breathe');
-      navigate('/');
+      localStorage.setItem('userId', res.data.user?._id ?? '');
+      toast.success('Account created! Welcome to Breathe 🌊');
+      navigate('/home-page');
     } catch (err: any) {
-      const msg = err.response?.data?.error || 'Failed to create an account';
+      const msg = err.response?.data?.error || 'Failed to create account';
       setError(msg);
       toast.error(msg);
     } finally {
       setLoading(false);
     }
   };
-  const handleGoogleSignIn = async (credential?: string) => {
-  if (!credential) return;
-  setLoading(true);
-  try {
-    const res = await api.post('/auth/google', { credential });
-    localStorage.setItem('token', res.data.token);
-    toast.success('Signed in with Google! Welcome to Breathe');
-    navigate('/');
-  } catch (err: any) {
-    const msg = err.response?.data?.error || 'Google sign in failed';
-    setError(msg);
-    toast.error(msg);
-  } finally {
-    setLoading(false);
-  }
-};
+
+  const handleGoogle = async (credential?: string) => {
+    if (!credential) return;
+    setLoading(true);
+    try {
+      const res = await api.post('/auth/google', { credential });
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('userId', res.data.user?._id ?? '');
+      toast.success('Signed up with Google! Welcome to Breathe');
+      navigate('/home-page');
+    } catch (err: any) {
+      const msg = err.response?.data?.error || 'Google sign up failed';
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="relative min-h-screen bg-black text-white overflow-hidden">
-      
-      {/* stars */}
-      <div className="absolute inset-0">
-        {[...Array(60)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute animate-pulse"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-            }}
-          >
-            <div className="w-1 h-1 bg-[#70B8FF] rounded-full opacity-60" />
-          </div>
-        ))}
-      </div>
+    <div className="relative min-h-screen bg-[#010814] font-montserrat overflow-x-hidden">
+      <style>{`
+        @keyframes suFadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes suPing {
+          0%   { transform: scale(1); opacity: 0.5; }
+          80%,100% { transform: scale(1.7); opacity: 0; }
+        }
+        .sfu  { animation: suFadeUp 0.7s ease forwards; }
+        .sfu1 { animation-delay: 0.1s;  opacity: 0; }
+        .sfu2 { animation-delay: 0.22s; opacity: 0; }
+        .sfu3 { animation-delay: 0.34s; opacity: 0; }
+      `}</style>
 
-      <NavBar />
+      {/* Background */}
+      <div className="fixed inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url('/Background_img_Meditation.jpg')`, opacity: 0.4 }} />
+      <div className="fixed inset-0"
+        style={{ background: 'radial-gradient(ellipse at 40% 0%, rgba(26,95,204,0.12) 0%, rgba(1,8,20,0.95) 65%)' }} />
 
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-6">
-        <div className="w-full max-w-5xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            
-            {/* Left panel - text */}
-            <div className="space-y-8">
-              <h1 className="text-5xl md:text-6xl font-light leading-tight text-[#70B8FF]">
-                Create an account to track<br />
-                <span className="font-bold text-[#AEE6FF]">your meditation progress</span>
-              </h1>
-              <p className="text-xl text-[#88AACC] font-light">
-                Welcome to <span className="font-semibold text-[#70B8FF]">Breathe</span>.<br />
-               Start your own path to meditatio calmnes
-              </p>
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <NavBar />
+
+        <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12">
+          <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+
+            {/* ── Left: branding ── */}
+            <div className="hidden lg:flex flex-col gap-10">
+
+              {/* Animated orb cluster */}
+              <div className="sfu sfu1 relative w-20 h-20">
+                <div className="absolute inset-0 rounded-full border border-[#4A9EFF]/15"
+                  style={{ animation: 'suPing 3s ease-out infinite' }} />
+                <div className="absolute inset-2 rounded-full border border-[#4A9EFF]/20"
+                  style={{ animation: 'suPing 3s ease-out 0.6s infinite' }} />
+                <div className="absolute inset-4 rounded-full"
+                  style={{
+                    background: 'radial-gradient(circle at 35% 35%, #7AC4FF, #1A5FCC 65%, #0A1A3F)',
+                    boxShadow: '0 0 40px rgba(74,158,255,0.4)',
+                  }} />
+              </div>
+
+              <div className="sfu sfu2 flex flex-col gap-3">
+                <h1 className="text-4xl xl:text-5xl font-light text-[#B8D9FF] leading-tight tracking-wide">
+                  Begin your<br />
+                  <span className="text-[#4A9EFF]">breathing</span><br />
+                  journey.
+                </h1>
+                <p className="text-[#3D6080] text-sm leading-relaxed max-w-xs">
+                  Free forever. No credit card. Just you, your breath, and a path to calm.
+                </p>
+              </div>
+
+              {/* Feature list */}
+              <div className="sfu sfu3 flex flex-col gap-3">
+                {[
+                  'Guided breathing sessions',
+                  'Track mood & progress over time',
+                  'Sleep sounds & ambient music',
+                  'Community of meditators',
+                ].map(f => (
+                  <div key={f} className="flex items-center gap-3">
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
+                      style={{ background: 'rgba(74,232,160,0.12)', border: '1px solid rgba(74,232,160,0.25)' }}>
+                      <Check size={9} className="text-[#4AE8A0]" />
+                    </div>
+                    <p className="text-[#3D6080] text-sm">{f}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="sfu sfu3">
+                <p className="text-[#1E3358] text-xs">
+                  Already have an account?{' '}
+                  <Link to="/login" className="text-[#4A9EFF] hover:underline">Sign in →</Link>
+                </p>
+              </div>
             </div>
 
-            {/* Rite side */}
-            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-10 shadow-2xl">
-              <form onSubmit={handleSignUp} className="space-y-8">
-                {/* Email */}
-                <div>
-                  <label className="block text-[#70B8FF] text-lg font-medium mb-3">Email Address</label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full px-6 py-5 bg-white/10 border border-white/20 rounded-2xl text-[#AEE6FF] text-lg placeholder-[#88AACC]/70 focus:outline-none focus:border-[#70B8FF] focus:ring-4 focus:ring-[#70B8FF]/20 transition-all"
-                    placeholder="you@example.com"
-                  />
-                </div>
+            {/* ── Right: form ── */}
+            <div className="sfu sfu2 w-full">
+              <div className="relative rounded-3xl overflow-hidden"
+                style={{
+                  background: 'linear-gradient(160deg, rgba(11,22,40,0.92) 0%, rgba(6,12,26,0.96) 100%)',
+                  border: '1px solid rgba(30,51,88,0.6)',
+                  boxShadow: '0 0 80px rgba(74,158,255,0.06), 0 24px 60px rgba(0,0,0,0.5)',
+                }}>
 
-                {/* Password */}
-                <div>
-                  <label className="block text-[#70B8FF] text-lg font-medium mb-3">Password</label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                    className="w-full px-6 py-5 bg-white/10 border border-white/20 rounded-2xl text-[#AEE6FF] text-lg placeholder-[#88AACC]/70 focus:outline-none focus:border-[#70B8FF] focus:ring-4 focus:ring-[#70B8FF]/20 transition-all"
-                    placeholder="••••••••••••"
-                  />
-                </div>
+                <div className="h-px bg-gradient-to-r from-transparent via-[#4A9EFF]/40 to-transparent" />
 
-                {error && (
-                  <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-red-300 text-center">
-                    {error}
+                <div className="p-7 sm:p-9 flex flex-col gap-6">
+
+                  {/* Header */}
+                  <div>
+                    <h2 className="text-xl font-medium text-[#B8D9FF] tracking-wide">Create account</h2>
+                    <p className="text-[#2A4060] text-xs mt-1">
+                      Already have one?{' '}
+                      <Link to="/login" className="text-[#4A9EFF] hover:underline">Sign in</Link>
+                    </p>
                   </div>
-                )}
 
-                {/* Buttons */}
-                <div className="flex gap-4">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex-1 py-5 bg-gradient-to-r from-[#3A82F7] to-[#70B8FF] rounded-2xl font-semibold text-white text-lg hover:shadow-xl hover:shadow-[#3A82F7]/30 transition-all disabled:opacity-70"
-                  >
-                    {loading ? 'Creating...' : 'Sign Up'}
-                  </button>
-                  <Link
-                    to="/login"
-                    className="flex-1 py-5 border-2 border-[#70B8FF] rounded-2xl font-semibold text-[#70B8FF] text-lg hover:bg-[#70B8FF]/10 transition-all text-center"
-                  >
-                    Login
-                  </Link>
-                </div>
+                  <form onSubmit={handleSignUp} className="flex flex-col gap-4">
 
-                {/* Social */}
-                <div className="text-center pt-6 border-t border-white/10">
-                  <p className="text-[#88AACC] mb-6">Or log in via</p>
-
-                  <div className="flex justify-center gap-10 items-center">
-                    
-                    {/* Заглушки под другие соцсети */}
-                    {['Facebook', 'Apple'].map((social) => (
-                      <button
-                        key={social}
-                        className="text-[#70B8FF] font-bold text-lg hover:text-[#AEE6FF] hover:scale-110 transition-all"
-                      >
-                        {social}
-                      </button>
-                    ))}
-
-                    {/* Google OAuth */}
-                    <div className="hover:scale-110 transition-all">
-                      <GoogleLogin
-                        onSuccess={(credentialResponse) => {
-                          console.log(credentialResponse);
-                          handleGoogleSignIn(credentialResponse.credential);
-                        }}
-                        onError={() => {
-                          console.log('Google Sign Up Failed');
-                          toast.error('Google sign up failed');
-                        }}
-                        useOneTap={false}
-                        theme="outline"
-                        text="signin_with"
-                        shape="rectangular"
-                        size="large"
-                        logo_alignment="left"
-                        width="220"
+                    {/* Name */}
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] uppercase tracking-widest text-[#2A4060]">Your name</label>
+                      <input
+                        value={name} onChange={e => setName(e.target.value)}
+                        placeholder="Alex"
+                        className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors"
                       />
                     </div>
 
+                    {/* Email */}
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] uppercase tracking-widest text-[#2A4060]">Email address</label>
+                      <input
+                        type="email" value={email} onChange={e => setEmail(e.target.value)} required
+                        placeholder="you@example.com"
+                        className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors"
+                      />
+                    </div>
+
+                    {/* Password */}
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] uppercase tracking-widest text-[#2A4060]">Password</label>
+                      <div className="relative">
+                        <input
+                          type={showPass ? 'text' : 'password'} value={password}
+                          onChange={e => setPassword(e.target.value)} required minLength={6}
+                          placeholder="Min. 6 characters"
+                          className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 pr-10 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors"
+                        />
+                        <button type="button" onClick={() => setShowPass(v => !v)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2A4060] hover:text-[#4A9EFF] transition-colors">
+                          {showPass ? <EyeOff size={14} /> : <Eye size={14} />}
+                        </button>
+                      </div>
+                      {/* Strength bar */}
+                      {password.length > 0 && (
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="flex gap-1 flex-1">
+                            {[0, 1, 2].map(i => (
+                              <div key={i} className="flex-1 h-0.5 rounded-full transition-all duration-300"
+                                style={{ background: i < strengthScore ? strengthColor : 'rgba(30,51,88,0.4)' }} />
+                            ))}
+                          </div>
+                          <span className="text-[9px] tabular-nums" style={{ color: strengthColor }}>
+                            {strengthLabel}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Terms checkbox */}
+                    <label className="flex items-start gap-2.5 cursor-pointer">
+                      <div onClick={() => setAgreed(v => !v)}
+                        className={`w-4 h-4 mt-0.5 rounded flex items-center justify-center border flex-shrink-0 transition-all ${
+                          agreed ? 'bg-[#1A5FCC] border-[#3A82F7]' : 'border-[#1E3358]/60 bg-[#060C1A]/60'
+                        }`}>
+                        {agreed && <Check size={9} className="text-white" />}
+                      </div>
+                      <span className="text-[#2A4060] text-xs leading-relaxed">
+                        I agree to the{' '}
+                        <span className="text-[#4A9EFF]">terms of service</span>{' '}
+                        and{' '}
+                        <span className="text-[#4A9EFF]">privacy policy</span>
+                      </span>
+                    </label>
+
+                    {/* Error */}
+                    {error && (
+                      <div className="px-4 py-3 rounded-xl bg-[#FF8A8A]/10 border border-[#FF8A8A]/25 text-[#FF8A8A] text-xs text-center">
+                        {error}
+                      </div>
+                    )}
+
+                    {/* Submit */}
+                    <button type="submit" disabled={loading || !agreed}
+                      className="w-full py-3 rounded-xl text-sm text-white font-medium tracking-wide transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.45)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 mt-1"
+                      style={{ background: 'linear-gradient(135deg, #1A5FCC 0%, #3A82F7 50%, #2266D4 100%)' }}>
+                      {loading ? 'Creating account…' : 'Create account →'}
+                    </button>
+                  </form>
+
+                  {/* Divider */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-px bg-[#1E3358]/40" />
+                    <span className="text-[9px] uppercase tracking-widest text-[#1E3358]">or sign up with</span>
+                    <div className="flex-1 h-px bg-[#1E3358]/40" />
+                  </div>
+
+                  {/* Google */}
+                  <div className="flex justify-center">
+                    <div className="opacity-80 hover:opacity-100 transition-opacity">
+                      <GoogleLogin
+                        onSuccess={cr => handleGoogle(cr.credential)}
+                        onError={() => toast.error('Google sign up failed')}
+                        useOneTap={false}
+                        theme="filled_black"
+                        text="signup_with"
+                        shape="pill"
+                        size="medium"
+                      />
+                    </div>
                   </div>
                 </div>
-              </form>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <Footer/>
+          </div>
+        </main>
+
+        <Footer />
+      </div>
     </div>
   );
 }

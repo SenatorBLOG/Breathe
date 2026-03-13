@@ -47,6 +47,7 @@ export default function Footer() {
               { to: '/home-page', label: 'Home' },
               { to: '/breathing', label: 'Meditate' },
               { to: '/music-library', label: 'Sounds' },
+              { to: '/community', label: 'Community' },
               { to: '/sessions', label: 'Sessions' },
               { to: '/statistics', label: 'Progress' },
             ].map(({ to, label }) => (
@@ -67,7 +68,7 @@ export default function Footer() {
             {[
               { to: '/faq', label: 'FAQ' },
               { to: '/support', label: 'Contact Us' },
-              { to: '/profile', label: 'Account' },
+              { to: '/sessions', label: 'Account' },
               { to: '/support', label: 'Privacy Policy' },
             ].map(({ to, label }) => (
               <Link
@@ -136,9 +137,9 @@ export default function Footer() {
               { to: '/home-page', label: 'Home' },
               { to: '/faq', label: 'FAQ' },
               { to: '/breathing', label: 'Meditate' },
-              { to: '/support', label: 'Contact' },
+              { to: '/community', label: 'Community' },
               { to: '/music-library', label: 'Sounds' },
-              { to: '/profile', label: 'Account' },
+              { to: '/sessions', label: 'Sessions' },
             ].map(({ to, label }) => (
               <Link key={label} to={to} className="text-[#4A7AAA] text-xs hover:text-[#7AC4FF] transition-colors py-0.5">
                 {label}

@@ -273,7 +273,8 @@ export default function HomePage() {
                   <ContentCard icon="🌊" tag="Guide" title="Breathwork for Deep Sleep" desc="How controlled breathing activates your parasympathetic system and knocks you out in under 10 minutes." href="/faq" />
                   <ContentCard icon="⚡" tag="Science" title="Why Slow Breath = Calm Mind" desc="Neuroscience behind the breath-brain connection — and how 6 breaths per minute changes everything." href="/faq" />
                   <ContentCard icon="🧘" tag="Practice" title="Morning Ritual in 3 Minutes" desc="Start every day with a simple pranayama sequence that sets your nervous system for focused flow." href="/breathing" />
-                  <ContentCard icon="📊" tag="Track" title="Your Progress Dashboard" desc="View streaks, session history, and breathing stats to keep your practice consistent and rewarding." href="/profile" />
+                  <ContentCard icon="📊" tag="Track" title="Your Progress Dashboard" desc="View streaks, session history, and breathing stats to keep your practice consistent and rewarding." href="/sessions" />
+                  <ContentCard icon="🌍" tag="Community" title="Join the Community" desc="Share your journey, ask questions, and celebrate milestones with meditators from around the world." href="/community" />
                 </div>
               </div>
 
@@ -359,11 +360,11 @@ export default function HomePage() {
                 <ul className="flex flex-col gap-2">
                   {[
                     { label: 'Meditation Library', href: '/breathing' },
-                    { label: 'Sleep Sounds', href: '#' },
-                    { label: 'Guided Journaling', href: '#' },
-                    { label: 'Stress Relief Tools', href: '#' },
-                    { label: 'Community Forum', href: '#' },
-                    { label: 'Expert Articles', href: '/faq' },
+                    { label: 'Sleep Sounds',        href: '/music-library' },
+                    { label: 'Community Forum',     href: '/community' },
+                    { label: 'Stress Relief Tools', href: '/breathing' },
+                    { label: 'My Sessions',         href: '/sessions' },
+                    { label: 'Expert Articles',     href: '/faq' },
                   ].map(({ label, href }) => (
                     <li key={label}>
                       <Link to={href} className="text-[#5A8FB8] text-xs hover:text-[#7AC4FF] transition-colors flex items-center gap-2 group">
@@ -402,7 +403,7 @@ export default function HomePage() {
             {/* Pool 1 */}
             <div className="bg-[#0B1628]/70 border border-[#1E3358]/50 rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-4">
-                <img src="/icons/5.ColdMesyats.png" alt="Sleep" className="w-5 h-5 object-contain" />
+                <span className="text-xl">🌙</span>
                 <h3 className="text-sm font-medium text-[#B8D9FF]">Sleep Pool</h3>
               </div>
               <ul className="flex flex-col gap-2.5">
@@ -414,7 +415,7 @@ export default function HomePage() {
             {/* Pool 2 */}
             <div className="bg-[#0B1628]/70 border border-[#1E3358]/50 rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-4">
-                <img src="/icons/9.Molnia.png" alt="Sleep" className="w-5 h-5 object-contain" />
+                <span className="text-xl">⚡</span>
                 <h3 className="text-sm font-medium text-[#B8D9FF]">Focus Pool</h3>
               </div>
               <ul className="flex flex-col gap-2.5">
@@ -426,7 +427,7 @@ export default function HomePage() {
             {/* Pool 3 */}
             <div className="bg-[#0B1628]/70 border border-[#1E3358]/50 rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-4">
-                <img src="/icons/10.HeartGreen.png" alt="Beginner" className="w-5 h-5 object-contain" />
+                <span className="text-xl">💚</span>
                 <h3 className="text-sm font-medium text-[#B8D9FF]">Beginner Pool</h3>
               </div>
               <ul className="flex flex-col gap-2.5">
