@@ -3,23 +3,22 @@ const express = require('express');
 const router  = express.Router();
 const Post    = require('../models/Post');
 const Comment = require('../models/Comment');
-const auth         = require('../middleware/auth'); // your existing JWT middleware
+const auth         = require('../middleware/auth');
 const optionalAuth = require('../middleware/optionalAuth');
 
-// ─── Helper: get user id regardless of middleware format ─────────────────────
-// Old middleware sets req.user = JWT payload { userId }
-// New middleware sets req.user = Mongoose doc { _id }
+// ─── Helper: safe user id ─────────────────────────────────────────────────────
 function uid(req) {
-  if (!req.user) return null;
-  return req.user._id ?? req.user.userId ?? req.user.id ?? null;
+  return req.user?._id ?? null;
 }
 
-// ─── Helper: attach like/comment counts + viewer's like status ───────────────
+// ─── Helper: format post for client ──────────────────────────────────────────
 function formatPost(post, userId) {
   const obj = post.toObject ? post.toObject() : { ...post };
-  obj.likeCount    = (obj.likes || []).length;
-  obj.likedByMe    = userId ? (obj.likes || []).some(id => id.toString() === userId.toString()) : false;
-  obj.likes        = undefined; // don't send full array to client
+  obj.likeCount  = (obj.likes || []).length;
+  obj.likedByMe  = userId
+    ? (obj.likes || []).some(id => id.toString() === userId.toString())
+    : false;
+  obj.likes = undefined;
   return obj;
 }
 
@@ -37,17 +36,16 @@ router.get('/', optionalAuth, async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(Number(limit))
-      .populate('author', 'username name');
+      .populate('author', 'username name email');
 
-    // get comment counts in one query
     const postIds     = posts.map(p => p._id);
     const commentAggs = await Comment.aggregate([
       { $match: { post: { $in: postIds } } },
       { $group: { _id: '$post', count: { $sum: 1 } } },
     ]);
-    const commentMap  = Object.fromEntries(commentAggs.map(a => [a._id.toString(), a.count]));
+    const commentMap = Object.fromEntries(commentAggs.map(a => [a._id.toString(), a.count]));
 
-    const userId  = uid(req); // may be undefined for unauthenticated
+    const userId  = uid(req);
     const payload = posts.map(p => ({
       ...formatPost(p, userId),
       commentCount: commentMap[p._id.toString()] || 0,
@@ -55,46 +53,47 @@ router.get('/', optionalAuth, async (req, res) => {
 
     res.json({ posts: payload, total, page: Number(page), pages: Math.ceil(total / Number(limit)) });
   } catch (err) {
-    console.error(err);
+    console.error('GET /posts error:', err.message);
     res.status(500).json({ error: 'Failed to fetch posts' });
   }
 });
 
-// ─── POST /api/posts — create (auth required) ─────────────────────────────────
+// ─── POST /api/posts — create (auth required) ────────────────────────────────
 router.post('/', auth, async (req, res) => {
   try {
-    const { text, category, tags, sessionRef } = req.body;
-    if (!text || text.trim().length === 0) return res.status(400).json({ error: 'Text is required' });
+    const authorId = uid(req);
+    console.log('Creating post, authorId:', authorId, 'req.user:', req.user);
 
-    // sanitize tags
+    if (!authorId) {
+      return res.status(401).json({ error: 'Could not identify user' });
+    }
+
+    const { text, category, tags, sessionRef } = req.body;
+    if (!text || text.trim().length === 0) {
+      return res.status(400).json({ error: 'Text is required' });
+    }
+
     const cleanTags = Array.isArray(tags)
       ? tags.map(t => t.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()).filter(Boolean).slice(0, 5)
       : [];
 
     const post = await Post.create({
-      author: uid(req),
-      text: text.trim(),
-      category: category || 'experience',
-      tags: cleanTags,
+      author:     authorId,
+      text:       text.trim(),
+      category:   category || 'experience',
+      tags:       cleanTags,
       sessionRef: sessionRef || null,
     });
 
     await post.populate('author', 'username name email');
-
-    // formatPost is safe even if populate fields are missing
-    const formatted = formatPost(post, uid(req));
-    // Ensure author always has a displayable name
-    if (formatted.author && !formatted.author.name && !formatted.author.username) {
-      formatted.author.username = formatted.author.email?.split('@')[0] ?? 'User';
-    }
-    res.status(201).json(formatted);
+    res.status(201).json(formatPost(post, authorId));
   } catch (err) {
     console.error('POST /posts error:', err.message, err.stack);
     res.status(500).json({ error: 'Failed to create post', detail: err.message });
   }
 });
 
-// ─── DELETE /api/posts/:id — delete own post (auth required) ─────────────────
+// ─── DELETE /api/posts/:id ────────────────────────────────────────────────────
 router.delete('/:id', auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
@@ -110,14 +109,14 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-// ─── POST /api/posts/:id/like — toggle like (auth required) ──────────────────
+// ─── POST /api/posts/:id/like ─────────────────────────────────────────────────
 router.post('/:id/like', auth, async (req, res) => {
   try {
-    const post   = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ error: 'Post not found' });
 
-    const userIdStr = uid(req).toString();
-    const idx    = post.likes.findIndex(id => id.toString() === userIdStr);
+    const userId = uid(req).toString();
+    const idx    = post.likes.findIndex(id => id.toString() === userId);
     if (idx === -1) post.likes.push(uid(req));
     else            post.likes.splice(idx, 1);
 
@@ -128,7 +127,7 @@ router.post('/:id/like', auth, async (req, res) => {
   }
 });
 
-// ─── POST /api/posts/:id/report — report post (auth required) ────────────────
+// ─── POST /api/posts/:id/report ──────────────────────────────────────────────
 router.post('/:id/report', auth, async (req, res) => {
   try {
     await Post.findByIdAndUpdate(req.params.id, { reported: true });
@@ -138,23 +137,21 @@ router.post('/:id/report', auth, async (req, res) => {
   }
 });
 
-// ════════════════════════════════════════════════════════
-//  COMMENTS
-// ════════════════════════════════════════════════════════
-
 // ─── GET /api/posts/:id/comments — public ────────────────────────────────────
 router.get('/:id/comments', optionalAuth, async (req, res) => {
   try {
     const comments = await Comment.find({ post: req.params.id })
       .sort({ createdAt: 1 })
-      .populate('author', 'username name');
+      .populate('author', 'username name email');
 
     const userId  = uid(req);
     const payload = comments.map(c => {
-      const obj       = c.toObject();
-      obj.likeCount   = obj.likes.length;
-      obj.likedByMe   = userId ? obj.likes.some(id => id.toString() === userId?.toString()) : false;
-      obj.likes       = undefined;
+      const obj     = c.toObject();
+      obj.likeCount = obj.likes.length;
+      obj.likedByMe = userId
+        ? obj.likes.some(id => id.toString() === userId.toString())
+        : false;
+      obj.likes = undefined;
       return obj;
     });
 
@@ -164,7 +161,7 @@ router.get('/:id/comments', optionalAuth, async (req, res) => {
   }
 });
 
-// ─── POST /api/posts/:id/comments — create (auth required) ───────────────────
+// ─── POST /api/posts/:id/comments ────────────────────────────────────────────
 router.post('/:id/comments', auth, async (req, res) => {
   try {
     const { text } = req.body;
@@ -173,15 +170,20 @@ router.post('/:id/comments', auth, async (req, res) => {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ error: 'Post not found' });
 
-    const comment = await Comment.create({ post: req.params.id, author: uid(req), text: text.trim() });
-    await comment.populate('author', 'username name');
+    const comment = await Comment.create({
+      post:   req.params.id,
+      author: uid(req),
+      text:   text.trim(),
+    });
+    await comment.populate('author', 'username name email');
 
-    const obj       = comment.toObject();
-    obj.likeCount   = 0;
-    obj.likedByMe   = false;
-    obj.likes       = undefined;
+    const obj     = comment.toObject();
+    obj.likeCount = 0;
+    obj.likedByMe = false;
+    obj.likes     = undefined;
     res.status(201).json(obj);
   } catch (err) {
+    console.error('POST comment error:', err.message);
     res.status(500).json({ error: 'Failed to create comment' });
   }
 });
@@ -207,8 +209,8 @@ router.post('/:postId/comments/:commentId/like', auth, async (req, res) => {
     const comment = await Comment.findById(req.params.commentId);
     if (!comment) return res.status(404).json({ error: 'Comment not found' });
 
-    const userIdStr2 = uid(req).toString();
-    const idx = comment.likes.findIndex(id => id.toString() === userIdStr2);
+    const userId = uid(req).toString();
+    const idx    = comment.likes.findIndex(id => id.toString() === userId);
     if (idx === -1) comment.likes.push(uid(req));
     else            comment.likes.splice(idx, 1);
 
