@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{BASE_URL}}/posts"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{TOKEN}}
+body:
+  type: text
+  content: |-
+    {
+      "text": "Test post from Postman — Day 7 of box breathing! 🌊",
+      "category": "achievement",
+      "tags": ["boxbreathing", "streak"]
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      const r = pm.response.json();
+      pm.test('Status 201', () => pm.response.to.have.status(201));
+      pm.test('Has _id', () => pm.expect(r._id).to.exist);
+      pm.test('Has author', () => pm.expect(r.author).to.exist);
+      pm.test('Has likeCount', () => pm.expect(r.likeCount).to.equal(0));
+      if (r._id) pm.collectionVariables.set('POST_ID', r._id);
+    language: text/javascript
+order: 4000

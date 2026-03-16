@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{BASE_URL}}/support"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "name": "Test User",
+      "email": "test@example.com",
+      "category": "question",
+      "message": "This is a test support message from Postman"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201', () => pm.response.to.have.status(201));
+      pm.test('ok: true', () => pm.expect(pm.response.json().ok).to.be.true);
+    language: text/javascript
+order: 1000

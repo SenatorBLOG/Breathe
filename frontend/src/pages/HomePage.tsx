@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
+import AICoachButton from '../components/AICoach/AICoachButton';
+import SoulOrb from '../components/AICoach/SoulOrb';
 
 // ─── Floating particle for hero ──────────────────────────────────────────────
 function Particle({ delay, x, size }: { delay: number; x: number; size: number }) {
@@ -182,12 +184,7 @@ export default function HomePage() {
             Your daily mindfulness companion
           </span>
 
-          {/* Orb */}
-          <div className="anim-fade-up anim-delay-2">
-            <BreathOrb />
-          </div>
-
-          {/* Headline */}
+          {/* Headline — ABOVE the orb */}
           <div className="anim-fade-up anim-delay-2 flex flex-col gap-2">
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-light leading-none tracking-tight shimmer-text">
               Breathe Better
@@ -195,6 +192,11 @@ export default function HomePage() {
             <p className="text-base sm:text-xl md:text-2xl font-light text-[#5A8FB8] max-w-xl mx-auto leading-relaxed">
               Meditation for sleep, focus, and inner quiet — guided by your breath.
             </p>
+          </div>
+
+          {/* Living Soul Orb — brand mascot + AI Coach trigger */}
+          <div className="anim-fade-up anim-delay-2 flex flex-col items-center w-full">
+            <SoulOrb />
           </div>
 
           {/* CTA */}

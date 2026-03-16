@@ -1,0 +1,7 @@
+$kind: collection
+description: Full test suite for Breathe backend
+variables:
+  BASE_URL: https://breathe-production-6cce.up.railway.app/api
+  TOKEN: ""
+  POST_ID: ""
+  COMMENT_ID: ""

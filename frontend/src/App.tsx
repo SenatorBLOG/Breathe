@@ -10,6 +10,7 @@ import NewSessionPage from './pages/NewSessionPage';
 import CommunityPage from './pages/CommunityPage';
 import FAQPage from './pages/FaqPage';
 import SupportPage from './pages/SupportPage';
+import AICoachButton from './components/AICoach/AICoachButton';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 import './index.css';
@@ -43,6 +44,7 @@ export default function App() {
               <Route path="/music-library" element={<MusicLibrary />} />
               <Route path="*"              element={<HomePage />} />
             </Routes>
+            <AICoachButton variant="floating" />
             <GlobalAudioPlayer />
           </div>
         </MusicProvider>

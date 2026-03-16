@@ -82,6 +82,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/stats", statsRouter);
 app.use('/api/support', require('./routes/support'));
+app.use('/api/coach', require('./routes/coach'));
 
 // Healthcheck
 app.get("/api/ping", (req, res) => {

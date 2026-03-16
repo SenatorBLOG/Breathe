@@ -1,0 +1,26 @@
+$kind: http-request
+url: "{{BASE_URL}}/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "name": "Test User",
+      "email": "test_{{$randomInt}}@example.com",
+      "password": "Password123"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      const r = pm.response.json();
+      if (r.token) {
+        pm.collectionVariables.set('TOKEN', r.token);
+        console.log('TOKEN saved:', r.token.slice(0,20) + '...');
+      }
+      pm.test('Status 201', () => pm.response.to.have.status(201));
+      pm.test('Has token', () => pm.expect(r.token).to.be.a('string'));
+      pm.test('Has user._id', () => pm.expect(r.user._id).to.exist);
+    language: text/javascript
+order: 1000
