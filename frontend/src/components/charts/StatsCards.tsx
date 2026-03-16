@@ -281,11 +281,11 @@ const StatsCards = () => {
                 <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct}%`, background: bg }} />
               </div>
               <span className="text-[9px] tabular-nums w-8 text-right" style={{ color }}>{pct}%</span>
-              <span className="text-[9px] text-[#1E3358] w-6">({count})</span>
+              <span className="text-[9px] text-[#3D6080] w-6">({count})</span>
             </div>
           ))}
           <div className="flex justify-between pt-1 border-t border-[#1E3358]/30 mt-0.5">
-            <span className="text-[9px] text-[#1E3358]">Total entries</span>
+            <span className="text-[9px] text-[#3D6080]">Total entries</span>
             <span className="text-[9px] text-[#4A9EFF] tabular-nums">{moodStats.total}</span>
           </div>
         </div>
@@ -323,7 +323,7 @@ const StatsCards = () => {
           ))}
           <div className="flex gap-0.5 w-full mt-0.5">
             {['S','M','T','W','T','F','S'].map((d, i) => (
-              <div key={i} className="flex-1 text-center text-[8px] text-[#1E3358]">{d}</div>
+              <div key={i} className="flex-1 text-center text-[8px] text-[#3D6080]">{d}</div>
             ))}
           </div>
         </div>

@@ -29,7 +29,7 @@ function StatRow({ label, pct, count, color, bg }: {
       <span className="text-[9px] w-14 flex-shrink-0 uppercase tracking-wide" style={{ color }}>{label}</span>
       <MoodBar pct={pct} color={color} bg={bg} />
       <span className="text-[9px] tabular-nums w-7 text-right flex-shrink-0" style={{ color }}>{pct}%</span>
-      <span className="text-[9px] text-[#1E3358] w-5 flex-shrink-0">({count})</span>
+      <span className="text-[9px] text-[#3D6080] w-5 flex-shrink-0">({count})</span>
     </div>
   );
 }
@@ -56,7 +56,7 @@ function InfoCard({ title, value, sub, children, accent = 'rgba(74,158,255,0.08)
       <div>
         <p className="text-[#B8D9FF] text-xl font-semibold tabular-nums leading-none">{value}</p>
         {sub && <p className="text-[#2A5499] text-[10px] mt-0.5 tabular-nums">{sub}</p>}
-        <p className="text-[#3D6080] text-[9px] uppercase tracking-widest mt-1">{title}</p>
+        <p className="text-[#2A4060] text-[9px] uppercase tracking-widest mt-1">{title}</p>
       </div>
 
       {children && <div className="flex flex-col gap-1.5 pt-1">{children}</div>}
@@ -146,7 +146,7 @@ const MoodTrackingGrid = () => {
               </div>
             ))}
           </div>
-          <div className="flex justify-between text-[8px] text-[#1E3358] px-0.5">
+          <div className="flex justify-between text-[8px] text-[#3D6080] px-0.5">
             <span>1</span><span>5</span><span>10</span>
           </div>
         </InfoCard>

@@ -92,7 +92,7 @@ function LoginNudge({ onClose }: { onClose: () => void }) {
         </div>
         <div>
           <p className="text-[#B8D9FF] text-base font-medium mb-1">Join the community</p>
-          <p className="text-[#3D6080] text-xs leading-relaxed">You need an account to post, comment, and like. It's free and takes 30 seconds.</p>
+          <p className="text-[#4A7AAA] text-xs leading-relaxed">You need an account to post, comment, and like. It's free and takes 30 seconds.</p>
         </div>
         <div className="flex flex-col gap-2 w-full">
           <Link to="/register" className="w-full py-2.5 rounded-xl text-sm text-white font-medium text-center transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)]"
@@ -103,7 +103,7 @@ function LoginNudge({ onClose }: { onClose: () => void }) {
             Sign in
           </Link>
         </div>
-        <button onClick={onClose} className="text-[10px] text-[#1E3358] hover:text-[#3D6080] transition-colors">
+        <button onClick={onClose} className="text-[10px] text-[#3D6080] hover:text-[#4A7AAA] transition-colors">
           Maybe later
         </button>
       </div>
@@ -122,18 +122,18 @@ function CommentRow({ comment, postId, currentUserId, onDelete, onLike }: {
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline gap-2 flex-wrap">
           <span className="text-[#7AC4FF] text-[10px] font-medium">{comment.author.name || comment.author.username}</span>
-          <span className="text-[#1E3358] text-[9px]">{timeAgo(comment.createdAt)}</span>
+          <span className="text-[#3D6080] text-[9px]">{timeAgo(comment.createdAt)}</span>
         </div>
         <p className="text-[#5A8FB8] text-xs leading-relaxed mt-0.5">{comment.text}</p>
         <div className="flex items-center gap-3 mt-1.5">
           <button onClick={() => onLike(comment._id)}
-            className={`flex items-center gap-1 text-[9px] transition-colors ${comment.likedByMe ? 'text-[#FF8A8A]' : 'text-[#3D6080] hover:text-[#FF8A8A]'}`}>
+            className={`flex items-center gap-1 text-[9px] transition-colors ${comment.likedByMe ? 'text-[#FF8A8A]' : 'text-[#4A7AAA] hover:text-[#FF8A8A]'}`}>
             <Heart size={10} fill={comment.likedByMe ? 'currentColor' : 'none'} />
             {comment.likeCount > 0 && comment.likeCount}
           </button>
           {currentUserId === comment.author._id && (
             <button onClick={() => onDelete(comment._id)}
-              className="text-[9px] text-[#3D6080] hover:text-[#FF8A8A] transition-colors flex items-center gap-1">
+              className="text-[9px] text-[#4A7AAA] hover:text-[#FF8A8A] transition-colors flex items-center gap-1">
               <Trash2 size={9} /> delete
             </button>
           )}
@@ -199,7 +199,7 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
   return (
     <div className="border-t border-[#1E3358]/25 mt-3 pt-3">
       <button onClick={toggle}
-        className="flex items-center gap-1.5 text-[10px] text-[#3D6080] hover:text-[#4A9EFF] transition-colors">
+        className="flex items-center gap-1.5 text-[10px] text-[#4A7AAA] hover:text-[#4A9EFF] transition-colors">
         <MessageCircle size={12} />
         {commentCount > 0 ? `${commentCount} comment${commentCount !== 1 ? 's' : ''}` : 'Add comment'}
         <ChevronDown size={10} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -207,7 +207,7 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
 
       {open && (
         <div className="mt-3 flex flex-col gap-3">
-          {loading && <p className="text-[10px] text-[#1E3358]">Loading…</p>}
+          {loading && <p className="text-[10px] text-[#3D6080]">Loading…</p>}
           {comments.map(c => (
             <CommentRow key={c._id} comment={c} postId={postId}
               currentUserId={currentUserId} onDelete={deleteComment} onLike={likeComment} />
@@ -277,7 +277,7 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
           <Avatar author={post.author} />
           <div>
             <p className="text-[#B8D9FF] text-xs font-medium leading-none">{post.author.name || post.author.username}</p>
-            <p className="text-[#3D6080] text-[9px] mt-0.5">{timeAgo(post.createdAt)}</p>
+            <p className="text-[#4A7AAA] text-[9px] mt-0.5">{timeAgo(post.createdAt)}</p>
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -289,11 +289,11 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
           {/* Actions menu */}
           {currentUserId === post.author._id ? (
             <button onClick={() => onDelete(post._id)}
-              className="text-[#3D6080] hover:text-[#FF8A8A] transition-colors p-1">
+              className="text-[#4A7AAA] hover:text-[#FF8A8A] transition-colors p-1">
               <Trash2 size={12} />
             </button>
           ) : (
-            <button onClick={report} className="text-[#3D6080] hover:text-[#4A7AAA] transition-colors p-1">
+            <button onClick={report} className="text-[#4A7AAA] hover:text-[#4A7AAA] transition-colors p-1">
               <Flag size={11} />
             </button>
           )}
@@ -317,7 +317,7 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
       {/* Actions */}
       <div className="flex items-center gap-4">
         <button onClick={toggleLike}
-          className={`flex items-center gap-1.5 text-xs transition-all ${liked ? 'text-[#FF8A8A]' : 'text-[#3D6080] hover:text-[#FF8A8A]'}`}>
+          className={`flex items-center gap-1.5 text-xs transition-all ${liked ? 'text-[#FF8A8A]' : 'text-[#4A7AAA] hover:text-[#FF8A8A]'}`}>
           <Heart size={14} fill={liked ? 'currentColor' : 'none'}
             className={liked ? 'drop-shadow-[0_0_6px_rgba(255,138,138,0.6)]' : ''} />
           {likeCount > 0 && <span className="tabular-nums">{likeCount}</span>}
@@ -383,10 +383,10 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
             </div>
             <div>
               <p className="text-[#B8D9FF] text-sm font-medium leading-none">Share with the community</p>
-              <p className="text-[#3D6080] text-[10px] mt-0.5">Your experience helps others</p>
+              <p className="text-[#4A7AAA] text-[10px] mt-0.5">Your experience helps others</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-[#3D6080] hover:text-[#5A8FB8] transition-colors p-1">
+          <button onClick={onClose} className="text-[#4A7AAA] hover:text-[#5A8FB8] transition-colors p-1">
             <X size={15} />
           </button>
         </div>
@@ -400,7 +400,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
                   category === c ? 'border-[#2A5499]/70 bg-[#0D1B33]' : 'border-[#1E3358]/35 hover:border-[#1E3358]/60'
                 }`}>
                 <span className={`text-base ${category === c ? '' : 'opacity-50'}`}>{CAT_ICONS[c]}</span>
-                <span className={`text-[9px] uppercase tracking-wide ${category === c ? 'text-[#7AC4FF]' : 'text-[#1E3358]'}`}>
+                <span className={`text-[9px] uppercase tracking-wide ${category === c ? 'text-[#7AC4FF]' : 'text-[#3D6080]'}`}>
                   {c}
                 </span>
               </button>
@@ -430,7 +430,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
                 {tags.map(t => (
                   <span key={t} className="flex items-center gap-1 text-[9px] px-2 py-0.5 rounded-full bg-[#0D1B33] border border-[#2A5499]/40 text-[#4A9EFF]">
                     #{t}
-                    <button onClick={() => setTags(prev => prev.filter(x => x !== t))} className="text-[#3D6080] hover:text-[#FF8A8A] ml-0.5">×</button>
+                    <button onClick={() => setTags(prev => prev.filter(x => x !== t))} className="text-[#4A7AAA] hover:text-[#FF8A8A] ml-0.5">×</button>
                   </span>
                 ))}
               </div>
@@ -439,7 +439,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
 
           {/* Footer */}
           <div className="flex items-center justify-between">
-            <span className="text-[9px] text-[#1E3358] tabular-nums">{text.length}/600</span>
+            <span className="text-[9px] text-[#3D6080] tabular-nums">{text.length}/600</span>
             <button onClick={submit} disabled={sending || !text.trim()}
               className="px-6 py-2.5 rounded-xl text-xs text-white font-medium tracking-wide transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 disabled:opacity-40"
               style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
@@ -456,7 +456,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
 function SidebarStat({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex items-center justify-between py-2 border-b border-[#1E3358]/25 last:border-0">
-      <span className="text-[10px] text-[#3D6080]">{label}</span>
+      <span className="text-[10px] text-[#4A7AAA]">{label}</span>
       <span className="text-[#7AC4FF] text-xs font-medium tabular-nums">{value}</span>
     </div>
   );
@@ -526,9 +526,9 @@ export default function CommunityPage() {
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-6 pb-2">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <p className="text-[10px] tracking-[0.3em] uppercase text-[#3D6080] mb-1">Breathe · Community</p>
+              <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] mb-1">Breathe · Community</p>
               <h1 className="text-2xl sm:text-3xl font-light text-[#B8D9FF] tracking-wide">Community</h1>
-              <p className="text-[#3D6080] text-xs mt-1">Share your journey with fellow meditators</p>
+              <p className="text-[#4A7AAA] text-xs mt-1">Share your journey with fellow meditators</p>
             </div>
             <button onClick={handleCreate}
               className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium tracking-wide transition-all hover:shadow-[0_0_24px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95"
@@ -552,7 +552,7 @@ export default function CommunityPage() {
                     className={`px-3 py-1.5 rounded-xl text-[10px] uppercase tracking-widest border transition-all ${
                       category === c
                         ? 'bg-[#0D1B33] border-[#2A5499]/60 text-[#7AC4FF]'
-                        : 'border-[#1E3358]/35 text-[#3D6080] hover:border-[#1E3358]/60'
+                        : 'border-[#1E3358]/35 text-[#4A7AAA] hover:border-[#1E3358]/60'
                     }`}>
                     {c === 'all' ? 'All' : CAT_ICONS[c] + ' ' + c}
                   </button>
@@ -569,7 +569,7 @@ export default function CommunityPage() {
               ) : posts.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 py-20 text-center">
                   <span className="text-4xl opacity-30">🌊</span>
-                  <p className="text-[#3D6080] text-sm">No posts yet — be the first to share!</p>
+                  <p className="text-[#4A7AAA] text-sm">No posts yet — be the first to share!</p>
                   <button onClick={handleCreate}
                     className="px-6 py-2.5 rounded-full text-sm text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)]"
                     style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
@@ -606,16 +606,16 @@ export default function CommunityPage() {
               <div className="rounded-2xl p-4 border border-[#1E3358]/50 bg-[#0B1628]/70">
                 <div className="flex items-center gap-2 mb-3">
                   <Flame size={13} className="text-[#FF9A5C]" />
-                  <p className="text-[10px] uppercase tracking-widest text-[#3D6080]">About</p>
+                  <p className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">About</p>
                 </div>
-                <p className="text-[#3D6080] text-[10px] leading-relaxed">
+                <p className="text-[#4A7AAA] text-[10px] leading-relaxed">
                   A space for meditators to share experiences, ask questions, and celebrate progress. Be kind. Be real.
                 </p>
               </div>
 
               {/* Stats */}
               <div className="rounded-2xl p-4 border border-[#1E3358]/50 bg-[#0B1628]/70">
-                <p className="text-[10px] uppercase tracking-widest text-[#3D6080] mb-2">Community</p>
+                <p className="text-[10px] uppercase tracking-widest text-[#4A7AAA] mb-2">Community</p>
                 <SidebarStat value={String(posts.length)} label="Posts loaded" />
                 <SidebarStat value={String(posts.reduce((s, p) => s + p.likeCount, 0))} label="Total likes" />
                 <SidebarStat value={String(posts.reduce((s, p) => s + p.commentCount, 0))} label="Total comments" />
@@ -623,11 +623,11 @@ export default function CommunityPage() {
 
               {/* Rules */}
               <div className="rounded-2xl p-4 border border-[#1E3358]/50 bg-[#0B1628]/70">
-                <p className="text-[10px] uppercase tracking-widest text-[#3D6080] mb-3">House rules</p>
+                <p className="text-[10px] uppercase tracking-widest text-[#4A7AAA] mb-3">House rules</p>
                 {['Be supportive', 'Stay on topic', 'No spam', 'Respect privacy'].map((r, i) => (
                   <div key={r} className="flex items-center gap-2 py-1.5 border-b border-[#1E3358]/20 last:border-0">
-                    <span className="text-[#1E3358] text-[9px] font-mono">{i + 1}</span>
-                    <span className="text-[#3D6080] text-[10px]">{r}</span>
+                    <span className="text-[#3D6080] text-[9px] font-mono">{i + 1}</span>
+                    <span className="text-[#4A7AAA] text-[10px]">{r}</span>
                   </div>
                 ))}
               </div>
@@ -636,7 +636,7 @@ export default function CommunityPage() {
               {!isLoggedIn && (
                 <div className="rounded-2xl p-4 border border-[#2A5499]/30 bg-[#0D1B33]/70 flex flex-col gap-3">
                   <p className="text-[#4A9EFF] text-xs font-medium">Join Breathe</p>
-                  <p className="text-[#3D6080] text-[10px] leading-relaxed">Create an account to post, comment, and track your meditation journey.</p>
+                  <p className="text-[#4A7AAA] text-[10px] leading-relaxed">Create an account to post, comment, and track your meditation journey.</p>
                   <Link to="/register" className="w-full py-2 rounded-xl text-[10px] text-white text-center font-medium transition-all"
                     style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
                     Sign up free

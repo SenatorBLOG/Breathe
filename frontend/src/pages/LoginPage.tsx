@@ -96,7 +96,7 @@ export default function LoginPage() {
                   }} />
                 <div>
                   <p className="text-[#B8D9FF] text-xl font-light tracking-wide">Breathe</p>
-                  <p className="text-[#3D6080] text-xs tracking-[0.2em] uppercase mt-0.5">Mindful breathing app</p>
+                  <p className="text-[#4A7AAA] text-xs tracking-[0.2em] uppercase mt-0.5">Mindful breathing app</p>
                 </div>
               </div>
 
@@ -146,7 +146,7 @@ export default function LoginPage() {
                   {/* Header */}
                   <div>
                     <h2 className="text-xl font-medium text-[#B8D9FF] tracking-wide">Sign in</h2>
-                    <p className="text-[#3D6080] text-xs mt-1">
+                    <p className="text-[#4A7AAA] text-xs mt-1">
                       New here?{' '}
                       <Link to="/signup" className="text-[#4A9EFF] hover:underline">Create an account</Link>
                     </p>
@@ -155,18 +155,18 @@ export default function LoginPage() {
                   <form onSubmit={handleLogin} className="flex flex-col gap-4">
                     {/* Email */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] uppercase tracking-widest text-[#3D6080]">Email</label>
+                      <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Email</label>
                       <input
                         type="email" value={email} onChange={e => setEmail(e.target.value)} required
                         placeholder="you@example.com"
-                        className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors"
+                        className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                       />
                     </div>
 
                     {/* Password */}
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center justify-between">
-                        <label className="text-[10px] uppercase tracking-widest text-[#3D6080]">Password</label>
+                        <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Password</label>
                         <Link to="/forgot-password" className="text-[9px] text-[#2A5499] hover:text-[#4A9EFF] transition-colors">
                           Forgot password?
                         </Link>
@@ -176,10 +176,10 @@ export default function LoginPage() {
                           type={showPass ? 'text' : 'password'} value={password}
                           onChange={e => setPassword(e.target.value)} required
                           placeholder="••••••••"
-                          className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 pr-10 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors"
+                          className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 pr-10 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                         />
                         <button type="button" onClick={() => setShowPass(v => !v)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#3D6080] hover:text-[#4A9EFF] transition-colors">
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A7AAA] hover:text-[#4A9EFF] transition-colors">
                           {showPass ? <EyeOff size={14} /> : <Eye size={14} />}
                         </button>
                       </div>
@@ -193,7 +193,7 @@ export default function LoginPage() {
                         }`}>
                         {rememberMe && <div className="w-2 h-2 rounded-sm bg-white" />}
                       </div>
-                      <span className="text-[#3D6080] text-xs">Remember me</span>
+                      <span className="text-[#4A7AAA] text-xs">Remember me</span>
                     </label>
 
                     {/* Error */}

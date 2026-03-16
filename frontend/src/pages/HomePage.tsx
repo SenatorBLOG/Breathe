@@ -347,7 +347,7 @@ export default function HomePage() {
                       <span className="text-[#3D6080] text-xs w-4 text-right font-mono">{item.rank}</span>
                       <div className="flex-1 min-w-0">
                         <p className="text-[#8ABADD] text-xs truncate group-hover:text-white transition-colors">{item.title}</p>
-                        <p className="text-[#2A4060] text-[10px]">{item.views}</p>
+                        <p className="text-[#4A7AAA] text-[10px]">{item.views}</p>
                       </div>
                     </Link>
                   ))}

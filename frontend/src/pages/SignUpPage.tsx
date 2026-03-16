@@ -142,7 +142,7 @@ export default function SignUpPage() {
               </div>
 
               <div className="sfu sfu3">
-                <p className="text-[#1E3358] text-xs">
+                <p className="text-[#3D6080] text-xs">
                   Already have an account?{' '}
                   <Link to="/login" className="text-[#4A9EFF] hover:underline">Sign in →</Link>
                 </p>
@@ -165,7 +165,7 @@ export default function SignUpPage() {
                   {/* Header */}
                   <div>
                     <h2 className="text-xl font-medium text-[#B8D9FF] tracking-wide">Create account</h2>
-                    <p className="text-[#3D6080] text-xs mt-1">
+                    <p className="text-[#4A7AAA] text-xs mt-1">
                       Already have one?{' '}
                       <Link to="/login" className="text-[#4A9EFF] hover:underline">Sign in</Link>
                     </p>
@@ -175,36 +175,36 @@ export default function SignUpPage() {
 
                     {/* Name */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] uppercase tracking-widest text-[#3D6080]">Your name</label>
+                      <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Your name</label>
                       <input
                         value={name} onChange={e => setName(e.target.value)}
                         placeholder="Alex"
-                        className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors"
+                        className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                       />
                     </div>
 
                     {/* Email */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] uppercase tracking-widest text-[#3D6080]">Email address</label>
+                      <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Email address</label>
                       <input
                         type="email" value={email} onChange={e => setEmail(e.target.value)} required
                         placeholder="you@example.com"
-                        className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors"
+                        className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                       />
                     </div>
 
                     {/* Password */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] uppercase tracking-widest text-[#3D6080]">Password</label>
+                      <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Password</label>
                       <div className="relative">
                         <input
                           type={showPass ? 'text' : 'password'} value={password}
                           onChange={e => setPassword(e.target.value)} required minLength={6}
                           placeholder="Min. 6 characters"
-                          className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 pr-10 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors"
+                          className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 pr-10 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                         />
                         <button type="button" onClick={() => setShowPass(v => !v)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#3D6080] hover:text-[#4A9EFF] transition-colors">
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A7AAA] hover:text-[#4A9EFF] transition-colors">
                           {showPass ? <EyeOff size={14} /> : <Eye size={14} />}
                         </button>
                       </div>
@@ -232,7 +232,7 @@ export default function SignUpPage() {
                         }`}>
                         {agreed && <Check size={9} className="text-white" />}
                       </div>
-                      <span className="text-[#3D6080] text-xs leading-relaxed">
+                      <span className="text-[#4A7AAA] text-xs leading-relaxed">
                         I agree to the{' '}
                         <span className="text-[#4A9EFF]">terms of service</span>{' '}
                         and{' '}
@@ -258,7 +258,7 @@ export default function SignUpPage() {
                   {/* Divider */}
                   <div className="flex items-center gap-3">
                     <div className="flex-1 h-px bg-[#1E3358]/40" />
-                    <span className="text-[9px] uppercase tracking-widest text-[#1E3358]">or sign up with</span>
+                    <span className="text-[9px] uppercase tracking-widest text-[#3D6080]">or sign up with</span>
                     <div className="flex-1 h-px bg-[#1E3358]/40" />
                   </div>
 

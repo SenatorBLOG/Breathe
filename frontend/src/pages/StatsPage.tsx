@@ -38,7 +38,7 @@ function ChartCard({ title, sub, children, className = '' }: {
     <div className={`flex flex-col gap-3 rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50 p-5 ${className}`}>
       <div>
         <h3 className="text-[#B8D9FF] text-sm font-medium">{title}</h3>
-        {sub && <p className="text-[#2A4060] text-[10px] mt-0.5">{sub}</p>}
+        {sub && <p className="text-[#4A7AAA] text-[10px] mt-0.5">{sub}</p>}
       </div>
       <div className="w-full min-w-0">{children}</div>
     </div>
@@ -56,7 +56,7 @@ function MilestoneBadge({ icon, label, value, glow }: {
         {icon}
       </div>
       <p className="text-[#7AC4FF] text-lg font-medium tabular-nums leading-none">{value}</p>
-      <p className="text-[#2A4060] text-[9px] uppercase tracking-widest">{label}</p>
+      <p className="text-[#4A7AAA] text-[9px] uppercase tracking-widest">{label}</p>
     </div>
   );
 }
@@ -138,11 +138,11 @@ export default function StatsPage() {
 
         {/* ── Hero header ── */}
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-8 pb-4">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-[#2A4060] mb-2">Breathe · Analytics</p>
+          <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] mb-2">Breathe · Analytics</p>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-light text-[#B8D9FF] tracking-wide">Your Progress</h1>
-              <p className="text-[#2A4060] text-xs mt-1 max-w-md">
+              <p className="text-[#4A7AAA] text-xs mt-1 max-w-md">
                 {sessions.length > 0
                   ? `${sessions.length} sessions recorded · ${totalMins} minutes of mindfulness · your data is training your AI coach`
                   : 'Start meditating to unlock your personal analytics'}
@@ -174,7 +174,7 @@ export default function StatsPage() {
             <div className="rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50 p-5">
               <div className="mb-3">
                 <h3 className="text-[#B8D9FF] text-sm font-medium">Key metrics</h3>
-                <p className="text-[#2A4060] text-[10px] mt-0.5">Averages across all your sessions</p>
+                <p className="text-[#4A7AAA] text-[10px] mt-0.5">Averages across all your sessions</p>
               </div>
               <StatsCards />
             </div>
@@ -207,7 +207,7 @@ export default function StatsPage() {
           <div className="stats-in flex flex-col gap-3" style={{ animationDelay: '0.25s', opacity: 0 }}>
             <div className="flex items-center gap-2 mb-1">
               <Sparkles size={12} className="text-[#2A5499]" />
-              <p className="text-[10px] tracking-[0.25em] uppercase text-[#2A4060]">Insights</p>
+              <p className="text-[10px] tracking-[0.25em] uppercase text-[#4A7AAA]">Insights</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {insights.map((ins, i) => ins && <InsightCard key={i} {...ins} />)}
