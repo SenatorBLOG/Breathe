@@ -36,7 +36,7 @@ module.exports = async function coachRateLimit(req, res, next) {
       doc = await RateLimit.findOneAndUpdate(
         { key },
         { key, count: 1, resetAt: midnight },
-        { upsert: true, new: true }
+        { upsert: true, returnDocument: 'after' }
       );
       req.coachMessagesLeft = limit - 1;
       return next();
