@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{BASE_URL}}/posts/{{POST_ID}}/comments/{{COMMENT_ID}}"
+method: DELETE
+headers:
+  Authorization: Bearer {{TOKEN}}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      pm.test('ok: true', () => pm.expect(pm.response.json().ok).to.be.true);
+    language: text/javascript
+order: 4000

@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{BASE_URL}}/posts/{{POST_ID}}/like"
+method: POST
+headers:
+  Authorization: Bearer {{TOKEN}}
+scripts:
+  - type: afterResponse
+    code: |-
+      const r = pm.response.json();
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      pm.test('Has likeCount', () => pm.expect(r.likeCount).to.be.a('number'));
+      pm.test('Has likedByMe', () => pm.expect(r.likedByMe).to.be.a('boolean'));
+    language: text/javascript
+order: 5000

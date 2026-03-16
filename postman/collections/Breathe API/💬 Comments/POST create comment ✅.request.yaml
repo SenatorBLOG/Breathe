@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{BASE_URL}}/posts/{{POST_ID}}/comments"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{TOKEN}}
+body:
+  type: text
+  content: '{ "text": "Great post! I had the same experience on day 7 🧘" }'
+scripts:
+  - type: afterResponse
+    code: |-
+      const r = pm.response.json();
+      pm.test('Status 201', () => pm.response.to.have.status(201));
+      pm.test('Has _id', () => pm.expect(r._id).to.exist);
+      pm.test('Has author', () => pm.expect(r.author).to.exist);
+      if (r._id) pm.collectionVariables.set('COMMENT_ID', r._id);
+    language: text/javascript
+order: 2000

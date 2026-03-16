@@ -1,6 +1,9 @@
 # Use this workspace to collaborate
 workspace:
   id: 5fe6ba64-5b7c-4427-8e2e-ded5975b5763
+cloudResources:
+  collections:
+    ..\postman\collections\Breathe API: 78a99c82-d830-45da-9bff-db823c96844a
 
 # All resources in the `postman/` folder are automatically registered in Local View.
 # Point to additional files outside the `postman/` folder to register them individually. Example:

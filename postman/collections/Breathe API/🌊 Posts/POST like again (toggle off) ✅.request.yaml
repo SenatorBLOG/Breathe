@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{BASE_URL}}/posts/{{POST_ID}}/like"
+method: POST
+headers:
+  Authorization: Bearer {{TOKEN}}
+order: 6000

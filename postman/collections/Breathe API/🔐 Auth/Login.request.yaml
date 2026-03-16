@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{BASE_URL}}/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "email": "mikhail.senatorov@gmail.com",
+      "password": "YOUR_PASSWORD_HERE"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      const r = pm.response.json();
+      if (r.token) pm.collectionVariables.set('TOKEN', r.token);
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      pm.test('Has token', () => pm.expect(r.token).to.be.a('string'));
+      pm.test('Has user._id', () => pm.expect(r.user._id).to.exist);
+    language: text/javascript
+order: 2000
