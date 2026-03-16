@@ -100,7 +100,7 @@ function VolumeControl({ volume, muted, onVolume, onMute }: {
               style={{ height: `${eff}%`, background: "linear-gradient(to top,#1A5FCC,#4A9EFF)" }}
             />
           </div>
-          <span className="text-[8px] text-[#2A4060] tabular-nums">{eff}</span>
+          <span className="text-[8px] text-[#3D6080] tabular-nums">{eff}</span>
         </div>
       )}
     </div>
@@ -216,7 +216,7 @@ export function GlobalAudioPlayer() {
                 {/* Controls + seek */}
                 <div className="flex-1 flex flex-col gap-2 min-w-0">
                   <div className="flex items-center justify-center gap-3">
-                    <button onClick={previousTrack} className="text-[#2A4060] hover:text-[#7AC4FF] transition-colors p-1 hover:scale-110 active:scale-95 duration-150">
+                    <button onClick={previousTrack} className="text-[#3D6080] hover:text-[#7AC4FF] transition-colors p-1 hover:scale-110 active:scale-95 duration-150">
                       <SkipBack size={14} />
                     </button>
                     <button
@@ -229,18 +229,18 @@ export function GlobalAudioPlayer() {
                         : <svg width="10" height="12" viewBox="0 0 10 12" fill="white"><path d="M1 0.5l8 5.5-8 5.5V0.5z"/></svg>
                       }
                     </button>
-                    <button onClick={nextTrack} className="text-[#2A4060] hover:text-[#7AC4FF] transition-colors p-1 hover:scale-110 active:scale-95 duration-150">
+                    <button onClick={nextTrack} className="text-[#3D6080] hover:text-[#7AC4FF] transition-colors p-1 hover:scale-110 active:scale-95 duration-150">
                       <SkipForward size={14} />
                     </button>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-[#2A4060] tabular-nums w-8 text-right flex-shrink-0">{fmt(currentTime)}</span>
+                    <span className="text-[10px] text-[#3D6080] tabular-nums w-8 text-right flex-shrink-0">{fmt(currentTime)}</span>
                     <SeekBar
                       current={currentTime}
                       total={Math.max(1, duration)}
                       onChange={t => { setCurrentTime(t); if (audioRef.current) audioRef.current.currentTime = t; }}
                     />
-                    <span className="text-[10px] text-[#2A4060] tabular-nums w-8 flex-shrink-0">{fmt(duration)}</span>
+                    <span className="text-[10px] text-[#3D6080] tabular-nums w-8 flex-shrink-0">{fmt(duration)}</span>
                   </div>
                 </div>
 
@@ -254,18 +254,18 @@ export function GlobalAudioPlayer() {
                   />
                   <button
                     onClick={() => window.open(currentTrack.audio, "_blank")}
-                    className="text-[#2A4060] hover:text-[#7AC4FF] transition-colors p-1.5"
+                    className="text-[#3D6080] hover:text-[#7AC4FF] transition-colors p-1.5"
                     title="Download"
                   >
                     <Download size={13} />
                   </button>
-                  <button onClick={() => setVisible(false)} className="text-[#2A4060] hover:text-[#5A8FB8] p-1.5 ml-1" title="Minimise">
+                  <button onClick={() => setVisible(false)} className="text-[#3D6080] hover:text-[#5A8FB8] p-1.5 ml-1" title="Minimise">
                     <X size={13} />
                   </button>
                 </div>
 
                 {/* Mobile close */}
-                <button onClick={() => setVisible(false)} className="sm:hidden text-[#2A4060] hover:text-[#5A8FB8] p-1">
+                <button onClick={() => setVisible(false)} className="sm:hidden text-[#3D6080] hover:text-[#5A8FB8] p-1">
                   <X size={16} />
                 </button>
               </div>

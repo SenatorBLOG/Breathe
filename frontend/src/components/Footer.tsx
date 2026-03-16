@@ -42,7 +42,7 @@ export default function Footer() {
 
           {/* Group 2 — Pages */}
           <div className="flex flex-col gap-3">
-            <span className="text-[10px] tracking-[0.25em] uppercase text-[#2A4060] mb-1">Navigate</span>
+            <span className="text-[10px] tracking-[0.25em] uppercase text-[#3D6080] mb-1">Navigate</span>
             {[
               { to: '/home-page', label: 'Home' },
               { to: '/breathing', label: 'Meditate' },
@@ -64,7 +64,7 @@ export default function Footer() {
 
           {/* Group 3 — Support + Socials */}
           <div className="flex flex-col gap-3">
-            <span className="text-[10px] tracking-[0.25em] uppercase text-[#2A4060] mb-1">Support</span>
+            <span className="text-[10px] tracking-[0.25em] uppercase text-[#3D6080] mb-1">Support</span>
             {[
               { to: '/faq', label: 'FAQ' },
               { to: '/support', label: 'Contact Us' },
@@ -87,7 +87,7 @@ export default function Footer() {
                 href="https://instagram.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#2A4060] hover:text-[#7AC4FF] transition-colors hover:scale-110 transform duration-200"
+                className="text-[#3D6080] hover:text-[#7AC4FF] transition-colors hover:scale-110 transform duration-200"
                 aria-label="Instagram"
               >
                 <FaInstagram size={14} />
@@ -96,14 +96,14 @@ export default function Footer() {
                 href="https://github.com/SenatorBLOG/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#2A4060] hover:text-[#7AC4FF] transition-colors hover:scale-110 transform duration-200"
+                className="text-[#3D6080] hover:text-[#7AC4FF] transition-colors hover:scale-110 transform duration-200"
                 aria-label="GitHub"
               >
                 <FaGithub size={14} />
               </a>
               <a
                 href="mailto:support@breatheapp.com"
-                className="text-[#2A4060] hover:text-[#7AC4FF] transition-colors hover:scale-110 transform duration-200"
+                className="text-[#3D6080] hover:text-[#7AC4FF] transition-colors hover:scale-110 transform duration-200"
                 aria-label="Email"
               >
                 <FaEnvelope size={14} />
@@ -125,9 +125,9 @@ export default function Footer() {
             </Link>
             {/* Socials inline on mobile */}
             <div className="flex items-center gap-4">
-              <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" className="text-[#2A4060] hover:text-[#7AC4FF] transition-colors"><FaInstagram size={14} /></a>
-              <a href="https://github.com/SenatorBLOG/" target="_blank" rel="noopener noreferrer" className="text-[#2A4060] hover:text-[#7AC4FF] transition-colors"><FaGithub size={14} /></a>
-              <a href="mailto:support@breatheapp.com" className="text-[#2A4060] hover:text-[#7AC4FF] transition-colors"><FaEnvelope size={14} /></a>
+              <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" className="text-[#3D6080] hover:text-[#7AC4FF] transition-colors"><FaInstagram size={14} /></a>
+              <a href="https://github.com/SenatorBLOG/" target="_blank" rel="noopener noreferrer" className="text-[#3D6080] hover:text-[#7AC4FF] transition-colors"><FaGithub size={14} /></a>
+              <a href="mailto:support@breatheapp.com" className="text-[#3D6080] hover:text-[#7AC4FF] transition-colors"><FaEnvelope size={14} /></a>
             </div>
           </div>
 

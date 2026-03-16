@@ -35,7 +35,7 @@ function StatPill({ icon, label, value, dim = false }: {
       <span className="text-[#4A9EFF]/70">{icon}</span>
       <div className="flex flex-col leading-none">
         <span className="text-[#7AC4FF] text-sm sm:text-base font-medium tabular-nums">{value}</span>
-        <span className="text-[#2A4060] text-[9px] uppercase tracking-widest mt-0.5">{label}</span>
+        <span className="text-[#3D6080] text-[9px] uppercase tracking-widest mt-0.5">{label}</span>
       </div>
     </div>
   );
@@ -111,7 +111,7 @@ function DraggablePhaseBar({ phaseKey, value, onChange, isActivePhase }: {
             style={{ bottom: Math.round(((tick - BAR_MIN) / (BAR_MAX - BAR_MIN)) * (BAR_H - 12)) + 12, background: "rgba(255,255,255,0.04)" }} />
         ))}
       </div>
-      <span className={`text-[10px] tracking-widest uppercase transition-colors duration-200 ${isActivePhase ? "text-[#7AC4FF]" : "text-[#2A4060]"}`}>
+      <span className={`text-[10px] tracking-widest uppercase transition-colors duration-200 ${isActivePhase ? "text-[#7AC4FF]" : "text-[#3D6080]"}`}>
         {meta.label}
       </span>
     </div>
@@ -130,7 +130,7 @@ function PresetPill({ name, pattern, onApply, current }: {
       }`}
     >
       <span className={`text-[10px] font-medium ${active ? "text-[#7AC4FF]" : "text-[#5A8FB8]"}`}>{name}</span>
-      <span className="text-[#2A4060] text-[9px]">{pattern.inhale}-{pattern.hold}-{pattern.exhale}-{pattern.pause}</span>
+      <span className="text-[#3D6080] text-[9px]">{pattern.inhale}-{pattern.hold}-{pattern.exhale}-{pattern.pause}</span>
     </button>
   );
 }
@@ -346,7 +346,7 @@ export default function BreathingPage() {
 
         {/* Scroll hint */}
         <div className={`flex flex-col items-center gap-1.5 transition-opacity duration-700 ${isActive ? "opacity-0" : "opacity-20"}`}>
-          <span className="text-[9px] tracking-[0.25em] uppercase text-[#2A4060]">adjust below</span>
+          <span className="text-[9px] tracking-[0.25em] uppercase text-[#3D6080]">adjust below</span>
           <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
             <path d="M1 1l5 5 5-5" stroke="#2A4060" strokeWidth="1.5" strokeLinecap="round"/>
           </svg>
@@ -358,7 +358,7 @@ export default function BreathingPage() {
         <div className="max-w-2xl mx-auto flex flex-col items-center gap-10">
 
           <div className="text-center">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#2A4060] mb-2">Breathing pattern</p>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-[#3D6080] mb-2">Breathing pattern</p>
             <h2 className="text-[#7AC4FF] text-xl sm:text-2xl font-light tracking-wide mb-1">
               {phaseDurations.inhale}–{phaseDurations.hold}–{phaseDurations.exhale}–{phaseDurations.pause}
             </h2>
@@ -378,7 +378,7 @@ export default function BreathingPage() {
 
           {/* Presets */}
           <div className="flex flex-col items-center gap-3 w-full">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#2A4060]">Quick presets</p>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-[#3D6080]">Quick presets</p>
             <div className="flex flex-wrap justify-center gap-2">
               {presets.map(p => (
                 <PresetPill key={p.name} name={p.name} pattern={p.pattern} onApply={setPhaseDurations} current={phaseDurations} />

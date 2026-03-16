@@ -59,7 +59,7 @@ function SummaryCard({ icon, label, value, sub }: { icon: React.ReactNode; label
       <span className="text-[#4A9EFF]/70">{icon}</span>
       <div>
         <p className="text-[#7AC4FF] text-base sm:text-lg font-medium tabular-nums leading-none">{value}</p>
-        <p className="text-[#2A4060] text-[9px] uppercase tracking-widest mt-0.5">{label}</p>
+        <p className="text-[#3D6080] text-[9px] uppercase tracking-widest mt-0.5">{label}</p>
         {sub && <p className="text-[#1E3358] text-[9px] mt-0.5">{sub}</p>}
       </div>
     </div>
@@ -108,7 +108,7 @@ function SessionCard({ session, onDelete }: { session: Session; onDelete: (id: s
         {/* Date + meta */}
         <div className="flex-1 min-w-0">
           <p className="text-[#B8D9FF] text-xs font-medium truncate">{fmtDate(session.sessionDate)}</p>
-          <p className="text-[#2A4060] text-[10px] truncate">
+          <p className="text-[#3D6080] text-[10px] truncate">
             {fmtTime(session.sessionDate)} · {session.sessionLength}m · {session.cycles} cycles · {session.noiseLevel}
           </p>
         </div>
@@ -140,7 +140,7 @@ function SessionCard({ session, onDelete }: { session: Session; onDelete: (id: s
 
           {/* Distractions */}
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-[#2A4060]">Distractions:</span>
+            <span className="text-[10px] text-[#3D6080]">Distractions:</span>
             <div className="flex gap-1">
               {Array.from({ length: Math.min(session.distractionCount, 10) }).map((_, i) => (
                 <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#FF8A8A]/40" />
@@ -160,7 +160,7 @@ function SessionCard({ session, onDelete }: { session: Session; onDelete: (id: s
           {/* Delete */}
           <button
             onClick={() => onDelete(session._id)}
-            className="self-end flex items-center gap-1.5 text-[10px] text-[#2A4060] hover:text-[#FF8A8A] transition-colors"
+            className="self-end flex items-center gap-1.5 text-[10px] text-[#3D6080] hover:text-[#FF8A8A] transition-colors"
           >
             <Trash2 size={11} /> Delete
           </button>
@@ -232,10 +232,10 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
           </div>
           <div>
             <p className="text-[#B8D9FF] text-sm font-medium leading-none">Log a session</p>
-            <p className="text-[#2A4060] text-[10px] mt-0.5">Your data trains your personal AI coach</p>
+            <p className="text-[#3D6080] text-[10px] mt-0.5">Your data trains your personal AI coach</p>
           </div>
         </div>
-        <button onClick={onClose} className="text-[#2A4060] hover:text-[#5A8FB8] transition-colors p-1"><X size={15} /></button>
+        <button onClick={onClose} className="text-[#3D6080] hover:text-[#5A8FB8] transition-colors p-1"><X size={15} /></button>
       </div>
 
       {/* Step tabs */}
@@ -297,7 +297,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
               const val = form[key]; const color = i === 0 ? "#3D6080" : "#3A82F7";
               return (
                 <div key={label} className="flex items-center gap-3">
-                  <span className="text-[10px] uppercase tracking-widest text-[#2A4060] w-12 flex-shrink-0">{label}</span>
+                  <span className="text-[10px] uppercase tracking-widest text-[#3D6080] w-12 flex-shrink-0">{label}</span>
                   <input type="range" min={1} max={10} step={1} value={val}
                     onChange={e => set(key, Number(e.target.value))}
                     className="flex-1 appearance-none h-1.5 rounded-full cursor-pointer"
@@ -497,7 +497,7 @@ export default function SessionsPage() {
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-6 pb-2">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <p className="text-[10px] tracking-[0.3em] uppercase text-[#2A4060] mb-1">Breathe · History</p>
+              <p className="text-[10px] tracking-[0.3em] uppercase text-[#3D6080] mb-1">Breathe · History</p>
               <h1 className="text-2xl sm:text-3xl font-light text-[#B8D9FF] tracking-wide">My Sessions</h1>
             </div>
             <button
@@ -530,13 +530,13 @@ export default function SessionsPage() {
               <div className="flex flex-col gap-2 bg-[#0B1628]/60 border border-[#1E3358]/40 rounded-2xl p-4">
                 <p className="text-[9px] tracking-[0.25em] uppercase text-[#1E3358] mb-1">Filters</p>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] text-[#2A4060]">Min cycles: {minCycles}</label>
+                  <label className="text-[10px] text-[#3D6080]">Min cycles: {minCycles}</label>
                   <input type="range" min={0} max={20} value={minCycles} onChange={e => setMinCycles(Number(e.target.value))}
                     className="w-full appearance-none h-1.5 rounded-full cursor-pointer"
                     style={{ background: `linear-gradient(to right, #3A82F7 ${minCycles/20*100}%, rgba(30,51,88,0.5) ${minCycles/20*100}%)`, accentColor: "#3A82F7" }} />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] text-[#2A4060]">Min duration: {minDuration}m</label>
+                  <label className="text-[10px] text-[#3D6080]">Min duration: {minDuration}m</label>
                   <input type="range" min={0} max={60} value={minDuration} onChange={e => setMinDuration(Number(e.target.value))}
                     className="w-full appearance-none h-1.5 rounded-full cursor-pointer"
                     style={{ background: `linear-gradient(to right, #7AC4FF ${minDuration/60*100}%, rgba(30,51,88,0.5) ${minDuration/60*100}%)`, accentColor: "#7AC4FF" }} />
@@ -556,9 +556,9 @@ export default function SessionsPage() {
               <div className="rounded-2xl bg-[#0B1628]/60 border border-[#1E3358]/40 p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles size={11} className="text-[#2A5499]" />
-                  <p className="text-[9px] tracking-[0.2em] uppercase text-[#2A4060]">AI coach</p>
+                  <p className="text-[9px] tracking-[0.2em] uppercase text-[#3D6080]">AI coach</p>
                 </div>
-                <p className="text-[#2A4060] text-[10px] leading-relaxed">
+                <p className="text-[#3D6080] text-[10px] leading-relaxed">
                   Your session history is used to personalise breathing pattern recommendations.
                 </p>
               </div>
@@ -566,7 +566,7 @@ export default function SessionsPage() {
               {/* Delete all */}
               {sessions.length > 0 && (
                 <button onClick={handleDeleteAll}
-                  className="flex items-center gap-1.5 text-[10px] text-[#2A4060] hover:text-[#FF8A8A] transition-colors px-1">
+                  className="flex items-center gap-1.5 text-[10px] text-[#3D6080] hover:text-[#FF8A8A] transition-colors px-1">
                   <Trash2 size={11} /> Delete all sessions
                 </button>
               )}
@@ -585,11 +585,11 @@ export default function SessionsPage() {
               {/* Search + sort bar */}
               <div className="flex items-center gap-2 flex-wrap">
                 <div className="relative flex-1 min-w-48">
-                  <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2A4060] pointer-events-none" />
+                  <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#3D6080] pointer-events-none" />
                   <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search notes, dates…"
                     className="w-full pl-8 pr-8 py-2 rounded-xl bg-[#0B1628]/70 border border-[#1E3358]/50 text-[#7AC4FF] text-xs placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors" />
                   {search && (
-                    <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2A4060] hover:text-[#5A8FB8]">
+                    <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#3D6080] hover:text-[#5A8FB8]">
                       <X size={11} />
                     </button>
                   )}
@@ -602,7 +602,7 @@ export default function SessionsPage() {
                       className={`flex items-center gap-1 px-3 py-2 rounded-xl text-[10px] uppercase tracking-widest border transition-all ${
                         sortKey === k
                           ? "bg-[#0D1B33] border-[#2A5499]/60 text-[#7AC4FF]"
-                          : "border-[#1E3358]/35 text-[#2A4060] hover:border-[#1E3358]/60"
+                          : "border-[#1E3358]/35 text-[#3D6080] hover:border-[#1E3358]/60"
                       }`}>
                       {k}
                       {sortKey === k && (sortDir === "desc" ? <ChevronDown size={10} /> : <ChevronUp size={10} />)}
@@ -612,7 +612,7 @@ export default function SessionsPage() {
 
                 {/* Mobile filter toggle */}
                 <button onClick={() => setFilterOpen(v => !v)}
-                  className="lg:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] text-[#2A4060] border border-[#1E3358]/35 hover:border-[#1E3358]/60 transition-all">
+                  className="lg:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] text-[#3D6080] border border-[#1E3358]/35 hover:border-[#1E3358]/60 transition-all">
                   <SlidersHorizontal size={11} /> Filters
                 </button>
               </div>
@@ -626,7 +626,7 @@ export default function SessionsPage() {
                       { label: `Min duration: ${minDuration}m`, val: minDuration, max: 60, set: setMinDuration, color: "#7AC4FF" },
                     ].map(({ label, val, max, set: s, color }) => (
                       <div key={label} className="flex flex-col gap-1.5">
-                        <label className="text-[10px] text-[#2A4060]">{label}</label>
+                        <label className="text-[10px] text-[#3D6080]">{label}</label>
                         <input type="range" min={0} max={max} value={val} onChange={e => s(Number(e.target.value))}
                           className="w-full appearance-none h-1.5 rounded-full cursor-pointer"
                           style={{ background: `linear-gradient(to right, ${color} ${val/max*100}%, rgba(30,51,88,0.5) ${val/max*100}%)`, accentColor: color }} />
@@ -637,7 +637,7 @@ export default function SessionsPage() {
               )}
 
               {/* Status */}
-              <p className="text-[10px] text-[#2A4060] tracking-wide">
+              <p className="text-[10px] text-[#3D6080] tracking-wide">
                 {loading ? "Loading…" : `${filtered.length} of ${sessions.length} sessions`}
                 {(minCycles > 0 || minDuration > 0 || search) ? " · filtered" : ""}
               </p>
@@ -652,7 +652,7 @@ export default function SessionsPage() {
               ) : filtered.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 py-20">
                   <Calendar size={32} className="text-[#1E3358]" />
-                  <p className="text-[#2A4060] text-sm">
+                  <p className="text-[#3D6080] text-sm">
                     {sessions.length === 0 ? "No sessions yet — start meditating!" : "No sessions match your filters"}
                   </p>
                   {sessions.length === 0 && (

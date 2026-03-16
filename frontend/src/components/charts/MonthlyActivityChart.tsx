@@ -17,7 +17,7 @@ function CustomTooltip({ active, payload }: any) {
   const d = payload[0].payload;
   return (
     <div className="px-3 py-2 rounded-xl text-xs border bg-[#060C1A]/95 border-[#1E3358]/70 text-[#7AC4FF]">
-      <p className="font-medium">{d.name} <span className="text-[#2A4060]">({d.label})</span></p>
+      <p className="font-medium">{d.name} <span className="text-[#3D6080]">({d.label})</span></p>
       <p className="text-[#4A9EFF] mt-0.5">{d.value} session{d.value !== 1 ? 's' : ''}</p>
     </div>
   );
@@ -72,7 +72,7 @@ const MonthlyActivityChart = () => {
     return (
       <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
         <span className="text-3xl opacity-30">🫧</span>
-        <p className="text-[#2A4060] text-xs">No sessions yet</p>
+        <p className="text-[#3D6080] text-xs">No sessions yet</p>
       </div>
     );
   }
@@ -107,7 +107,7 @@ const MonthlyActivityChart = () => {
           {/* Centre label */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <p className="text-[#7AC4FF] text-xl font-medium tabular-nums leading-none">{avgMinutes}</p>
-            <p className="text-[#2A4060] text-[9px] uppercase tracking-widest mt-0.5">avg min</p>
+            <p className="text-[#3D6080] text-[9px] uppercase tracking-widest mt-0.5">avg min</p>
           </div>
         </div>
 
@@ -137,7 +137,7 @@ const MonthlyActivityChart = () => {
 
       {/* Sub-caption */}
       <div className="flex items-center justify-between border-t border-[#1E3358]/25 pt-3">
-        <span className="text-[10px] text-[#2A4060]">{total} sessions total</span>
+        <span className="text-[10px] text-[#3D6080]">{total} sessions total</span>
 
         <div className="flex gap-2">
           {BUCKETS.filter(b => pieData.some(p => p.name === b.name)).map(b => (

@@ -56,7 +56,7 @@ function InfoCard({ title, value, sub, children, accent = 'rgba(74,158,255,0.08)
       <div>
         <p className="text-[#B8D9FF] text-xl font-semibold tabular-nums leading-none">{value}</p>
         {sub && <p className="text-[#2A5499] text-[10px] mt-0.5 tabular-nums">{sub}</p>}
-        <p className="text-[#2A4060] text-[9px] uppercase tracking-widest mt-1">{title}</p>
+        <p className="text-[#3D6080] text-[9px] uppercase tracking-widest mt-1">{title}</p>
       </div>
 
       {children && <div className="flex flex-col gap-1.5 pt-1">{children}</div>}

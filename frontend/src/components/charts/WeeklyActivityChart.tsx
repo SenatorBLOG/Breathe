@@ -17,7 +17,7 @@ function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
     <div className="px-3 py-2 rounded-xl text-xs border bg-[#060C1A]/95 border-[#1E3358]/70 text-[#7AC4FF]">
-      <p className="text-[#2A4060] mb-0.5">{label}</p>
+      <p className="text-[#3D6080] mb-0.5">{label}</p>
       <p className="font-medium">{payload[0].value} min</p>
     </div>
   );
@@ -34,7 +34,7 @@ function PeriodTabs({ value, onChange }: { value: string; onChange: (v: string) 
           className={`px-3 py-1 rounded-lg text-[10px] uppercase tracking-widest border transition-all ${
             value === p
               ? 'bg-[#0D1B33] border-[#2A5499]/60 text-[#7AC4FF]'
-              : 'border-[#1E3358]/35 text-[#2A4060] hover:border-[#1E3358]/60 hover:text-[#3D6080]'
+              : 'border-[#1E3358]/35 text-[#3D6080] hover:border-[#1E3358]/60 hover:text-[#3D6080]'
           }`}
         >
           {p}
@@ -143,7 +143,7 @@ const ActivityChart = () => {
         <PeriodTabs value={period} onChange={setPeriod} />
         <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
           <span className="text-3xl opacity-30">📊</span>
-          <p className="text-[#2A4060] text-xs">No activity yet</p>
+          <p className="text-[#3D6080] text-xs">No activity yet</p>
         </div>
       </div>
     );
@@ -153,7 +153,7 @@ const ActivityChart = () => {
     <div className="flex flex-col gap-3">
       {/* Header row */}
       <div className="flex items-center justify-between">
-        <p className="text-[10px] text-[#2A4060]">minutes per {period === 'Weekly' ? 'day' : period === 'Monthly' ? 'day' : 'month'}</p>
+        <p className="text-[10px] text-[#3D6080]">minutes per {period === 'Weekly' ? 'day' : period === 'Monthly' ? 'day' : 'month'}</p>
         <PeriodTabs value={period} onChange={setPeriod} />
       </div>
 

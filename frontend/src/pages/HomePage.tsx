@@ -78,7 +78,7 @@ function ContentCard({
 function AdSlot({ label = 'Advertisement', tall = false }: { label?: string; tall?: boolean }) {
   return (
     <div className={`flex items-center justify-center border border-dashed border-[#1E3358]/60 rounded-xl bg-[#080E1A]/40 ${tall ? 'h-40 sm:h-48' : 'h-20 sm:h-24'}`}>
-      <span className="text-[10px] tracking-widest uppercase text-[#1E3358] select-none">{label}</span>
+      <span className="text-[10px] tracking-widest uppercase text-[#3D6080] select-none">{label}</span>
     </div>
   );
 }
@@ -343,10 +343,10 @@ export default function HomePage() {
                     { rank: '5', title: 'Morning Pranayama', views: '760 sessions' },
                   ].map(item => (
                     <Link to="/breathing" key={item.rank} className="flex items-center gap-3 py-1.5 group">
-                      <span className="text-[#1E3358] text-xs w-4 text-right font-mono">{item.rank}</span>
+                      <span className="text-[#3D6080] text-xs w-4 text-right font-mono">{item.rank}</span>
                       <div className="flex-1 min-w-0">
                         <p className="text-[#8ABADD] text-xs truncate group-hover:text-white transition-colors">{item.title}</p>
-                        <p className="text-[#2A4060] text-[10px]">{item.views}</p>
+                        <p className="text-[#3D6080] text-[10px]">{item.views}</p>
                       </div>
                     </Link>
                   ))}
