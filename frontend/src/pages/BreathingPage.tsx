@@ -75,7 +75,11 @@ function DraggablePhaseBar({ phaseKey, value, onChange, isActivePhase }: {
 
   useEffect(() => {
     const mm = (e: MouseEvent) => onMove(e.clientY);
-    const tm = (e: TouchEvent) => { e.preventDefault(); onMove(e.touches[0].clientY); };
+    const tm = (e: TouchEvent) => {
+      if (!dragging.current) return; // only block scroll when actually dragging a bar
+      e.preventDefault();
+      onMove(e.touches[0].clientY);
+    };
     window.addEventListener("mousemove", mm); window.addEventListener("mouseup", onEnd);
     window.addEventListener("touchmove", tm, { passive: false }); window.addEventListener("touchend", onEnd);
     return () => {
