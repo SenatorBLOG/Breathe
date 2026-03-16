@@ -4,7 +4,7 @@ const router       = express.Router();
 const optionalAuth = require('../middleware/optionalAuth');
 const rateLimit    = require('../middleware/coachRateLimit');
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 if (!process.env.GEMINI_API_KEY) {
   console.error('⚠️  GEMINI_API_KEY is not set');
