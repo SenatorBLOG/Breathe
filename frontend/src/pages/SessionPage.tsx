@@ -60,7 +60,7 @@ function SummaryCard({ icon, label, value, sub }: { icon: React.ReactNode; label
       <div>
         <p className="text-[#7AC4FF] text-base sm:text-lg font-medium tabular-nums leading-none">{value}</p>
         <p className="text-[#2A4060] text-[9px] uppercase tracking-widest mt-0.5">{label}</p>
-        {sub && <p className="text-[#1E3358] text-[9px] mt-0.5">{sub}</p>}
+        {sub && <p className="text-[#3D6080] text-[9px] mt-0.5">{sub}</p>}
       </div>
     </div>
   );
@@ -122,7 +122,7 @@ function SessionCard({ session, onDelete }: { session: Session; onDelete: (id: s
         </span>
 
         {/* Expand chevron */}
-        <span className="text-[#1E3358] flex-shrink-0">
+        <span className="text-[#3D6080] flex-shrink-0">
           {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </span>
       </div>
@@ -145,7 +145,7 @@ function SessionCard({ session, onDelete }: { session: Session; onDelete: (id: s
               {Array.from({ length: Math.min(session.distractionCount, 10) }).map((_, i) => (
                 <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#FF8A8A]/40" />
               ))}
-              {session.distractionCount === 0 && <span className="text-[10px] text-[#1E3358]">none</span>}
+              {session.distractionCount === 0 && <span className="text-[10px] text-[#3D6080]">none</span>}
             </div>
             {session.distractionCount > 10 && <span className="text-[10px] text-[#3D6080]">+{session.distractionCount - 10}</span>}
           </div>
@@ -243,7 +243,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         {STEPS.map((s, i) => (
           <button key={i} onClick={() => setStep(i)}
             className={`flex-1 py-2 text-[9px] uppercase tracking-widest transition-colors ${
-              step === i ? "text-[#7AC4FF] border-b border-[#4A9EFF]" : "text-[#1E3358] hover:text-[#3D6080]"
+              step === i ? "text-[#7AC4FF] border-b border-[#4A9EFF]" : "text-[#3D6080] hover:text-[#3D6080]"
             }`}
           >{s}</button>
         ))}
@@ -280,7 +280,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
                 {NOISE_OPTS.map(n => (
                   <button key={n} type="button" onClick={() => set("noiseLevel", n)}
                     className={`flex-1 py-2 rounded-xl text-[10px] border transition-all ${
-                      form.noiseLevel === n ? "border-[#2A5499]/70 bg-[#0D1B33] text-[#7AC4FF]" : "border-[#1E3358]/35 text-[#1E3358] hover:border-[#1E3358]"
+                      form.noiseLevel === n ? "border-[#2A5499]/70 bg-[#0D1B33] text-[#7AC4FF]" : "border-[#1E3358]/35 text-[#3D6080] hover:border-[#1E3358]"
                     }`}>{n}</button>
                 ))}
               </div>
@@ -329,7 +329,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
                       on ? "border-[#2A5499]/70 bg-[#0D1B33]" : "border-[#1E3358]/35 hover:border-[#1E3358]/60"
                     }`}>
                     <span className={`text-base transition-all ${on ? "" : "opacity-45"}`}>{FEELING_ICONS[f]}</span>
-                    <span className={`text-[9px] uppercase tracking-wide ${on ? "text-[#7AC4FF]" : "text-[#1E3358]"}`}>{f}</span>
+                    <span className={`text-[9px] uppercase tracking-wide ${on ? "text-[#7AC4FF]" : "text-[#3D6080]"}`}>{f}</span>
                   </button>
                 );
               })}
@@ -519,7 +519,7 @@ export default function SessionsPage() {
             <aside className="hidden lg:flex flex-col gap-4 w-56 flex-shrink-0 pt-4">
               {/* Summary stats */}
               <div className="flex flex-col gap-2">
-                <p className="text-[9px] tracking-[0.25em] uppercase text-[#1E3358] px-1 mb-1">Overview</p>
+                <p className="text-[9px] tracking-[0.25em] uppercase text-[#3D6080] px-1 mb-1">Overview</p>
                 <SummaryCard icon={<Timer size={14} />}   label="Total minutes" value={`${totalMins}m`} />
                 <SummaryCard icon={<Wind size={14} />}    label="Total cycles"  value={String(totalCycles)} />
                 <SummaryCard icon={<Flame size={14} />}   label="Sessions"      value={String(sessions.length)} />
@@ -528,7 +528,7 @@ export default function SessionsPage() {
 
               {/* Filters */}
               <div className="flex flex-col gap-2 bg-[#0B1628]/60 border border-[#1E3358]/40 rounded-2xl p-4">
-                <p className="text-[9px] tracking-[0.25em] uppercase text-[#1E3358] mb-1">Filters</p>
+                <p className="text-[9px] tracking-[0.25em] uppercase text-[#3D6080] mb-1">Filters</p>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[10px] text-[#2A4060]">Min cycles: {minCycles}</label>
                   <input type="range" min={0} max={20} value={minCycles} onChange={e => setMinCycles(Number(e.target.value))}
@@ -587,7 +587,7 @@ export default function SessionsPage() {
                 <div className="relative flex-1 min-w-48">
                   <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2A4060] pointer-events-none" />
                   <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search notes, dates…"
-                    className="w-full pl-8 pr-8 py-2 rounded-xl bg-[#0B1628]/70 border border-[#1E3358]/50 text-[#7AC4FF] text-xs placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors" />
+                    className="w-full pl-8 pr-8 py-2 rounded-xl bg-[#0B1628]/70 border border-[#1E3358]/50 text-[#7AC4FF] text-xs placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors" />
                   {search && (
                     <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2A4060] hover:text-[#5A8FB8]">
                       <X size={11} />
@@ -651,7 +651,7 @@ export default function SessionsPage() {
                 </div>
               ) : filtered.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 py-20">
-                  <Calendar size={32} className="text-[#1E3358]" />
+                  <Calendar size={32} className="text-[#3D6080]" />
                   <p className="text-[#2A4060] text-sm">
                     {sessions.length === 0 ? "No sessions yet — start meditating!" : "No sessions match your filters"}
                   </p>
