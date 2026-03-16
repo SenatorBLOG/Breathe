@@ -4,12 +4,23 @@ import { Link, useNavigate } from 'react-router-dom';
 import { X, Send, Sparkles, ChevronRight, RotateCcw } from 'lucide-react';
 import api from '../../api';
 
+// ─── Types ────────────────────────────────────────────────────────────────────
 interface Technique { key: string; label: string; }
 interface Message {
   id: string; role: 'user' | 'coach'; text: string;
   technique?: Technique; done: boolean;
 }
 interface AICoachModalProps { onClose: () => void; }
+
+// ─── Preset map ───────────────────────────────────────────────────────────────
+const COACH_PRESETS: Record<string, { inhale: number; hold: number; exhale: number; pause: number; name: string }> = {
+  'box':       { name: 'Box Breathing',      inhale: 4, hold: 4, exhale: 4, pause: 4 },
+  '4-7-8':     { name: '4-7-8 Breathing',    inhale: 4, hold: 7, exhale: 8, pause: 1 },
+  'wim-hof':   { name: 'Wim Hof Method',     inhale: 2, hold: 1, exhale: 2, pause: 1 },
+  'coherent':  { name: 'Coherent Breathing', inhale: 4, hold: 2, exhale: 6, pause: 2 },
+  'belly':     { name: 'Belly Breathing',    inhale: 4, hold: 0, exhale: 6, pause: 2 },
+  'alternate': { name: 'Alternate Nostril',  inhale: 4, hold: 4, exhale: 4, pause: 2 },
+};
 
 // ─── Typewriter ───────────────────────────────────────────────────────────────
 function useTypewriter(text: string, speed = 16, enabled = true) {
@@ -28,16 +39,6 @@ function useTypewriter(text: string, speed = 16, enabled = true) {
   }, [text, speed, enabled]);
   return { displayed, done };
 }
-
-// ─── Coach preset map ────────────────────────────────────────────────────────
-const COACH_PRESETS: Record<string, { name: string; inhale: number; hold: number; exhale: number; pause: number }> = {
-  'box':       { name: 'Box Breathing',      inhale: 4, hold: 4, exhale: 4, pause: 4 },
-  '4-7-8':     { name: '4-7-8 Breathing',    inhale: 4, hold: 7, exhale: 8, pause: 1 },
-  'wim-hof':   { name: 'Wim Hof Method',     inhale: 2, hold: 1, exhale: 2, pause: 1 },
-  'coherent':  { name: 'Coherent Breathing', inhale: 4, hold: 2, exhale: 6, pause: 2 },
-  'belly':     { name: 'Belly Breathing',    inhale: 4, hold: 0, exhale: 6, pause: 2 },
-  'alternate': { name: 'Alternate Nostril',  inhale: 4, hold: 4, exhale: 4, pause: 2 },
-};
 
 // ─── Typing dots ──────────────────────────────────────────────────────────────
 function TypingIndicator() {
@@ -58,34 +59,14 @@ function TypingIndicator() {
   );
 }
 
-// ─── Technique CTA button ────────────────────────────────────────────────────
-function TechniqueButton({ technique }: { technique: { key: string; label: string } }) {
-  const navigate = useNavigate();
-  const preset   = COACH_PRESETS[technique.key];
-
-  const handleClick = () => {
-    navigate('/breathing', {
-      state: {
-        coachPreset:     preset ? { inhale: preset.inhale, hold: preset.hold, exhale: preset.exhale, pause: preset.pause } : undefined,
-        coachPresetName: preset?.name ?? technique.label,
-      }
-    });
-  };
-
-  return (
-    <button onClick={handleClick}
-      className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-white font-medium self-start transition-all hover:scale-105 hover:shadow-[0_0_16px_rgba(74,158,255,0.4)] active:scale-95"
-      style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
-      <span>✦ Try {technique.label}</span>
-      <ChevronRight size={11} />
-    </button>
-  );
-}
-
 // ─── Coach bubble ─────────────────────────────────────────────────────────────
-function CoachBubble({ message, isLatest }: { message: Message; isLatest: boolean }) {
+function CoachBubble({ message, isLatest, onTryTechnique }: {
+  message: Message; isLatest: boolean;
+  onTryTechnique: (technique: Technique) => void;
+}) {
   const { displayed, done } = useTypewriter(message.text, 16, message.role === 'coach' && isLatest);
   const text = (message.role === 'coach' && isLatest) ? displayed : message.text;
+
   return (
     <div className="flex items-end gap-2 mb-3">
       <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center"
@@ -99,7 +80,12 @@ function CoachBubble({ message, isLatest }: { message: Message; isLatest: boolea
           {isLatest && !done && <span className="inline-block w-0.5 h-4 bg-[#4A9EFF] ml-0.5 align-middle animate-pulse" />}
         </div>
         {done && message.technique && (
-          <TechniqueButton technique={message.technique} />
+          <button
+            onClick={() => onTryTechnique(message.technique!)}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-white font-medium self-start transition-all hover:scale-105 hover:shadow-[0_0_16px_rgba(74,158,255,0.4)] active:scale-95"
+            style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+            ✦ Try {message.technique.label} <ChevronRight size={11} />
+          </button>
         )}
       </div>
     </div>
@@ -126,7 +112,7 @@ function LimitBanner({ isAuthenticated, hoursLeft }: { isAuthenticated: boolean;
       <p className="text-[#2A4060] text-xs leading-relaxed">
         {isAuthenticated
           ? `Come back in ${hoursLeft ?? 24}h for more coaching.`
-          : 'Create a free account for 10 messages per day + personalized recommendations.'}
+          : 'Create a free account for 10 messages per day.'}
       </p>
       {!isAuthenticated && (
         <div className="flex gap-2">
@@ -134,7 +120,7 @@ function LimitBanner({ isAuthenticated, hoursLeft }: { isAuthenticated: boolean;
             style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
             Create account
           </Link>
-          <Link to="/login" className="flex-1 py-2 rounded-xl text-xs text-[#4A9EFF] text-center border border-[#1E3358]/50 hover:border-[#2A5499]/60 transition-all">
+          <Link to="/login" className="flex-1 py-2 rounded-xl text-xs text-[#4A9EFF] text-center border border-[#1E3358]/50">
             Sign in
           </Link>
         </div>
@@ -154,14 +140,17 @@ const SUGGESTIONS = [
 
 const WELCOME = `Hi! I'm your AI breathing coach 🌊\n\nTell me how you're feeling right now — stressed, can't sleep, low energy, anxious — and I'll find the perfect technique for you.\n\nYou have 3 free messages today.`;
 
+// ─── Main modal ───────────────────────────────────────────────────────────────
 export default function AICoachModal({ onClose }: AICoachModalProps) {
+  const navigate = useNavigate();
+
   const [messages, setMessages] = useState<Message[]>([
     { id: 'welcome', role: 'coach', text: WELCOME, done: false },
   ]);
-  const [input,        setInput]    = useState('');
-  const [loading,      setLoading]  = useState(false);
-  const [limitData,    setLimit]    = useState<{ reached: boolean; isAuthenticated: boolean; hoursLeft?: number } | null>(null);
-  const [messagesLeft, setLeft]     = useState<number | null>(null);
+  const [input,        setInput]   = useState('');
+  const [loading,      setLoading] = useState(false);
+  const [limitData,    setLimit]   = useState<{ reached: boolean; isAuthenticated: boolean; hoursLeft?: number } | null>(null);
+  const [messagesLeft, setLeft]    = useState<number | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLInputElement>(null);
 
@@ -172,6 +161,20 @@ export default function AICoachModal({ onClose }: AICoachModalProps) {
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, loading]);
   useEffect(() => { setTimeout(() => inputRef.current?.focus(), 400); }, []);
 
+  // ── Navigate to breathing page with preset ────────────────────────────────
+  const handleTryTechnique = useCallback((technique: Technique) => {
+    const preset = COACH_PRESETS[technique.key];
+    onClose(); // close modal first
+    navigate('/breathing', {
+      state: {
+        coachPreset:     preset
+          ? { inhale: preset.inhale, hold: preset.hold, exhale: preset.exhale, pause: preset.pause }
+          : undefined,
+        coachPresetName: preset?.name ?? technique.label,
+      },
+    });
+  }, [navigate, onClose]);
+
   const send = useCallback(async (text: string) => {
     const trimmed = text.trim();
     if (!trimmed || loading) return;
@@ -180,36 +183,43 @@ export default function AICoachModal({ onClose }: AICoachModalProps) {
     setLoading(true);
     try {
       const { data } = await api.post('/coach/message', { message: trimmed, history });
-      setMessages(prev => [...prev, { id: Date.now()+'_c', role: 'coach', text: data.reply, technique: data.technique ?? undefined, done: false }]);
+      setMessages(prev => [...prev, {
+        id: Date.now()+'_c', role: 'coach',
+        text: data.reply, technique: data.technique ?? undefined, done: false,
+      }]);
       if (data.messagesLeft != null) setLeft(data.messagesLeft);
     } catch (err: any) {
       if (err?.response?.status === 429) {
         const d = err.response.data;
         setLimit({ reached: true, isAuthenticated: !d.isAnonymous, hoursLeft: d.hoursUntilReset });
       } else {
-        setMessages(prev => [...prev, { id: Date.now()+'_err', role: 'coach', text: "Something went wrong. Please try again.", done: false }]);
+        setMessages(prev => [...prev, {
+          id: Date.now()+'_err', role: 'coach',
+          text: "Something went wrong. Please try again.", done: false,
+        }]);
       }
     } finally { setLoading(false); }
   }, [loading, history]);
+
+  const reset = () => {
+    setMessages([{ id: 'welcome', role: 'coach', text: WELCOME, done: false }]);
+    setLimit(null); setLeft(null);
+  };
 
   return (
     <>
       <style>{`
         @keyframes coachExpand {
           from { opacity:0; max-height:0; transform:scaleY(0.95); }
-          to   { opacity:1; max-height:520px; transform:scaleY(1); }
+          to   { opacity:1; max-height:560px; transform:scaleY(1); }
         }
         @keyframes coachDot {
           0%,80%,100% { transform:scale(0.6); opacity:0.4; }
           40%          { transform:scale(1);   opacity:1; }
         }
-        .coach-expand {
-          animation: coachExpand 0.4s cubic-bezier(0.34,1.2,0.64,1) forwards;
-          transform-origin: top center;
-        }
+        .coach-expand { animation: coachExpand 0.4s cubic-bezier(0.34,1.2,0.64,1) forwards; transform-origin: top center; }
       `}</style>
 
-      {/* Inline expanding box — no overlay, pushes content down */}
       <div className="coach-expand w-full max-w-sm mx-auto mt-4 rounded-3xl overflow-hidden"
         style={{
           background: 'linear-gradient(170deg,rgba(9,17,34,0.97),rgba(5,10,20,0.98))',
@@ -243,8 +253,7 @@ export default function AICoachModal({ onClose }: AICoachModalProps) {
                 {messagesLeft} left
               </span>
             )}
-            <button onClick={() => { setMessages([{ id:'welcome', role:'coach', text:WELCOME, done:false }]); setLimit(null); setLeft(null); }}
-              className="text-[#1E3358] hover:text-[#4A9EFF] transition-colors p-1">
+            <button onClick={reset} className="text-[#1E3358] hover:text-[#4A9EFF] transition-colors p-1">
               <RotateCcw size={11} />
             </button>
             <button onClick={onClose} className="text-[#2A4060] hover:text-[#B8D9FF] transition-colors p-1">
@@ -254,15 +263,15 @@ export default function AICoachModal({ onClose }: AICoachModalProps) {
         </div>
 
         {/* Messages */}
-        <div className="overflow-y-auto px-4 pt-4 pb-2 flex flex-col" style={{ maxHeight: 300, scrollbarWidth: 'thin', scrollbarColor: '#1E3358 transparent' }}>
+        <div className="overflow-y-auto px-4 pt-4 pb-2 flex flex-col"
+          style={{ maxHeight: 300, scrollbarWidth: 'thin', scrollbarColor: '#1E3358 transparent' }}>
           {messages.map((msg, i) =>
             msg.role === 'user'
-              ? <UserBubble  key={msg.id} text={msg.text} />
-              : <CoachBubble key={msg.id} message={msg} isLatest={i === messages.length - 1} />
+              ? <UserBubble key={msg.id} text={msg.text} />
+              : <CoachBubble key={msg.id} message={msg} isLatest={i === messages.length - 1}
+                  onTryTechnique={handleTryTechnique} />
           )}
           {loading && <TypingIndicator />}
-
-          {/* Quick suggestions */}
           {messages.length === 1 && !loading && (
             <div className="flex flex-wrap gap-1.5 mt-1 mb-3">
               {SUGGESTIONS.map(s => (
@@ -276,19 +285,15 @@ export default function AICoachModal({ onClose }: AICoachModalProps) {
           <div ref={bottomRef} />
         </div>
 
-        {/* Limit banner */}
         {limitData?.reached && (
-          <div className="px-4">
-            <LimitBanner isAuthenticated={limitData.isAuthenticated} hoursLeft={limitData.hoursLeft} />
-          </div>
+          <div className="px-4"><LimitBanner isAuthenticated={limitData.isAuthenticated} hoursLeft={limitData.hoursLeft} /></div>
         )}
 
-        {/* Input */}
         {!limitData?.reached && (
           <div className="px-4 pb-4 pt-2 border-t border-[#1E3358]/25">
             <div className="flex gap-2 items-center">
               <input ref={inputRef} value={input} onChange={e => setInput(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input); } }}
+                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input); }}}
                 placeholder="How are you feeling right now?"
                 maxLength={500} disabled={loading}
                 className="flex-1 bg-[#060C1A]/60 border border-[#1E3358]/50 rounded-2xl px-4 py-2.5 text-xs text-[#7AC4FF] placeholder-[#1A2D48] outline-none focus:border-[#2A5499] transition-colors disabled:opacity-50"
