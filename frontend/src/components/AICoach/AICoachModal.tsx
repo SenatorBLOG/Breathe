@@ -1,6 +1,6 @@
 // src/components/AICoach/AICoachModal.tsx
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { X, Send, Sparkles, ChevronRight, RotateCcw } from 'lucide-react';
 import api from '../../api';
 
@@ -29,6 +29,16 @@ function useTypewriter(text: string, speed = 16, enabled = true) {
   return { displayed, done };
 }
 
+// ─── Coach preset map ────────────────────────────────────────────────────────
+const COACH_PRESETS: Record<string, { name: string; inhale: number; hold: number; exhale: number; pause: number }> = {
+  'box':       { name: 'Box Breathing',      inhale: 4, hold: 4, exhale: 4, pause: 4 },
+  '4-7-8':     { name: '4-7-8 Breathing',    inhale: 4, hold: 7, exhale: 8, pause: 1 },
+  'wim-hof':   { name: 'Wim Hof Method',     inhale: 2, hold: 1, exhale: 2, pause: 1 },
+  'coherent':  { name: 'Coherent Breathing', inhale: 4, hold: 2, exhale: 6, pause: 2 },
+  'belly':     { name: 'Belly Breathing',    inhale: 4, hold: 0, exhale: 6, pause: 2 },
+  'alternate': { name: 'Alternate Nostril',  inhale: 4, hold: 4, exhale: 4, pause: 2 },
+};
+
 // ─── Typing dots ──────────────────────────────────────────────────────────────
 function TypingIndicator() {
   return (
@@ -45,6 +55,30 @@ function TypingIndicator() {
         ))}
       </div>
     </div>
+  );
+}
+
+// ─── Technique CTA button ────────────────────────────────────────────────────
+function TechniqueButton({ technique }: { technique: { key: string; label: string } }) {
+  const navigate = useNavigate();
+  const preset   = COACH_PRESETS[technique.key];
+
+  const handleClick = () => {
+    navigate('/breathing', {
+      state: {
+        coachPreset:     preset ? { inhale: preset.inhale, hold: preset.hold, exhale: preset.exhale, pause: preset.pause } : undefined,
+        coachPresetName: preset?.name ?? technique.label,
+      }
+    });
+  };
+
+  return (
+    <button onClick={handleClick}
+      className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-white font-medium self-start transition-all hover:scale-105 hover:shadow-[0_0_16px_rgba(74,158,255,0.4)] active:scale-95"
+      style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+      <span>✦ Try {technique.label}</span>
+      <ChevronRight size={11} />
+    </button>
   );
 }
 
@@ -65,11 +99,7 @@ function CoachBubble({ message, isLatest }: { message: Message; isLatest: boolea
           {isLatest && !done && <span className="inline-block w-0.5 h-4 bg-[#4A9EFF] ml-0.5 align-middle animate-pulse" />}
         </div>
         {done && message.technique && (
-          <Link to="/breathing"
-            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-white font-medium self-start transition-all hover:scale-105 hover:shadow-[0_0_16px_rgba(74,158,255,0.4)]"
-            style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
-            Try {message.technique.label} <ChevronRight size={11} />
-          </Link>
+          <TechniqueButton technique={message.technique} />
         )}
       </div>
     </div>

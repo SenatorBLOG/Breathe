@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import Footer from "../components/Footer";
 import { SessionFeedbackModal } from "../components/SessionFeedbackModal";
 import { Flame, Wind, Timer, Zap } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 // ─── How many full cycles before the feedback modal fires ────────────────────
 const FEEDBACK_AFTER_CYCLES = 3;
@@ -137,7 +138,16 @@ function PresetPill({ name, pattern, onApply, current }: {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export default function BreathingPage() {
   const [isActive, setIsActive]           = useState(false);
-  const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>({ inhale: 4, hold: 2, exhale: 5, pause: 3 });
+  const location = useLocation();
+  const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>(() => {
+    // Auto-apply preset from AI Coach navigation
+    const state = location.state as { coachPreset?: PhaseDurations } | null;
+    return state?.coachPreset ?? { inhale: 4, hold: 2, exhale: 5, pause: 3 };
+  });
+  const [coachPresetName, setCoachPresetName] = useState<string | null>(() => {
+    const state = location.state as { coachPresetName?: string } | null;
+    return state?.coachPresetName ?? null;
+  });
   const [cycles, setCycles]               = useState(0);
   const [currentDuration, setCurrentDuration] = useState(0);
   const [totalStats, setTotalStats]       = useState({ totalSessions: 0, totalMinutes: 0, streak: 0 });
@@ -247,12 +257,14 @@ export default function BreathingPage() {
     wasActiveRef.current = isActive;
   }, [isActive]);
 
-  const presets: { name: string; pattern: PhaseDurations }[] = [
-    { name: "Box",      pattern: { inhale: 4, hold: 4, exhale: 4, pause: 4 } },
-    { name: "4-7-8",    pattern: { inhale: 4, hold: 7, exhale: 8, pause: 1 } },
-    { name: "Calm",     pattern: { inhale: 4, hold: 2, exhale: 6, pause: 2 } },
-    { name: "Energize", pattern: { inhale: 6, hold: 0, exhale: 2, pause: 1 } },
-    { name: "Wim Hof",  pattern: { inhale: 2, hold: 1, exhale: 2, pause: 1 } },
+  const presets: { name: string; pattern: PhaseDurations; coachKey?: string }[] = [
+    { name: "Box",       pattern: { inhale: 4, hold: 4, exhale: 4, pause: 4 }, coachKey: "box" },
+    { name: "4-7-8",     pattern: { inhale: 4, hold: 7, exhale: 8, pause: 1 }, coachKey: "4-7-8" },
+    { name: "Calm",      pattern: { inhale: 4, hold: 2, exhale: 6, pause: 2 }, coachKey: "coherent" },
+    { name: "Energize",  pattern: { inhale: 6, hold: 0, exhale: 2, pause: 1 }, coachKey: "wim-hof" },
+    { name: "Wim Hof",   pattern: { inhale: 2, hold: 1, exhale: 2, pause: 1 }, coachKey: "wim-hof" },
+    { name: "Belly",     pattern: { inhale: 4, hold: 0, exhale: 6, pause: 2 }, coachKey: "belly" },
+    { name: "Alternate", pattern: { inhale: 4, hold: 4, exhale: 4, pause: 2 }, coachKey: "alternate" },
   ];
 
   return (
