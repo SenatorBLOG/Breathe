@@ -3,6 +3,7 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import AICoachButton from '../components/AICoach/AICoachButton';
+import NewsletterWidget from '../components/NewsletterWidget';
 import SoulOrb from '../components/AICoach/SoulOrb';
 
 // ─── Floating particle for hero ──────────────────────────────────────────────
@@ -346,7 +347,7 @@ export default function HomePage() {
                       <span className="text-[#3D6080] text-xs w-4 text-right font-mono">{item.rank}</span>
                       <div className="flex-1 min-w-0">
                         <p className="text-[#8ABADD] text-xs truncate group-hover:text-white transition-colors">{item.title}</p>
-                        <p className="text-[#3D6080] text-[10px]">{item.views}</p>
+                        <p className="text-[#2A4060] text-[10px]">{item.views}</p>
                       </div>
                     </Link>
                   ))}
@@ -379,20 +380,7 @@ export default function HomePage() {
               </div>
 
               {/* Newsletter mini */}
-              <div className="bg-[#0B1628]/70 border border-[#1E3358]/50 rounded-2xl p-4 flex flex-col gap-3">
-                <h3 className="text-xs uppercase tracking-widest text-[#3D6080]">Weekly Calm</h3>
-                <p className="text-[#4A7AAA] text-xs leading-relaxed">Get one mindfulness tip delivered every Sunday.</p>
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    placeholder="your@email.com"
-                    className="flex-1 min-w-0 bg-[#060C1A] border border-[#1E3358]/60 rounded-lg px-3 py-2 text-xs text-[#7AADCC] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
-                  />
-                  <button className="px-3 py-2 bg-[#1A5FCC] rounded-lg text-xs text-white hover:bg-[#2266D4] transition-colors flex-shrink-0">
-                    →
-                  </button>
-                </div>
-              </div>
+              <NewsletterWidget />
             </div>
           </div>
         </section>
