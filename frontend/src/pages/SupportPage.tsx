@@ -28,7 +28,7 @@ function QuickCard({ icon, title, desc, to, label }: {
       </div>
       <div className="flex-1">
         <p className="text-[#B8D9FF] text-sm font-medium group-hover:text-white transition-colors">{title}</p>
-        <p className="text-[#3D6080] text-xs mt-0.5 leading-relaxed">{desc}</p>
+        <p className="text-[#4A7AAA] text-xs mt-0.5 leading-relaxed">{desc}</p>
       </div>
       <span className="text-[10px] text-[#4A9EFF] group-hover:underline">{label} →</span>
     </Link>
@@ -90,13 +90,13 @@ export default function SupportPage() {
 
         {/* ── Hero ── */}
         <header className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-8 pb-6 text-center flex flex-col items-center gap-3">
-          <span className="text-[10px] tracking-[0.3em] uppercase text-[#3D6080] border border-[#1E3358]/40 px-4 py-1.5 rounded-full">
+          <span className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] border border-[#1E3358]/40 px-4 py-1.5 rounded-full">
             Support
           </span>
           <h1 className="text-2xl sm:text-4xl font-light text-[#B8D9FF] tracking-wide">
             We're here to help
           </h1>
-          <p className="text-[#3D6080] text-sm max-w-sm leading-relaxed">
+          <p className="text-[#4A7AAA] text-sm max-w-sm leading-relaxed">
             Send us a message and we'll get back to you within 24 hours.
           </p>
         </header>
@@ -115,7 +115,7 @@ export default function SupportPage() {
                   </div>
                   <div>
                     <p className="text-[#B8D9FF] text-lg font-medium">Message sent!</p>
-                    <p className="text-[#3D6080] text-sm mt-1 leading-relaxed">
+                    <p className="text-[#4A7AAA] text-sm mt-1 leading-relaxed">
                       Thanks {name.split(' ')[0]}. We'll reply to <span className="text-[#4A9EFF]">{email}</span> within 24 hours.
                     </p>
                   </div>
@@ -140,14 +140,14 @@ export default function SupportPage() {
 
                     {/* Category */}
                     <div className="flex flex-col gap-2">
-                      <label className="text-[10px] uppercase tracking-widest text-[#3D6080]">Topic</label>
+                      <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Topic</label>
                       <div className="flex gap-2 flex-wrap">
                         {CATEGORIES.map(c => (
                           <button key={c.value} onClick={() => setCategory(c.value)}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs border transition-all ${
                               category === c.value
                                 ? 'bg-[#0D1B33] border-[#2A5499]/60 text-[#7AC4FF]'
-                                : 'border-[#1E3358]/35 text-[#3D6080] hover:border-[#1E3358]/60 hover:text-[#5A8FB8]'
+                                : 'border-[#1E3358]/35 text-[#4A7AAA] hover:border-[#1E3358]/60 hover:text-[#5A8FB8]'
                             }`}>
                             <span>{c.icon}</span> {c.label}
                           </button>
@@ -158,26 +158,26 @@ export default function SupportPage() {
                     {/* Name + Email */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] uppercase tracking-widest text-[#3D6080]">Your name</label>
+                        <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Your name</label>
                         <input value={name} onChange={e => setName(e.target.value)}
                           placeholder="Alex"
-                          className="bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-2.5 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors" />
+                          className="bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-2.5 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors" />
                       </div>
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] uppercase tracking-widest text-[#3D6080]">Email address</label>
+                        <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Email address</label>
                         <input value={email} onChange={e => setEmail(e.target.value)}
                           type="email" placeholder="you@email.com"
-                          className="bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-2.5 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors" />
+                          className="bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-2.5 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors" />
                       </div>
                     </div>
 
                     {/* Message */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] uppercase tracking-widest text-[#3D6080]">Message</label>
+                      <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Message</label>
                       <textarea value={message} onChange={e => setMessage(e.target.value)}
                         rows={5} maxLength={1000}
                         placeholder="Describe your issue or question in detail…"
-                        className="bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors resize-none leading-relaxed" />
+                        className="bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors resize-none leading-relaxed" />
                     </div>
 
                     {/* Error */}
@@ -187,7 +187,7 @@ export default function SupportPage() {
 
                     {/* Submit */}
                     <div className="flex items-center justify-between">
-                      <span className="text-[9px] text-[#1E3358] tabular-nums">{message.length}/1000</span>
+                      <span className="text-[9px] text-[#3D6080] tabular-nums">{message.length}/1000</span>
                       <button onClick={submit} disabled={sending || !valid}
                         className="flex items-center gap-2 px-7 py-2.5 rounded-xl text-sm text-white font-medium tracking-wide transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 disabled:opacity-35"
                         style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>

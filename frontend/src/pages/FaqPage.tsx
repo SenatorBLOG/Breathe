@@ -149,7 +149,7 @@ function AccordionItem({ item, index }: { item: FAQItem; index: number }) {
         onClick={() => setOpen(v => !v)}
       >
         <div className="flex items-center gap-3">
-          <span className="text-[#1E3358] text-[10px] font-mono tabular-nums flex-shrink-0">
+          <span className="text-[#3D6080] text-[10px] font-mono tabular-nums flex-shrink-0">
             {String(index + 1).padStart(2, '0')}
           </span>
           <span className={`text-sm leading-snug transition-colors ${open ? 'text-[#B8D9FF]' : 'text-[#7AADCC]'}`}>
@@ -218,28 +218,28 @@ export default function FAQPage() {
 
         {/* ── Hero ── */}
         <header className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-8 pb-4 text-center flex flex-col items-center gap-4">
-          <span className="text-[10px] tracking-[0.3em] uppercase text-[#3D6080] border border-[#1E3358]/40 px-4 py-1.5 rounded-full">
+          <span className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] border border-[#1E3358]/40 px-4 py-1.5 rounded-full">
             Help & FAQ
           </span>
           <h1 className="text-2xl sm:text-4xl font-light text-[#B8D9FF] tracking-wide">
             How can we help?
           </h1>
-          <p className="text-[#3D6080] text-sm max-w-md leading-relaxed">
+          <p className="text-[#4A7AAA] text-sm max-w-md leading-relaxed">
             Everything you need to know about breathing techniques, the app, and your account.
           </p>
 
           {/* Search */}
           <div className="relative w-full max-w-md mt-2">
-            <Search size={13} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#3D6080]" />
+            <Search size={13} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A7AAA]" />
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search questions…"
-              className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-2xl pl-10 pr-4 py-3 text-sm text-[#7AC4FF] placeholder-[#1E3358] outline-none focus:border-[#2A5499] transition-colors"
+              className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-2xl pl-10 pr-4 py-3 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
             />
             {search && (
               <button onClick={() => setSearch('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#3D6080] hover:text-[#4A9EFF] transition-colors text-xs">
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#4A7AAA] hover:text-[#4A9EFF] transition-colors text-xs">
                 ✕
               </button>
             )}
@@ -252,16 +252,16 @@ export default function FAQPage() {
           {filtered ? (
             /* ── Search results ── */
             <div className="flex flex-col gap-3">
-              <p className="text-[#3D6080] text-xs mb-1">{filtered.length} result{filtered.length !== 1 ? 's' : ''} for "{search}"</p>
+              <p className="text-[#4A7AAA] text-xs mb-1">{filtered.length} result{filtered.length !== 1 ? 's' : ''} for "{search}"</p>
               {filtered.length === 0 ? (
                 <div className="text-center py-16">
                   <p className="text-4xl mb-4 opacity-30">🔍</p>
-                  <p className="text-[#3D6080] text-sm">No results found.</p>
-                  <p className="text-[#1E3358] text-xs mt-1">Try a different word, or <button onClick={() => setSearch('')} className="text-[#4A9EFF] hover:underline">browse categories</button>.</p>
+                  <p className="text-[#4A7AAA] text-sm">No results found.</p>
+                  <p className="text-[#3D6080] text-xs mt-1">Try a different word, or <button onClick={() => setSearch('')} className="text-[#4A9EFF] hover:underline">browse categories</button>.</p>
                 </div>
               ) : filtered.map((item, i) => (
                 <div key={i}>
-                  <p className="text-[9px] uppercase tracking-widest text-[#1E3358] mb-1.5 pl-1">
+                  <p className="text-[9px] uppercase tracking-widest text-[#3D6080] mb-1.5 pl-1">
                     {item.catIcon} {item.catLabel}
                   </p>
                   <AccordionItem item={item} index={i} />
@@ -281,7 +281,7 @@ export default function FAQPage() {
                     className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all text-xs ${
                       activeCategory === cat.id
                         ? 'bg-[#0D1B33] border border-[#2A5499]/50 text-[#7AC4FF]'
-                        : 'text-[#3D6080] hover:text-[#5A8FB8] border border-transparent'
+                        : 'text-[#4A7AAA] hover:text-[#5A8FB8] border border-transparent'
                     }`}
                   >
                     <span className={activeCategory === cat.id ? '' : 'opacity-50'}>{cat.icon}</span>
@@ -302,7 +302,7 @@ export default function FAQPage() {
                     className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] border transition-all ${
                       activeCategory === cat.id
                         ? 'bg-[#0D1B33] border-[#2A5499]/50 text-[#7AC4FF]'
-                        : 'border-[#1E3358]/40 text-[#3D6080]'
+                        : 'border-[#1E3358]/40 text-[#4A7AAA]'
                     }`}
                   >
                     {cat.icon} {cat.label}
@@ -315,7 +315,7 @@ export default function FAQPage() {
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xl">{currentCat.icon}</span>
                   <h2 className="text-base font-medium text-[#B8D9FF]">{currentCat.label}</h2>
-                  <span className="text-[9px] text-[#1E3358] bg-[#0A1525] px-2 py-0.5 rounded-full border border-[#1E3358]/40">
+                  <span className="text-[9px] text-[#3D6080] bg-[#0A1525] px-2 py-0.5 rounded-full border border-[#1E3358]/40">
                     {currentCat.items.length} questions
                   </span>
                 </div>
@@ -328,7 +328,7 @@ export default function FAQPage() {
                 <div className="mt-4 rounded-2xl p-5 border border-[#1E3358]/40 bg-[#0B1628]/60 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
                   <div className="flex-1">
                     <p className="text-[#7AADCC] text-sm font-medium">Still have questions?</p>
-                    <p className="text-[#3D6080] text-xs mt-0.5 leading-relaxed">
+                    <p className="text-[#4A7AAA] text-xs mt-0.5 leading-relaxed">
                       Can't find what you're looking for? We're happy to help.
                     </p>
                   </div>

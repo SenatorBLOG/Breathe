@@ -34,7 +34,7 @@ const StatCard = ({ value, subValue, label, className = '', children, accent = '
         {subValue != null && (
           <div className="mt-1 text-[10px] font-medium">{subValue}</div>
         )}
-        <p className="mt-1.5 text-[#3D6080] text-[10px] uppercase tracking-widest leading-tight">{label}</p>
+        <p className="mt-1.5 text-[#2A4060] text-[10px] uppercase tracking-widest leading-tight">{label}</p>
       </div>
 
       {/* Chart / content slot */}
