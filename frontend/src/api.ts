@@ -23,7 +23,8 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       const currentPath = window.location.pathname;
       // Don't redirect if already on auth pages
-      if (!['/login', '/signup', '/'].includes(currentPath)) {
+      const noRedirectPaths = ['/login', '/signup', '/', '/breathing', '/community', '/faq', '/support', '/home-page', '/music-library'];
+      if (!noRedirectPaths.some(p => currentPath.startsWith(p))) {
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
         // Soft redirect — don't use navigate() here since we're outside React
