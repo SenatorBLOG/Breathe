@@ -39,7 +39,7 @@ function SideItem({
           : "text-[#4A7AAA] hover:text-[#B8D9FF] hover:bg-[#0B1628]/60 border border-transparent"
       }`}
     >
-      <span className={`flex-shrink-0 transition-colors ${active ? "text-[#4A9EFF]" : "text-[#2A4060] group-hover:text-[#4A9EFF]"}`}>
+      <span className={`flex-shrink-0 transition-colors ${active ? "text-[#4A9EFF]" : "text-[#3D6080] group-hover:text-[#4A9EFF]"}`}>
         {icon}
       </span>
       <span className="flex-1 text-left">{label}</span>
@@ -122,7 +122,7 @@ function TrackCard({
         <p className={`text-xs font-medium truncate leading-snug transition-colors ${isCurrent ? "text-[#B8D9FF]" : "text-[#6A9DC0] group-hover:text-[#9CCBFF]"}`}>
           {track.name}
         </p>
-        <p className="text-[10px] text-[#2A4060] truncate">{track.artist_name}</p>
+        <p className="text-[10px] text-[#3D6080] truncate">{track.artist_name}</p>
       </div>
 
       {/* Tags */}
@@ -233,13 +233,13 @@ export function MusicLibrary() {
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-6 pb-3">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <p className="text-[10px] tracking-[0.3em] uppercase text-[#2A4060] mb-1">Breathe · Sounds</p>
+              <p className="text-[10px] tracking-[0.3em] uppercase text-[#3D6080] mb-1">Breathe · Sounds</p>
               <h1 className="text-2xl sm:text-3xl font-light text-[#B8D9FF] tracking-wide">Music Library</h1>
             </div>
 
             {/* Search */}
             <div className="relative w-full sm:w-72">
-              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2A4060] pointer-events-none" />
+              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#3D6080] pointer-events-none" />
               <input
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
@@ -249,7 +249,7 @@ export function MusicLibrary() {
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2A4060] hover:text-[#5A8FB8] transition-colors text-xs"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#3D6080] hover:text-[#5A8FB8] transition-colors text-xs"
                 >
                   ✕
                 </button>
@@ -300,7 +300,7 @@ export function MusicLibrary() {
                 <div className="rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50 p-3 flex flex-col gap-2.5">
                   <div className="flex items-center gap-1.5">
                     <MiniWave playing={isPlaying} />
-                    <p className="text-[9px] tracking-[0.2em] uppercase text-[#2A4060]">Now Playing</p>
+                    <p className="text-[9px] tracking-[0.2em] uppercase text-[#3D6080]">Now Playing</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 bg-[#0D1B33]">
@@ -311,7 +311,7 @@ export function MusicLibrary() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-[#8ABADD] text-[10px] truncate font-medium leading-snug">{currentTrack.name}</p>
-                      <p className="text-[#2A4060] text-[9px] truncate">{currentTrack.artist_name}</p>
+                      <p className="text-[#3D6080] text-[9px] truncate">{currentTrack.artist_name}</p>
                     </div>
                   </div>
                   <button
@@ -347,7 +347,7 @@ export function MusicLibrary() {
 
               {/* Status row */}
               <div className="flex items-center justify-between">
-                <span className="text-[10px] text-[#2A4060] tracking-wide">
+                <span className="text-[10px] text-[#3D6080] tracking-wide">
                   {isLoading
                     ? "Loading…"
                     : `${filteredTracks.length} track${filteredTracks.length !== 1 ? "s" : ""}${selectedGenre !== "all" ? ` · ${GENRE_LABELS[selectedGenre]}` : ""}`
@@ -356,7 +356,7 @@ export function MusicLibrary() {
                 {!isLoading && (
                   <button
                     onClick={() => loadTracks(selectedGenre === "all" ? "meditation" : selectedGenre)}
-                    className="flex items-center gap-1.5 text-[10px] text-[#2A4060] hover:text-[#5A8FB8] transition-colors lg:hidden"
+                    className="flex items-center gap-1.5 text-[10px] text-[#3D6080] hover:text-[#5A8FB8] transition-colors lg:hidden"
                   >
                     <RefreshCw size={10} /> Refresh
                   </button>
@@ -379,7 +379,7 @@ export function MusicLibrary() {
                 ) : filteredTracks.length === 0 ? (
                   <div className="flex flex-col items-center gap-3 py-20">
                     <Music2 size={28} className="text-[#1E3358]" />
-                    <p className="text-[#2A4060] text-sm">No tracks found</p>
+                    <p className="text-[#3D6080] text-sm">No tracks found</p>
                     {searchQuery && (
                       <button onClick={() => setSearchQuery("")} className="text-[#4A9EFF] text-xs hover:underline">
                         Clear search

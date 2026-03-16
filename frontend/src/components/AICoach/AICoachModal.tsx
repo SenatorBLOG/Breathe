@@ -109,7 +109,7 @@ function LimitBanner({ isAuthenticated, hoursLeft }: { isAuthenticated: boolean;
       <p className="text-[#7AC4FF] text-sm font-medium">
         {isAuthenticated ? "You've used today's messages" : "3 free messages used"}
       </p>
-      <p className="text-[#2A4060] text-xs leading-relaxed">
+      <p className="text-[#3D6080] text-xs leading-relaxed">
         {isAuthenticated
           ? `Come back in ${hoursLeft ?? 24}h for more coaching.`
           : 'Create a free account for 10 messages per day.'}
@@ -241,7 +241,7 @@ export default function AICoachModal({ onClose }: AICoachModalProps) {
             </div>
             <div>
               <p className="text-[#B8D9FF] text-xs font-medium leading-none">AI Breathing Coach</p>
-              <p className="text-[#2A4060] text-[9px] mt-0.5 flex items-center gap-1">
+              <p className="text-[#3D6080] text-[9px] mt-0.5 flex items-center gap-1">
                 <span className="w-1 h-1 rounded-full bg-[#4AE8A0] inline-block" />
                 Online · Gemini
               </p>
@@ -256,7 +256,7 @@ export default function AICoachModal({ onClose }: AICoachModalProps) {
             <button onClick={reset} className="text-[#1E3358] hover:text-[#4A9EFF] transition-colors p-1">
               <RotateCcw size={11} />
             </button>
-            <button onClick={onClose} className="text-[#2A4060] hover:text-[#B8D9FF] transition-colors p-1">
+            <button onClick={onClose} className="text-[#3D6080] hover:text-[#B8D9FF] transition-colors p-1">
               <X size={14} />
             </button>
           </div>

@@ -57,7 +57,7 @@ function ViewToggle({ value, onChange }: { value: string; onChange: (v: string) 
           className={`px-3 py-1 rounded-lg text-[10px] uppercase tracking-widest border transition-all ${
             value === v
               ? 'bg-[#0D1B33] border-[#2A5499]/60 text-[#7AC4FF]'
-              : 'border-[#1E3358]/35 text-[#2A4060] hover:border-[#1E3358]/60'
+              : 'border-[#1E3358]/35 text-[#3D6080] hover:border-[#1E3358]/60'
           }`}
         >
           {v}
@@ -154,7 +154,7 @@ const AnnualProgressChart = () => {
         <ViewToggle value={view} onChange={setView} />
         <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
           <span className="text-3xl opacity-30">🌊</span>
-          <p className="text-[#2A4060] text-xs">No data yet</p>
+          <p className="text-[#3D6080] text-xs">No data yet</p>
         </div>
       </div>
     );
@@ -168,11 +168,11 @@ const AnnualProgressChart = () => {
           {/* Legend */}
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-1 rounded-full inline-block bg-[#1A5FCC]" />
-            <span className="text-[9px] text-[#2A4060] uppercase tracking-wide">Minutes</span>
+            <span className="text-[9px] text-[#3D6080] uppercase tracking-wide">Minutes</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-px inline-block" style={{ background: 'linear-gradient(90deg,#4AE8A0,#4A9EFF)', height: 2, borderRadius: 2 }} />
-            <span className="text-[9px] text-[#2A4060] uppercase tracking-wide">Sessions</span>
+            <span className="text-[9px] text-[#3D6080] uppercase tracking-wide">Sessions</span>
           </div>
         </div>
         <ViewToggle value={view} onChange={setView} />

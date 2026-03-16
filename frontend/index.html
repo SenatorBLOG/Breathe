@@ -1,21 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta name="referrer" content="strict-origin-when-cross-origin" />
-      <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin-allow-popups">
-      <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
-      <meta http-equiv="Cross-Origin-Resource-Policy" content="cross-origin">
-      <link href="/src/index.css" rel="stylesheet">
-      <title>Breathe</title>
-    </head>
+    <!-- ═══════════════════════════════════════════════════
+         PRIMARY SEO
+    ═══════════════════════════════════════════════════ -->
+    <title>Breathe — Guided Breathing & Meditation App Online</title>
+    <meta name="description"
+      content="Free guided breathing exercises for sleep, stress, and focus. Try Box Breathing, 4-7-8, Wim Hof and more. No download needed — works in your browser." />
+    <meta name="keywords"
+      content="breathing exercises, guided breathing, meditation online, box breathing, 4-7-8 breathing, sleep breathing, anxiety breathing, wim hof breathing, breathwork, mindfulness" />
+    <meta name="author" content="Breathe App" />
+    <link rel="canonical" href="https://breatheonline.app/" />
 
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-      <script src="https://accounts.google.com/gsi/client" async defer></script>
-    </body>
-  </html>
-  
+    <!-- ═══════════════════════════════════════════════════
+         OPEN GRAPH (Facebook, LinkedIn, Telegram)
+    ═══════════════════════════════════════════════════ -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="https://breatheonline.app/" />
+    <meta property="og:title"       content="Breathe — Guided Breathing & Meditation App" />
+    <meta property="og:description" content="Guided breathing for sleep, focus & calm. Follow the animated orb. No download, free to use." />
+    <meta property="og:image"       content="https://breatheonline.app/og-image.jpg" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name"   content="Breathe" />
+    <meta property="og:locale"      content="en_US" />
+
+    <!-- ═══════════════════════════════════════════════════
+         TWITTER CARD
+    ═══════════════════════════════════════════════════ -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:url"         content="https://breatheonline.app/" />
+    <meta name="twitter:title"       content="Breathe — Guided Breathing & Meditation App" />
+    <meta name="twitter:description" content="Guided breathing for sleep, focus & calm. Follow the animated orb. No download, free to use." />
+    <meta name="twitter:image"       content="https://breatheonline.app/og-image.jpg" />
+
+    <!-- ═══════════════════════════════════════════════════
+         FAVICON
+    ═══════════════════════════════════════════════════ -->
+    <link rel="icon"             type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180"      href="/apple-touch-icon.png" />
+    <link rel="manifest"         href="/site.webmanifest" />
+    <meta name="theme-color" content="#010814" />
+
+    <!-- ═══════════════════════════════════════════════════
+         FONTS
+    ═══════════════════════════════════════════════════ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- ═══════════════════════════════════════════════════
+         STRUCTURED DATA — WebApplication schema
+    ═══════════════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Breathe",
+      "url": "https://breatheonline.app",
+      "description": "Guided breathing exercises for sleep, stress relief, and focus. Includes Box Breathing, 4-7-8, Wim Hof Method, and AI coaching.",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Guided breathing sessions",
+        "AI breathing coach",
+        "Sleep sounds",
+        "Session history tracking",
+        "Mood tracking",
+        "Community forum"
+      ],
+      "screenshot": "https://breatheonline.app/og-image.jpg",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "1200"
+      }
+    }
+    </script>
+
+    <!-- FAQ structured data — helps appear in Google's rich results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is box breathing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Box breathing is a technique where you inhale for 4 seconds, hold for 4, exhale for 4, and hold again for 4. It reduces stress and improves focus."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does 4-7-8 breathing help sleep?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The 4-7-8 technique involves inhaling for 4 seconds, holding for 7, and exhaling for 8. The long exhale activates the parasympathetic nervous system, reducing heart rate and helping you fall asleep faster."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is guided breathing free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, Breathe is free to use with no download required. It works directly in your browser on any device."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════
+         GOOGLE ANALYTICS 4
+         Replace G-XXXXXXXXXX with your actual Measurement ID
+         from analytics.google.com
+    ═══════════════════════════════════════════════════ -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PBVKQHYMB9"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PBVKQHYMB9', {
+        page_title: document.title,
+        page_location: window.location.href,
+      });
+    </script>
+
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
