@@ -154,4 +154,21 @@ router.get('/status', optionalAuth, async (req, res) => {
   }
 });
 
+// ─── GET /api/coach/models — list available models (temp debug) ───────────────
+router.get('/models', async (req, res) => {
+  try {
+    const apiKey = process.env.GEMINI_API_KEY;
+    const r = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`
+    );
+    const data = await r.json();
+    const names = (data.models || [])
+      .filter(m => m.supportedGenerationMethods?.includes('generateContent'))
+      .map(m => m.name);
+    res.json({ available: names });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
