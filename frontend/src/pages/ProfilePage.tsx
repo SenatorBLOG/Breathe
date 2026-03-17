@@ -95,7 +95,7 @@ function StatPill({ icon, label, value, color }: { icon: React.ReactNode; label:
 }
 
 // ─── Integration card ─────────────────────────────────────────────────────────
-function IntegrationCard({ status, onConnect, onDisconnect, onSync, syncing }: {
+function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, syncing }: {
   status?: IntegrationStatus;
   provider: 'fitbit' | 'google_fit';
   onConnect: () => void;
@@ -103,7 +103,7 @@ function IntegrationCard({ status, onConnect, onDisconnect, onSync, syncing }: {
   onSync: () => void;
   syncing: boolean;
 }) {
-  const provider = status?.provider ?? 'fitbit';
+  // provider comes from props, not status
   const meta     = PROVIDER_META[provider];
   const sleep    = status?.data?.sleep?.slice(-7) ?? [];
   const hrv      = status?.data?.hrv?.slice(-7)   ?? [];
@@ -289,7 +289,12 @@ export default function ProfilePage() {
 
   useEffect(() => { fetchStatus(); }, []);
 
-  const connect    = (provider: string) => { window.location.href = `/api/integrations/${provider}/connect`; };
+  const BACKEND = import.meta.env.VITE_API_BASE?.replace('/api', '') ?? 'https://breathe-production-6cce.up.railway.app';
+  const connect = (provider: string) => {
+    const token = localStorage.getItem('token') ?? '';
+    // Pass token as query param — backend will use it to identify user
+    window.location.href = `${BACKEND}/api/integrations/${provider}/connect?token=${token}`;
+  };
   const disconnect = async (provider: string) => {
     try {
       await api.delete(`/integrations/${provider}`);

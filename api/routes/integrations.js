@@ -60,16 +60,26 @@ async function ensureToken(integration) {
 //  FITBIT
 // ════════════════════════════════════════════════════════
 
-// GET /api/integrations/fitbit/connect — redirect to Fitbit OAuth
-router.get('/fitbit/connect', auth, (req, res) => {
-  const params = new URLSearchParams({
-    client_id:     FITBIT_CLIENT_ID,
-    response_type: 'code',
-    scope:         'sleep heartrate activity',
-    redirect_uri:  `${BASE_URL}/api/integrations/fitbit/callback`,
-    state:         req.user._id.toString(),
-  });
-  res.redirect(`https://www.fitbit.com/oauth2/authorize?${params}`);
+// GET /api/integrations/fitbit/connect
+router.get('/fitbit/connect', async (req, res) => {
+  try {
+    const jwt = require('jsonwebtoken');
+    const token = req.query.token;
+    if (!token) return res.redirect(`${BASE_URL}/profile?integration=fitbit&status=error`);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId  = decoded.userId ?? decoded.id ?? decoded._id;
+    const params = new URLSearchParams({
+      client_id:     FITBIT_CLIENT_ID,
+      response_type: 'code',
+      scope:         'sleep heartrate activity',
+      redirect_uri:  `${BASE_URL}/api/integrations/fitbit/callback`,
+      state:         userId.toString(),
+    });
+    res.redirect(`https://www.fitbit.com/oauth2/authorize?${params}`);
+  } catch (err) {
+    console.error('Fitbit connect error:', err.message);
+    res.redirect(`${BASE_URL}/profile?integration=fitbit&status=error`);
+  }
 });
 
 // GET /api/integrations/fitbit/callback
@@ -114,17 +124,27 @@ router.get('/fitbit/callback', async (req, res) => {
 // ════════════════════════════════════════════════════════
 
 // GET /api/integrations/google-fit/connect
-router.get('/google-fit/connect', auth, (req, res) => {
-  const params = new URLSearchParams({
-    client_id:     GOOGLE_FIT_CLIENT_ID,
-    redirect_uri:  `${BASE_URL}/api/integrations/google-fit/callback`,
-    response_type: 'code',
-    scope:         'https://www.googleapis.com/auth/fitness.sleep.read https://www.googleapis.com/auth/fitness.heart_rate.read',
-    access_type:   'offline',
-    prompt:        'consent',
-    state:         req.user._id.toString(),
-  });
-  res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params}`);
+router.get('/google-fit/connect', async (req, res) => {
+  try {
+    const jwt = require('jsonwebtoken');
+    const token = req.query.token;
+    if (!token) return res.redirect(`${BASE_URL}/profile?integration=google_fit&status=error`);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId  = decoded.userId ?? decoded.id ?? decoded._id;
+    const params = new URLSearchParams({
+      client_id:     GOOGLE_FIT_CLIENT_ID,
+      redirect_uri:  `${BASE_URL}/api/integrations/google-fit/callback`,
+      response_type: 'code',
+      scope:         'https://www.googleapis.com/auth/fitness.sleep.read https://www.googleapis.com/auth/fitness.heart_rate.read',
+      access_type:   'offline',
+      prompt:        'consent',
+      state:         userId.toString(),
+    });
+    res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params}`);
+  } catch (err) {
+    console.error('Google Fit connect error:', err.message);
+    res.redirect(`${BASE_URL}/profile?integration=google_fit&status=error`);
+  }
 });
 
 // GET /api/integrations/google-fit/callback
