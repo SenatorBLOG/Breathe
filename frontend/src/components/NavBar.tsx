@@ -117,7 +117,7 @@ export default function NavBar() {
             ) : (
               <>
                 <button
-                  onClick={() => navigate('/statistics')}
+                  onClick={() => navigate('/profile')}
                   className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0D1B33] border border-[#1E3358]/60 hover:border-[#2A5499] transition-all duration-200 group"
                 >
                   <div className="w-5 h-5 rounded-full bg-gradient-to-br from-[#4A9EFF] to-[#1A5FCC] flex items-center justify-center text-[9px] text-white font-medium flex-shrink-0">
@@ -197,7 +197,7 @@ export default function NavBar() {
                 ) : (
                   <>
                     <button
-                      onClick={() => { navigate('/statistics'); setIsMenuOpen(false); }}
+                      onClick={() => { navigate('/profile'); setIsMenuOpen(false); }}
                       className="py-2.5 text-sm text-[#7AC4FF] border border-[#1E3358]/50 rounded-xl hover:border-[#2A5499] transition-colors"
                     >
                       {user?.name ?? 'Profile'}
