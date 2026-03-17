@@ -14,6 +14,7 @@ import BoxBreathingPage from './pages/techniques/BoxBreathingPage';
 import Breathing478Page from './pages/techniques/Breathing478Page';
 import WimHofPage from './pages/techniques/WimHofPage';
 import BreathingAnxietyPage from './pages/techniques/BreathingAnxietyPage';
+import ProfilePage from './pages/ProfilePage';
 import AICoachButton from './components/AICoach/AICoachButton';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -49,6 +50,7 @@ export default function App() {
               <Route path="/breathing/4-7-8"         element={<Breathing478Page />} />
               <Route path="/breathing/wim-hof"        element={<WimHofPage />} />
               <Route path="/breathing/anxiety"        element={<BreathingAnxietyPage />} />
+              <Route path="/profile"               element={<ProfilePage />} />
               <Route path="/music-library" element={<MusicLibrary />} />
               <Route path="*"              element={<HomePage />} />
             </Routes>
