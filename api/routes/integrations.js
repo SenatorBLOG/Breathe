@@ -361,4 +361,33 @@ function processGoogleFitData(fitData) {
   return { sleep, heartRate };
 }
 
+// ─── POST /api/integrations/apple-health ─────────────────────────────────────
+router.post('/apple-health', auth, async (req, res) => {
+  try {
+    const { sleep, hrv, heartRate } = req.body;
+    if (!sleep?.length && !hrv?.length) {
+      return res.status(400).json({ error: 'No health data provided' });
+    }
+
+    await Integration.findOneAndUpdate(
+      { userId: req.user._id, provider: 'apple_health' },
+      {
+        userId:       req.user._id,
+        provider:     'apple_health',
+        accessToken:  'file_import', // no OAuth for Apple
+        lastSyncAt:   new Date(),
+        'data.sleep':     sleep     ?? [],
+        'data.hrv':       hrv       ?? [],
+        'data.heartRate': heartRate ?? [],
+      },
+      { upsert: true, returnDocument: 'after' }
+    );
+
+    res.json({ ok: true, days: sleep?.length ?? 0 });
+  } catch (err) {
+    console.error('Apple Health import error:', err.message);
+    res.status(500).json({ error: 'Failed to save health data' });
+  }
+});
+
 module.exports = router;

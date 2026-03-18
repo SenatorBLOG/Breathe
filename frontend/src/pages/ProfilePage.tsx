@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import api from '../api';
 import { toast } from 'sonner';
 import { RefreshCw, Unlink, Moon, Heart, Activity, Zap, ChevronRight, Watch } from 'lucide-react';
+import AppleHealthImport from '../components/AppleHealthImport';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface SleepDay { date: string; duration: number; efficiency?: number; score?: number; deepMins?: number; remMins?: number; }
@@ -380,6 +381,7 @@ export default function ProfilePage() {
                   onSync={sync}
                   syncing={syncing}
                 />
+                <AppleHealthImport onImported={() => fetchStatus()} />
               </>
             )}
           </div>
