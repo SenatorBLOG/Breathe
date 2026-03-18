@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { ChevronDown, Search } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface FAQItem {
@@ -184,6 +185,7 @@ function AdSlot({ className = '' }: { className?: string }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function FAQPage() {
+  const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState('basics');
   const [search, setSearch] = useState('');
 
@@ -234,7 +236,7 @@ export default function FAQPage() {
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search questions…"
+              placeholder={t("faq.search")}
               className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-2xl pl-10 pr-4 py-3 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
             />
             {search && (
@@ -327,7 +329,7 @@ export default function FAQPage() {
                 {/* Bottom CTA */}
                 <div className="mt-4 rounded-2xl p-5 border border-[#1E3358]/40 bg-[#0B1628]/60 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
                   <div className="flex-1">
-                    <p className="text-[#7AADCC] text-sm font-medium">Still have questions?</p>
+                    <p className="text-[#7AADCC] text-sm font-medium">{t("faq.stillQuestions")}</p>
                     <p className="text-[#4A7AAA] text-xs mt-0.5 leading-relaxed">
                       Can't find what you're looking for? We're happy to help.
                     </p>
@@ -335,12 +337,12 @@ export default function FAQPage() {
                   <div className="flex gap-2 flex-shrink-0">
                     <Link to="/community"
                       className="px-4 py-2 rounded-xl text-xs text-[#4A9EFF] border border-[#1E3358]/50 hover:border-[#2A5499]/60 transition-all">
-                      Ask community
+                      {t("faq.askCommunity")}
                     </Link>
                     <Link to="/support"
                       className="px-4 py-2 rounded-xl text-xs text-white font-medium transition-all hover:shadow-[0_0_16px_rgba(58,130,247,0.35)]"
                       style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
-                      Contact us
+                      {t("faq.contactUs")}
                     </Link>
                   </div>
                 </div>

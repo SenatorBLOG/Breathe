@@ -3,6 +3,7 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import AICoachButton from '../components/AICoach/AICoachButton';
+import { useTranslation } from 'react-i18next';
 import NewsletterWidget from '../components/NewsletterWidget';
 import SoulOrb from '../components/AICoach/SoulOrb';
 
@@ -113,6 +114,7 @@ function QuoteBlock({ text, author }: { text: string; author: string }) {
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function HomePage() {
+  const { t } = useTranslation();
   const particles = Array.from({ length: 12 }, (_, i) => ({
     id: i,
     delay: Math.random() * 5,
@@ -182,7 +184,7 @@ export default function HomePage() {
         <section className="flex flex-col items-center justify-center text-center px-4 pt-16 pb-12 sm:pt-24 sm:pb-16 md:pt-32 md:pb-20 gap-8">
           {/* Eyebrow */}
           <span className="anim-fade-up anim-delay-1 text-[10px] sm:text-xs tracking-[0.35em] uppercase text-[#4A9EFF]/70 border border-[#4A9EFF]/20 px-4 py-1.5 rounded-full">
-            Your daily mindfulness companion
+            {t('hero.eyebrow')}
           </span>
 
           {/* Headline — ABOVE the orb */}
@@ -191,7 +193,7 @@ export default function HomePage() {
               Breathe Better
             </h1>
             <p className="text-base sm:text-xl md:text-2xl font-light text-[#5A8FB8] max-w-xl mx-auto leading-relaxed">
-              Meditation for sleep, focus, and inner quiet — guided by your breath.
+              {t('hero.subtitle')}
             </p>
           </div>
 
@@ -209,7 +211,7 @@ export default function HomePage() {
             >
               <span className="relative z-10 flex items-center gap-2">
                 <span className="text-xl">🌬</span>
-                Start Meditating
+                {t('hero.cta')}
               </span>
               <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
             </Link>
@@ -223,11 +225,11 @@ export default function HomePage() {
 
           {/* Stats strip */}
           <div className="anim-fade-up anim-delay-4 flex items-center gap-8 sm:gap-12 mt-2 border-t border-b border-[#1E3358]/40 py-4 px-8">
-            <StatCard value="50K+" label="Sessions" />
+            <StatCard value="50K+" label={t("hero.stats.sessions")} />
             <div className="w-px h-8 bg-[#1E3358]/60" />
-            <StatCard value="12" label="Techniques" />
+            <StatCard value="12" label={t("hero.stats.techniques")} />
             <div className="w-px h-8 bg-[#1E3358]/60" />
-            <StatCard value="4.9★" label="Rating" />
+            <StatCard value="4.9★" label={t("hero.stats.rating")} />
           </div>
         </section>
 
@@ -237,19 +239,19 @@ export default function HomePage() {
         <section className="px-4 sm:px-6 lg:px-8 py-10 max-w-6xl mx-auto w-full">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h2 className="text-lg sm:text-xl font-medium text-[#B8D9FF] tracking-wide">Popular Techniques</h2>
-              <p className="text-xs text-[#3D6080] mt-0.5">Pick a session and begin right now</p>
+              <h2 className="text-lg sm:text-xl font-medium text-[#B8D9FF] tracking-wide">{t('techniques.title')}</h2>
+              <p className="text-xs text-[#3D6080] mt-0.5">{t('techniques.subtitle')}</p>
             </div>
-            <Link to="/breathing" className="text-xs text-[#4A9EFF] hover:underline">View all →</Link>
+            <Link to="/breathing" className="text-xs text-[#4A9EFF] hover:underline">{t('techniques.viewAll')}</Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            <TechniquePill name="Box Breathing 4-4-4-4" time="5 min · Focus & calm" icon="⬜" />
-            <TechniquePill name="4-7-8 Sleep Breath" time="8 min · Wind down" icon="🌙" />
-            <TechniquePill name="Coherent Breathing" time="10 min · Heart rate" icon="💙" />
-            <TechniquePill name="Wim Hof Method" time="15 min · Energy burst" icon="🔥" />
-            <TechniquePill name="Belly Breathing" time="5 min · Beginners" icon="🌀" />
-            <TechniquePill name="Alternate Nostril" time="7 min · Balance" icon="☯️" />
+            <TechniquePill name={t("techniques.box")} time={t("techniques.boxDesc")} icon="⬜" />
+            <TechniquePill name={t("techniques.sleep478")} time={t("techniques.sleep478Desc")} icon="🌙" />
+            <TechniquePill name={t("techniques.coherent")} time={t("techniques.coherentDesc")} icon="💙" />
+            <TechniquePill name={t("techniques.wimhof")} time={t("techniques.wimhofDesc")} icon="🔥" />
+            <TechniquePill name={t("techniques.belly")} time={t("techniques.bellyDesc")} icon="🌀" />
+            <TechniquePill name={t("techniques.alternate")} time={t("techniques.alternateDesc")} icon="☯️" />
           </div>
         </section>
 

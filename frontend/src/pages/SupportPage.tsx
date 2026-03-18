@@ -5,6 +5,7 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import api from '../api';
 import { Send, Mail, MessageCircle, BookOpen, Users, CheckCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 // ─── Ad slot ──────────────────────────────────────────────────────────────────
 function AdSlot({ className = '' }: { className?: string }) {
@@ -48,6 +49,7 @@ const CATEGORIES: { value: Category; label: string; icon: string }[] = [
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function SupportPage() {
+  const { t } = useTranslation();
   const [category, setCategory] = useState<Category>('question');
   const [name,     setName]     = useState('');
   const [email,    setEmail]    = useState('');
@@ -97,7 +99,7 @@ export default function SupportPage() {
             We're here to help
           </h1>
           <p className="text-[#4A7AAA] text-sm max-w-sm leading-relaxed">
-            Send us a message and we'll get back to you within 24 hours.
+            {t("support.subtitle")}
           </p>
         </header>
 
@@ -114,7 +116,7 @@ export default function SupportPage() {
                     <CheckCircle size={24} className="text-[#4AE8A0]" />
                   </div>
                   <div>
-                    <p className="text-[#B8D9FF] text-lg font-medium">Message sent!</p>
+                    <p className="text-[#B8D9FF] text-lg font-medium">{t("support.success")}</p>
                     <p className="text-[#4A7AAA] text-sm mt-1 leading-relaxed">
                       Thanks {name.split(' ')[0]}. We'll reply to <span className="text-[#4A9EFF]">{email}</span> within 24 hours.
                     </p>

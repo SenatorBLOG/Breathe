@@ -1,8 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaInstagram, FaGithub, FaEnvelope } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+  const { t } = useTranslation();
   const year = new Date().getFullYear();
 
   return (
@@ -33,10 +35,10 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-[#3D5A7A] text-xs leading-relaxed max-w-[180px]">
-              Mindful breathing for sleep, focus & calm. Find your rhythm.
+              {t("footer.tagline")}
             </p>
             <span className="text-[#3D6080] text-[10px] tracking-wide mt-1 select-none">
-              © {year} · All rights reserved
+              © {year} · {t("footer.rights")}
             </span>
           </div>
 
@@ -44,12 +46,12 @@ export default function Footer() {
           <div className="flex flex-col gap-3">
             <span className="text-[10px] tracking-[0.25em] uppercase text-[#4A7AAA] mb-1">Navigate</span>
             {[
-              { to: '/home-page', label: 'Home' },
-              { to: '/breathing', label: 'Meditate' },
-              { to: '/music-library', label: 'Sounds' },
-              { to: '/community', label: 'Community' },
-              { to: '/sessions', label: 'Sessions' },
-              { to: '/statistics', label: 'Progress' },
+              { to: '/home-page', label: t('nav.home') },
+              { to: '/breathing', label: t('nav.meditate') },
+              { to: '/music-library', label: t('nav.sounds') },
+              { to: '/community', label: t('nav.community') },
+              { to: '/sessions', label: t('nav.sessions') },
+              { to: '/statistics', label: t('nav.progress') },
             ].map(({ to, label }) => (
               <Link
                 key={to}
@@ -66,10 +68,10 @@ export default function Footer() {
           <div className="flex flex-col gap-3">
             <span className="text-[10px] tracking-[0.25em] uppercase text-[#4A7AAA] mb-1">Support</span>
             {[
-              { to: '/faq', label: 'FAQ' },
-              { to: '/support', label: 'Contact Us' },
-              { to: '/sessions', label: 'Account' },
-              { to: '/support', label: 'Privacy Policy' },
+              { to: '/faq', label: t('footer.faq') },
+              { to: '/support', label: t('footer.contact') },
+              { to: '/sessions', label: t('nav.sessions') },
+              { to: '/support', label: t('footer.privacy') },
             ].map(({ to, label }) => (
               <Link
                 key={label}
@@ -134,12 +136,12 @@ export default function Footer() {
           {/* Links grid */}
           <div className="grid grid-cols-2 gap-2">
             {[
-              { to: '/home-page', label: 'Home' },
-              { to: '/faq', label: 'FAQ' },
-              { to: '/breathing', label: 'Meditate' },
-              { to: '/community', label: 'Community' },
-              { to: '/music-library', label: 'Sounds' },
-              { to: '/sessions', label: 'Sessions' },
+              { to: '/home-page', label: t('nav.home') },
+              { to: '/faq', label: t('footer.faq') },
+              { to: '/breathing', label: t('nav.meditate') },
+              { to: '/community', label: t('nav.community') },
+              { to: '/music-library', label: t('nav.sounds') },
+              { to: '/sessions', label: t('nav.sessions') },
             ].map(({ to, label }) => (
               <Link key={label} to={to} className="text-[#4A7AAA] text-xs hover:text-[#7AC4FF] transition-colors py-0.5">
                 {label}
@@ -149,7 +151,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <span className="text-[#3D6080] text-[10px] tracking-wide select-none">
-            © {year} Breathe · All rights reserved
+            © {year} Breathe · {t("footer.rights")}
           </span>
         </div>
       </div>
