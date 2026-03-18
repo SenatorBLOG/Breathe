@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
+import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
 import api from '../api';
 import { toast } from 'sonner';

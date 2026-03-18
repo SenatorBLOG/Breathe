@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import NavBar from '../components/NavBar';
+import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
 import api from '../api';
 import { toast } from 'sonner';

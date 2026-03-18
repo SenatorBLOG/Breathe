@@ -16,6 +16,7 @@ import WimHofPage from './pages/techniques/WimHofPage';
 import BreathingAnxietyPage from './pages/techniques/BreathingAnxietyPage';
 import ProfilePage from './pages/ProfilePage';
 import DataConsentPage from './pages/DataConsentPage';
+import { ThemeProvider } from './contexts/ThemeContext';
 import AICoachButton from './components/AICoach/AICoachButton';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -28,6 +29,7 @@ import { AuthProvider } from './components/contexts/AuthContext';
 export default function App() {
   return (
     <Router>
+      <ThemeProvider>
       <AuthProvider>
         <MusicProvider>
           <div className="min-h-screen">
@@ -61,6 +63,7 @@ export default function App() {
           </div>
         </MusicProvider>
       </AuthProvider>
+      </ThemeProvider>
     </Router>
   );
 }
