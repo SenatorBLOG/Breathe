@@ -6,6 +6,7 @@ import StatsCards from '../components/charts/StatsCards';
 import MoodTrackingGrid from '../components/charts/MoodTrackingGrid';
 import MonthlyActivityChart from '../components/charts/MonthlyActivityChart';
 import NavBar from '../components/NavBar';
+import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import api from '../api';
@@ -137,8 +138,7 @@ export default function StatsPage() {
       `}</style>
 
       {/* Star background */}
-      <div className="fixed inset-0 bg-cover bg-center" style={{ backgroundImage: `url('/Background_img_Meditation.jpg')`, opacity: 0.35 }} />
-      <div className="fixed inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at top, rgba(1,8,20,0.2) 0%, rgba(1,8,20,0.94) 68%)' }} />
+      <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />

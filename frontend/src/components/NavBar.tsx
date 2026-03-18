@@ -3,10 +3,12 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from './contexts/AuthContext';
 import { Menu, X, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useTheme, THEME_META } from '../contexts/ThemeContext';
 
 export default function NavBar() {
   const { isAuthenticated, user, logout } = useContext(AuthContext);
   const { t, i18n } = useTranslation();
+  const { theme, toggle: toggleTheme } = useTheme();
   const [langOpen, setLangOpen] = useState(false);
   const LANGS = [
     { code: 'en', label: 'English', flag: '🇬🇧' },
@@ -144,6 +146,14 @@ export default function NavBar() {
               </>
             )}
           </div>
+
+          {/* ── Theme toggle ── */}
+          <button onClick={toggleTheme}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[#4A7AAA] hover:text-[#7AC4FF] transition-colors text-xs border border-[#1E3358]/40 hover:border-[#2A5499]/50"
+            title={`Switch theme (current: ${THEME_META[theme].label})`}>
+            <span className="text-sm">{THEME_META[theme].icon}</span>
+            <span className="hidden sm:inline text-[10px] tracking-wide">{THEME_META[theme].label}</span>
+          </button>
 
           {/* ── Language switcher ── */}
           <div className="relative">

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import NavBar from '../components/NavBar';
+import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import AICoachButton from '../components/AICoach/AICoachButton';
