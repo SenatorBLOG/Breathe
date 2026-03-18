@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const IntegrationSchema = new mongoose.Schema({
   userId:       { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  provider:     { type: String, enum: ['fitbit', 'google_fit'], required: true },
+  provider:     { type: String, enum: ['fitbit', 'google_fit', 'apple_health'], required: true },
   accessToken:  { type: String, required: true },
   refreshToken: { type: String },
   expiresAt:    { type: Date },
