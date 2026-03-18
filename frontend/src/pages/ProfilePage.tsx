@@ -1,5 +1,6 @@
 // src/pages/ProfilePage.tsx
 import React, { useCallback, useEffect, useState } from 'react';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 import { Link, useLocation } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
@@ -211,6 +212,7 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
 
 // ─── AI Coach insight based on health data ───────────────────────────────────
 function HealthInsight({ integrations }: { integrations: IntegrationStatus[] }) {
+  const ts = useThemeStyles();
   const allSleep = integrations.flatMap(i => i.data?.sleep ?? []);
   const allHRV   = integrations.flatMap(i => i.data?.hrv   ?? []).filter(d => d.rmssd);
 
@@ -258,7 +260,7 @@ function HealthInsight({ integrations }: { integrations: IntegrationStatus[] }) 
           <p className="text-[#4A7AAA] text-xs leading-relaxed">{desc}</p>
           <Link to={techniqueHref}
             className="flex items-center gap-1.5 text-xs text-white font-medium px-4 py-2 rounded-xl w-fit mt-1 transition-all hover:scale-105"
-            style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+            style={{ background: ts.btnGradient }}>
             ✦ Try {technique} <ChevronRight size={11} />
           </Link>
         </div>
@@ -269,6 +271,7 @@ function HealthInsight({ integrations }: { integrations: IntegrationStatus[] }) 
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ProfilePage() {
+  const ts = useThemeStyles();
   const location = useLocation();
   const [integrations, setIntegrations] = useState<IntegrationStatus[]>([]);
   const [syncing, setSyncing]           = useState(false);
@@ -327,7 +330,7 @@ export default function ProfilePage() {
   const getStatus = (provider: string) => integrations.find(i => i.provider === provider);
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-[#010814] font-montserrat">
+    <div className="relative flex flex-col min-h-screen  font-montserrat">
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">

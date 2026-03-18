@@ -1,14 +1,16 @@
 // src/pages/techniques/WimHofPage.tsx
 import React from 'react';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { Link } from 'react-router-dom';
 import NavBar from '../../components/NavBar';
 import Footer from '../../components/Footer';
+import ThemeBackground from '../../components/ThemeBackground';
 
 export default function WimHofPage() {
+  const ts = useThemeStyles();
   return (
-    <div className="relative flex flex-col min-h-screen bg-[#010814] font-montserrat">
-      <div className="fixed inset-0 bg-cover bg-center" style={{ backgroundImage: `url('/Background_img_Meditation.jpg')`, opacity: 0.35 }} />
-      <div className="fixed inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at top, rgba(1,8,20,0.2) 0%, rgba(1,8,20,0.94) 68%)' }} />
+    <div className="relative flex flex-col min-h-screen  font-montserrat">
+      <ThemeBackground />
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />
         <main className="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-12 flex flex-col gap-8">
@@ -26,7 +28,7 @@ export default function WimHofPage() {
               <p className="text-[#FF8A8A] text-xs">Never practice near water or while driving. Lightheadedness is normal.</p>
             </div>
             <Link to="/breathing" className="flex items-center gap-2 px-8 py-3.5 rounded-full text-white font-medium w-fit transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.45)] hover:scale-105"
-              style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+              style={{ background: ts.btnGradient }}>
               🔥 Try Wim Hof now — free
             </Link>
           </div>
@@ -83,7 +85,7 @@ export default function WimHofPage() {
             <p className="text-[#B8D9FF] text-xl font-light">Ready to try it?</p>
             <p className="text-[#4A7AAA] text-sm">Our animated orb guides your breathing rhythm. Find a comfortable seated position first.</p>
             <Link to="/breathing" className="px-10 py-4 rounded-full text-white font-medium transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.45)] hover:scale-105"
-              style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+              style={{ background: ts.btnGradient }}>
               🔥 Start Wim Hof — Free
             </Link>
             <p className="text-[#4A7AAA] text-xs">No account · Sit or lie down · Never near water</p>
