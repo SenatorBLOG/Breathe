@@ -65,6 +65,7 @@ function Avatar({ author, size = 8 }: { author: Author; size?: number }) {
   return (
     <div className={`flex-shrink-0 rounded-full flex items-center justify-center text-[10px] font-bold text-[#010814]`}
       style={{ width: px, height: px, background: 'linear-gradient(135deg,#1A5FCC,#7AC4FF)', fontSize: px * 0.32 }}>
+      <ThemeBackground />
       {initials(author)}
     </div>
   );
@@ -507,15 +508,14 @@ export default function CommunityPage() {
   };
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-[#010814] font-montserrat">
+    <div className="relative flex flex-col min-h-screen  font-montserrat">
       <style>{`
         @keyframes commFadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
         .comm-in { animation: commFadeUp 0.5s ease forwards; }
       `}</style>
 
       {/* Background */}
-      <div className="fixed inset-0 bg-cover bg-center" style={{ backgroundImage: `url('/Background_img_Meditation.jpg')`, opacity: 0.35 }} />
-      <div className="fixed inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at top,rgba(1,8,20,0.2) 0%,rgba(1,8,20,0.94) 68%)' }} />
+      <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />

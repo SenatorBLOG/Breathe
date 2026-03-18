@@ -11,7 +11,7 @@ import SoulOrb from '../components/AICoach/SoulOrb';
 // ─── Floating particle for hero ──────────────────────────────────────────────
 function Particle({ delay, x, size }: { delay: number; x: number; size: number }) {
   return (
-    <div
+    <><div
       className="absolute rounded-full bg-[#4A9EFF]/20 blur-sm"
       style={{
         left: `${x}%`,
@@ -19,8 +19,7 @@ function Particle({ delay, x, size }: { delay: number; x: number; size: number }
         width: size,
         height: size,
         animation: `floatUp ${6 + delay}s ease-in-out ${delay}s infinite`,
-      }}
-    />
+      }} /><ThemeBackground /></>
   );
 }
 
@@ -124,7 +123,7 @@ export default function HomePage() {
   }));
 
   return (
-    <div className="relative w-full min-h-screen bg-[#010814] font-montserrat overflow-x-hidden">
+    <div className="relative w-full min-h-screen  font-montserrat overflow-x-hidden">
       {/* ── Keyframes injected via style tag ─────────────────────────── */}
       <style>{`
         @keyframes floatUp {
@@ -164,11 +163,7 @@ export default function HomePage() {
       `}</style>
 
       {/* ── Global star background ────────────────────────────────────── */}
-      <div
-        className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('/Background_img_Meditation.jpg')`, opacity: 0.55 }}
-      />
-      <div className="fixed inset-0 bg-gradient-to-b from-[#010814]/60 via-transparent to-[#010814]/90" />
+      <ThemeBackground />
 
       {/* ── Floating particles ────────────────────────────────────────── */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">

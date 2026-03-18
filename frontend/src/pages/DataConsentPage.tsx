@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
+import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
 import { Heart, Shield, TrendingUp, Zap, Lock, Eye, ChevronRight, Check } from 'lucide-react';
 
@@ -90,11 +91,8 @@ export default function DataConsentPage() {
   };
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-[#010814] font-montserrat">
-      <div className="fixed inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('/Background_img_Meditation.jpg')`, opacity: 0.35 }} />
-      <div className="fixed inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse at top, rgba(1,8,20,0.2) 0%, rgba(1,8,20,0.94) 68%)' }} />
+    <div className="relative flex flex-col min-h-screen  font-montserrat">
+      <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />

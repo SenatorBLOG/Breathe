@@ -59,7 +59,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#010814] font-montserrat overflow-x-hidden">
+    <div className="relative min-h-screen  font-montserrat overflow-x-hidden">
+      <ThemeBackground />
       <style>{`
         @keyframes loginFadeUp {
           from { opacity: 0; transform: translateY(20px); }
@@ -77,10 +78,7 @@ export default function LoginPage() {
       `}</style>
 
       {/* Background */}
-      <div className="fixed inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('/Background_img_Meditation.jpg')`, opacity: 0.4 }} />
-      <div className="fixed inset-0"
-        style={{ background: 'radial-gradient(ellipse at 60% 0%, rgba(26,95,204,0.12) 0%, rgba(1,8,20,0.95) 65%)' }} />
+      <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />
