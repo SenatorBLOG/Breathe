@@ -11,6 +11,7 @@ import {
   Brain, Sparkles, X, Calendar,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import ThemeBackground from "../components/ThemeBackground";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Session {
@@ -48,6 +49,7 @@ function deltaColor(before: number, after: number) {
 function AdSlot({ label = "Advertisement", className = "" }: { label?: string; className?: string }) {
   return (
     <div className={`flex items-center justify-center border border-dashed border-[#1E3358]/40 rounded-xl bg-[#040A14]/40 ${className}`}>
+      <ThemeBackground />
       <span className="text-[9px] tracking-[0.25em] uppercase text-[#1A2D48] select-none">{label}</span>
     </div>
   );
@@ -471,7 +473,7 @@ export default function SessionsPage() {
     : "—";
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-[#010814] font-montserrat">
+    <div className="relative flex flex-col min-h-screen  font-montserrat">
       <style>{`
         @keyframes sessFadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
         .sess-in { animation: sessFadeUp 0.5s ease forwards; }
@@ -484,8 +486,7 @@ export default function SessionsPage() {
       `}</style>
 
       {/* Star background */}
-      <div className="fixed inset-0 bg-cover bg-center" style={{ backgroundImage: `url('/Background_img_Meditation.jpg')`, opacity: 0.38 }} />
-      <div className="fixed inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at top, rgba(1,8,20,0.2) 0%, rgba(1,8,20,0.93) 70%)" }} />
+      <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />

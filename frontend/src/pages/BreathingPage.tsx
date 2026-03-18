@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import Footer from "../components/Footer";
 import { SessionFeedbackModal } from "../components/SessionFeedbackModal";
 import { Flame, Wind, Timer, Zap } from "lucide-react";
+import ThemeBackground from "../components/ThemeBackground";
 
 // ─── How many full cycles before the feedback modal fires ────────────────────
 const FEEDBACK_AFTER_CYCLES = 3;
@@ -38,6 +39,7 @@ function StatPill({ icon, label, value, dim = false }: {
         ? "bg-[#060C1A]/35 border-[#1E3358]/20 opacity-35"
         : "bg-[#060C1A]/65 border-[#1E3358]/60 shadow-[0_0_20px_rgba(0,0,0,0.4)]"
     }`}>
+      <ThemeBackground />
       <span className="text-[#4A9EFF]/70">{icon}</span>
       <div className="flex flex-col leading-none">
         <span className="text-[#7AC4FF] text-sm sm:text-base font-medium tabular-nums">{value}</span>
@@ -302,15 +304,15 @@ export default function BreathingPage() {
   ];
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-[#010814] font-montserrat">
+    <div className="relative flex flex-col min-h-screen  font-montserrat">
       <style>{`
         @keyframes fadeInUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
         .stat-in { animation: fadeInUp 0.6s ease forwards; }
       `}</style>
 
       {/* Backgrounds */}
-      <div className="fixed inset-0 bg-cover bg-center" style={{ backgroundImage: `url('/Background_img_Meditation.jpg')`, opacity: 0.5 }} />
-      <VideoBackground videoFiles={videos} isActive={isActive} baseImage="/Background_img_Meditation.jpg" targetOpacity={0.55} playbackRate={1} crossfadeSeconds={2.0} pauseBetweenVideos={1.8} brightness={1.05} phase={phase} desiredPlaySeconds={desiredPlaySeconds} maxSpeed={1.2} />
+      <ThemeBackground />
+      <VideoBackground videoFiles={videos} isActive={isActive} baseImage="/Background_Night.jpg" targetOpacity={0.55} playbackRate={1} crossfadeSeconds={2.0} pauseBetweenVideos={1.8} brightness={1.05} phase={phase} desiredPlaySeconds={desiredPlaySeconds} maxSpeed={1.2} />
       <div className="fixed inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 30%, rgba(1,8,20,0.78) 100%)" }} />
 
       {/* NavBar */}
