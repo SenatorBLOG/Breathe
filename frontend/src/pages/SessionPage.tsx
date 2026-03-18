@@ -11,6 +11,7 @@ import {
   Brain, Sparkles, X, Calendar,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useThemeStyles } from "../hooks/useThemeStyles";
 import ThemeBackground from "../components/ThemeBackground";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -230,7 +231,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
       <div className="flex items-center justify-between px-6 py-4 border-b border-[#1E3358]/30">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: "linear-gradient(135deg,#1A5FCC,#3A82F7)", boxShadow: "0 0 14px rgba(74,158,255,0.35)" }}>
+            style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)', boxShadow: "0 0 14px rgba(74,158,255,0.35)" }}>
             <Brain size={13} className="text-white" />
           </div>
           <div>
@@ -376,13 +377,13 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         {step < 3 ? (
           <button onClick={() => setStep(s => s + 1)}
             className="px-6 py-2 rounded-xl text-xs text-white font-medium tracking-wide hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 transition-all"
-            style={{ background: "linear-gradient(135deg,#1A5FCC,#3A82F7)" }}>
+            style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
             Continue →
           </button>
         ) : (
           <button onClick={handleSave}
             className="px-6 py-2 rounded-xl text-xs text-white font-medium tracking-wide hover:shadow-[0_0_24px_rgba(58,130,247,0.5)] hover:scale-105 active:scale-95 transition-all"
-            style={{ background: "linear-gradient(135deg,#1A5FCC,#3A82F7)", boxShadow: "0 0 20px rgba(74,158,255,0.15)" }}>
+            style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)', boxShadow: "0 0 20px rgba(74,158,255,0.15)" }}>
             Save session ✓
           </button>
         )}
@@ -396,6 +397,7 @@ type SortKey = "date" | "duration" | "cycles" | "mood";
 
 export default function SessionsPage() {
   const { t } = useTranslation();
+  const ts = useThemeStyles();
   const navigate = useNavigate();
   const [sessions, setSessions]     = useState<Session[]>([]);
   const [loading, setLoading]       = useState(true);
@@ -506,7 +508,7 @@ export default function SessionsPage() {
             <button
               onClick={() => setShowAdd(v => !v)}
               className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium tracking-wide transition-all hover:shadow-[0_0_24px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95"
-              style={{ background: "linear-gradient(135deg,#1A5FCC,#3A82F7)" }}
+              style={{ background: ts.btnGradient }}
             >
               {showAdd ? <X size={14} /> : <Plus size={14} />}
               {showAdd ? t("sessions.cancel") : t("sessions.logSession")}
@@ -661,7 +663,7 @@ export default function SessionsPage() {
                   {sessions.length === 0 && (
                     <Link to="/breathing"
                       className="px-6 py-2.5 rounded-full text-white text-xs font-medium hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] transition-all"
-                      style={{ background: "linear-gradient(135deg,#1A5FCC,#3A82F7)" }}>
+                      style={{ background: ts.btnGradient }}>
                       Start meditating →
                     </Link>
                   )}

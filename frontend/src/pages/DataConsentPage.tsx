@@ -1,5 +1,6 @@
 // src/pages/DataConsentPage.tsx
 import React, { useState } from 'react';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useNavigate, Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
@@ -82,6 +83,7 @@ function PrivacyPoint({ text }: { text: string }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function DataConsentPage() {
+  const ts = useThemeStyles();
   const navigate  = useNavigate();
   const [agreed, setAgreed] = useState(false);
 

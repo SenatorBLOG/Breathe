@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState, useRef, useEffect } from "react"
 import NavBar from "../components/NavBar";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useThemeStyles } from "../hooks/useThemeStyles";
 import { useHealthData } from "../hooks/useHealthData";
 import { calcCalmScore, type SessionBiometrics } from "../utils/calmScore";
 import CalmScoreResult from "../components/CalmScoreResult";
@@ -150,6 +151,7 @@ function PresetPill({ name, pattern, onApply, current }: {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export default function BreathingPage() {
   const { t } = useTranslation();
+  const ts = useThemeStyles();
   const [isActive, setIsActive]           = useState(false);
   const location = useLocation();
   const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>(() => {

@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import AICoachButton from '../components/AICoach/AICoachButton';
 import { useTranslation } from 'react-i18next';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 import NewsletterWidget from '../components/NewsletterWidget';
 import SoulOrb from '../components/AICoach/SoulOrb';
 
@@ -115,6 +116,7 @@ function QuoteBlock({ text, author }: { text: string; author: string }) {
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function HomePage() {
   const { t } = useTranslation();
+  const ts = useThemeStyles();
   const particles = Array.from({ length: 12 }, (_, i) => ({
     id: i,
     delay: Math.random() * 5,
@@ -203,7 +205,7 @@ export default function HomePage() {
             <Link
               to="/breathing"
               className="group relative px-10 py-4 rounded-full font-medium text-white text-base tracking-wide overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, #1A5FCC 0%, #3A82F7 50%, #2266D4 100%)', boxShadow: '0 0 40px rgba(58,130,247,0.35)' }}
+              style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
             >
               <span className="relative z-10 flex items-center gap-2">
                 <span className="text-xl">🌬</span>
@@ -314,7 +316,7 @@ export default function HomePage() {
               {/* Featured CTA card */}
               <div
                 className="relative overflow-hidden rounded-2xl p-6 flex flex-col items-center text-center gap-4"
-                style={{ background: 'linear-gradient(145deg, #0D1F3C 0%, #091530 100%)', border: '1px solid rgba(74,158,255,0.2)', boxShadow: '0 0 60px rgba(74,158,255,0.07)' }}
+                style={{ background: ts.cardBg, border: `1px solid ${ts.border}`, boxShadow: '0 0 60px rgba(74,158,255,0.07)' }}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#4A9EFF]/5 blur-2xl" />
                 <img src="/icons/Lotus_png.png" alt="Lotus" className="w-20 h-20 object-contain opacity-90" />
@@ -433,7 +435,7 @@ export default function HomePage() {
         <section className="px-4 sm:px-6 lg:px-8 py-12 max-w-6xl mx-auto w-full">
           <div
             className="relative overflow-hidden rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 px-8 py-10"
-            style={{ background: 'linear-gradient(135deg, #0D1F3C 0%, #0A1525 100%)', border: '1px solid rgba(74,158,255,0.15)', boxShadow: '0 0 80px rgba(74,158,255,0.06)' }}
+            style={{ background: ts.cardBg, border: `1px solid ${ts.border}`, boxShadow: '0 0 80px rgba(74,158,255,0.06)' }}
           >
             <div className="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-[#4A9EFF]/5 blur-3xl pointer-events-none" />
             <div className="absolute -left-5 -bottom-5 w-32 h-32 rounded-full bg-[#1A5FCC]/10 blur-2xl pointer-events-none" />
@@ -447,7 +449,7 @@ export default function HomePage() {
             <Link
               to="/breathing"
               className="flex-shrink-0 px-10 py-4 rounded-full text-white font-medium text-sm tracking-wide transition-all duration-300 hover:shadow-[0_0_40px_rgba(58,130,247,0.4)]"
-              style={{ background: 'linear-gradient(135deg, #1A5FCC, #3A82F7)' }}
+              style={{ background: ts.btnGradient }}
             >
               🌬 &nbsp;Start Now
             </Link>

@@ -10,9 +10,11 @@ import { toast } from 'sonner';
 import { AuthContext } from '../components/contexts/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 export default function LoginPage() {
   const { t } = useTranslation();
+  const ts = useThemeStyles();
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
@@ -207,7 +209,7 @@ export default function LoginPage() {
                     {/* Submit */}
                     <button type="submit" disabled={loading}
                       className="w-full py-3 rounded-xl text-sm text-white font-medium tracking-wide transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.45)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 mt-1"
-                      style={{ background: 'linear-gradient(135deg, #1A5FCC 0%, #3A82F7 50%, #2266D4 100%)' }}>
+                      style={{ background: ts.btnGradient }}>
                       {loading ? 'Signing in…' : '{t("auth.signIn")} →'}
                     </button>
                   </form>

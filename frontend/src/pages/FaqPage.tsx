@@ -6,6 +6,7 @@ import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
 import { ChevronDown, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface FAQItem {
@@ -187,6 +188,7 @@ function AdSlot({ className = '' }: { className?: string }) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function FAQPage() {
   const { t } = useTranslation();
+  const ts = useThemeStyles();
   const [activeCategory, setActiveCategory] = useState('basics');
   const [search, setSearch] = useState('');
 
@@ -204,7 +206,7 @@ export default function FAQPage() {
     : null;
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-[#010814] font-montserrat">
+    <div className="relative flex flex-col min-h-screen  font-montserrat">
       {/* Background */}
       <ThemeBackground />
 
@@ -339,7 +341,7 @@ export default function FAQPage() {
                     </Link>
                     <Link to="/support"
                       className="px-4 py-2 rounded-xl text-xs text-white font-medium transition-all hover:shadow-[0_0_16px_rgba(58,130,247,0.35)]"
-                      style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+                      style={{ background: ts.btnGradient }}>
                       {t("faq.contactUs")}
                     </Link>
                   </div>

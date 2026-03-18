@@ -11,6 +11,7 @@ import {
   Plus, X, ChevronDown, Users, Flame, Sparkles,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Author { _id: string; username?: string; name?: string; }
@@ -470,6 +471,7 @@ const CATEGORIES_FILTER = ['all', 'experience', 'question', 'achievement', 'tip'
 
 export default function CommunityPage() {
   const { t } = useTranslation();
+  const ts = useThemeStyles();
   const [posts, setPosts]           = useState<Post[]>([]);
   const [loading, setLoading]       = useState(true);
   const [page, setPage]             = useState(1);

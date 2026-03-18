@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useHealthData } from '../hooks/useHealthData';
 import { useTranslation } from 'react-i18next';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 import { Link as RouterLink } from 'react-router-dom';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -81,6 +82,7 @@ function InsightCard({ icon, title, desc }: { icon: string; title: string; desc:
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function StatsPage() {
   const { t } = useTranslation();
+  const ts = useThemeStyles();
   const [sessions, setSessions] = useState<Session[]>([]);
   const { data: health } = useHealthData();
 
@@ -131,7 +133,7 @@ export default function StatsPage() {
   ];
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-[#010814] font-montserrat">
+    <div className="relative flex flex-col min-h-screen  font-montserrat">
       <style>{`
         @keyframes statsFadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
         .stats-in { animation: statsFadeUp 0.6s ease forwards; }
@@ -163,7 +165,7 @@ export default function StatsPage() {
             <Link
               to="/breathing"
               className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium tracking-wide transition-all hover:shadow-[0_0_24px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 self-start sm:self-auto"
-              style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}
+              style={{ background: ts.btnGradient }}
             >
               Meditate now <ArrowRight size={14} />
             </Link>
@@ -305,7 +307,7 @@ export default function StatsPage() {
               </p>
               <Link to="/breathing"
                 className="w-full py-2 rounded-xl text-xs text-white font-medium tracking-wide hover:shadow-[0_0_16px_rgba(58,130,247,0.4)] transition-all"
-                style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+                style={{ background: ts.btnGradient }}>
                 {t("stats.breatheNow")}
               </Link>
             </div>
