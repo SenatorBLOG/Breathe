@@ -7,8 +7,10 @@ import Footer from '../components/Footer';
 import api from '../api';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function SignUpPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [name,       setName]       = useState('');
@@ -166,7 +168,7 @@ export default function SignUpPage() {
                   <div>
                     <h2 className="text-xl font-medium text-[#B8D9FF] tracking-wide">Create account</h2>
                     <p className="text-[#4A7AAA] text-xs mt-1">
-                      Already have one?{' '}
+                      {t("auth.alreadyAccount")}{' '}
                       <Link to="/login" className="text-[#4A9EFF] hover:underline">Sign in</Link>
                     </p>
                   </div>
@@ -233,10 +235,10 @@ export default function SignUpPage() {
                         {agreed && <Check size={9} className="text-white" />}
                       </div>
                       <span className="text-[#4A7AAA] text-xs leading-relaxed">
-                        I agree to the{' '}
-                        <span className="text-[#4A9EFF]">terms of service</span>{' '}
+                        {t("auth.termsAgree")}{' '}
+                        <span className="text-[#4A9EFF]">{t("auth.terms")}</span>{' '}
                         and{' '}
-                        <span className="text-[#4A9EFF]">privacy policy</span>
+                        <span className="text-[#4A9EFF]">{t("auth.privacy")}</span>
                       </span>
                     </label>
 
@@ -251,7 +253,7 @@ export default function SignUpPage() {
                     <button type="submit" disabled={loading || !agreed}
                       className="w-full py-3 rounded-xl text-sm text-white font-medium tracking-wide transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.45)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 mt-1"
                       style={{ background: 'linear-gradient(135deg, #1A5FCC 0%, #3A82F7 50%, #2266D4 100%)' }}>
-                      {loading ? 'Creating account…' : 'Create account →'}
+                      {loading ? 'Creating account…' : '{t("auth.signUp")} →'}
                     </button>
                   </form>
 

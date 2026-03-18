@@ -14,6 +14,7 @@ import {
   Brain, Sparkles, ArrowRight, Trophy, Moon, Activity, Heart, Watch
 } from 'lucide-react';
 import { useHealthData } from '../hooks/useHealthData';
+import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -78,6 +79,7 @@ function InsightCard({ icon, title, desc }: { icon: string; title: string; desc:
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function StatsPage() {
+  const { t } = useTranslation();
   const [sessions, setSessions] = useState<Session[]>([]);
   const { data: health } = useHealthData();
 
@@ -173,10 +175,10 @@ export default function StatsPage() {
 
           {/* Milestone badges row */}
           <div className="stats-in grid grid-cols-2 sm:grid-cols-4 gap-3" style={{ animationDelay: '0.05s', opacity: 0 }}>
-            <MilestoneBadge icon={<Flame size={16} className="text-[#FF9A5C]" />}    label="Day streak"     value={`${streak}d`}         glow="rgba(255,154,92,0.08)" />
-            <MilestoneBadge icon={<Timer size={16} className="text-[#4A9EFF]" />}    label="Total minutes"  value={`${totalMins}m`}      glow="rgba(74,158,255,0.08)" />
-            <MilestoneBadge icon={<Wind size={16} className="text-[#7AC4FF]" />}     label="Cycles breathed" value={String(totalCycles)} glow="rgba(122,196,255,0.08)" />
-            <MilestoneBadge icon={<TrendingUp size={16} className="text-[#4AE8A0]" />} label="Avg focus"    value={String(avgFocus)}     glow="rgba(74,232,160,0.08)" />
+            <MilestoneBadge icon={<Flame size={16} className="text-[#FF9A5C]" />}    label={t("stats.dayStreak")}     value={`${streak}d`}         glow="rgba(255,154,92,0.08)" />
+            <MilestoneBadge icon={<Timer size={16} className="text-[#4A9EFF]" />}    label={t("stats.totalMinutes")}  value={`${totalMins}m`}      glow="rgba(74,158,255,0.08)" />
+            <MilestoneBadge icon={<Wind size={16} className="text-[#7AC4FF]" />}     label={t("stats.cyclesBeathed")} value={String(totalCycles)} glow="rgba(122,196,255,0.08)" />
+            <MilestoneBadge icon={<TrendingUp size={16} className="text-[#4AE8A0]" />} label={t("stats.avgFocus")}    value={String(avgFocus)}     glow="rgba(74,232,160,0.08)" />
           </div>
 
           {/* Health data panel — only if wearable connected */}
@@ -257,20 +259,20 @@ export default function StatsPage() {
 
           {/* Weekly + Annual charts */}
           <div className="stats-in grid grid-cols-1 gap-5" style={{ animationDelay: '0.15s', opacity: 0 }}>
-            <ChartCard title="Weekly activity" sub="Sessions and minutes per day this week">
+            <ChartCard title={t("stats.weeklyActivity")} sub="Sessions and minutes per day this week">
               <WeeklyActivityChart />
             </ChartCard>
-            <ChartCard title="Annual progress" sub="Your meditation journey across the year">
+            <ChartCard title={t("stats.annualProgress")} sub="Your meditation journey across the year">
               <AnnualProgressChart />
             </ChartCard>
           </div>
 
           {/* Mood + Monthly side by side */}
           <div className="stats-in grid grid-cols-1 lg:grid-cols-2 gap-5" style={{ animationDelay: '0.2s', opacity: 0 }}>
-            <ChartCard title="Mood tracking" sub="How your mood shifts after each session">
+            <ChartCard title={t("stats.moodTracking")} sub="How your mood shifts after each session">
               <MoodTrackingGrid />
             </ChartCard>
-            <ChartCard title="Monthly overview" sub="Session frequency across the current month">
+            <ChartCard title={t("stats.monthlyOverview")} sub="Session frequency across the current month">
               <MonthlyActivityChart />
             </ChartCard>
           </div>
@@ -304,7 +306,7 @@ export default function StatsPage() {
               <Link to="/breathing"
                 className="w-full py-2 rounded-xl text-xs text-white font-medium tracking-wide hover:shadow-[0_0_16px_rgba(58,130,247,0.4)] transition-all"
                 style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
-                Breathe now →
+                {t("stats.breatheNow")}
               </Link>
             </div>
           </div>

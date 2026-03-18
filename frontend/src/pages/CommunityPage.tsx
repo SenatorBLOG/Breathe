@@ -9,6 +9,7 @@ import {
   Heart, MessageCircle, Flag, Trash2, Send,
   Plus, X, ChevronDown, Users, Flame, Sparkles,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Author { _id: string; username?: string; name?: string; }
@@ -466,6 +467,7 @@ function SidebarStat({ value, label }: { value: string; label: string }) {
 const CATEGORIES_FILTER = ['all', 'experience', 'question', 'achievement', 'tip'] as const;
 
 export default function CommunityPage() {
+  const { t } = useTranslation();
   const [posts, setPosts]           = useState<Post[]>([]);
   const [loading, setLoading]       = useState(true);
   const [page, setPage]             = useState(1);
@@ -528,7 +530,7 @@ export default function CommunityPage() {
             <div>
               <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] mb-1">Breathe · Community</p>
               <h1 className="text-2xl sm:text-3xl font-light text-[#B8D9FF] tracking-wide">Community</h1>
-              <p className="text-[#4A7AAA] text-xs mt-1">Share your journey with fellow meditators</p>
+              <p className="text-[#4A7AAA] text-xs mt-1">{t("community.subtitle")}</p>
             </div>
             <button onClick={handleCreate}
               className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium tracking-wide transition-all hover:shadow-[0_0_24px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95"
@@ -569,7 +571,7 @@ export default function CommunityPage() {
               ) : posts.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 py-20 text-center">
                   <span className="text-4xl opacity-30">🌊</span>
-                  <p className="text-[#4A7AAA] text-sm">No posts yet — be the first to share!</p>
+                  <p className="text-[#4A7AAA] text-sm">{t("community.noPostsYet")}</p>
                   <button onClick={handleCreate}
                     className="px-6 py-2.5 rounded-full text-sm text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)]"
                     style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>

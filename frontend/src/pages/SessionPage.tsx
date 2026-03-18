@@ -10,6 +10,7 @@ import {
   ChevronDown, ChevronUp, Search, SlidersHorizontal,
   Brain, Sparkles, X, Calendar,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Session {
@@ -392,6 +393,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
 type SortKey = "date" | "duration" | "cycles" | "mood";
 
 export default function SessionsPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [sessions, setSessions]     = useState<Session[]>([]);
   const [loading, setLoading]       = useState(true);
@@ -506,7 +508,7 @@ export default function SessionsPage() {
               style={{ background: "linear-gradient(135deg,#1A5FCC,#3A82F7)" }}
             >
               {showAdd ? <X size={14} /> : <Plus size={14} />}
-              {showAdd ? "Cancel" : "Log session"}
+              {showAdd ? t("sessions.cancel") : t("sessions.logSession")}
             </button>
           </div>
         </header>
@@ -520,9 +522,9 @@ export default function SessionsPage() {
               {/* Summary stats */}
               <div className="flex flex-col gap-2">
                 <p className="text-[9px] tracking-[0.25em] uppercase text-[#3D6080] px-1 mb-1">Overview</p>
-                <SummaryCard icon={<Timer size={14} />}   label="Total minutes" value={`${totalMins}m`} />
-                <SummaryCard icon={<Wind size={14} />}    label="Total cycles"  value={String(totalCycles)} />
-                <SummaryCard icon={<Flame size={14} />}   label="Sessions"      value={String(sessions.length)} />
+                <SummaryCard icon={<Timer size={14} />}   label={t("sessions.totalMinutes")} value={`${totalMins}m`} />
+                <SummaryCard icon={<Wind size={14} />}    label={t("sessions.totalCycles")}  value={String(totalCycles)} />
+                <SummaryCard icon={<Flame size={14} />}   label={t("sessions.sessions")}      value={String(sessions.length)} />
                 <SummaryCard icon={<TrendingUp size={14} />} label="Avg mood shift" value={typeof avgMoodDelta === "string" && avgMoodDelta !== "—" && Number(avgMoodDelta) > 0 ? `+${avgMoodDelta}` : String(avgMoodDelta)} />
               </div>
 
@@ -586,7 +588,7 @@ export default function SessionsPage() {
               <div className="flex items-center gap-2 flex-wrap">
                 <div className="relative flex-1 min-w-48">
                   <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A7AAA] pointer-events-none" />
-                  <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search notes, dates…"
+                  <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t("sessions.search")}
                     className="w-full pl-8 pr-8 py-2 rounded-xl bg-[#0B1628]/70 border border-[#1E3358]/50 text-[#7AC4FF] text-xs placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors" />
                   {search && (
                     <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A7AAA] hover:text-[#5A8FB8]">

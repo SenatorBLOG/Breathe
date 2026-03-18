@@ -8,8 +8,10 @@ import api from '../api';
 import { toast } from 'sonner';
 import { AuthContext } from '../components/contexts/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
@@ -28,7 +30,7 @@ export default function LoginPage() {
       const res = await api.post('/auth/login', { email, password });
       login(res.data.token, res.data.user);
       localStorage.setItem('userId', res.data.user?._id ?? '');
-      toast.success('Welcome back to Breathe', { description: 'Your journey continues' });
+      toast.success('{t("auth.welcomeBack")}', { description: '{t("auth.sessionsWaiting")}' });
       navigate('/home-page');
     } catch (err: any) {
       const msg = err.response?.data?.error || 'Invalid email or password';
@@ -147,8 +149,8 @@ export default function LoginPage() {
                   <div>
                     <h2 className="text-xl font-medium text-[#B8D9FF] tracking-wide">Sign in</h2>
                     <p className="text-[#4A7AAA] text-xs mt-1">
-                      New here?{' '}
-                      <Link to="/signup" className="text-[#4A9EFF] hover:underline">Create an account</Link>
+                      {t("auth.noAccount")}{' '}
+                      <Link to="/signup" className="text-[#4A9EFF] hover:underline">{t("auth.signUp")}</Link>
                     </p>
                   </div>
 
@@ -168,7 +170,7 @@ export default function LoginPage() {
                       <div className="flex items-center justify-between">
                         <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Password</label>
                         <Link to="/forgot-password" className="text-[9px] text-[#2A5499] hover:text-[#4A9EFF] transition-colors">
-                          Forgot password?
+                          {t("auth.forgotPassword")}
                         </Link>
                       </div>
                       <div className="relative">
@@ -207,7 +209,7 @@ export default function LoginPage() {
                     <button type="submit" disabled={loading}
                       className="w-full py-3 rounded-xl text-sm text-white font-medium tracking-wide transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.45)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 mt-1"
                       style={{ background: 'linear-gradient(135deg, #1A5FCC 0%, #3A82F7 50%, #2266D4 100%)' }}>
-                      {loading ? 'Signing in…' : 'Sign in →'}
+                      {loading ? 'Signing in…' : '{t("auth.signIn")} →'}
                     </button>
                   </form>
 

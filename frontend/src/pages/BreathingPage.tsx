@@ -2,6 +2,7 @@
 import React, { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import NavBar from "../components/NavBar";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useHealthData } from "../hooks/useHealthData";
 import { BreathingCircle, Phase } from "../components/BreathingCircle";
 import { VideoBackground } from "../components/VideoBackground";
@@ -142,6 +143,7 @@ function PresetPill({ name, pattern, onApply, current }: {
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export default function BreathingPage() {
+  const { t } = useTranslation();
   const [isActive, setIsActive]           = useState(false);
   const location = useLocation();
   const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>(() => {
@@ -230,7 +232,7 @@ export default function BreathingPage() {
       if (cid && savedClientIdsRef.current.has(cid)) return;
       if (cid) savedClientIdsRef.current.add(cid);
       await api.post("/sessions", payload);
-      toast.success("Session saved");
+      toast.success(t("breathing.session") + " saved");
       setCycles(0); setCurrentDuration(0); fetchStats();
     } catch {
       const cid = payload?.clientId;
@@ -309,7 +311,7 @@ export default function BreathingPage() {
             <StatPill icon={<Timer size={12} />} label="Session" value={fmtTime(currentDuration)} dim={!isActive} />
           </div>
           <div className="stat-in" style={{ animationDelay: "0.2s", opacity: 0 }}>
-            <StatPill icon={<Wind size={12} />} label="Cycles" value={String(cycles)} dim={!isActive} />
+            <StatPill icon={<Wind size={12} />} label={t("breathing.cycles")} value={String(cycles)} dim={!isActive} />
           </div>
         </div>
 
@@ -350,9 +352,9 @@ export default function BreathingPage() {
         {/* ── Row 4: achievement stats (always below button) ── */}
         <div className="flex gap-3">
           {[
-            { icon: <Flame size={12} />, label: "Streak",   value: `${totalStats.streak}d`         },
-            { icon: <Zap size={12} />,   label: "All time", value: `${totalStats.totalMinutes}m`    },
-            { icon: <Wind size={12} />,  label: "Sessions", value: String(totalStats.totalSessions) },
+            { icon: <Flame size={12} />, label: t("breathing.streak"),   value: `${totalStats.streak}d`         },
+            { icon: <Zap size={12} />,   label: t("breathing.allTime"), value: `${totalStats.totalMinutes}m`    },
+            { icon: <Wind size={12} />,  label: t("breathing.sessions"), value: String(totalStats.totalSessions) },
           ].map(({ icon, label, value }, i) => (
             <div key={label} className="stat-in" style={{ animationDelay: `${0.3 + i * 0.1}s`, opacity: 0 }}>
               <StatPill icon={icon} label={label} value={value} dim={isActive} />
