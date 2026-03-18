@@ -17,6 +17,7 @@ import BreathingAnxietyPage from './pages/techniques/BreathingAnxietyPage';
 import ProfilePage from './pages/ProfilePage';
 import DataConsentPage from './pages/DataConsentPage';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import AICoachButton from './components/AICoach/AICoachButton';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -28,6 +29,7 @@ import { AuthProvider } from './components/contexts/AuthContext';
 
 export default function App() {
   return (
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''}>
     <Router>
       <ThemeProvider>
       <AuthProvider>
@@ -65,5 +67,6 @@ export default function App() {
       </AuthProvider>
       </ThemeProvider>
     </Router>
+    </GoogleOAuthProvider>
   );
 }

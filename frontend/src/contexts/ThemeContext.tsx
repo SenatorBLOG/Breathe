@@ -6,7 +6,7 @@ export type Theme = 'night' | 'day' | 'nature';
 export const THEME_BG: Record<Theme, string> = {
   night:  '/Background_Night.jpg',
   day:    '/Background_Day.jpg',
-  nature: '/Background_Nature.png',
+  nature: '/Background_Nature.jpg',
 };
 
 export const THEME_META: Record<Theme, { icon: string; label: string }> = {
@@ -52,6 +52,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const root = document.documentElement;
     root.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme);
 
     if (theme === 'day') {
       root.style.setProperty('--bg-primary',    '#F0F4FF');

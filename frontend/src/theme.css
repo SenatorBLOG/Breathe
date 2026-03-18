@@ -1,125 +1,100 @@
-/* src/theme.css — Breathe theme system */
-/* 
-   Tailwind v4 owns: --background, --foreground, --border, --primary etc.
-   We use our own namespace: --br-* to avoid conflicts.
-   Text/card colors are overridden via [data-theme] attribute selectors.
-*/
+/* src/theme.css — Breathe themes, compatible with Tailwind v4 */
 
-/* ══ Night (Ocean) — default ════════════════════════════════════════════════ */
-:root {
-  --br-accent:       #3A82F7;
-  --br-accent-glow:  rgba(58,130,247,0.35);
-  --br-card:         rgba(11,22,40,0.85);
-  --br-border:       rgba(30,51,88,0.5);
-}
+/* ══ Page background per theme ══════════════════════════════════════════════ */
+html[data-theme="night"], html[data-theme="night"] body { background-color: #010814 !important; }
+html[data-theme="day"],   html[data-theme="day"]   body { background-color: #EEF2FF !important; }
+html[data-theme="nature"],html[data-theme="nature"] body { background-color: #0A1A0E !important; }
 
-/* ══ Day (Celestial) ════════════════════════════════════════════════════════ */
-[data-theme="day"] {
-  --br-accent:       #2B6FD4;
-  --br-accent-glow:  rgba(43,111,212,0.25);
-  --br-card:         rgba(255,255,255,0.88);
-  --br-border:       rgba(180,200,255,0.6);
-}
+/* Also target via documentElement */
+:root[data-theme="day"]    { color-scheme: light; }
+:root[data-theme="night"]  { color-scheme: dark; }
+:root[data-theme="nature"] { color-scheme: dark; }
 
-/* ══ Nature (Forest) ════════════════════════════════════════════════════════ */
-[data-theme="nature"] {
-  --br-accent:       #2ECC71;
-  --br-accent-glow:  rgba(46,204,113,0.35);
-  --br-card:         rgba(10,28,14,0.85);
-  --br-border:       rgba(40,100,55,0.5);
-}
+/* ══ DAY THEME ══════════════════════════════════════════════════════════════ */
 
-/* ══ Day — text & background overrides ═════════════════════════════════════ */
-[data-theme="day"] .text-\[\#B8D9FF\]    { color: #1A2A5E !important; }
-[data-theme="day"] .text-\[\#7AC4FF\]    { color: #2B4A90 !important; }
-[data-theme="day"] .text-\[\#4A9EFF\]    { color: #2B6FD4 !important; }
-[data-theme="day"] .text-\[\#4A7AAA\]    { color: #4A6090 !important; }
-[data-theme="day"] .text-\[\#3D6080\]    { color: #5070A0 !important; }
-[data-theme="day"] .text-\[\#2A4060\]    { color: #7090C0 !important; }
-[data-theme="day"] .text-\[\#1E3358\]    { color: #8AAAD0 !important; }
+/* Text */
+[data-theme="day"] *[class*="text-[#B8D9FF]"] { color: #1A2A5E !important; }
+[data-theme="day"] *[class*="text-[#7AC4FF]"] { color: #2B4A90 !important; }
+[data-theme="day"] *[class*="text-[#4A9EFF]"] { color: #1A5FCC !important; }
+[data-theme="day"] *[class*="text-[#4A7AAA]"] { color: #3A5A90 !important; }
+[data-theme="day"] *[class*="text-[#3D6080]"] { color: #4A6A9A !important; }
+[data-theme="day"] *[class*="text-[#2A4060]"] { color: #6080B0 !important; }
 
-[data-theme="day"] .bg-\[\#010814\]          { background-color: #EEF2FF !important; }
-[data-theme="day"] .bg-\[\#040A14\]          { background-color: #E8EEFF !important; }
-[data-theme="day"] .bg-\[\#0B1628\]\/70      { background: rgba(255,255,255,0.88) !important; }
-[data-theme="day"] .bg-\[\#0B1628\]\/60      { background: rgba(255,255,255,0.82) !important; }
-[data-theme="day"] .bg-\[\#060C1A\]\/65      { background: rgba(240,244,255,0.82) !important; }
-[data-theme="day"] .bg-\[\#060C1A\]\/40      { background: rgba(220,230,255,0.5)  !important; }
-[data-theme="day"] .bg-\[\#0D1B33\]\/70      { background: rgba(255,255,255,0.85) !important; }
+/* Backgrounds */
+[data-theme="day"] *[class*="bg-[#010814]"]  { background-color: #EEF2FF !important; }
+[data-theme="day"] *[class*="bg-[#040A14]"]  { background-color: #E4EAFF !important; }
+[data-theme="day"] *[class*="bg-[#060C1A]"]  { background-color: rgba(220,230,255,0.7) !important; }
+[data-theme="day"] *[class*="bg-[#0B1628]"]  { background-color: rgba(255,255,255,0.88) !important; }
+[data-theme="day"] *[class*="bg-[#0D1B33]"]  { background-color: rgba(240,244,255,0.9) !important; }
 
-[data-theme="day"] .border-\[\#1E3358\]\/50  { border-color: rgba(150,180,255,0.5) !important; }
-[data-theme="day"] .border-\[\#1E3358\]\/40  { border-color: rgba(150,180,255,0.4) !important; }
-[data-theme="day"] .border-\[\#1E3358\]\/30  { border-color: rgba(150,180,255,0.3) !important; }
-[data-theme="day"] .border-\[\#1E3358\]\/20  { border-color: rgba(150,180,255,0.2) !important; }
+/* Borders */
+[data-theme="day"] *[class*="border-[#1E3358]"] { border-color: rgba(120,160,220,0.45) !important; }
+[data-theme="day"] *[class*="border-[#2A5499]"] { border-color: rgba(80,130,210,0.5) !important; }
 
-[data-theme="day"] input,
+/* Nav + Footer */
+[data-theme="day"] nav    { background: rgba(238,242,255,0.97) !important; border-color: rgba(120,160,220,0.3) !important; }
+[data-theme="day"] footer { background: rgba(225,232,255,0.97) !important; border-color: rgba(120,160,220,0.3) !important; }
+
+/* Inputs */
+[data-theme="day"] input:not([type="range"]),
 [data-theme="day"] textarea,
 [data-theme="day"] select {
-  background: rgba(240,244,255,0.9) !important;
-  border-color: rgba(150,180,255,0.6) !important;
+  background: rgba(240,244,255,0.95) !important;
+  border-color: rgba(120,160,220,0.5) !important;
   color: #1A2A5E !important;
 }
 [data-theme="day"] input::placeholder,
-[data-theme="day"] textarea::placeholder { color: #7090C0 !important; }
+[data-theme="day"] textarea::placeholder { color: #6080B0 !important; }
 
-/* Day: nav & footer */
-[data-theme="day"] nav  { background: rgba(240,244,255,0.95) !important; border-bottom-color: rgba(150,180,255,0.4) !important; }
-[data-theme="day"] footer { background: rgba(220,230,255,0.95) !important; border-top-color: rgba(150,180,255,0.4) !important; }
-
-/* Day: gradient buttons → brighter blue */
-[data-theme="day"] a[style*="1A5FCC"],
-[data-theme="day"] button[style*="1A5FCC"] {
-  background: linear-gradient(135deg,#1A5FCC,#3A82F7) !important;
-  box-shadow: 0 4px 20px rgba(43,111,212,0.35) !important;
+/* Buttons with gradient */
+[data-theme="day"] button[style*="1A5FCC"],
+[data-theme="day"] a[style*="1A5FCC"] {
+  filter: brightness(1.1) saturate(1.2);
 }
 
-/* ══ Nature — text & background overrides ═══════════════════════════════════ */
-[data-theme="nature"] .text-\[\#B8D9FF\]   { color: #C8F0D8 !important; }
-[data-theme="nature"] .text-\[\#7AC4FF\]   { color: #7ADFA0 !important; }
-[data-theme="nature"] .text-\[\#4A9EFF\]   { color: #2ECC71 !important; }
-[data-theme="nature"] .text-\[\#4A7AAA\]   { color: #4A9060 !important; }
-[data-theme="nature"] .text-\[\#3D6080\]   { color: #4A9060 !important; }
-[data-theme="nature"] .text-\[\#2A4060\]   { color: #2A5038 !important; }
-[data-theme="nature"] .text-\[\#1E3358\]   { color: #1A4030 !important; }
+/* ══ NATURE THEME ═══════════════════════════════════════════════════════════ */
 
-[data-theme="nature"] .bg-\[\#010814\]         { background-color: #0A1A0E !important; }
-[data-theme="nature"] .bg-\[\#040A14\]         { background-color: #0D2012 !important; }
-[data-theme="nature"] .bg-\[\#0B1628\]\/70     { background: rgba(10,28,14,0.85) !important; }
-[data-theme="nature"] .bg-\[\#0B1628\]\/60     { background: rgba(10,28,14,0.75) !important; }
-[data-theme="nature"] .bg-\[\#060C1A\]\/65     { background: rgba(8,20,10,0.75)  !important; }
-[data-theme="nature"] .bg-\[\#060C1A\]\/40     { background: rgba(8,20,10,0.5)   !important; }
-[data-theme="nature"] .bg-\[\#0D1B33\]\/70     { background: rgba(10,28,14,0.8)  !important; }
+/* Text */
+[data-theme="nature"] *[class*="text-[#B8D9FF]"] { color: #C8F0D8 !important; }
+[data-theme="nature"] *[class*="text-[#7AC4FF]"] { color: #6DD99A !important; }
+[data-theme="nature"] *[class*="text-[#4A9EFF]"] { color: #2ECC71 !important; }
+[data-theme="nature"] *[class*="text-[#4A7AAA]"] { color: #3D8A55 !important; }
+[data-theme="nature"] *[class*="text-[#3D6080]"] { color: #3D8A55 !important; }
+[data-theme="nature"] *[class*="text-[#2A4060]"] { color: #1A5038 !important; }
 
-[data-theme="nature"] .border-\[\#1E3358\]\/50 { border-color: rgba(40,100,55,0.5) !important; }
-[data-theme="nature"] .border-\[\#1E3358\]\/40 { border-color: rgba(40,100,55,0.4) !important; }
-[data-theme="nature"] .border-\[\#1E3358\]\/30 { border-color: rgba(40,100,55,0.3) !important; }
-[data-theme="nature"] .border-\[\#1E3358\]\/20 { border-color: rgba(40,100,55,0.2) !important; }
+/* Backgrounds */
+[data-theme="nature"] *[class*="bg-[#010814]"]  { background-color: #0A1A0E !important; }
+[data-theme="nature"] *[class*="bg-[#040A14]"]  { background-color: #0D2012 !important; }
+[data-theme="nature"] *[class*="bg-[#060C1A]"]  { background-color: rgba(8,22,12,0.7) !important; }
+[data-theme="nature"] *[class*="bg-[#0B1628]"]  { background-color: rgba(10,28,14,0.85) !important; }
+[data-theme="nature"] *[class*="bg-[#0D1B33]"]  { background-color: rgba(10,28,14,0.88) !important; }
 
-[data-theme="nature"] input,
+/* Borders */
+[data-theme="nature"] *[class*="border-[#1E3358]"] { border-color: rgba(40,100,55,0.45) !important; }
+[data-theme="nature"] *[class*="border-[#2A5499]"] { border-color: rgba(46,140,70,0.5) !important; }
+
+/* Nav + Footer */
+[data-theme="nature"] nav    { background: rgba(8,20,10,0.97) !important; border-color: rgba(40,100,55,0.3) !important; }
+[data-theme="nature"] footer { background: rgba(8,20,10,0.97) !important; border-color: rgba(40,100,55,0.25) !important; }
+
+/* Inputs */
+[data-theme="nature"] input:not([type="range"]),
 [data-theme="nature"] textarea,
 [data-theme="nature"] select {
-  background: rgba(10,28,14,0.8) !important;
-  border-color: rgba(40,100,55,0.6) !important;
+  background: rgba(10,28,14,0.85) !important;
+  border-color: rgba(40,100,55,0.55) !important;
   color: #C8F0D8 !important;
 }
 [data-theme="nature"] input::placeholder,
-[data-theme="nature"] textarea::placeholder { color: #2A5038 !important; }
+[data-theme="nature"] textarea::placeholder { color: #1A5038 !important; }
 
-/* Nature: nav & footer */
-[data-theme="nature"] nav   { background: rgba(8,20,10,0.97) !important; border-bottom-color: rgba(40,100,55,0.4) !important; }
-[data-theme="nature"] footer { background: rgba(8,20,10,0.97) !important; border-top-color: rgba(40,100,55,0.3) !important; }
-
-/* Nature: gradient buttons → green */
-[data-theme="nature"] a[style*="1A5FCC"],
-[data-theme="nature"] button[style*="1A5FCC"] {
+/* Buttons with gradient → green */
+[data-theme="nature"] button[style*="1A5FCC"],
+[data-theme="nature"] a[style*="1A5FCC"] {
   background: linear-gradient(135deg,#1A7A40,#2ECC71) !important;
   box-shadow: 0 4px 20px rgba(46,204,113,0.3) !important;
 }
 
-/* ══ Page background color ══════════════════════════════════════════════════ */
-[data-theme="night"] body, [data-theme="night"] #root { background-color: #010814; }
-[data-theme="day"]   body, [data-theme="day"]   #root { background-color: #EEF2FF; }
-[data-theme="nature"] body, [data-theme="nature"] #root { background-color: #0A1A0E; }
-
-/* ══ Smooth theme transition ════════════════════════════════════════════════ */
-body, #root { transition: background-color 0.4s ease; }
-nav, footer { transition: background 0.4s ease, border-color 0.4s ease; }
+/* ══ Smooth transitions ═════════════════════════════════════════════════════ */
+body, #root { transition: background-color 0.4s ease !important; }
+nav, footer { transition: background 0.4s ease, border-color 0.4s ease !important; }
