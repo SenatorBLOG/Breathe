@@ -1,10 +1,12 @@
 // src/components/NewsletterWidget.tsx
 import React, { useState } from 'react';
 import api from '../api';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 export default function NewsletterWidget() {
-  const [email,   setEmail]   = useState('');
-  const [status,  setStatus]  = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const ts = useThemeStyles();
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
   const subscribe = async () => {
@@ -23,41 +25,75 @@ export default function NewsletterWidget() {
   };
 
   return (
-    <div className="bg-[#0B1628]/70 border border-[#1E3358]/50 rounded-2xl p-4 flex flex-col gap-3">
-      <h3 className="text-xs uppercase tracking-widest text-[#3D6080]">Weekly Calm</h3>
-      <p className="text-[#4A7AAA] text-xs leading-relaxed">
-        Get one mindfulness tip delivered every Sunday.
-      </p>
+    <>
+      <style>{`
+        .newsletter-input::placeholder {
+          color: ${ts.textDim};
+          opacity: 1;
+        }
+        .newsletter-input::-webkit-input-placeholder { color: ${ts.textDim}; }
+        .newsletter-input::-moz-placeholder          { color: ${ts.textDim}; }
+        .newsletter-input:-ms-input-placeholder      { color: ${ts.textDim}; }
+      `}</style>
 
-      {status === 'success' ? (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#4AE8A0]/10 border border-[#4AE8A0]/20">
-          <span className="text-sm">🌊</span>
-          <span className="text-[#4AE8A0] text-xs">{message}</span>
-        </div>
-      ) : (
-        <div className="flex gap-2">
-          <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && subscribe()}
-            placeholder="your@email.com"
-            disabled={status === 'loading'}
-            className="flex-1 min-w-0 bg-[#060C1A] border border-[#1E3358]/60 rounded-lg px-3 py-2 text-xs text-[#7AADCC] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors disabled:opacity-50"
-          />
-          <button
-            onClick={subscribe}
-            disabled={status === 'loading' || !email.includes('@')}
-            className="px-3 py-2 bg-[#1A5FCC] rounded-lg text-xs text-white hover:bg-[#2266D4] transition-colors flex-shrink-0 disabled:opacity-40"
+      <div className="rounded-2xl p-4 flex flex-col gap-3"
+        style={{
+          backgroundColor: ts.cardBg,
+          border: `1px solid ${ts.border}`,
+        }}
+      >
+        <h3 className="text-xs uppercase tracking-widest" style={{ color: ts.textDim }}>
+          Weekly Calm
+        </h3>
+        <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+          Get one mindfulness tip delivered every Sunday.
+        </p>
+
+        {status === 'success' ? (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg"
+            style={{
+              backgroundColor: `${ts.accent}10`,
+              border: `1px solid ${ts.accent}20`,
+            }}
           >
-            {status === 'loading' ? '…' : '→'}
-          </button>
-        </div>
-      )}
+            <span className="text-sm">🌊</span>
+            <span className="text-xs" style={{ color: ts.accent }}>
+              {message}
+            </span>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && subscribe()}
+              placeholder="your@email.com"
+              disabled={status === 'loading'}
+              className="newsletter-input flex-1 min-w-0 rounded-lg px-3 py-2 text-xs outline-none transition-colors disabled:opacity-50"
+              style={{
+                backgroundColor: ts.cardBg,
+                border: `1px solid ${ts.border}`,
+                color: ts.textSecondary,
+              }}
+            />
+            <button
+              onClick={subscribe}
+              disabled={status === 'loading' || !email.includes('@')}
+              className="px-3 py-2 rounded-lg text-xs text-white transition-colors flex-shrink-0 disabled:opacity-40"
+              style={{ background: ts.btnGradient }}
+            >
+              {status === 'loading' ? '…' : '→'}
+            </button>
+          </div>
+        )}
 
-      {status === 'error' && (
-        <p className="text-[#FF8A8A] text-[10px]">{message}</p>
-      )}
-    </div>
+        {status === 'error' && (
+          <p className="text-[10px]" style={{ color: '#FF8A8A' }}>
+            {message}
+          </p>
+        )}
+      </div>
+    </>
   );
 }

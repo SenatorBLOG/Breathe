@@ -17,7 +17,6 @@ import {
 import { useHealthData } from '../hooks/useHealthData';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
-import { Link as RouterLink } from 'react-router-dom';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Session {
@@ -28,9 +27,16 @@ interface Session {
 
 // ─── Ad slot ──────────────────────────────────────────────────────────────────
 function AdSlot({ label = 'Advertisement', className = '' }: { label?: string; className?: string }) {
+  const ts = useThemeStyles();
   return (
-    <div className={`flex items-center justify-center border border-dashed border-[#1E3358]/40 rounded-xl bg-[#040A14]/40 ${className}`}>
-      <span className="text-[9px] tracking-[0.25em] uppercase text-[#1A2D48] select-none">{label}</span>
+    <div className={`flex items-center justify-center border border-dashed rounded-xl ${className}`}
+      style={{
+        borderColor: ts.border,
+        backgroundColor: `${ts.cardBg}40`,
+      }}>
+      <span className="text-[9px] tracking-widest uppercase select-none" style={{ color: ts.textDim }}>
+        {label}
+      </span>
     </div>
   );
 }
@@ -39,11 +45,16 @@ function AdSlot({ label = 'Advertisement', className = '' }: { label?: string; c
 function ChartCard({ title, sub, children, className = '' }: {
   title: string; sub?: string; children: React.ReactNode; className?: string;
 }) {
+  const ts = useThemeStyles();
   return (
-    <div className={`flex flex-col gap-3 rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50 p-5 ${className}`}>
+    <div className={`flex flex-col gap-3 rounded-2xl p-5 ${className}`}
+      style={{
+        backgroundColor: ts.cardBg,
+        border: `1px solid ${ts.border}`,
+      }}>
       <div>
-        <h3 className="text-[#B8D9FF] text-sm font-medium">{title}</h3>
-        {sub && <p className="text-[#4A7AAA] text-[10px] mt-0.5">{sub}</p>}
+        <h3 className="text-sm font-medium" style={{ color: ts.textPrimary }}>{title}</h3>
+        {sub && <p className="text-[10px] mt-0.5" style={{ color: ts.textMuted }}>{sub}</p>}
       </div>
       <div className="w-full min-w-0">{children}</div>
     </div>
@@ -54,26 +65,41 @@ function ChartCard({ title, sub, children, className = '' }: {
 function MilestoneBadge({ icon, label, value, glow }: {
   icon: React.ReactNode; label: string; value: string; glow: string;
 }) {
+  const ts = useThemeStyles();
   return (
-    <div className="flex flex-col items-center gap-2 px-4 py-4 rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50 text-center"
-      style={{ boxShadow: `0 0 20px ${glow}` }}>
-      <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: `${glow.replace('0.08', '0.15')}` }}>
+    <div className="flex flex-col items-center gap-2 px-4 py-4 rounded-2xl text-center"
+      style={{
+        backgroundColor: ts.cardBg,
+        border: `1px solid ${ts.border}`,
+        boxShadow: `0 0 20px ${glow}`,
+      }}>
+      <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+        style={{ background: `${glow.replace('0.08', '0.15')}` }}>
         {icon}
       </div>
-      <p className="text-[#7AC4FF] text-lg font-medium tabular-nums leading-none">{value}</p>
-      <p className="text-[#4A7AAA] text-[9px] uppercase tracking-widest">{label}</p>
+      <p className="text-lg font-medium tabular-nums leading-none" style={{ color: ts.textSecondary }}>
+        {value}
+      </p>
+      <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+        {label}
+      </p>
     </div>
   );
 }
 
 // ─── Insight card ─────────────────────────────────────────────────────────────
 function InsightCard({ icon, title, desc }: { icon: string; title: string; desc: string }) {
+  const ts = useThemeStyles();
   return (
-    <div className="flex items-start gap-3 p-4 rounded-2xl bg-[#0B1628]/60 border border-[#1E3358]/40 hover:border-[#2A5499]/50 transition-colors">
+    <div className="flex items-start gap-3 p-4 rounded-2xl transition-colors"
+      style={{
+        backgroundColor: ts.cardBg,
+        border: `1px solid ${ts.border}`,
+      }}>
       <span className="text-xl flex-shrink-0">{icon}</span>
       <div>
-        <p className="text-[#B8D9FF] text-xs font-medium mb-1">{title}</p>
-        <p className="text-[#3D6080] text-[10px] leading-relaxed">{desc}</p>
+        <p className="text-xs font-medium mb-1" style={{ color: ts.textPrimary }}>{title}</p>
+        <p className="text-[10px] leading-relaxed" style={{ color: ts.textDim }}>{desc}</p>
       </div>
     </div>
   );
@@ -122,7 +148,6 @@ export default function StatsPage() {
     streak >= 3
       ? { icon: '🔥', title: `${streak}-day streak`, desc: 'Streaks build momentum. Your nervous system is learning to shift faster each day.' }
       : { icon: '📅', title: 'Daily practice', desc: 'Meditate 3 days in a row to ignite your first streak and unlock deeper pattern insights.' },
-    // Health-based insight
     health.recoveryScore !== null
       ? health.recoveryScore >= 75
         ? { icon: '⚡', title: 'Great recovery today', desc: `Recovery ${health.recoveryScore}/100 — ideal for an energising Wim Hof session.` }
@@ -133,30 +158,26 @@ export default function StatsPage() {
   ];
 
   return (
-    <div className="relative flex flex-col min-h-screen  font-montserrat">
-      <style>{`
-        @keyframes statsFadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-        .stats-in { animation: statsFadeUp 0.6s ease forwards; }
-      `}</style>
-
-      {/* Star background */}
+    <div className="relative flex flex-col min-h-screen font-montserrat">
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />
 
-        {/* ── Top ad ── */}
         <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-4">
           <AdSlot label="Ad · 728×90 leaderboard" className="h-12 sm:h-14" />
         </div>
 
-        {/* ── Hero header ── */}
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-8 pb-4">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] mb-2">Breathe · Analytics</p>
+          <p className="text-[10px] tracking-[0.3em] uppercase mb-2" style={{ color: ts.textMuted }}>
+            Breathe · Analytics
+          </p>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-light text-[#B8D9FF] tracking-wide">Your Progress</h1>
-              <p className="text-[#4A7AAA] text-xs mt-1 max-w-md">
+              <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
+                Your Progress
+              </h1>
+              <p className="text-xs mt-1 max-w-md" style={{ color: ts.textMuted }}>
                 {sessions.length > 0
                   ? `${sessions.length} sessions recorded · ${totalMins} minutes of mindfulness · your data is training your AI coach`
                   : 'Start meditating to unlock your personal analytics'}
@@ -172,95 +193,139 @@ export default function StatsPage() {
           </div>
         </header>
 
-        {/* ── Main content ── */}
         <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 pb-20 flex flex-col gap-6">
 
           {/* Milestone badges row */}
-          <div className="stats-in grid grid-cols-2 sm:grid-cols-4 gap-3" style={{ animationDelay: '0.05s', opacity: 0 }}>
-            <MilestoneBadge icon={<Flame size={16} className="text-[#FF9A5C]" />}    label={t("stats.dayStreak")}     value={`${streak}d`}         glow="rgba(255,154,92,0.08)" />
-            <MilestoneBadge icon={<Timer size={16} className="text-[#4A9EFF]" />}    label={t("stats.totalMinutes")}  value={`${totalMins}m`}      glow="rgba(74,158,255,0.08)" />
-            <MilestoneBadge icon={<Wind size={16} className="text-[#7AC4FF]" />}     label={t("stats.cyclesBeathed")} value={String(totalCycles)} glow="rgba(122,196,255,0.08)" />
-            <MilestoneBadge icon={<TrendingUp size={16} className="text-[#4AE8A0]" />} label={t("stats.avgFocus")}    value={String(avgFocus)}     glow="rgba(74,232,160,0.08)" />
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <MilestoneBadge icon={<Flame size={16} />}    label={t("stats.dayStreak")}     value={`${streak}d`}         glow="rgba(255,154,92,0.08)" />
+            <MilestoneBadge icon={<Timer size={16} />}    label={t("stats.totalMinutes")}  value={`${totalMins}m`}      glow="rgba(74,158,255,0.08)" />
+            <MilestoneBadge icon={<Wind size={16} />}     label={t("stats.cyclesBeathed")} value={String(totalCycles)} glow="rgba(122,196,255,0.08)" />
+            <MilestoneBadge icon={<TrendingUp size={16} />} label={t("stats.avgFocus")}    value={String(avgFocus)}     glow="rgba(74,232,160,0.08)" />
           </div>
 
-          {/* Health data panel — only if wearable connected */}
+          {/* Health data panel */}
           {health.sources.length > 0 && (
-            <div className="stats-in grid grid-cols-2 sm:grid-cols-4 gap-3" style={{ animationDelay: '0.08s', opacity: 0 }}>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {health.avgSleep7d && (
-                <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50">
+                <div className="flex flex-col gap-1.5 p-4 rounded-2xl"
+                  style={{
+                    backgroundColor: ts.cardBg,
+                    border: `1px solid ${ts.border}`,
+                  }}>
                   <div className="flex items-center gap-1.5">
-                    <Moon size={12} className="text-[#7AC4FF]" />
-                    <p className="text-[9px] uppercase tracking-widest text-[#4A7AAA]">Avg sleep 7d</p>
+                    <Moon size={12} style={{ color: ts.accent }} />
+                    <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      Avg sleep 7d
+                    </p>
                   </div>
-                  <p className="text-[#B8D9FF] text-lg font-medium tabular-nums">
+                  <p className="text-lg font-medium tabular-nums" style={{ color: ts.textPrimary }}>
                     {Math.floor(health.avgSleep7d/60)}h{health.avgSleep7d%60}m
                   </p>
                   <p className="text-[9px]" style={{
-                    color: health.sleepQuality === 'good' ? '#4AE8A0' : health.sleepQuality === 'fair' ? '#FFD97D' : '#FF8A8A'
-                  }}>{health.sleepQuality}</p>
+                    color: health.sleepQuality === 'good' ? ts.accent : health.sleepQuality === 'fair' ? '#FFD97D' : '#FF8A8A'
+                  }}>
+                    {health.sleepQuality}
+                  </p>
                 </div>
               )}
               {health.avgHRV7d && (
-                <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50">
+                <div className="flex flex-col gap-1.5 p-4 rounded-2xl"
+                  style={{
+                    backgroundColor: ts.cardBg,
+                    border: `1px solid ${ts.border}`,
+                  }}>
                   <div className="flex items-center gap-1.5">
-                    <Activity size={12} className="text-[#4A9EFF]" />
-                    <p className="text-[9px] uppercase tracking-widest text-[#4A7AAA]">Avg HRV 7d</p>
+                    <Activity size={12} style={{ color: ts.accent }} />
+                    <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      Avg HRV 7d
+                    </p>
                   </div>
-                  <p className="text-[#B8D9FF] text-lg font-medium tabular-nums">{health.avgHRV7d}ms</p>
-                  <p className="text-[9px] text-[#4A7AAA]">heart rate variability</p>
+                  <p className="text-lg font-medium tabular-nums" style={{ color: ts.textPrimary }}>
+                    {health.avgHRV7d}ms
+                  </p>
+                  <p className="text-[9px]" style={{ color: ts.textMuted }}>
+                    heart rate variability
+                  </p>
                 </div>
               )}
               {health.restingHR && (
-                <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50">
+                <div className="flex flex-col gap-1.5 p-4 rounded-2xl"
+                  style={{
+                    backgroundColor: ts.cardBg,
+                    border: `1px solid ${ts.border}`,
+                  }}>
                   <div className="flex items-center gap-1.5">
-                    <Heart size={12} className="text-[#FF8A8A]" />
-                    <p className="text-[9px] uppercase tracking-widest text-[#4A7AAA]">Resting HR</p>
+                    <Heart size={12} style={{ color: '#FF8A8A' }} />
+                    <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      Resting HR
+                    </p>
                   </div>
-                  <p className="text-[#B8D9FF] text-lg font-medium tabular-nums">{health.restingHR} bpm</p>
-                  <p className="text-[9px] text-[#4A7AAA]">last recorded</p>
+                  <p className="text-lg font-medium tabular-nums" style={{ color: ts.textPrimary }}>
+                    {health.restingHR} bpm
+                  </p>
+                  <p className="text-[9px]" style={{ color: ts.textMuted }}>
+                    last recorded
+                  </p>
                 </div>
               )}
               {health.recoveryScore !== null && (
-                <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50">
+                <div className="flex flex-col gap-1.5 p-4 rounded-2xl"
+                  style={{
+                    backgroundColor: ts.cardBg,
+                    border: `1px solid ${ts.border}`,
+                  }}>
                   <div className="flex items-center gap-1.5">
-                    <Sparkles size={12} className="text-[#4AE8A0]" />
-                    <p className="text-[9px] uppercase tracking-widest text-[#4A7AAA]">Recovery</p>
+                    <Sparkles size={12} style={{ color: ts.accent }} />
+                    <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      Recovery
+                    </p>
                   </div>
-                  <p className="text-[#B8D9FF] text-lg font-medium tabular-nums">{health.recoveryScore}/100</p>
-                  <div className="h-1 rounded-full bg-[#1E3358]/40 overflow-hidden">
+                  <p className="text-lg font-medium tabular-nums" style={{ color: ts.textPrimary }}>
+                    {health.recoveryScore}/100
+                  </p>
+                  <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: ts.border }}>
                     <div className="h-full rounded-full transition-all"
-                      style={{ width: `${health.recoveryScore}%`,
-                        background: health.recoveryScore >= 75 ? '#4AE8A0' : health.recoveryScore >= 50 ? '#4A9EFF' : '#FF8A8A' }} />
+                      style={{
+                        width: `${health.recoveryScore}%`,
+                        background: health.recoveryScore >= 75 ? ts.accent : health.recoveryScore >= 50 ? ts.accentLight : '#FF8A8A'
+                      }} />
                   </div>
                 </div>
               )}
-              {/* Link to connect more */}
               <div className="sm:col-span-4 flex items-center justify-between px-1">
-                <p className="text-[9px] text-[#4A7AAA]">
+                <p className="text-[9px]" style={{ color: ts.textMuted }}>
                   <Watch size={9} className="inline mr-1" />
                   Data from: {health.sources.map(s => s === 'apple_health' ? 'Apple Health' : s === 'google_fit' ? 'Google Fit' : 'Fitbit').join(', ')}
                 </p>
-                <RouterLink to="/profile" className="text-[9px] text-[#4A9EFF] hover:underline">Manage integrations →</RouterLink>
+                <Link to="/profile" className="text-[9px] hover:underline" style={{ color: ts.accent }}>
+                  Manage integrations →
+                </Link>
               </div>
             </div>
           )}
 
-          {/* StatsCards (existing component, wrapped) */}
-          <div className="stats-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
-            <div className="rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50 p-5">
-              <div className="mb-3">
-                <h3 className="text-[#B8D9FF] text-sm font-medium">Key metrics</h3>
-                <p className="text-[#4A7AAA] text-[10px] mt-0.5">Averages across all your sessions</p>
-              </div>
-              <StatsCards />
+          {/* StatsCards */}
+          <div className="rounded-2xl p-5"
+            style={{
+              backgroundColor: ts.cardBg,
+              border: `1px solid ${ts.border}`,
+            }}>
+            <div className="mb-3">
+              <h3 className="text-sm font-medium" style={{ color: ts.textPrimary }}>
+                Key metrics
+              </h3>
+              <p className="text-[10px] mt-0.5" style={{ color: ts.textMuted }}>
+                Averages across all your sessions
+              </p>
             </div>
+            <StatsCards />
           </div>
 
           {/* Ad slot — mid page */}
           <AdSlot label="Ad · 728×90 mid-page" className="h-12 sm:h-14" />
 
           {/* Weekly + Annual charts */}
-          <div className="stats-in grid grid-cols-1 gap-5" style={{ animationDelay: '0.15s', opacity: 0 }}>
+          <div className="grid grid-cols-1 gap-5">
             <ChartCard title={t("stats.weeklyActivity")} sub="Sessions and minutes per day this week">
               <WeeklyActivityChart />
             </ChartCard>
@@ -270,7 +335,7 @@ export default function StatsPage() {
           </div>
 
           {/* Mood + Monthly side by side */}
-          <div className="stats-in grid grid-cols-1 lg:grid-cols-2 gap-5" style={{ animationDelay: '0.2s', opacity: 0 }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <ChartCard title={t("stats.moodTracking")} sub="How your mood shifts after each session">
               <MoodTrackingGrid />
             </ChartCard>
@@ -280,10 +345,12 @@ export default function StatsPage() {
           </div>
 
           {/* Insights strip */}
-          <div className="stats-in flex flex-col gap-3" style={{ animationDelay: '0.25s', opacity: 0 }}>
+          <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2 mb-1">
-              <Sparkles size={12} className="text-[#2A5499]" />
-              <p className="text-[10px] tracking-[0.25em] uppercase text-[#4A7AAA]">Insights</p>
+              <Sparkles size={12} style={{ color: ts.accent }} />
+              <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+                Insights
+              </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {insights.map((ins, i) => ins && <InsightCard key={i} {...ins} />)}
@@ -291,29 +358,32 @@ export default function StatsPage() {
           </div>
 
           {/* Bottom ad + CTA row */}
-          <div className="stats-in grid grid-cols-1 sm:grid-cols-3 gap-4" style={{ animationDelay: '0.3s', opacity: 0 }}>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="sm:col-span-2">
               <AdSlot label="Ad · 468×60 banner" className="h-20 sm:h-24" />
             </div>
-            {/* Motivational CTA */}
-            <div className="flex flex-col items-center justify-center gap-3 rounded-2xl bg-[#0D1B33]/70 border border-[#1E3358]/50 p-5 text-center"
-              style={{ boxShadow: '0 0 30px rgba(74,158,255,0.06)' }}>
-              <Trophy size={22} className="text-[#4A9EFF]/60" />
-              <p className="text-[#7AC4FF] text-xs font-medium">
+            <div className="flex flex-col items-center justify-center gap-3 rounded-2xl p-5 text-center"
+              style={{
+                backgroundColor: ts.cardBg,
+                border: `1px solid ${ts.border}`,
+                boxShadow: ts.btnShadow,
+              }}>
+              <Trophy size={22} style={{ color: ts.accent }} />
+              <p className="text-xs font-medium" style={{ color: ts.textSecondary }}>
                 {sessions.length === 0
                   ? 'Start your first session'
                   : streak >= 7 ? `${streak} days strong!`
                   : 'Keep the streak alive'}
               </p>
               <Link to="/breathing"
-                className="w-full py-2 rounded-xl text-xs text-white font-medium tracking-wide hover:shadow-[0_0_16px_rgba(58,130,247,0.4)] transition-all"
+                className="w-full py-2 rounded-xl text-xs font-medium tracking-wide transition-all hover:shadow-[0_0_16px_rgba(58,130,247,0.4)]"
                 style={{ background: ts.btnGradient }}>
                 {t("stats.breatheNow")}
               </Link>
             </div>
           </div>
 
-          {/* Side ad — visible on wide screens as float-right-like block */}
+          {/* Side ad */}
           <div className="hidden xl:block fixed right-4 top-1/3 w-36" style={{ zIndex: 20 }}>
             <AdSlot label="Ad · 120×600 skyscraper" className="h-64" />
           </div>

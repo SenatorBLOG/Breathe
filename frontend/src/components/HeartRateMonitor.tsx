@@ -1,6 +1,7 @@
 // src/components/HeartRateMonitor.tsx
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useHeartRate } from '../hooks/useHeartRate';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 // ─── Animated heart SVG ───────────────────────────────────────────────────────
 function HeartIcon({ bpm, active }: { bpm: number | null; active: boolean }) {
@@ -23,7 +24,7 @@ function HeartIcon({ bpm, active }: { bpm: number | null; active: boolean }) {
         className={active && bpm ? 'heart-beat' : active ? 'heart-idle' : ''}
         viewBox="0 0 24 24" width="32" height="32" fill="currentColor"
         style={{
-          color: active ? '#FF6B8A' : '#2A4060',
+          color: active ? '#FF6B8A' : '#666',
           filter: active ? 'drop-shadow(0 0 8px rgba(255,107,138,0.6))' : 'none',
           transition: 'color 0.5s ease, filter 0.5s ease',
         }}>
@@ -54,7 +55,6 @@ function Waveform({ history }: { history: { bpm: number }[] }) {
     const max   = Math.max(...vals) + 5;
     const range = max - min || 1;
 
-    // Draw gradient line
     const grad = ctx.createLinearGradient(0, 0, width, 0);
     grad.addColorStop(0, 'rgba(255,107,138,0)');
     grad.addColorStop(0.3, 'rgba(255,107,138,0.5)');
@@ -73,7 +73,6 @@ function Waveform({ history }: { history: { bpm: number }[] }) {
     });
     ctx.stroke();
 
-    // Glow dot at end
     const lastX = width;
     const lastY = height - ((vals[vals.length-1] - min) / range) * height * 0.8 - height * 0.1;
     ctx.beginPath();
@@ -100,34 +99,42 @@ const ZONE_META = {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 interface HeartRateMonitorProps {
-  /** compact: small pill for BreathingPage HUD; full: expanded card for ProfilePage */
   variant?: 'compact' | 'full';
-  /** called each time a new reading arrives — lets parent use BPM for breathing sync */
   onReading?: (bpm: number) => void;
 }
 
 export default function HeartRateMonitor({ variant = 'full', onReading }: HeartRateMonitorProps) {
+  const ts = useThemeStyles();
   const { status, current, history, avg, min, max, zone, connect, disconnect, supported, error } = useHeartRate();
 
-  // Notify parent
   useEffect(() => {
     if (current?.bpm && onReading) onReading(current.bpm);
   }, [current, onReading]);
 
-  // ── Compact variant (BreathingPage HUD pill) ──────────────────────────────
+  // ── Compact variant ───────────────────────────────────────────────────────
   if (variant === 'compact') {
     return (
       <div className="flex items-center gap-2">
         {status === 'connected' && current ? (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border"
-            style={{ background: 'rgba(9,17,34,0.85)', border: '1px solid rgba(255,107,138,0.3)', backdropFilter: 'blur(8px)' }}>
+          <div
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full"
+            style={{
+              background: ts.cardBg,
+              border: '1px solid rgba(255,107,138,0.3)',
+              backdropFilter: 'blur(8px)',
+            }}
+          >
             <HeartIcon bpm={current.bpm} active />
             <span className="text-[#FF6B8A] text-sm font-medium tabular-nums">{current.bpm}</span>
-            <span className="text-[#4A7AAA] text-[10px]">bpm</span>
+            <span className="text-[10px]" style={{ color: ts.textMuted }}>bpm</span>
           </div>
         ) : (
-          <button onClick={status === 'connected' ? disconnect : connect} disabled={!supported}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#1E3358]/50 text-[#4A7AAA] text-[10px] hover:border-[#FF6B8A]/30 hover:text-[#FF6B8A] transition-all disabled:opacity-30">
+          <button
+            onClick={status === 'connected' ? disconnect : connect}
+            disabled={!supported}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] transition-all hover:border-[rgba(255,107,138,0.3)] hover:text-[#FF6B8A] disabled:opacity-30"
+            style={{ color: ts.textMuted, borderColor: ts.border }}
+          >
             <HeartIcon bpm={null} active={false} />
             {supported ? (status === 'connecting' ? 'Connecting…' : 'Connect HR') : 'BT not supported'}
           </button>
@@ -136,34 +143,44 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
     );
   }
 
-  // ── Full variant (ProfilePage card) ──────────────────────────────────────
+  // ── Full variant ──────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col gap-4 p-5 rounded-2xl border transition-all"
+    <div
+      className="flex flex-col gap-4 p-5 rounded-2xl border transition-all"
       style={{
-        background: 'linear-gradient(145deg,rgba(11,22,40,0.85),rgba(6,12,26,0.9))',
-        border: status === 'connected' ? '1px solid rgba(255,107,138,0.35)' : '1px solid rgba(30,51,88,0.5)',
+        background: ts.cardBg,
+        border: status === 'connected'
+          ? '1px solid rgba(255,107,138,0.35)'
+          : `1px solid ${ts.border}`,
         boxShadow: status === 'connected' ? '0 0 30px rgba(255,107,138,0.06)' : 'none',
-      }}>
-
+      }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center"
             style={{
-              background: status === 'connected' ? 'rgba(255,107,138,0.12)' : 'rgba(30,51,88,0.3)',
-              border: status === 'connected' ? '1px solid rgba(255,107,138,0.3)' : '1px solid rgba(30,51,88,0.5)',
-            }}>
+              background: status === 'connected' ? 'rgba(255,107,138,0.12)' : `${ts.border}50`,
+              border: status === 'connected'
+                ? '1px solid rgba(255,107,138,0.3)'
+                : `1px solid ${ts.border}`,
+            }}
+          >
             <HeartIcon bpm={current?.bpm ?? null} active={status === 'connected'} />
           </div>
           <div>
-            <p className="text-[#B8D9FF] text-sm font-medium">Live Heart Rate</p>
-            <p className="text-[9px] mt-0.5" style={{ color: status === 'connected' ? '#FF6B8A' : '#3D6080' }}>
-              {status === 'idle'        && 'Bluetooth · not connected'}
-              {status === 'connecting'  && 'Connecting…'}
-              {status === 'connected'   && 'Live · BLE connected'}
-              {status === 'disconnected'&& 'Disconnected'}
-              {status === 'unsupported' && 'Web Bluetooth not supported'}
-              {status === 'error'       && (error ?? 'Connection error')}
+            <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>Live Heart Rate</p>
+            <p
+              className="text-[9px] mt-0.5"
+              style={{ color: status === 'connected' ? '#FF6B8A' : ts.textDim }}
+            >
+              {status === 'idle'         && 'Bluetooth · not connected'}
+              {status === 'connecting'   && 'Connecting…'}
+              {status === 'connected'    && 'Live · BLE connected'}
+              {status === 'disconnected' && 'Disconnected'}
+              {status === 'unsupported'  && 'Web Bluetooth not supported'}
+              {status === 'error'        && (error ?? 'Connection error')}
             </p>
           </div>
         </div>
@@ -174,7 +191,9 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
           className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium transition-all hover:scale-105 disabled:opacity-40"
           style={status === 'connected'
             ? { background: 'rgba(255,107,138,0.1)', color: '#FF6B8A', border: '1px solid rgba(255,107,138,0.3)' }
-            : { background: 'linear-gradient(135deg,#8B1A3A,#CC2244)', color: '#fff' }}>
+            : { background: 'linear-gradient(135deg,#8B1A3A,#CC2244)', color: '#fff' }
+          }
+        >
           {status === 'connecting' ? 'Connecting…' : status === 'connected' ? 'Disconnect' : 'Connect'}
         </button>
       </div>
@@ -183,31 +202,34 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
       {status === 'connected' && current && (
         <>
           <div className="flex items-end gap-4">
-            {/* Big number */}
             <div className="flex items-baseline gap-1">
-              <span className="text-5xl font-light tabular-nums leading-none"
-                style={{ color: '#FF6B8A', textShadow: '0 0 20px rgba(255,107,138,0.4)' }}>
+              <span
+                className="text-5xl font-light tabular-nums leading-none"
+                style={{ color: '#FF6B8A', textShadow: '0 0 20px rgba(255,107,138,0.4)' }}
+              >
                 {current.bpm}
               </span>
-              <span className="text-[#4A7AAA] text-sm mb-1">bpm</span>
+              <span className="text-sm mb-1" style={{ color: ts.textMuted }}>bpm</span>
             </div>
-            {/* Zone badge */}
             {zone && (
-              <div className="mb-1 px-2.5 py-1 rounded-full text-[10px] font-medium"
-                style={{ color: ZONE_META[zone].color, background: ZONE_META[zone].bg }}>
+              <div
+                className="mb-1 px-2.5 py-1 rounded-full text-[10px] font-medium"
+                style={{ color: ZONE_META[zone].color, background: ZONE_META[zone].bg }}
+              >
                 {ZONE_META[zone].label}
               </div>
             )}
           </div>
 
-          {/* Waveform */}
           {history.length > 2 && (
-            <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(6,12,26,0.6)', padding: '8px 12px' }}>
+            <div
+              className="rounded-xl overflow-hidden"
+              style={{ background: `${ts.pageBg}CC`, padding: '8px 12px' }}
+            >
               <Waveform history={history} />
             </div>
           )}
 
-          {/* Stats */}
           {history.length > 5 && (
             <div className="grid grid-cols-3 gap-2">
               {[
@@ -215,15 +237,18 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
                 { label: 'Min',     value: `${min} bpm` },
                 { label: 'Max',     value: `${max} bpm` },
               ].map(({ label, value }) => (
-                <div key={label} className="flex flex-col gap-0.5 p-2.5 rounded-xl bg-[#060C1A]/60 border border-[#1E3358]/30 text-center">
+                <div
+                  key={label}
+                  className="flex flex-col gap-0.5 p-2.5 rounded-xl text-center"
+                  style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}
+                >
                   <p className="text-[#FF6B8A] text-xs font-medium tabular-nums">{value}</p>
-                  <p className="text-[9px] text-[#4A7AAA] uppercase tracking-wide">{label}</p>
+                  <p className="text-[9px] uppercase tracking-wide" style={{ color: ts.textMuted }}>{label}</p>
                 </div>
               ))}
             </div>
           )}
 
-          {/* Contact sensor */}
           {current.contactDetected === false && (
             <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#FF9A5C]/10 border border-[#FF9A5C]/20">
               <span className="text-[#FF9A5C] text-xs">⚠️ No skin contact detected — ensure device is on your wrist</span>
@@ -234,18 +259,24 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
 
       {/* Not supported message */}
       {!supported && (
-        <div className="flex flex-col gap-1.5 px-3 py-3 rounded-xl bg-[#0A1525]/60 border border-[#1E3358]/30">
-          <p className="text-[#4A7AAA] text-xs leading-relaxed">
+        <div
+          className="flex flex-col gap-1.5 px-3 py-3 rounded-xl"
+          style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}
+        >
+          <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
             Web Bluetooth requires Chrome or Edge on desktop or Android.
             Safari and Firefox are not supported.
           </p>
         </div>
       )}
 
-      {/* How it works */}
+      {/* Compatible devices */}
       {status === 'idle' && supported && (
         <details className="group">
-          <summary className="text-[10px] text-[#4A7AAA] cursor-pointer hover:text-[#FF6B8A] transition-colors list-none flex items-center gap-1.5">
+          <summary
+            className="text-[10px] cursor-pointer hover:text-[#FF6B8A] transition-colors list-none flex items-center gap-1.5"
+            style={{ color: ts.textMuted }}
+          >
             <span className="group-open:rotate-90 transition-transform inline-block">›</span>
             Compatible devices
           </summary>
@@ -256,7 +287,7 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
               '📱 Most Bluetooth LE heart rate monitors',
               '🤖 Wear OS devices with HR broadcast enabled',
             ].map(s => (
-              <p key={s} className="text-[10px] text-[#4A7AAA] leading-relaxed">{s}</p>
+              <p key={s} className="text-[10px] leading-relaxed" style={{ color: ts.textMuted }}>{s}</p>
             ))}
           </div>
         </details>

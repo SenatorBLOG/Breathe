@@ -1,6 +1,5 @@
 // src/pages/ProfilePage.tsx
 import React, { useCallback, useEffect, useState } from 'react';
-import { useThemeStyles } from '../hooks/useThemeStyles';
 import { Link, useLocation } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
@@ -10,6 +9,7 @@ import { toast } from 'sonner';
 import { RefreshCw, Unlink, Moon, Heart, Activity, Zap, ChevronRight, Watch } from 'lucide-react';
 import AppleHealthImport from '../components/AppleHealthImport';
 import HeartRateMonitor from '../components/HeartRateMonitor';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface SleepDay { date: string; duration: number; efficiency?: number; score?: number; deepMins?: number; remMins?: number; }
@@ -46,15 +46,19 @@ function timeAgo(iso: string) {
 
 // ─── Sleep bar chart (7 days) ─────────────────────────────────────────────────
 function SleepBars({ days }: { days: SleepDay[] }) {
+  const ts = useThemeStyles();
   const max = Math.max(...days.map(d => d.duration), 480);
   return (
     <div className="flex items-end gap-1 h-16">
       {days.slice(-7).map((d, i) => (
         <div key={i} className="flex-1 flex flex-col items-center gap-0.5" title={`${fmt(d.date)}: ${Math.floor(d.duration/60)}h ${d.duration%60}m`}>
           <div className="w-full rounded-t-sm transition-all"
-            style={{ height: `${(d.duration / max) * 100}%`, minHeight: 3,
-              background: d.score && d.score > 70 ? '#4AE8A0' : d.score && d.score > 50 ? '#4A9EFF' : '#FF8A8A' }} />
-          <span className="text-[7px] text-[#3D6080]">{fmt(d.date).split(' ')[1]}</span>
+            style={{
+              height: `${(d.duration / max) * 100}%`,
+              minHeight: 3,
+              background: d.score && d.score > 70 ? ts.accent : d.score && d.score > 50 ? ts.accentLight : '#FF8A8A'
+            }} />
+          <span className="text-[7px]" style={{ color: ts.textDim }}>{fmt(d.date).split(' ')[1]}</span>
         </div>
       ))}
     </div>
@@ -63,6 +67,7 @@ function SleepBars({ days }: { days: SleepDay[] }) {
 
 // ─── HRV trend ────────────────────────────────────────────────────────────────
 function HRVLine({ days }: { days: HRVDay[] }) {
+  const ts = useThemeStyles();
   const vals  = days.filter(d => d.rmssd).slice(-7);
   const max   = Math.max(...vals.map(d => d.rmssd!), 1);
   const min   = Math.min(...vals.map(d => d.rmssd!), 0);
@@ -72,13 +77,13 @@ function HRVLine({ days }: { days: HRVDay[] }) {
   return (
     <div>
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-10">
-        <polyline points={points} fill="none" stroke="#4A9EFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <polyline points={points} fill="none" stroke={ts.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         {vals.map((d, i) => (
           <circle key={i} cx={i * w} cy={100 - ((d.rmssd! - min) / range) * 85}
-            r="2.5" fill="#4A9EFF" opacity="0.8" />
+            r="2.5" fill={ts.accent} opacity="0.8" />
         ))}
       </svg>
-      <div className="flex justify-between text-[7px] text-[#3D6080] mt-0.5">
+      <div className="flex justify-between text-[7px] mt-0.5" style={{ color: ts.textDim }}>
         {vals.map((d, i) => <span key={i}>{fmt(d.date).split(' ')[1]}</span>)}
       </div>
     </div>
@@ -87,12 +92,17 @@ function HRVLine({ days }: { days: HRVDay[] }) {
 
 // ─── Stat pill ────────────────────────────────────────────────────────────────
 function StatPill({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: string; color: string }) {
+  const ts = useThemeStyles();
   return (
-    <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#0B1628]/60 border border-[#1E3358]/40">
+    <div className="flex items-center gap-2 px-3 py-2 rounded-xl"
+      style={{
+        backgroundColor: ts.cardBg,
+        border: `1px solid ${ts.border}`,
+      }}>
       <span style={{ color }}>{icon}</span>
       <div>
-        <p className="text-[#7AC4FF] text-sm font-medium tabular-nums leading-none">{value}</p>
-        <p className="text-[#4A7AAA] text-[9px] uppercase tracking-wide">{label}</p>
+        <p className="text-sm font-medium tabular-nums leading-none" style={{ color: ts.textSecondary }}>{value}</p>
+        <p className="text-[9px] uppercase tracking-wide" style={{ color: ts.textMuted }}>{label}</p>
       </div>
     </div>
   );
@@ -107,7 +117,7 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
   onSync: () => void;
   syncing: boolean;
 }) {
-  // provider comes from props, not status
+  const ts = useThemeStyles();
   const meta     = PROVIDER_META[provider];
   const sleep    = status?.data?.sleep?.slice(-7) ?? [];
   const hrv      = status?.data?.hrv?.slice(-7)   ?? [];
@@ -121,9 +131,11 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
 
   return (
     <div className="flex flex-col gap-4 p-5 rounded-2xl border transition-all"
-      style={{ background: 'linear-gradient(145deg,rgba(11,22,40,0.85),rgba(6,12,26,0.9))',
-        border: status?.connected ? `1px solid ${meta.color}33` : '1px solid rgba(30,51,88,0.5)',
-        boxShadow: status?.connected ? `0 0 20px ${meta.bg}` : 'none' }}>
+      style={{
+        backgroundColor: ts.cardBg,
+        borderColor: status?.connected ? `${meta.color}33` : ts.border,
+        boxShadow: status?.connected ? `0 0 20px ${meta.bg}` : 'none',
+      }}>
 
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -133,8 +145,8 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
             {meta.icon}
           </div>
           <div>
-            <p className="text-[#B8D9FF] text-sm font-medium">{meta.label}</p>
-            <p className="text-[9px] mt-0.5" style={{ color: status?.connected ? meta.color : '#3D6080' }}>
+            <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>{meta.label}</p>
+            <p className="text-[9px] mt-0.5" style={{ color: status?.connected ? meta.color : ts.textDim }}>
               {status?.connected
                 ? `Connected${status.lastSyncAt ? ` · synced ${timeAgo(status.lastSyncAt)}` : ''}`
                 : 'Not connected'}
@@ -145,18 +157,20 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
         {status?.connected ? (
           <div className="flex items-center gap-1.5">
             <button onClick={onSync} disabled={syncing}
-              className="p-1.5 rounded-lg text-[#4A7AAA] hover:text-[#4A9EFF] transition-colors disabled:opacity-40">
+              className="p-1.5 rounded-lg transition-colors disabled:opacity-40"
+              style={{ color: ts.textMuted }}>
               <RefreshCw size={13} className={syncing ? 'animate-spin' : ''} />
             </button>
             <button onClick={onDisconnect}
-              className="p-1.5 rounded-lg text-[#4A7AAA] hover:text-[#FF8A8A] transition-colors">
+              className="p-1.5 rounded-lg transition-colors"
+              style={{ color: ts.textMuted }}>
               <Unlink size={13} />
             </button>
           </div>
         ) : (
           <button onClick={onConnect}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs text-white font-medium transition-all hover:scale-105"
-            style={{ background: `linear-gradient(135deg,${meta.color}66,${meta.color})` }}>
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium transition-all hover:scale-105"
+            style={{ background: ts.btnGradient }}>
             Connect <ChevronRight size={11} />
           </button>
         )}
@@ -184,7 +198,9 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
           {/* Sleep chart */}
           {sleep.length > 0 && (
             <div className="flex flex-col gap-1.5">
-              <p className="text-[9px] uppercase tracking-widest text-[#4A7AAA]">Sleep · last 7 days</p>
+              <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                Sleep · last 7 days
+              </p>
               <SleepBars days={sleep} />
             </div>
           )}
@@ -192,7 +208,9 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
           {/* HRV line */}
           {hrv.filter(d => d.rmssd).length > 2 && (
             <div className="flex flex-col gap-1.5">
-              <p className="text-[9px] uppercase tracking-widest text-[#4A7AAA]">HRV trend</p>
+              <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                HRV trend
+              </p>
               <HRVLine days={hrv} />
             </div>
           )}
@@ -201,9 +219,15 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
 
       {/* Connected but not yet synced */}
       {status?.connected && sleep.length === 0 && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#060C1A]/40 border border-[#1E3358]/30">
-          <RefreshCw size={11} className="text-[#4A7AAA]" />
-          <p className="text-[#4A7AAA] text-xs">Tap sync to load your health data</p>
+        <div className="flex items-center gap-2 px-3 py-2 rounded-xl"
+          style={{
+            backgroundColor: `${ts.cardBg}40`,
+            border: `1px solid ${ts.border}`,
+          }}>
+          <RefreshCw size={11} style={{ color: ts.textMuted }} />
+          <p className="text-xs" style={{ color: ts.textMuted }}>
+            Tap sync to load your health data
+          </p>
         </div>
       )}
     </div>
@@ -247,19 +271,25 @@ function HealthInsight({ integrations }: { integrations: IntegrationStatus[] }) 
   }
 
   return (
-    <div className="flex flex-col gap-3 p-5 rounded-2xl border border-[#2A5499]/30 bg-[#0D1B33]/70"
-      style={{ boxShadow: '0 0 30px rgba(74,158,255,0.06)' }}>
+    <div className="flex flex-col gap-3 p-5 rounded-2xl border"
+      style={{
+        backgroundColor: ts.cardBg,
+        borderColor: ts.borderHover,
+        boxShadow: ts.btnShadow,
+      }}>
       <div className="flex items-center gap-2">
-        <Zap size={12} className="text-[#4A9EFF]" />
-        <p className="text-[9px] uppercase tracking-widest text-[#4A7AAA]">AI Coach · Health Insight</p>
+        <Zap size={12} style={{ color: ts.accent }} />
+        <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+          AI Coach · Health Insight
+        </p>
       </div>
       <div className="flex items-start gap-3">
         <span className="text-2xl flex-shrink-0">{icon}</span>
         <div className="flex flex-col gap-1.5">
-          <p className="text-[#B8D9FF] text-sm font-medium">{title}</p>
-          <p className="text-[#4A7AAA] text-xs leading-relaxed">{desc}</p>
+          <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>{title}</p>
+          <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
           <Link to={techniqueHref}
-            className="flex items-center gap-1.5 text-xs text-white font-medium px-4 py-2 rounded-xl w-fit mt-1 transition-all hover:scale-105"
+            className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-xl w-fit mt-1 transition-all hover:scale-105"
             style={{ background: ts.btnGradient }}>
             ✦ Try {technique} <ChevronRight size={11} />
           </Link>
@@ -274,8 +304,8 @@ export default function ProfilePage() {
   const ts = useThemeStyles();
   const location = useLocation();
   const [integrations, setIntegrations] = useState<IntegrationStatus[]>([]);
-  const [syncing, setSyncing]           = useState(false);
-  const [loading, setLoading]           = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const fetchStatus = useCallback(async () => {
     setLoading(true);
@@ -288,7 +318,6 @@ export default function ProfilePage() {
     } finally { setLoading(false); }
   }, []);
 
-  // On mount + after OAuth redirect — always refetch
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const integ  = params.get('integration');
@@ -301,14 +330,12 @@ export default function ProfilePage() {
       toast.error('Connection failed. Please try again.');
     }
 
-    // Always fetch status (catches both fresh load and OAuth return)
     fetchStatus();
   }, [location.search]);
 
   const BACKEND = import.meta.env.VITE_API_BASE?.replace('/api', '') ?? 'https://breathe-production-6cce.up.railway.app';
   const connect = (provider: string) => {
     const token = localStorage.getItem('token') ?? '';
-    // Pass token as query param — backend will use it to identify user
     window.location.href = `${BACKEND}/api/integrations/${provider}/connect?token=${token}`;
   };
   const disconnect = async (provider: string) => {
@@ -330,7 +357,7 @@ export default function ProfilePage() {
   const getStatus = (provider: string) => integrations.find(i => i.provider === provider);
 
   return (
-    <div className="relative flex flex-col min-h-screen  font-montserrat">
+    <div className="relative flex flex-col min-h-screen font-montserrat">
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
@@ -341,12 +368,22 @@ export default function ProfilePage() {
           {/* Header */}
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] mb-1">Breathe · Profile</p>
-              <h1 className="text-2xl sm:text-3xl font-light text-[#B8D9FF] tracking-wide">Health Integrations</h1>
-              <p className="text-[#4A7AAA] text-xs mt-1">Connect your wearable to get AI coaching based on your real sleep and HRV data.</p>
+              <p className="text-[10px] tracking-[0.3em] uppercase mb-1" style={{ color: ts.textMuted }}>
+                Breathe · Profile
+              </p>
+              <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
+                Health Integrations
+              </h1>
+              <p className="text-xs mt-1" style={{ color: ts.textMuted }}>
+                Connect your wearable to get AI coaching based on your real sleep and HRV data.
+              </p>
             </div>
             <Link to="/data-consent"
-              className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] text-[#4A9EFF] border border-[#1E3358]/50 hover:border-[#2A5499]/60 transition-all">
+              className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] transition-all"
+              style={{
+                color: ts.accent,
+                border: `1px solid ${ts.border}`,
+              }}>
               Why we need data →
             </Link>
           </div>
@@ -357,12 +394,13 @@ export default function ProfilePage() {
           {/* Integration cards */}
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
-              <p className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">
-                <Watch size={11} className="inline mr-1.5" />Connected services
+              <p className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                <Watch size={11} className="inline mr-1.5" /> Connected services
               </p>
               {integrations.length > 0 && (
                 <button onClick={sync} disabled={syncing}
-                  className="flex items-center gap-1.5 text-[10px] text-[#4A9EFF] hover:underline disabled:opacity-40">
+                  className="flex items-center gap-1.5 text-[10px] transition-all disabled:opacity-40"
+                  style={{ color: ts.accent }}>
                   <RefreshCw size={10} className={syncing ? 'animate-spin' : ''} />
                   Sync all
                 </button>
@@ -371,7 +409,7 @@ export default function ProfilePage() {
 
             {loading ? (
               <div className="flex flex-col gap-3">
-                {[0,1].map(i => <div key={i} className="h-24 rounded-2xl animate-pulse bg-[#0A1525]" />)}
+                {[0,1].map(i => <div key={i} className="h-24 rounded-2xl animate-pulse" style={{ backgroundColor: ts.cardBg }} />)}
               </div>
             ) : (
               <>
@@ -398,8 +436,14 @@ export default function ProfilePage() {
           </div>
 
           {/* How it works */}
-          <div className="flex flex-col gap-3 p-5 rounded-2xl bg-[#0B1628]/60 border border-[#1E3358]/40">
-            <p className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">How it works</p>
+          <div className="flex flex-col gap-3 p-5 rounded-2xl"
+            style={{
+              backgroundColor: ts.cardBg,
+              border: `1px solid ${ts.border}`,
+            }}>
+            <p className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+              How it works
+            </p>
             {[
               { icon: '🔗', text: 'Connect your Fitbit or Google Fit account with one click' },
               { icon: '📊', text: 'We read your sleep stages, HRV, and resting heart rate' },
@@ -408,26 +452,34 @@ export default function ProfilePage() {
             ].map(({ icon, text }) => (
               <div key={text} className="flex items-center gap-3">
                 <span className="text-base flex-shrink-0">{icon}</span>
-                <p className="text-[#4A7AAA] text-xs leading-relaxed">{text}</p>
+                <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{text}</p>
               </div>
             ))}
           </div>
 
           {/* Nav to sessions + stats */}
           <div className="grid grid-cols-2 gap-3">
-            <Link to="/sessions" className="flex items-center justify-between p-4 rounded-2xl bg-[#0B1628]/60 border border-[#1E3358]/40 hover:border-[#2A5499]/50 transition-all group">
+            <Link to="/sessions" className="flex items-center justify-between p-4 rounded-2xl transition-all group"
+              style={{
+                backgroundColor: ts.cardBg,
+                border: `1px solid ${ts.border}`,
+              }}>
               <div>
-                <p className="text-[#B8D9FF] text-xs font-medium">My Sessions</p>
-                <p className="text-[#4A7AAA] text-[10px]">Breathing history</p>
+                <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>My Sessions</p>
+                <p className="text-[10px]" style={{ color: ts.textMuted }}>Breathing history</p>
               </div>
-              <ChevronRight size={14} className="text-[#3D6080] group-hover:text-[#4A9EFF] transition-colors" />
+              <ChevronRight size={14} className="transition-colors" style={{ color: ts.textDim }} />
             </Link>
-            <Link to="/statistics" className="flex items-center justify-between p-4 rounded-2xl bg-[#0B1628]/60 border border-[#1E3358]/40 hover:border-[#2A5499]/50 transition-all group">
+            <Link to="/statistics" className="flex items-center justify-between p-4 rounded-2xl transition-all group"
+              style={{
+                backgroundColor: ts.cardBg,
+                border: `1px solid ${ts.border}`,
+              }}>
               <div>
-                <p className="text-[#B8D9FF] text-xs font-medium">Progress</p>
-                <p className="text-[#4A7AAA] text-[10px]">Charts & insights</p>
+                <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>Progress</p>
+                <p className="text-[10px]" style={{ color: ts.textMuted }}>Charts & insights</p>
               </div>
-              <ChevronRight size={14} className="text-[#3D6080] group-hover:text-[#4A9EFF] transition-colors" />
+              <ChevronRight size={14} className="transition-colors" style={{ color: ts.textDim }} />
             </Link>
           </div>
 
