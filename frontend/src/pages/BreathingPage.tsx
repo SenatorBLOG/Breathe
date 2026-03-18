@@ -1,6 +1,8 @@
 // src/pages/BreathingPage.tsx
 import React, { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import NavBar from "../components/NavBar";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useHealthData } from "../hooks/useHealthData";
 import { BreathingCircle, Phase } from "../components/BreathingCircle";
 import { VideoBackground } from "../components/VideoBackground";
 import api from "../api";
@@ -8,7 +10,6 @@ import { toast } from "sonner";
 import Footer from "../components/Footer";
 import { SessionFeedbackModal } from "../components/SessionFeedbackModal";
 import { Flame, Wind, Timer, Zap } from "lucide-react";
-import { useLocation } from "react-router-dom";
 
 // ─── How many full cycles before the feedback modal fires ────────────────────
 const FEEDBACK_AFTER_CYCLES = 3;
@@ -152,6 +153,7 @@ export default function BreathingPage() {
     const state = location.state as { coachPresetName?: string } | null;
     return state?.coachPresetName ?? null;
   });
+  const { data: health } = useHealthData();
   const [cycles, setCycles]               = useState(0);
   const [currentDuration, setCurrentDuration] = useState(0);
   const [totalStats, setTotalStats]       = useState({ totalSessions: 0, totalMinutes: 0, streak: 0 });
@@ -366,6 +368,49 @@ export default function BreathingPage() {
           </svg>
         </div>
       </section>
+
+      {/* ══ HEALTH STATUS BANNER (only when wearable connected) ══════════════ */}
+      {health.sources.length > 0 && health.recoveryScore !== null && (
+        <div className="relative z-10 px-4 sm:px-6 pb-2">
+          <div className="max-w-2xl mx-auto">
+            <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border"
+              style={{
+                background: 'rgba(9,17,34,0.85)',
+                border: health.recoveryScore >= 75
+                  ? '1px solid rgba(74,232,160,0.25)'
+                  : health.recoveryScore >= 50
+                  ? '1px solid rgba(74,158,255,0.25)'
+                  : '1px solid rgba(255,138,138,0.25)',
+              }}>
+              <span className="text-xl flex-shrink-0">
+                {health.recoveryScore >= 75 ? '⚡' : health.recoveryScore >= 50 ? '🌊' : '💙'}
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-[#B8D9FF] text-xs font-medium">
+                  Recovery {health.recoveryScore}/100
+                  {health.avgSleep7d ? ` · ${Math.floor(health.avgSleep7d/60)}h${health.avgSleep7d%60}m avg sleep` : ''}
+                  {health.avgHRV7d   ? ` · HRV ${health.avgHRV7d}ms` : ''}
+                </p>
+                <p className="text-[#4A7AAA] text-[10px]">
+                  {health.recoveryScore >= 75
+                    ? 'Great recovery — try Wim Hof or Box Breathing today'
+                    : health.recoveryScore >= 50
+                    ? 'Moderate recovery — Box or Coherent Breathing recommended'
+                    : 'Low recovery — 4-7-8 or Belly Breathing for gentle restore'}
+                </p>
+              </div>
+              <div className="w-10 h-10 flex-shrink-0">
+                <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
+                  <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(30,51,88,0.4)" strokeWidth="3" />
+                  <circle cx="18" cy="18" r="14" fill="none" strokeWidth="3" strokeLinecap="round"
+                    stroke={health.recoveryScore >= 75 ? '#4AE8A0' : health.recoveryScore >= 50 ? '#4A9EFF' : '#FF8A8A'}
+                    strokeDasharray={`${health.recoveryScore * 0.88} 88`} />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ══ BELOW-FOLD ════════════════════════════════════════════════════════ */}
       <section className="relative z-10 bg-[#040A14]/90 backdrop-blur-sm border-t border-[#1E3358]/30 py-14 px-4 sm:px-6">

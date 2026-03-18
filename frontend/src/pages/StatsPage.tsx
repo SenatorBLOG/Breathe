@@ -11,8 +11,10 @@ import { Link } from 'react-router-dom';
 import api from '../api';
 import {
   Flame, TrendingUp, Wind, Timer,
-  Brain, Sparkles, ArrowRight, Trophy
+  Brain, Sparkles, ArrowRight, Trophy, Moon, Activity, Heart, Watch
 } from 'lucide-react';
+import { useHealthData } from '../hooks/useHealthData';
+import { Link as RouterLink } from 'react-router-dom';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Session {
@@ -77,6 +79,7 @@ function InsightCard({ icon, title, desc }: { icon: string; title: string; desc:
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function StatsPage() {
   const [sessions, setSessions] = useState<Session[]>([]);
+  const { data: health } = useHealthData();
 
   useEffect(() => {
     api.get('/sessions').then(r => setSessions(r.data)).catch(() => {});
@@ -114,7 +117,14 @@ export default function StatsPage() {
     streak >= 3
       ? { icon: '🔥', title: `${streak}-day streak`, desc: 'Streaks build momentum. Your nervous system is learning to shift faster each day.' }
       : { icon: '📅', title: 'Daily practice', desc: 'Meditate 3 days in a row to ignite your first streak and unlock deeper pattern insights.' },
-    { icon: '🧠', title: 'AI coach learning', desc: 'Every session you log trains your personal recommendation engine to suggest better patterns.' },
+    // Health-based insight
+    health.recoveryScore !== null
+      ? health.recoveryScore >= 75
+        ? { icon: '⚡', title: 'Great recovery today', desc: `Recovery ${health.recoveryScore}/100 — ideal for an energising Wim Hof session.` }
+        : health.recoveryScore >= 50
+        ? { icon: '🌊', title: 'Moderate recovery', desc: `Recovery ${health.recoveryScore}/100 — Box or Coherent Breathing recommended today.` }
+        : { icon: '💙', title: 'Rest & restore', desc: `Recovery ${health.recoveryScore}/100 — try 4-7-8 to support your nervous system.` }
+      : { icon: '🧠', title: 'AI coach learning', desc: 'Every session you log trains your personal recommendation engine.' },
   ];
 
   return (
@@ -168,6 +178,68 @@ export default function StatsPage() {
             <MilestoneBadge icon={<Wind size={16} className="text-[#7AC4FF]" />}     label="Cycles breathed" value={String(totalCycles)} glow="rgba(122,196,255,0.08)" />
             <MilestoneBadge icon={<TrendingUp size={16} className="text-[#4AE8A0]" />} label="Avg focus"    value={String(avgFocus)}     glow="rgba(74,232,160,0.08)" />
           </div>
+
+          {/* Health data panel — only if wearable connected */}
+          {health.sources.length > 0 && (
+            <div className="stats-in grid grid-cols-2 sm:grid-cols-4 gap-3" style={{ animationDelay: '0.08s', opacity: 0 }}>
+              {health.avgSleep7d && (
+                <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50">
+                  <div className="flex items-center gap-1.5">
+                    <Moon size={12} className="text-[#7AC4FF]" />
+                    <p className="text-[9px] uppercase tracking-widest text-[#4A7AAA]">Avg sleep 7d</p>
+                  </div>
+                  <p className="text-[#B8D9FF] text-lg font-medium tabular-nums">
+                    {Math.floor(health.avgSleep7d/60)}h{health.avgSleep7d%60}m
+                  </p>
+                  <p className="text-[9px]" style={{
+                    color: health.sleepQuality === 'good' ? '#4AE8A0' : health.sleepQuality === 'fair' ? '#FFD97D' : '#FF8A8A'
+                  }}>{health.sleepQuality}</p>
+                </div>
+              )}
+              {health.avgHRV7d && (
+                <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50">
+                  <div className="flex items-center gap-1.5">
+                    <Activity size={12} className="text-[#4A9EFF]" />
+                    <p className="text-[9px] uppercase tracking-widest text-[#4A7AAA]">Avg HRV 7d</p>
+                  </div>
+                  <p className="text-[#B8D9FF] text-lg font-medium tabular-nums">{health.avgHRV7d}ms</p>
+                  <p className="text-[9px] text-[#4A7AAA]">heart rate variability</p>
+                </div>
+              )}
+              {health.restingHR && (
+                <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50">
+                  <div className="flex items-center gap-1.5">
+                    <Heart size={12} className="text-[#FF8A8A]" />
+                    <p className="text-[9px] uppercase tracking-widest text-[#4A7AAA]">Resting HR</p>
+                  </div>
+                  <p className="text-[#B8D9FF] text-lg font-medium tabular-nums">{health.restingHR} bpm</p>
+                  <p className="text-[9px] text-[#4A7AAA]">last recorded</p>
+                </div>
+              )}
+              {health.recoveryScore !== null && (
+                <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50">
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles size={12} className="text-[#4AE8A0]" />
+                    <p className="text-[9px] uppercase tracking-widest text-[#4A7AAA]">Recovery</p>
+                  </div>
+                  <p className="text-[#B8D9FF] text-lg font-medium tabular-nums">{health.recoveryScore}/100</p>
+                  <div className="h-1 rounded-full bg-[#1E3358]/40 overflow-hidden">
+                    <div className="h-full rounded-full transition-all"
+                      style={{ width: `${health.recoveryScore}%`,
+                        background: health.recoveryScore >= 75 ? '#4AE8A0' : health.recoveryScore >= 50 ? '#4A9EFF' : '#FF8A8A' }} />
+                  </div>
+                </div>
+              )}
+              {/* Link to connect more */}
+              <div className="sm:col-span-4 flex items-center justify-between px-1">
+                <p className="text-[9px] text-[#4A7AAA]">
+                  <Watch size={9} className="inline mr-1" />
+                  Data from: {health.sources.map(s => s === 'apple_health' ? 'Apple Health' : s === 'google_fit' ? 'Google Fit' : 'Fitbit').join(', ')}
+                </p>
+                <RouterLink to="/profile" className="text-[9px] text-[#4A9EFF] hover:underline">Manage integrations →</RouterLink>
+              </div>
+            </div>
+          )}
 
           {/* StatsCards (existing component, wrapped) */}
           <div className="stats-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
