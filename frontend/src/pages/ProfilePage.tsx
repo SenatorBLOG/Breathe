@@ -271,23 +271,33 @@ export default function ProfilePage() {
   const [syncing, setSyncing]           = useState(false);
   const [loading, setLoading]           = useState(true);
 
-  // Show toast on redirect from OAuth callback
+  const fetchStatus = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get('/integrations/status');
+      console.log('Integration status:', data);
+      setIntegrations(data);
+    } catch (err: any) {
+      console.error('fetchStatus error:', err?.response?.status, err?.message);
+    } finally { setLoading(false); }
+  }, []);
+
+  // On mount + after OAuth redirect — always refetch
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const integ  = params.get('integration');
     const status = params.get('status');
-    if (integ && status === 'connected') toast.success(`${integ === 'fitbit' ? 'Fitbit' : 'Google Fit'} connected!`);
-    if (integ && status === 'error')     toast.error('Connection failed. Please try again.');
-  }, []);
 
-  const fetchStatus = useCallback(async () => {
-    try {
-      const { data } = await api.get('/integrations/status');
-      setIntegrations(data);
-    } catch {} finally { setLoading(false); }
-  }, []);
+    if (integ && status === 'connected') {
+      toast.success(`${integ === 'fitbit' ? 'Fitbit' : 'Google Fit'} connected! Tap Sync to load your data.`);
+    }
+    if (integ && status === 'error') {
+      toast.error('Connection failed. Please try again.');
+    }
 
-  useEffect(() => { fetchStatus(); }, []);
+    // Always fetch status (catches both fresh load and OAuth return)
+    fetchStatus();
+  }, [location.search]);
 
   const BACKEND = import.meta.env.VITE_API_BASE?.replace('/api', '') ?? 'https://breathe-production-6cce.up.railway.app';
   const connect = (provider: string) => {

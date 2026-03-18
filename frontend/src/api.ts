@@ -23,7 +23,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       const currentPath = window.location.pathname;
       // Don't redirect if already on auth pages
-      const noRedirectPaths = ['/login', '/signup', '/', '/breathing', '/community', '/faq', '/support', '/home-page', '/music-library'];
+      const noRedirectPaths = ['/login', '/signup', '/', '/breathing', '/community', '/faq', '/support', '/home-page', '/music-library', '/profile'];
       if (!noRedirectPaths.some(p => currentPath.startsWith(p))) {
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
