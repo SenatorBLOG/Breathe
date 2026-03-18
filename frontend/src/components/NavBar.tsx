@@ -87,19 +87,19 @@ export default function NavBar() {
 
           {/* ── Desktop Nav ── */}
           <div className="hidden md:flex items-center gap-6">
-            <NavLink to="/home-page">Home</NavLink>
-            <NavLink to="/breathing">Meditate</NavLink>
-            <NavLink to="/music-library">Sounds</NavLink>
-            <NavLink to="/community">Community</NavLink>
+            <NavLink to="/home-page">{t("nav.home")}</NavLink>
+            <NavLink to="/breathing">{t("nav.meditate")}</NavLink>
+            <NavLink to="/music-library">{t("nav.sounds")}</NavLink>
+            <NavLink to="/community">{t("nav.community")}</NavLink>
             {isAuthenticated ? (
               <>
-                <NavLink to="/sessions">Sessions</NavLink>
-                <NavLink to="/statistics">Progress</NavLink>
+                <NavLink to="/sessions">{t("nav.sessions")}</NavLink>
+                <NavLink to="/statistics">{t("nav.progress")}</NavLink>
               </>
             ) : (
               <>
-                <NavLink to="/faq">Learn</NavLink>
-                <NavLink to="/support">Support</NavLink>
+                <NavLink to="/faq">{t("nav.learn")}</NavLink>
+                <NavLink to="/support">{t("nav.support")}</NavLink>
               </>
             )}
           </div>
@@ -112,14 +112,14 @@ export default function NavBar() {
                   to="/login"
                   className="px-4 py-1.5 text-sm text-[#7AC4FF] border border-[#2A5499]/60 rounded-full hover:border-[#4A9EFF]/80 hover:text-white transition-all duration-200"
                 >
-                  Log in
+                  {t('nav.login')}
                 </Link>
                 <Link
                   to="/signup"
                   className="px-4 py-1.5 text-sm text-white rounded-full transition-all duration-200 hover:shadow-[0_0_20px_rgba(58,130,247,0.4)]"
                   style={{ background: 'linear-gradient(135deg, #1A5FCC, #3A82F7)' }}
                 >
-                  Get Started
+                  {t('nav.getStarted')}
                 </Link>
               </>
             ) : (
@@ -132,14 +132,14 @@ export default function NavBar() {
                     {user?.name ? user.name[0].toUpperCase() : 'U'}
                   </div>
                   <span className="text-[#7AC4FF] text-xs group-hover:text-white transition-colors">
-                    {user?.name ?? 'Profile'}
+                    {user?.name ?? t('nav.profile')}
                   </span>
                 </button>
                 <button
                   onClick={() => { logout(); navigate('/breathing'); }}
                   className="px-3 py-1.5 text-xs text-[#FF8A8A] border border-[#FF6B6B]/20 rounded-full hover:border-[#FF6B6B]/50 hover:text-[#FFB8B8] transition-all duration-200"
                 >
-                  Sign out
+                  {t('nav.signOut')}
                 </button>
               </>
             )}
@@ -183,13 +183,13 @@ export default function NavBar() {
             <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col gap-1">
               {/* Nav links */}
               {[
-                { to: '/home-page', label: 'Home' },
-                { to: '/breathing', label: 'Meditate' },
-                { to: '/music-library', label: 'Sounds' },
-                { to: '/community', label: 'Community' },
+                { to: '/home-page', label: t('nav.home') },
+                { to: '/breathing', label: t('nav.meditate') },
+                { to: '/music-library', label: t('nav.sounds') },
+                { to: '/community', label: t('nav.community') },
                 ...(isAuthenticated
-                  ? [{ to: '/sessions', label: 'Sessions' }, { to: '/statistics', label: 'Progress' }]
-                  : [{ to: '/faq', label: 'Learn' }, { to: '/support', label: 'Support' }]
+                  ? [{ to: '/sessions', label: t('nav.sessions') }, { to: '/statistics', label: t('nav.progress') }]
+                  : [{ to: '/faq', label: t('nav.learn') }, { to: '/support', label: t('nav.support') }]
                 ),
               ].map(({ to, label }) => (
                 <Link
@@ -213,7 +213,7 @@ export default function NavBar() {
                       onClick={() => setIsMenuOpen(false)}
                       className="py-2.5 text-center text-sm text-[#7AC4FF] border border-[#2A5499]/50 rounded-xl hover:border-[#4A9EFF]/70 transition-colors"
                     >
-                      Log in
+                      {t('nav.login')}
                     </Link>
                     <Link
                       to="/signup"
@@ -221,7 +221,7 @@ export default function NavBar() {
                       className="py-2.5 text-center text-sm text-white rounded-xl"
                       style={{ background: 'linear-gradient(135deg, #1A5FCC, #3A82F7)' }}
                     >
-                      Get Started
+                      {t('nav.getStarted')}
                     </Link>
                   </>
                 ) : (
@@ -230,13 +230,13 @@ export default function NavBar() {
                       onClick={() => { navigate('/profile'); setIsMenuOpen(false); }}
                       className="py-2.5 text-sm text-[#7AC4FF] border border-[#1E3358]/50 rounded-xl hover:border-[#2A5499] transition-colors"
                     >
-                      {user?.name ?? 'Profile'}
+                      {user?.name ?? t('nav.profile')}
                     </button>
                     <button
                       onClick={() => { logout(); navigate('/breathing'); setIsMenuOpen(false); }}
                       className="py-2.5 text-sm text-[#FF8A8A] border border-[#FF6B6B]/20 rounded-xl hover:border-[#FF6B6B]/40 transition-colors"
                     >
-                      Sign out
+                      {t('nav.signOut')}
                     </button>
                   </>
                 )}
