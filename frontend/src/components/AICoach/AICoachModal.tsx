@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { X, Send, Sparkles, ChevronRight, RotateCcw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import api from '../../api';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -104,15 +105,17 @@ function UserBubble({ text }: { text: string }) {
 }
 
 function LimitBanner({ isAuthenticated, hoursLeft }: { isAuthenticated: boolean; hoursLeft?: number }) {
+    const { t } = useTranslation();
+
   return (
     <div className="mx-0 mb-3 p-4 rounded-2xl border border-[#2A5499]/40 bg-[#0D1B33]/80 flex flex-col gap-3 text-center">
       <p className="text-[#7AC4FF] text-sm font-medium">
-        {isAuthenticated ? "You've used today's messages" : "3 free messages used"}
+        {isAuthenticated ? t('coach.limit.usedAuth') : t('coach.limit.used')}
       </p>
       <p className="text-[#4A7AAA] text-xs leading-relaxed">
         {isAuthenticated
-          ? `Come back in ${hoursLeft ?? 24}h for more coaching.`
-          : 'Create a free account for 10 messages per day.'}
+          ? t('coach.limit.comeback') + ` ${hoursLeft ?? 24}` + t('coach.limit.comebackHours')
+          : t('coach.limit.createAccount')}
       </p>
       {!isAuthenticated && (
         <div className="flex gap-2">
@@ -129,24 +132,25 @@ function LimitBanner({ isAuthenticated, hoursLeft }: { isAuthenticated: boolean;
   );
 }
 
-const SUGGESTIONS = [
-  "I can't sleep, mind racing",
-  "Stressed before a big meeting",
-  "Low energy, need a boost",
-  "Feeling anxious and panicky",
-  "Help me focus for work",
-  "Overwhelmed, need calm",
-];
-
-const WELCOME = `Hi! I'm your AI breathing coach 🌊\n\nTell me how you're feeling right now — stressed, can't sleep, low energy, anxious — and I'll find the perfect technique for you.\n\nYou have 3 free messages today.`;
+const SUGGESTION_KEYS = [
+  'coach.suggestions.sleep',
+  'coach.suggestions.stress',
+  'coach.suggestions.energy',
+  'coach.suggestions.anxiety',
+  'coach.suggestions.focus',
+  'coach.suggestions.calm',
+] as const;
 
 // ─── Main modal ───────────────────────────────────────────────────────────────
 export default function AICoachModal({ onClose }: AICoachModalProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 'welcome', role: 'coach', text: WELCOME, done: false },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  // Set welcome message once t() is available
+  useEffect(() => {
+    setMessages([{ id: 'welcome', role: 'coach', text: t('coach.welcome'), done: false }]);
+  }, [t]);
   const [input,        setInput]   = useState('');
   const [loading,      setLoading] = useState(false);
   const [limitData,    setLimit]   = useState<{ reached: boolean; isAuthenticated: boolean; hoursLeft?: number } | null>(null);
@@ -202,7 +206,7 @@ export default function AICoachModal({ onClose }: AICoachModalProps) {
   }, [loading, history]);
 
   const reset = () => {
-    setMessages([{ id: 'welcome', role: 'coach', text: WELCOME, done: false }]);
+    setMessages([{ id: 'welcome', role: 'coach', text: t('coach.welcome'), done: false }]);
     setLimit(null); setLeft(null);
   };
 
@@ -274,10 +278,10 @@ export default function AICoachModal({ onClose }: AICoachModalProps) {
           {loading && <TypingIndicator />}
           {messages.length === 1 && !loading && (
             <div className="flex flex-wrap gap-1.5 mt-1 mb-3">
-              {SUGGESTIONS.map(s => (
-                <button key={s} onClick={() => send(s)}
+              {SUGGESTION_KEYS.map(key => (
+                <button key={key} onClick={() => send(t(key))}
                   className="text-[9px] px-2.5 py-1.5 rounded-xl border border-[#1E3358]/50 text-[#2A5499] hover:border-[#2A5499]/60 hover:text-[#4A9EFF] transition-all">
-                  {s}
+                  {t(key)}
                 </button>
               ))}
             </div>
@@ -294,7 +298,7 @@ export default function AICoachModal({ onClose }: AICoachModalProps) {
             <div className="flex gap-2 items-center">
               <input ref={inputRef} value={input} onChange={e => setInput(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input); }}}
-                placeholder="How are you feeling right now?"
+                placeholder={t('coach.placeholder')}
                 maxLength={500} disabled={loading}
                 className="flex-1 bg-[#060C1A]/60 border border-[#1E3358]/50 rounded-2xl px-4 py-2.5 text-xs text-[#7AC4FF] placeholder-[#1A2D48] outline-none focus:border-[#2A5499] transition-colors disabled:opacity-50"
               />

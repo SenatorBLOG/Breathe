@@ -4,6 +4,10 @@ import NavBar from "../components/NavBar";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useHealthData } from "../hooks/useHealthData";
+import { calcCalmScore, type SessionBiometrics } from "../utils/calmScore";
+import CalmScoreResult from "../components/CalmScoreResult";
+import { scheduleStreakReminder, requestPushPermission, getPushPermission } from "../utils/pushNotifications";
+import HeartRateMonitor from "../components/HeartRateMonitor";
 import { BreathingCircle, Phase } from "../components/BreathingCircle";
 import { VideoBackground } from "../components/VideoBackground";
 import api from "../api";
@@ -156,6 +160,11 @@ export default function BreathingPage() {
     return state?.coachPresetName ?? null;
   });
   const { data: health } = useHealthData();
+  const [hrBefore, setHrBefore]   = useState<number[]>([]);
+  const [hrDuring, setHrDuring]   = useState<number[]>([]);
+  const [calmResult, setCalmResult] = useState<any>(null);
+  const hrBeforeRef = useRef<number[]>([]);
+  const hrDuringRef = useRef<number[]>([]);
   const [cycles, setCycles]               = useState(0);
   const [currentDuration, setCurrentDuration] = useState(0);
   const [totalStats, setTotalStats]       = useState({ totalSessions: 0, totalMinutes: 0, streak: 0 });
@@ -240,6 +249,13 @@ export default function BreathingPage() {
       toast.error("Failed to save session");
     }
   };
+
+  // ── Request push permission after first session ─────────────────────────────
+  useEffect(() => {
+    if (cycles === 1 && getPushPermission() === 'default') {
+      setTimeout(() => requestPushPermission(), 2000);
+    }
+  }, [cycles]);
 
   // ── On stop: show feedback only if cycles >= 3, else save silently ──────────
   useEffect(() => {
@@ -350,6 +366,8 @@ export default function BreathingPage() {
         </button>
 
         {/* ── Row 4: achievement stats (always below button) ── */}
+        <div className="flex flex-col items-center gap-2">
+          <HeartRateMonitor variant="compact" />
         <div className="flex gap-3">
           {[
             { icon: <Flame size={12} />, label: t("breathing.streak"),   value: `${totalStats.streak}d`         },
@@ -360,6 +378,7 @@ export default function BreathingPage() {
               <StatPill icon={icon} label={label} value={value} dim={isActive} />
             </div>
           ))}
+        </div>
         </div>
 
         {/* Scroll hint */}
