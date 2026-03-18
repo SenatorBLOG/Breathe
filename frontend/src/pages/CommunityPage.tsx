@@ -1,6 +1,6 @@
 // src/pages/CommunityPage.tsx
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
@@ -62,11 +62,17 @@ const CATEGORY_META: Record<string, { label: string; color: string; bg: string }
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 function Avatar({ author, size = 8 }: { author: Author; size?: number }) {
+  const ts = useThemeStyles();
   const px = size * 4;
   return (
-    <div className={`flex-shrink-0 rounded-full flex items-center justify-center text-[10px] font-bold text-[#010814]`}
-      style={{ width: px, height: px, background: 'linear-gradient(135deg,#1A5FCC,#7AC4FF)', fontSize: px * 0.32 }}>
-      <ThemeBackground />
+    <div className={`flex-shrink-0 rounded-full flex items-center justify-center text-[10px] font-bold`}
+      style={{
+        width: px,
+        height: px,
+        background: ts.btnGradient,
+        color: ts.textPrimary,
+      }}
+    >
       {initials(author)}
     </div>
   );
@@ -74,40 +80,61 @@ function Avatar({ author, size = 8 }: { author: Author; size?: number }) {
 
 // ─── Ad slot ──────────────────────────────────────────────────────────────────
 function AdSlot({ className = '' }: { className?: string }) {
+  const ts = useThemeStyles();
   return (
-    <div className={`flex items-center justify-center border border-dashed border-[#1E3358]/40 rounded-xl bg-[#040A14]/40 ${className}`}>
-      <span className="text-[9px] tracking-[0.25em] uppercase text-[#1A2D48] select-none">Advertisement</span>
+    <div
+      className={`flex items-center justify-center border border-dashed rounded-xl ${className}`}
+      style={{
+        borderColor: ts.border,
+        backgroundColor: `${ts.cardBg}40`,
+      }}
+    >
+      <span className="text-[9px] tracking-widest uppercase select-none" style={{ color: ts.textDim }}>
+        Advertisement
+      </span>
     </div>
   );
 }
 
 // ─── Login nudge ──────────────────────────────────────────────────────────────
 function LoginNudge({ onClose }: { onClose: () => void }) {
+  const ts = useThemeStyles();
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center p-4"
-      style={{ background: 'rgba(1,8,20,0.85)', backdropFilter: 'blur(6px)' }}
+      style={{ background: `${ts.pageBg}D9`, backdropFilter: 'blur(6px)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="w-full max-w-sm rounded-3xl p-6 flex flex-col items-center gap-5 text-center"
-        style={{ background: 'linear-gradient(160deg,#070E1F,#050A18)', border: '1px solid rgba(42,84,153,0.45)', boxShadow: '0 0 60px rgba(74,158,255,0.08)' }}>
-        <div className="absolute" />
+        style={{
+          background: ts.cardBg,
+          border: `1px solid ${ts.border}`,
+          boxShadow: ts.btnShadow,
+        }}>
         <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)', boxShadow: '0 0 24px rgba(74,158,255,0.4)' }}>
+          style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
           <Users size={20} className="text-white" />
         </div>
         <div>
-          <p className="text-[#B8D9FF] text-base font-medium mb-1">Join the community</p>
-          <p className="text-[#4A7AAA] text-xs leading-relaxed">You need an account to post, comment, and like. It's free and takes 30 seconds.</p>
+          <p className="text-base font-medium mb-1" style={{ color: ts.textSecondary }}>
+            Join the community
+          </p>
+          <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+            You need an account to post, comment, and like. It's free and takes 30 seconds.
+          </p>
         </div>
         <div className="flex flex-col gap-2 w-full">
           <Link to="/register" className="w-full py-2.5 rounded-xl text-sm text-white font-medium text-center transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)]"
-            style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+            style={{ background: ts.btnGradient }}>
             Create account
           </Link>
-          <Link to="/login" className="w-full py-2.5 rounded-xl text-sm text-[#4A9EFF] text-center border border-[#1E3358]/50 hover:border-[#2A5499]/60 transition-all">
+          <Link to="/login" className="w-full py-2.5 rounded-xl text-sm text-center transition-all"
+            style={{
+              color: ts.textSecondary,
+              border: `1px solid ${ts.border}`,
+            }}>
             Sign in
           </Link>
         </div>
-        <button onClick={onClose} className="text-[10px] text-[#3D6080] hover:text-[#4A7AAA] transition-colors">
+        <button onClick={onClose} className="text-[10px] transition-colors" style={{ color: ts.textMuted }}>
           Maybe later
         </button>
       </div>
@@ -120,24 +147,31 @@ function CommentRow({ comment, postId, currentUserId, onDelete, onLike }: {
   comment: Comment; postId: string; currentUserId?: string;
   onDelete: (id: string) => void; onLike: (id: string) => void;
 }) {
+  const ts = useThemeStyles();
   return (
     <div className="flex gap-2.5">
       <Avatar author={comment.author} size={6} />
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline gap-2 flex-wrap">
-          <span className="text-[#7AC4FF] text-[10px] font-medium">{comment.author.name || comment.author.username}</span>
-          <span className="text-[#3D6080] text-[9px]">{timeAgo(comment.createdAt)}</span>
+          <span className="text-[10px] font-medium leading-none" style={{ color: ts.textSecondary }}>
+            {comment.author.name || comment.author.username}
+          </span>
+          <span className="text-[9px] mt-0.5" style={{ color: ts.textDim }}>
+            {timeAgo(comment.createdAt)}
+          </span>
         </div>
-        <p className="text-[#5A8FB8] text-xs leading-relaxed mt-0.5">{comment.text}</p>
+        <p className="text-xs leading-relaxed mt-0.5" style={{ color: ts.textMuted }}>
+          {comment.text}
+        </p>
         <div className="flex items-center gap-3 mt-1.5">
           <button onClick={() => onLike(comment._id)}
-            className={`flex items-center gap-1 text-[9px] transition-colors ${comment.likedByMe ? 'text-[#FF8A8A]' : 'text-[#4A7AAA] hover:text-[#FF8A8A]'}`}>
+            className={`flex items-center gap-1.5 text-xs transition-all ${comment.likedByMe ? 'text-[#FF8A8A]' : ''}`} style={{ color: ts.textMuted }}>
             <Heart size={10} fill={comment.likedByMe ? 'currentColor' : 'none'} />
             {comment.likeCount > 0 && comment.likeCount}
           </button>
           {currentUserId === comment.author._id && (
             <button onClick={() => onDelete(comment._id)}
-              className="text-[9px] text-[#4A7AAA] hover:text-[#FF8A8A] transition-colors flex items-center gap-1">
+              className="text-xs transition-colors flex items-center gap-1" style={{ color: ts.textMuted }}>
               <Trash2 size={9} /> delete
             </button>
           )}
@@ -151,12 +185,13 @@ function CommentRow({ comment, postId, currentUserId, onDelete, onLike }: {
 function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
   postId: string; commentCount: number; isLoggedIn: boolean; onLoginRequired: () => void;
 }) {
-  const [open, setOpen]         = useState(false);
+  const ts = useThemeStyles();
+  const [open, setOpen] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [loading, setLoading]   = useState(false);
-  const [text, setText]         = useState('');
-  const [sending, setSending]   = useState(false);
-  const currentUserId           = localStorage.getItem('userId') ?? undefined;
+  const [loading, setLoading] = useState(false);
+  const [text, setText] = useState('');
+  const [sending, setSending] = useState(false);
+  const currentUserId = localStorage.getItem('userId') ?? undefined;
 
   const load = useCallback(async () => {
     if (loading) return;
@@ -201,9 +236,10 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
   };
 
   return (
-    <div className="border-t border-[#1E3358]/25 mt-3 pt-3">
+    <div className="border-t mt-3 pt-3" style={{ borderColor: ts.border }}>
       <button onClick={toggle}
-        className="flex items-center gap-1.5 text-[10px] text-[#4A7AAA] hover:text-[#4A9EFF] transition-colors">
+        className="flex items-center gap-1.5 text-[10px] transition-colors"
+        style={{ color: ts.textMuted }}>
         <MessageCircle size={12} />
         {commentCount > 0 ? `${commentCount} comment${commentCount !== 1 ? 's' : ''}` : 'Add comment'}
         <ChevronDown size={10} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -211,7 +247,7 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
 
       {open && (
         <div className="mt-3 flex flex-col gap-3">
-          {loading && <p className="text-[10px] text-[#3D6080]">Loading…</p>}
+          {loading && <p className="text-[10px]" style={{ color: ts.textDim }}>Loading…</p>}
           {comments.map(c => (
             <CommentRow key={c._id} comment={c} postId={postId}
               currentUserId={currentUserId} onDelete={deleteComment} onLike={likeComment} />
@@ -227,11 +263,15 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
               readOnly={!isLoggedIn}
               onClick={() => { if (!isLoggedIn) onLoginRequired(); }}
               maxLength={300}
-              className="flex-1 bg-[#060C1A]/60 border border-[#1E3358]/50 rounded-xl px-3 py-2 text-xs text-[#7AC4FF] placeholder-[#1A2D48] outline-none focus:border-[#2A5499] transition-colors"
+              className="flex-1 bg-[#060C1A]/60 border rounded-xl px-4 py-3 text-xs placeholder-[#1A2D48] outline-none focus:border-[#2A5499] transition-colors leading-relaxed"
+              style={{
+                borderColor: ts.border,
+                color: ts.textSecondary,
+              }}
             />
             <button onClick={send} disabled={sending || !text.trim()}
               className="w-8 h-8 flex-shrink-0 rounded-xl flex items-center justify-center transition-all disabled:opacity-30"
-              style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+              style={{ background: ts.btnGradient }}>
               <Send size={12} className="text-white" />
             </button>
           </div>
@@ -246,9 +286,10 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
   post: Post; isLoggedIn: boolean; currentUserId?: string;
   onLoginRequired: () => void; onDelete: (id: string) => void;
 }) {
-  const [liked, setLiked]         = useState(post.likedByMe);
+  const ts = useThemeStyles();
+  const [liked, setLiked] = useState(post.likedByMe);
   const [likeCount, setLikeCount] = useState(post.likeCount);
-  const [commentCount, setCount]  = useState(post.commentCount);
+  const [commentCount, setCount] = useState(post.commentCount);
   const cat = CATEGORY_META[post.category] ?? CATEGORY_META.experience;
 
   const toggleLike = async () => {
@@ -270,34 +311,36 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
 
   return (
     <div className="flex flex-col gap-3 p-4 rounded-2xl border transition-all duration-300 hover:border-[#1E3358]/70"
-      style={{ background: 'linear-gradient(145deg,rgba(11,22,40,0.85),rgba(6,12,26,0.9))', border: '1px solid rgba(30,51,88,0.5)' }}>
-
-      {/* Top glow */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#4A9EFF]/15 to-transparent -mx-4 -mt-4 mb-1 rounded-t-2xl" />
+      style={{
+        background: ts.cardBg,
+        borderColor: ts.border,
+      }}>
 
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5">
           <Avatar author={post.author} />
           <div>
-            <p className="text-[#B8D9FF] text-xs font-medium leading-none">{post.author.name || post.author.username}</p>
-            <p className="text-[#4A7AAA] text-[9px] mt-0.5">{timeAgo(post.createdAt)}</p>
+            <p className="text-xs font-medium leading-none" style={{ color: ts.textSecondary }}>
+              {post.author.name || post.author.username}
+            </p>
+            <p className="text-[9px] mt-0.5" style={{ color: ts.textDim }}>
+              {timeAgo(post.createdAt)}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
-          {/* Category badge */}
           <span className="text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wide"
             style={{ color: cat.color, background: cat.bg }}>
             {cat.label}
           </span>
-          {/* Actions menu */}
           {currentUserId === post.author._id ? (
             <button onClick={() => onDelete(post._id)}
-              className="text-[#4A7AAA] hover:text-[#FF8A8A] transition-colors p-1">
+              className="transition-colors p-1" style={{ color: ts.textMuted }}>
               <Trash2 size={12} />
             </button>
           ) : (
-            <button onClick={report} className="text-[#4A7AAA] hover:text-[#4A7AAA] transition-colors p-1">
+            <button onClick={report} className="transition-colors p-1" style={{ color: ts.textMuted }}>
               <Flag size={11} />
             </button>
           )}
@@ -305,13 +348,20 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
       </div>
 
       {/* Text */}
-      <p className="text-[#7AADCC] text-xs leading-relaxed">{post.text}</p>
+      <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+        {post.text}
+      </p>
 
       {/* Tags */}
       {post.tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {post.tags.map(tag => (
-            <span key={tag} className="text-[9px] px-2 py-0.5 rounded-full bg-[#0D1B33] border border-[#1E3358]/40 text-[#2A5499]">
+            <span key={tag} className="text-[9px] px-2 py-0.5 rounded-full border uppercase tracking-wide"
+              style={{
+                backgroundColor: ts.cardBg,
+                borderColor: ts.border,
+                color: ts.accent,
+              }}>
               #{tag}
             </span>
           ))}
@@ -321,9 +371,8 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
       {/* Actions */}
       <div className="flex items-center gap-4">
         <button onClick={toggleLike}
-          className={`flex items-center gap-1.5 text-xs transition-all ${liked ? 'text-[#FF8A8A]' : 'text-[#4A7AAA] hover:text-[#FF8A8A]'}`}>
-          <Heart size={14} fill={liked ? 'currentColor' : 'none'}
-            className={liked ? 'drop-shadow-[0_0_6px_rgba(255,138,138,0.6)]' : ''} />
+          className={`flex items-center gap-1.5 text-xs transition-all ${liked ? 'text-[#FF8A8A]' : ''}`} style={{ color: ts.textMuted }}>
+          <Heart size={14} fill={liked ? 'currentColor' : 'none'} />
           {likeCount > 0 && <span className="tabular-nums">{likeCount}</span>}
         </button>
       </div>
@@ -346,11 +395,12 @@ const CAT_ICONS: Record<string, string> = {
 };
 
 function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreated: (p: Post) => void }) {
-  const [text, setText]         = useState('');
+  const ts = useThemeStyles();
+  const [text, setText] = useState('');
   const [category, setCategory] = useState<typeof CATEGORIES[number]>('experience');
   const [tagInput, setTagInput] = useState('');
-  const [tags, setTags]         = useState<string[]>([]);
-  const [sending, setSending]   = useState(false);
+  const [tags, setTags] = useState<string[]>([]);
+  const [sending, setSending] = useState(false);
 
   const addTag = () => {
     const t = tagInput.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
@@ -371,26 +421,32 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-4"
-      style={{ background: 'rgba(1,8,20,0.85)', backdropFilter: 'blur(6px)' }}
+      style={{ background: `${ts.pageBg}D9`, backdropFilter: 'blur(6px)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="w-full max-w-lg rounded-3xl overflow-hidden"
-        style={{ background: 'linear-gradient(160deg,#070E1F,#050A18)', border: '1px solid rgba(42,84,153,0.45)', boxShadow: '0 0 80px rgba(74,158,255,0.08)' }}>
-
-        <div className="h-px bg-gradient-to-r from-transparent via-[#4A9EFF]/40 to-transparent" />
+        style={{
+          background: ts.cardBg,
+          border: `1px solid ${ts.border}`,
+          boxShadow: ts.btnShadow,
+        }}>
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-5 pb-4">
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 rounded-xl flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)', boxShadow: '0 0 14px rgba(74,158,255,0.35)' }}>
+              style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
               <Sparkles size={13} className="text-white" />
             </div>
             <div>
-              <p className="text-[#B8D9FF] text-sm font-medium leading-none">Share with the community</p>
-              <p className="text-[#4A7AAA] text-[10px] mt-0.5">Your experience helps others</p>
+              <p className="text-sm font-medium leading-none" style={{ color: ts.textSecondary }}>
+                Share with the community
+              </p>
+              <p className="text-[10px] mt-0.5" style={{ color: ts.textDim }}>
+                Your experience helps others
+              </p>
             </div>
           </div>
-          <button onClick={onClose} className="text-[#4A7AAA] hover:text-[#5A8FB8] transition-colors p-1">
+          <button onClick={onClose} className="transition-colors p-1" style={{ color: ts.textMuted }}>
             <X size={15} />
           </button>
         </div>
@@ -402,9 +458,13 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
               <button key={c} onClick={() => setCategory(c)}
                 className={`flex-1 flex flex-col items-center gap-1 py-2.5 rounded-xl border text-center transition-all ${
                   category === c ? 'border-[#2A5499]/70 bg-[#0D1B33]' : 'border-[#1E3358]/35 hover:border-[#1E3358]/60'
-                }`}>
+                }`}
+                style={{
+                  backgroundColor: category === c ? ts.cardBgHover : ts.cardBg,
+                  borderColor: category === c ? ts.borderHover : ts.border,
+                }}>
                 <span className={`text-base ${category === c ? '' : 'opacity-50'}`}>{CAT_ICONS[c]}</span>
-                <span className={`text-[9px] uppercase tracking-wide ${category === c ? 'text-[#7AC4FF]' : 'text-[#3D6080]'}`}>
+                <span className={`text-[9px] uppercase tracking-wide ${category === c ? '' : ''}`} style={{ color: category === c ? ts.textSecondary : ts.textMuted }}>
                   {c}
                 </span>
               </button>
@@ -414,7 +474,12 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
           {/* Text */}
           <textarea value={text} onChange={e => setText(e.target.value)} rows={4} maxLength={600}
             placeholder="Share your experience, ask a question, or post a tip…"
-            className="w-full bg-[#060C1A]/60 border border-[#1E3358]/50 rounded-xl px-4 py-3 text-xs text-[#7AC4FF] placeholder-[#1A2D48] outline-none focus:border-[#2A5499] resize-none transition-colors leading-relaxed" />
+            className="w-full rounded-xl px-4 py-3 text-xs placeholder-[#1A2D48] outline-none focus:border-[#2A5499] transition-colors leading-relaxed resize-none"
+            style={{
+              backgroundColor: ts.cardBg,
+              border: `1px solid ${ts.border}`,
+              color: ts.textSecondary,
+            }} />
 
           {/* Tags */}
           <div className="flex flex-col gap-2">
@@ -423,16 +488,30 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
                 onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTag(); } }}
                 placeholder="Add tag (enter to add)"
                 maxLength={30}
-                className="flex-1 bg-[#060C1A]/60 border border-[#1E3358]/50 rounded-xl px-3 py-2 text-xs text-[#7AC4FF] placeholder-[#1A2D48] outline-none focus:border-[#2A5499] transition-colors" />
+                className="flex-1 rounded-xl px-3 py-2 text-xs placeholder-[#1A2D48] outline-none focus:border-[#2A5499] transition-colors"
+                style={{
+                  backgroundColor: ts.cardBg,
+                  border: `1px solid ${ts.border}`,
+                  color: ts.textSecondary,
+                }} />
               <button onClick={addTag}
-                className="px-3 py-2 rounded-xl text-xs text-[#4A9EFF] border border-[#1E3358]/50 hover:border-[#2A5499]/60 transition-all">
+                className="px-3 py-2 rounded-xl text-xs transition-all"
+                style={{
+                  color: ts.accent,
+                  border: `1px solid ${ts.border}`,
+                }}>
                 +
               </button>
             </div>
             {tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {tags.map(t => (
-                  <span key={t} className="flex items-center gap-1 text-[9px] px-2 py-0.5 rounded-full bg-[#0D1B33] border border-[#2A5499]/40 text-[#4A9EFF]">
+                  <span key={t} className="flex items-center gap-1 text-[9px] px-2 py-0.5 rounded-full border uppercase tracking-wide"
+                    style={{
+                      backgroundColor: ts.cardBg,
+                      borderColor: ts.border,
+                      color: ts.accent,
+                    }}>
                     #{t}
                     <button onClick={() => setTags(prev => prev.filter(x => x !== t))} className="text-[#4A7AAA] hover:text-[#FF8A8A] ml-0.5">×</button>
                   </span>
@@ -443,10 +522,10 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
 
           {/* Footer */}
           <div className="flex items-center justify-between">
-            <span className="text-[9px] text-[#3D6080] tabular-nums">{text.length}/600</span>
+            <span className="text-[9px] tabular-nums" style={{ color: ts.textDim }}>{text.length}/600</span>
             <button onClick={submit} disabled={sending || !text.trim()}
               className="px-6 py-2.5 rounded-xl text-xs text-white font-medium tracking-wide transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 disabled:opacity-40"
-              style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+              style={{ background: ts.btnGradient }}>
               {sending ? 'Posting…' : 'Publish ✓'}
             </button>
           </div>
@@ -458,10 +537,11 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
 
 // ─── Sidebar stat ─────────────────────────────────────────────────────────────
 function SidebarStat({ value, label }: { value: string; label: string }) {
+  const ts = useThemeStyles();
   return (
-    <div className="flex items-center justify-between py-2 border-b border-[#1E3358]/25 last:border-0">
-      <span className="text-[10px] text-[#4A7AAA]">{label}</span>
-      <span className="text-[#7AC4FF] text-xs font-medium tabular-nums">{value}</span>
+    <div className="flex items-center justify-between py-2 border-b last:border-0" style={{ borderColor: ts.border }}>
+      <span className="text-[10px]" style={{ color: ts.textMuted }}>{label}</span>
+      <span className="text-xs font-medium tabular-nums" style={{ color: ts.textSecondary }}>{value}</span>
     </div>
   );
 }
@@ -472,16 +552,16 @@ const CATEGORIES_FILTER = ['all', 'experience', 'question', 'achievement', 'tip'
 export default function CommunityPage() {
   const { t } = useTranslation();
   const ts = useThemeStyles();
-  const [posts, setPosts]           = useState<Post[]>([]);
-  const [loading, setLoading]       = useState(true);
-  const [page, setPage]             = useState(1);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [category, setCategory]     = useState<string>('all');
+  const [category, setCategory] = useState<string>('all');
   const [showCreate, setShowCreate] = useState(false);
-  const [showLogin, setShowLogin]   = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
-  const token         = localStorage.getItem('token');
-  const isLoggedIn    = Boolean(token);
+  const token = localStorage.getItem('token');
+  const isLoggedIn = Boolean(token);
   const currentUserId = localStorage.getItem('userId') ?? undefined;
 
   const fetchPosts = useCallback(async (cat: string, pg: number) => {
@@ -501,7 +581,7 @@ export default function CommunityPage() {
 
   const handleCreate = () => { if (!isLoggedIn) { setShowLogin(true); return; } setShowCreate(true); };
   const onCreated = (p: Post) => setPosts(prev => [p, ...prev]);
-  const onDelete  = async (id: string) => {
+  const onDelete = async (id: string) => {
     try {
       await api.delete(`/posts/${id}`);
       setPosts(prev => prev.filter(p => p._id !== id));
@@ -510,13 +590,7 @@ export default function CommunityPage() {
   };
 
   return (
-    <div className="relative flex flex-col min-h-screen  font-montserrat">
-      <style>{`
-        @keyframes commFadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-        .comm-in { animation: commFadeUp 0.5s ease forwards; }
-      `}</style>
-
-      {/* Background */}
+    <div className="relative flex flex-col min-h-screen font-montserrat">
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
@@ -531,13 +605,19 @@ export default function CommunityPage() {
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-6 pb-2">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] mb-1">Breathe · Community</p>
-              <h1 className="text-2xl sm:text-3xl font-light text-[#B8D9FF] tracking-wide">Community</h1>
-              <p className="text-[#4A7AAA] text-xs mt-1">{t("community.subtitle")}</p>
+              <p className="text-[10px] tracking-[0.3em] uppercase mb-1" style={{ color: ts.textMuted }}>
+                Breathe · Community
+              </p>
+              <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
+                Community
+              </h1>
+              <p className="text-xs mt-1" style={{ color: ts.textMuted }}>
+                {t("community.subtitle")}
+              </p>
             </div>
             <button onClick={handleCreate}
               className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium tracking-wide transition-all hover:shadow-[0_0_24px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95"
-              style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+              style={{ background: ts.btnGradient }}>
               <Plus size={14} /> Post
             </button>
           </div>
@@ -547,19 +627,22 @@ export default function CommunityPage() {
         <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 pb-20 pt-4">
           <div className="flex gap-5">
 
-            {/* ── Feed ── */}
+            {/* Feed */}
             <div className="flex-1 min-w-0 flex flex-col gap-4">
-
               {/* Category filter pills */}
               <div className="flex gap-1.5 flex-wrap">
                 {CATEGORIES_FILTER.map(c => (
                   <button key={c} onClick={() => setCategory(c)}
                     className={`px-3 py-1.5 rounded-xl text-[10px] uppercase tracking-widest border transition-all ${
                       category === c
-                        ? 'bg-[#0D1B33] border-[#2A5499]/60 text-[#7AC4FF]'
-                        : 'border-[#1E3358]/35 text-[#4A7AAA] hover:border-[#1E3358]/60'
-                    }`}>
-                    {c === 'all' ? 'All' : CAT_ICONS[c] + ' ' + c}
+                        ? "bg-[#0D1B33] border-[#2A5499]/60 text-[#7AC4FF]"
+                        : "border-[#1E3358]/35 text-[#4A7AAA] hover:border-[#1E3358]/60"
+                    }`}
+                    style={{
+                      backgroundColor: category === c ? ts.cardBgHover : ts.cardBg,
+                      borderColor: category === c ? ts.borderHover : ts.border,
+                    }}>
+                    {c === 'all' ? 'All' : CATEGORY_META[c]?.label || c}
                   </button>
                 ))}
               </div>
@@ -568,16 +651,16 @@ export default function CommunityPage() {
               {loading && page === 1 ? (
                 <div className="flex flex-col gap-3">
                   {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="h-32 rounded-2xl animate-pulse bg-[#0A1525]" style={{ opacity: 0.5 - i * 0.1 }} />
+                    <div key={i} className="h-32 rounded-2xl animate-pulse" style={{ backgroundColor: ts.cardBg }} />
                   ))}
                 </div>
               ) : posts.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 py-20 text-center">
                   <span className="text-4xl opacity-30">🌊</span>
-                  <p className="text-[#4A7AAA] text-sm">{t("community.noPostsYet")}</p>
+                  <p className="text-sm" style={{ color: ts.textMuted }}>{t("community.noPostsYet")}</p>
                   <button onClick={handleCreate}
                     className="px-6 py-2.5 rounded-full text-sm text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)]"
-                    style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+                    style={{ background: ts.btnGradient }}>
                     Write a post →
                   </button>
                 </div>
@@ -590,10 +673,13 @@ export default function CommunityPage() {
                     </div>
                   ))}
 
-                  {/* Load more */}
                   {page < totalPages && (
                     <button onClick={() => setPage(p => p + 1)} disabled={loading}
-                      className="self-center px-6 py-2.5 rounded-full text-xs text-[#4A9EFF] border border-[#1E3358]/50 hover:border-[#2A5499]/60 transition-all disabled:opacity-40 mt-2">
+                      className="self-center px-6 py-2.5 rounded-full text-xs transition-all disabled:opacity-40 mt-2"
+                      style={{
+                        color: ts.textSecondary,
+                        border: `1px solid ${ts.border}`,
+                      }}>
                       {loading ? 'Loading…' : 'Load more'}
                     </button>
                   )}
@@ -604,46 +690,47 @@ export default function CommunityPage() {
               {posts.length > 5 && <AdSlot className="h-14" />}
             </div>
 
-            {/* ── Sidebar ── */}
+            {/* Sidebar */}
             <aside className="hidden lg:flex flex-col gap-4 w-56 flex-shrink-0">
-
               {/* About */}
-              <div className="rounded-2xl p-4 border border-[#1E3358]/50 bg-[#0B1628]/70">
+              <div className="rounded-2xl p-4 border" style={{ borderColor: ts.border, backgroundColor: ts.cardBg }}>
                 <div className="flex items-center gap-2 mb-3">
-                  <Flame size={13} className="text-[#FF9A5C]" />
-                  <p className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">About</p>
+                  <Flame size={13} style={{ color: ts.accent }} />
+                  <p className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>About</p>
                 </div>
-                <p className="text-[#4A7AAA] text-[10px] leading-relaxed">
+                <p className="text-[10px] leading-relaxed" style={{ color: ts.textMuted }}>
                   A space for meditators to share experiences, ask questions, and celebrate progress. Be kind. Be real.
                 </p>
               </div>
 
               {/* Stats */}
-              <div className="rounded-2xl p-4 border border-[#1E3358]/50 bg-[#0B1628]/70">
-                <p className="text-[10px] uppercase tracking-widest text-[#4A7AAA] mb-2">Community</p>
+              <div className="rounded-2xl p-4 border" style={{ borderColor: ts.border, backgroundColor: ts.cardBg }}>
+                <p className="text-[10px] uppercase tracking-widest mb-2" style={{ color: ts.textMuted }}>Community</p>
                 <SidebarStat value={String(posts.length)} label="Posts loaded" />
                 <SidebarStat value={String(posts.reduce((s, p) => s + p.likeCount, 0))} label="Total likes" />
                 <SidebarStat value={String(posts.reduce((s, p) => s + p.commentCount, 0))} label="Total comments" />
               </div>
 
               {/* Rules */}
-              <div className="rounded-2xl p-4 border border-[#1E3358]/50 bg-[#0B1628]/70">
-                <p className="text-[10px] uppercase tracking-widest text-[#4A7AAA] mb-3">House rules</p>
+              <div className="rounded-2xl p-4 border" style={{ borderColor: ts.border, backgroundColor: ts.cardBg }}>
+                <p className="text-[10px] uppercase tracking-widest mb-3" style={{ color: ts.textMuted }}>House rules</p>
                 {['Be supportive', 'Stay on topic', 'No spam', 'Respect privacy'].map((r, i) => (
-                  <div key={r} className="flex items-center gap-2 py-1.5 border-b border-[#1E3358]/20 last:border-0">
-                    <span className="text-[#3D6080] text-[9px] font-mono">{i + 1}</span>
-                    <span className="text-[#4A7AAA] text-[10px]">{r}</span>
+                  <div key={r} className="flex items-center gap-2 py-1.5 border-b last:border-0" style={{ borderColor: ts.border }}>
+                    <span className="text-[9px] font-mono" style={{ color: ts.textDim }}>{i + 1}</span>
+                    <span className="text-[10px]" style={{ color: ts.textMuted }}>{r}</span>
                   </div>
                 ))}
               </div>
 
               {/* CTA for logged-out */}
               {!isLoggedIn && (
-                <div className="rounded-2xl p-4 border border-[#2A5499]/30 bg-[#0D1B33]/70 flex flex-col gap-3">
-                  <p className="text-[#4A9EFF] text-xs font-medium">Join Breathe</p>
-                  <p className="text-[#4A7AAA] text-[10px] leading-relaxed">Create an account to post, comment, and track your meditation journey.</p>
+                <div className="rounded-2xl p-4 border flex flex-col gap-3" style={{ borderColor: ts.borderHover, backgroundColor: ts.cardBg }}>
+                  <p className="text-xs font-medium" style={{ color: ts.textSecondary }}>Join Breathe</p>
+                  <p className="text-[10px] leading-relaxed" style={{ color: ts.textMuted }}>
+                    Create an account to post, comment, and track your meditation journey.
+                  </p>
                   <Link to="/register" className="w-full py-2 rounded-xl text-[10px] text-white text-center font-medium transition-all"
-                    style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+                    style={{ background: ts.btnGradient }}>
                     Sign up free
                   </Link>
                 </div>
@@ -658,7 +745,7 @@ export default function CommunityPage() {
       </div>
 
       {showCreate && <CreatePostModal onClose={() => setShowCreate(false)} onCreated={onCreated} />}
-      {showLogin  && <LoginNudge onClose={() => setShowLogin(false)} />}
+      {showLogin && <LoginNudge onClose={() => setShowLogin(false)} />}
     </div>
   );
 }

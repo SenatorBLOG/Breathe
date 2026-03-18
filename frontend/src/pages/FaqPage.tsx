@@ -137,38 +137,41 @@ const FAQ_DATA: FAQCategory[] = [
 
 // ─── Accordion item ───────────────────────────────────────────────────────────
 function AccordionItem({ item, index }: { item: FAQItem; index: number }) {
+  const ts = useThemeStyles();
   const [open, setOpen] = useState(false);
 
   return (
     <div
       className={`rounded-xl border transition-all duration-300 overflow-hidden ${
-        open
-          ? 'border-[#2A5499]/50 bg-[#0D1B33]/70'
-          : 'border-[#1E3358]/40 bg-[#0B1628]/50 hover:border-[#1E3358]/70'
+        open ? 'border-[#2A5499]/50' : 'border-[#1E3358]/40 hover:border-[#1E3358]/70'
       }`}
+      style={{
+        backgroundColor: open ? ts.cardBgHover : ts.cardBg,
+      }}
     >
       <button
         className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
         onClick={() => setOpen(v => !v)}
       >
         <div className="flex items-center gap-3">
-          <span className="text-[#3D6080] text-[10px] font-mono tabular-nums flex-shrink-0">
+          <span className="text-[10px] font-mono tabular-nums flex-shrink-0" style={{ color: ts.textDim }}>
             {String(index + 1).padStart(2, '0')}
           </span>
-          <span className={`text-sm leading-snug transition-colors ${open ? 'text-[#B8D9FF]' : 'text-[#7AADCC]'}`}>
+          <span className={`text-sm leading-snug transition-colors ${open ? '' : ''}`} style={{ color: open ? ts.textPrimary : ts.textSecondary }}>
             {item.q}
           </span>
         </div>
         <ChevronDown
           size={14}
-          className={`flex-shrink-0 text-[#2A5499] transition-transform duration-300 ${open ? 'rotate-180 text-[#4A9EFF]' : ''}`}
+          className={`flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
+          style={{ color: open ? ts.accent : ts.borderHover }}
         />
       </button>
 
       {open && (
         <div className="px-5 pb-5 pt-0">
-          <div className="ml-7 pl-3 border-l border-[#2A5499]/30">
-            <p className="text-[#4A7AAA] text-sm leading-relaxed">{item.a}</p>
+          <div className="ml-7 pl-3 border-l" style={{ borderColor: ts.border }}>
+            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>{item.a}</p>
           </div>
         </div>
       )}
@@ -178,9 +181,18 @@ function AccordionItem({ item, index }: { item: FAQItem; index: number }) {
 
 // ─── Ad slot ──────────────────────────────────────────────────────────────────
 function AdSlot({ className = '' }: { className?: string }) {
+  const ts = useThemeStyles();
   return (
-    <div className={`flex items-center justify-center border border-dashed border-[#1E3358]/40 rounded-xl bg-[#040A14]/40 ${className}`}>
-      <span className="text-[9px] tracking-[0.25em] uppercase text-[#1A2D48] select-none">Advertisement</span>
+    <div
+      className={`flex items-center justify-center border border-dashed rounded-xl ${className}`}
+      style={{
+        borderColor: ts.border,
+        backgroundColor: `${ts.cardBg}40`,
+      }}
+    >
+      <span className="text-[9px] tracking-widest uppercase select-none" style={{ color: ts.textDim }}>
+        Advertisement
+      </span>
     </div>
   );
 }
@@ -206,8 +218,7 @@ export default function FAQPage() {
     : null;
 
   return (
-    <div className="relative flex flex-col min-h-screen  font-montserrat">
-      {/* Background */}
+    <div className="relative flex flex-col min-h-screen font-montserrat">
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
@@ -218,52 +229,65 @@ export default function FAQPage() {
           <AdSlot className="h-12" />
         </div>
 
-        {/* ── Hero ── */}
+        {/* Hero */}
         <header className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-8 pb-4 text-center flex flex-col items-center gap-4">
-          <span className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] border border-[#1E3358]/40 px-4 py-1.5 rounded-full">
+          <span className="text-[10px] tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full"
+            style={{
+              color: ts.textMuted,
+              borderColor: ts.border,
+            }}>
             Help & FAQ
           </span>
-          <h1 className="text-2xl sm:text-4xl font-light text-[#B8D9FF] tracking-wide">
+          <h1 className="text-2xl sm:text-4xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
             How can we help?
           </h1>
-          <p className="text-[#4A7AAA] text-sm max-w-md leading-relaxed">
+          <p className="text-sm max-w-md leading-relaxed" style={{ color: ts.textMuted }}>
             Everything you need to know about breathing techniques, the app, and your account.
           </p>
 
           {/* Search */}
           <div className="relative w-full max-w-md mt-2">
-            <Search size={13} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A7AAA]" />
+            <Search size={13} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A7AAA]" style={{ color: ts.textDim }} />
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder={t("faq.search")}
-              className="w-full bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-2xl pl-10 pr-4 py-3 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
+              className="w-full rounded-2xl pl-10 pr-4 py-3 text-sm placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
+              style={{
+                backgroundColor: ts.cardBg,
+                border: `1px solid ${ts.border}`,
+                color: ts.textSecondary,
+              }}
             />
             {search && (
               <button onClick={() => setSearch('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#4A7AAA] hover:text-[#4A9EFF] transition-colors text-xs">
+                className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-xs"
+                style={{ color: ts.textMuted }}>
                 ✕
               </button>
             )}
           </div>
         </header>
 
-        {/* ── Body ── */}
+        {/* Body */}
         <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 pb-20 pt-4">
 
           {filtered ? (
-            /* ── Search results ── */
             <div className="flex flex-col gap-3">
-              <p className="text-[#4A7AAA] text-xs mb-1">{filtered.length} result{filtered.length !== 1 ? 's' : ''} for "{search}"</p>
+              <p className="text-xs mb-1" style={{ color: ts.textMuted }}>
+                {filtered.length} result{filtered.length !== 1 ? 's' : ''} for "{search}"
+              </p>
               {filtered.length === 0 ? (
                 <div className="text-center py-16">
                   <p className="text-4xl mb-4 opacity-30">🔍</p>
-                  <p className="text-[#4A7AAA] text-sm">No results found.</p>
-                  <p className="text-[#3D6080] text-xs mt-1">Try a different word, or <button onClick={() => setSearch('')} className="text-[#4A9EFF] hover:underline">browse categories</button>.</p>
+                  <p className="text-sm" style={{ color: ts.textMuted }}>No results found.</p>
+                  <p className="text-xs mt-1" style={{ color: ts.textDim }}>
+                    Try a different word, or <button onClick={() => setSearch('')} className="text-[#4A9EFF] hover:underline">browse categories</button>.
+                  </p>
                 </div>
               ) : filtered.map((item, i) => (
                 <div key={i}>
-                  <p className="text-[9px] uppercase tracking-widest text-[#3D6080] mb-1.5 pl-1">
+                  <p className="text-[9px] uppercase tracking-widest mb-1.5 pl-1" style={{ color: ts.textDim }}>
                     {item.catIcon} {item.catLabel}
                   </p>
                   <AccordionItem item={item} index={i} />
@@ -271,9 +295,7 @@ export default function FAQPage() {
               ))}
             </div>
           ) : (
-            /* ── Category view ── */
             <div className="flex gap-5">
-
               {/* Category sidebar */}
               <aside className="hidden sm:flex flex-col gap-1.5 w-44 flex-shrink-0 pt-1">
                 {FAQ_DATA.map(cat => (
@@ -282,16 +304,20 @@ export default function FAQPage() {
                     onClick={() => setActiveCategory(cat.id)}
                     className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all text-xs ${
                       activeCategory === cat.id
-                        ? 'bg-[#0D1B33] border border-[#2A5499]/50 text-[#7AC4FF]'
-                        : 'text-[#4A7AAA] hover:text-[#5A8FB8] border border-transparent'
+                        ? 'bg-[#0D1B33] border border-[#2A5499]/50'
+                        : 'border border-transparent'
                     }`}
+                    style={{
+                      backgroundColor: activeCategory === cat.id ? ts.cardBgHover : ts.cardBg,
+                      borderColor: activeCategory === cat.id ? ts.borderHover : "transparent",
+                      color: activeCategory === cat.id ? ts.textSecondary : ts.textMuted,
+                    }}
                   >
                     <span className={activeCategory === cat.id ? '' : 'opacity-50'}>{cat.icon}</span>
                     {cat.label}
                   </button>
                 ))}
 
-                {/* Sidebar ad */}
                 <AdSlot className="h-40 mt-4" />
               </aside>
 
@@ -306,6 +332,10 @@ export default function FAQPage() {
                         ? 'bg-[#0D1B33] border-[#2A5499]/50 text-[#7AC4FF]'
                         : 'border-[#1E3358]/40 text-[#4A7AAA]'
                     }`}
+                    style={{
+                      backgroundColor: activeCategory === cat.id ? ts.cardBgHover : ts.cardBg,
+                      borderColor: activeCategory === cat.id ? ts.borderHover : ts.border,
+                    }}
                   >
                     {cat.icon} {cat.label}
                   </button>
@@ -316,8 +346,14 @@ export default function FAQPage() {
               <div className="flex-1 min-w-0 flex flex-col gap-3">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xl">{currentCat.icon}</span>
-                  <h2 className="text-base font-medium text-[#B8D9FF]">{currentCat.label}</h2>
-                  <span className="text-[9px] text-[#3D6080] bg-[#0A1525] px-2 py-0.5 rounded-full border border-[#1E3358]/40">
+                  <h2 className="text-base font-medium" style={{ color: ts.textPrimary }}>
+                    {currentCat.label}
+                  </h2>
+                  <span className="text-[9px] px-2 py-0.5 rounded-full border" style={{
+                    color: ts.textDim,
+                    backgroundColor: ts.cardBg,
+                    borderColor: ts.border,
+                  }}>
                     {currentCat.items.length} questions
                   </span>
                 </div>
@@ -327,16 +363,26 @@ export default function FAQPage() {
                 ))}
 
                 {/* Bottom CTA */}
-                <div className="mt-4 rounded-2xl p-5 border border-[#1E3358]/40 bg-[#0B1628]/60 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                <div className="mt-4 rounded-2xl p-5 border flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left"
+                  style={{
+                    backgroundColor: ts.cardBg,
+                    borderColor: ts.border,
+                  }}>
                   <div className="flex-1">
-                    <p className="text-[#7AADCC] text-sm font-medium">{t("faq.stillQuestions")}</p>
-                    <p className="text-[#4A7AAA] text-xs mt-0.5 leading-relaxed">
+                    <p className="text-sm font-medium" style={{ color: ts.textSecondary }}>
+                      {t("faq.stillQuestions")}
+                    </p>
+                    <p className="text-xs mt-0.5 leading-relaxed" style={{ color: ts.textMuted }}>
                       Can't find what you're looking for? We're happy to help.
                     </p>
                   </div>
                   <div className="flex gap-2 flex-shrink-0">
                     <Link to="/community"
-                      className="px-4 py-2 rounded-xl text-xs text-[#4A9EFF] border border-[#1E3358]/50 hover:border-[#2A5499]/60 transition-all">
+                      className="px-4 py-2 rounded-xl text-xs transition-all"
+                      style={{
+                        color: ts.textSecondary,
+                        border: `1px solid ${ts.border}`,
+                      }}>
                       {t("faq.askCommunity")}
                     </Link>
                     <Link to="/support"

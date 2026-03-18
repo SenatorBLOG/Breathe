@@ -1,24 +1,22 @@
-// src/pages/BreathingPage.tsx
-import React, { useCallback, useMemo, useState, useRef, useEffect } from "react";
-import NavBar from "../components/NavBar";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { useThemeStyles } from "../hooks/useThemeStyles";
-import { useHealthData } from "../hooks/useHealthData";
-import { calcCalmScore, type SessionBiometrics } from "../utils/calmScore";
-import CalmScoreResult from "../components/CalmScoreResult";
-import { scheduleStreakReminder, requestPushPermission, getPushPermission } from "../utils/pushNotifications";
-import HeartRateMonitor from "../components/HeartRateMonitor";
-import { BreathingCircle, Phase } from "../components/BreathingCircle";
-import { VideoBackground } from "../components/VideoBackground";
-import api from "../api";
-import { toast } from "sonner";
-import Footer from "../components/Footer";
-import { SessionFeedbackModal } from "../components/SessionFeedbackModal";
-import { Flame, Wind, Timer, Zap } from "lucide-react";
-import ThemeBackground from "../components/ThemeBackground";
+import React, { useCallback, useMemo, useState, useRef, useEffect } from 'react';
+import NavBar from '../components/NavBar';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useHealthData } from '../hooks/useHealthData';
+import { calcCalmScore, type SessionBiometrics } from '../utils/calmScore';
+import CalmScoreResult from '../components/CalmScoreResult';
+import { scheduleStreakReminder, requestPushPermission, getPushPermission } from '../utils/pushNotifications';
+import HeartRateMonitor from '../components/HeartRateMonitor';
+import { BreathingCircle, Phase } from '../components/BreathingCircle';
+import { VideoBackground } from '../components/VideoBackground';
+import api from '../api';
+import { toast } from 'sonner';
+import Footer from '../components/Footer';
+import { SessionFeedbackModal } from '../components/SessionFeedbackModal';
+import { Flame, Wind, Timer, Zap } from 'lucide-react';
+import ThemeBackground from '../components/ThemeBackground';
 
-// ─── How many full cycles before the feedback modal fires ────────────────────
 const FEEDBACK_AFTER_CYCLES = 3;
 
 interface Session {
@@ -34,17 +32,21 @@ interface PhaseDurations { inhale: number; hold: number; exhale: number; pause: 
 function StatPill({ icon, label, value, dim = false }: {
   icon: React.ReactNode; label: string; value: string; dim?: boolean;
 }) {
+  const ts = useThemeStyles();
   return (
     <div className={`flex items-center gap-2 px-3 py-2 rounded-2xl backdrop-blur-sm border transition-all duration-500 ${
       dim
         ? "bg-[#060C1A]/35 border-[#1E3358]/20 opacity-35"
         : "bg-[#060C1A]/65 border-[#1E3358]/60 shadow-[0_0_20px_rgba(0,0,0,0.4)]"
     }`}>
-      <ThemeBackground />
-      <span className="text-[#4A9EFF]/70">{icon}</span>
+      <span style={{ color: ts.accent }}>{icon}</span>
       <div className="flex flex-col leading-none">
-        <span className="text-[#7AC4FF] text-sm sm:text-base font-medium tabular-nums">{value}</span>
-        <span className="text-[#4A7AAA] text-[9px] uppercase tracking-widest mt-0.5">{label}</span>
+        <span className="text-sm sm:text-base font-medium tabular-nums" style={{ color: ts.textSecondary }}>
+          {value}
+        </span>
+        <span className="text-[9px] uppercase tracking-widest mt-0.5" style={{ color: ts.textMuted }}>
+          {label}
+        </span>
       </div>
     </div>
   );
@@ -54,7 +56,7 @@ function fmtTime(sec: number) {
   return `${Math.floor(sec / 60).toString().padStart(2, "0")}:${(sec % 60).toString().padStart(2, "0")}`;
 }
 
-// ─── Draggable phase bar (identical to previous version) ─────────────────────
+// ─── Draggable phase bar ─────────────────────────────────────────────────────
 const PHASE_META: Record<keyof PhaseDurations, { label: string; color: string; glow: string }> = {
   inhale: { label: "Inhale",  color: "#3A82F7", glow: "rgba(58,130,247,0.5)"  },
   hold:   { label: "Hold",    color: "#7AC4FF", glow: "rgba(122,196,255,0.4)" },
@@ -66,6 +68,7 @@ const BAR_MIN = 1; const BAR_MAX = 10; const BAR_H = 120;
 function DraggablePhaseBar({ phaseKey, value, onChange, isActivePhase }: {
   phaseKey: keyof PhaseDurations; value: number; onChange: (v: number) => void; isActivePhase: boolean;
 }) {
+  const ts = useThemeStyles();
   const meta = PHASE_META[phaseKey];
   const dragging = useRef(false);
   const startY   = useRef(0);
@@ -84,11 +87,7 @@ function DraggablePhaseBar({ phaseKey, value, onChange, isActivePhase }: {
 
   useEffect(() => {
     const mm = (e: MouseEvent) => onMove(e.clientY);
-    const tm = (e: TouchEvent) => {
-      if (!dragging.current) return; // only block scroll when actually dragging a bar
-      e.preventDefault();
-      onMove(e.touches[0].clientY);
-    };
+    const tm = (e: TouchEvent) => { if (!dragging.current) return; e.preventDefault(); onMove(e.touches[0].clientY); };
     window.addEventListener("mousemove", mm); window.addEventListener("mouseup", onEnd);
     window.addEventListener("touchmove", tm, { passive: false }); window.addEventListener("touchend", onEnd);
     return () => {
@@ -101,13 +100,13 @@ function DraggablePhaseBar({ phaseKey, value, onChange, isActivePhase }: {
 
   return (
     <div className="flex flex-col items-center gap-2 select-none flex-1">
-      <span className={`text-xs font-medium tabular-nums transition-colors duration-200 ${isActivePhase ? "text-white" : "text-[#3D6080]"}`}>
+      <span className={`text-xs font-medium tabular-nums transition-colors duration-200 ${isActivePhase ? "text-white" : ""}`} style={{ color: isActivePhase ? ts.textPrimary : ts.textMuted }}>
         {value}s
       </span>
       <div
         className="relative w-full rounded-xl cursor-ns-resize touch-none overflow-hidden"
-        style={{ height: BAR_H, background: "rgba(8,14,28,0.7)", border: "1px solid rgba(30,51,88,0.45)" }}
-        onMouseDown={e  => { e.preventDefault(); onStart(e.clientY); }}
+        style={{ height: BAR_H, background: ts.cardBg, border: `1px solid ${ts.border}` }}
+        onMouseDown={e => { e.preventDefault(); onStart(e.clientY); }}
         onTouchStart={e => { e.preventDefault(); onStart(e.touches[0].clientY); }}
       >
         <div className="absolute bottom-0 left-0 right-0 rounded-xl transition-[height] duration-150"
@@ -119,12 +118,8 @@ function DraggablePhaseBar({ phaseKey, value, onChange, isActivePhase }: {
         />
         <div className="absolute left-1/2 -translate-x-1/2 w-7 h-1 rounded-full transition-all duration-150"
           style={{ bottom: fillH - 7, background: isActivePhase ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.12)" }} />
-        {[3, 6, 9].map(tick => (
-          <div key={tick} className="absolute left-0 right-0 h-px"
-            style={{ bottom: Math.round(((tick - BAR_MIN) / (BAR_MAX - BAR_MIN)) * (BAR_H - 12)) + 12, background: "rgba(255,255,255,0.04)" }} />
-        ))}
       </div>
-      <span className={`text-[10px] tracking-widest uppercase transition-colors duration-200 ${isActivePhase ? "text-[#7AC4FF]" : "text-[#4A7AAA]"}`}>
+      <span className={`text-[10px] tracking-widest uppercase transition-colors duration-200 ${isActivePhase ? "" : ""}`} style={{ color: isActivePhase ? ts.textSecondary : ts.textMuted }}>
         {meta.label}
       </span>
     </div>
@@ -134,28 +129,31 @@ function DraggablePhaseBar({ phaseKey, value, onChange, isActivePhase }: {
 function PresetPill({ name, pattern, onApply, current }: {
   name: string; pattern: PhaseDurations; onApply: (p: PhaseDurations) => void; current: PhaseDurations;
 }) {
+  const ts = useThemeStyles();
   const active = JSON.stringify(pattern) === JSON.stringify(current);
   return (
     <button onClick={() => onApply(pattern)}
       className={`flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl border transition-all duration-200 ${
-        active ? "bg-[#0D1B33]/90 border-[#2A5499]/70 shadow-[0_0_12px_rgba(74,158,255,0.12)]"
-               : "bg-[#0B1628]/50 border-[#1E3358]/40 hover:border-[#2A5499]/60"
+        active 
+          ? "bg-[#0D1B33]/90 border-[#2A5499]/70 shadow-[0_0_12px_rgba(74,158,255,0.12)]"
+          : "bg-[#0B1628]/50 border-[#1E3358]/40 hover:border-[#2A5499]/60"
       }`}
+      style={{ backgroundColor: active ? ts.cardBgHover : ts.cardBg }}
     >
-      <span className={`text-[10px] font-medium ${active ? "text-[#7AC4FF]" : "text-[#5A8FB8]"}`}>{name}</span>
+      <span className={`text-[10px] font-medium ${active ? "" : ""}`} style={{ color: active ? ts.textSecondary : ts.textMuted }}>
+        {name}
+      </span>
       <span className="text-[#4A7AAA] text-[9px]">{pattern.inhale}-{pattern.hold}-{pattern.exhale}-{pattern.pause}</span>
     </button>
   );
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
 export default function BreathingPage() {
   const { t } = useTranslation();
   const ts = useThemeStyles();
-  const [isActive, setIsActive]           = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const location = useLocation();
   const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>(() => {
-    // Auto-apply preset from AI Coach navigation
     const state = location.state as { coachPreset?: PhaseDurations } | null;
     return state?.coachPreset ?? { inhale: 4, hold: 2, exhale: 5, pause: 3 };
   });
@@ -164,22 +162,21 @@ export default function BreathingPage() {
     return state?.coachPresetName ?? null;
   });
   const { data: health } = useHealthData();
-  const [hrBefore, setHrBefore]   = useState<number[]>([]);
-  const [hrDuring, setHrDuring]   = useState<number[]>([]);
+  const [hrBefore, setHrBefore] = useState<number[]>([]);
+  const [hrDuring, setHrDuring] = useState<number[]>([]);
   const [calmResult, setCalmResult] = useState<any>(null);
   const hrBeforeRef = useRef<number[]>([]);
   const hrDuringRef = useRef<number[]>([]);
-  const [cycles, setCycles]               = useState(0);
+  const [cycles, setCycles] = useState(0);
   const [currentDuration, setCurrentDuration] = useState(0);
-  const [totalStats, setTotalStats]       = useState({ totalSessions: 0, totalMinutes: 0, streak: 0 });
-  const [feedbackOpen, setFeedbackOpen]   = useState(false);
+  const [totalStats, setTotalStats] = useState({ totalSessions: 0, totalMinutes: 0, streak: 0 });
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [pendingPayload, setPendingPayload] = useState<any | null>(null);
   const savedClientIdsRef = useRef(new Set<string>());
   const [phase, setPhase] = useState<Phase | null>(null);
-  const startTimeRef      = useRef<number | null>(null);
-  const wasActiveRef      = useRef(isActive);
-  // Track whether feedback has already been shown for this session run
-  const feedbackShownRef  = useRef(false);
+  const startTimeRef = useRef<number | null>(null);
+  const wasActiveRef = useRef(isActive);
+  const feedbackShownRef = useRef(false);
 
   const videos = [
     "/videos/med-01.mp4","/videos/med-02.mp4","/videos/med-03.mp4",
@@ -214,7 +211,7 @@ export default function BreathingPage() {
 
   const fetchStats = async () => {
     try {
-      if (!localStorage.getItem('token')) return; // skip for guests
+      if (!localStorage.getItem('token')) return;
       const { data } = await api.get<Session[]>("/sessions");
       setTotalStats({ totalSessions: data.length, totalMinutes: Math.round(data.reduce((s, x) => s + x.sessionLength, 0)), streak: calculateStreak(data) });
     } catch {}
@@ -231,7 +228,6 @@ export default function BreathingPage() {
   }, [isActive]);
 
   const saveSession = async (payload: any) => {
-    // Not logged in — show gentle nudge, don't save
     if (!localStorage.getItem('token')) {
       toast('Session not saved', {
         description: 'Create a free account to track your progress and streaks',
@@ -254,21 +250,17 @@ export default function BreathingPage() {
     }
   };
 
-  // ── Request push permission after first session ─────────────────────────────
   useEffect(() => {
     if (cycles === 1 && getPushPermission() === 'default') {
       setTimeout(() => requestPushPermission(), 2000);
     }
   }, [cycles]);
 
-  // ── On stop: show feedback only if cycles >= 3, else save silently ──────────
   useEffect(() => {
     if (isActive) {
-      // Session started — reset timer and flag
       startTimeRef.current = Date.now();
       feedbackShownRef.current = false;
     } else if (wasActiveRef.current && startTimeRef.current) {
-      // Session stopped
       const sessionLength = Math.round(((Date.now() - startTimeRef.current) / 60000) * 10) / 10 || 0.1;
       const cid = `c_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
       const base = {
@@ -281,12 +273,10 @@ export default function BreathingPage() {
       };
 
       if (cycles >= FEEDBACK_AFTER_CYCLES) {
-        // Enough cycles — ask for feedback
         savedClientIdsRef.current.delete(cid);
         setPendingPayload({ ...base, feedbackSubmitted: false });
         setFeedbackOpen(true);
       } else {
-        // Too few cycles — save quietly, no popup
         saveSession({ ...base, feedbackSubmitted: true });
       }
 
@@ -306,26 +296,22 @@ export default function BreathingPage() {
   ];
 
   return (
-    <div className="relative flex flex-col min-h-screen  font-montserrat">
+    <div className="relative flex flex-col min-h-screen font-montserrat">
       <style>{`
         @keyframes fadeInUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
         .stat-in { animation: fadeInUp 0.6s ease forwards; }
       `}</style>
 
-      {/* Backgrounds */}
       <ThemeBackground />
-      <VideoBackground videoFiles={videos} isActive={isActive} baseImage="/Background_Night.jpg" targetOpacity={0.55} playbackRate={1} crossfadeSeconds={2.0} pauseBetweenVideos={1.8} brightness={1.05} phase={phase} desiredPlaySeconds={desiredPlaySeconds} maxSpeed={1.2} />
-      <div className="fixed inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 30%, rgba(1,8,20,0.78) 100%)" }} />
+      <VideoBackground videoFiles={videos} isActive={isActive} targetOpacity={0.55} playbackRate={1} crossfadeSeconds={2.0} pauseBetweenVideos={1.8} brightness={1.05} phase={phase} desiredPlaySeconds={desiredPlaySeconds} maxSpeed={1.2} />
+      <div className="fixed inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.72) 100%)" }} />
 
-      {/* NavBar */}
       <div className="relative z-50"><NavBar /></div>
 
-      {/* ══ HERO — flex column, nothing overlaps ══════════════════════════════ */}
       <section
         className="relative z-10 flex flex-col items-center justify-center gap-4 sm:gap-5 px-4"
         style={{ minHeight: "calc(100vh - 56px)" }}
       >
-        {/* ── Row 1: live session stats (top, always visible) ── */}
         <div className={`flex gap-3 transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-30"}`}>
           <div className="stat-in" style={{ animationDelay: "0.1s", opacity: 0 }}>
             <StatPill icon={<Timer size={12} />} label="Session" value={fmtTime(currentDuration)} dim={!isActive} />
@@ -335,15 +321,7 @@ export default function BreathingPage() {
           </div>
         </div>
 
-        {/* ── Row 2: ORB (the star of the show) ── */}
-        {/*  Give it extra breathing room so the expanded circle never clips stats  */}
-        <div
-          className="flex items-center justify-center"
-          style={{
-            width:  circleSize * 1.28,   // extra horizontal padding
-            height: circleSize * 1.28,   // extra vertical padding
-          }}
-        >
+        <div className="flex items-center justify-center" style={{ width: circleSize * 1.28, height: circleSize * 1.28 }}>
           <BreathingCircle
             isActive={isActive}
             phaseDurations={phaseDurations}
@@ -355,92 +333,36 @@ export default function BreathingPage() {
           />
         </div>
 
-        {/* ── Row 3: Start / Pause button ── */}
         <button
           onClick={() => setIsActive(a => !a)}
           className="group relative flex items-center gap-2.5 px-8 py-3 rounded-full text-white text-sm font-medium tracking-wide transition-all duration-300 hover:shadow-[0_0_30px_rgba(58,130,247,0.45)] hover:scale-105 active:scale-95"
-          style={{ background: "linear-gradient(135deg,#1A5FCC 0%,#3A82F7 100%)" }}
+          style={{ background: ts.btnGradient }}
         >
           {isActive ? (
             <><svg width="12" height="14" viewBox="0 0 12 14" fill="white"><rect x="0" y="0" width="4" height="14" rx="1.5"/><rect x="8" y="0" width="4" height="14" rx="1.5"/></svg>Pause</>
           ) : (
             <><svg width="11" height="13" viewBox="0 0 12 14" fill="white"><path d="M1 1l10 6L1 13V1z"/></svg>{cycles > 0 ? "Resume" : "Start"}</>
           )}
-          <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
         </button>
 
-        {/* ── Row 4: achievement stats (always below button) ── */}
         <div className="flex flex-col items-center gap-2">
           <HeartRateMonitor variant="compact" />
-        <div className="flex gap-3">
-          {[
-            { icon: <Flame size={12} />, label: t("breathing.streak"),   value: `${totalStats.streak}d`         },
-            { icon: <Zap size={12} />,   label: t("breathing.allTime"), value: `${totalStats.totalMinutes}m`    },
-            { icon: <Wind size={12} />,  label: t("breathing.sessions"), value: String(totalStats.totalSessions) },
-          ].map(({ icon, label, value }, i) => (
-            <div key={label} className="stat-in" style={{ animationDelay: `${0.3 + i * 0.1}s`, opacity: 0 }}>
-              <StatPill icon={icon} label={label} value={value} dim={isActive} />
-            </div>
-          ))}
-        </div>
-        </div>
-
-        {/* Scroll hint */}
-        <div className={`flex flex-col items-center gap-1.5 transition-opacity duration-700 ${isActive ? "opacity-0" : "opacity-20"}`}>
-          <span className="text-[9px] tracking-[0.25em] uppercase text-[#4A7AAA]">adjust below</span>
-          <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
-            <path d="M1 1l5 5 5-5" stroke="#2A4060" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
+          <div className="flex gap-3">
+            {[
+              { icon: <Flame size={12} />, label: t("breathing.streak"),   value: `${totalStats.streak}d`         },
+              { icon: <Zap size={12} />,   label: t("breathing.allTime"), value: `${totalStats.totalMinutes}m`    },
+              { icon: <Wind size={12} />,  label: t("breathing.sessions"), value: String(totalStats.totalSessions) },
+            ].map(({ icon, label, value }, i) => (
+              <div key={label} className="stat-in" style={{ animationDelay: `${0.3 + i * 0.1}s`, opacity: 0 }}>
+                <StatPill icon={icon} label={label} value={value} dim={isActive} />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ══ HEALTH STATUS BANNER (only when wearable connected) ══════════════ */}
-      {health.sources.length > 0 && health.recoveryScore !== null && (
-        <div className="relative z-10 px-4 sm:px-6 pb-2">
-          <div className="max-w-2xl mx-auto">
-            <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border"
-              style={{
-                background: 'rgba(9,17,34,0.85)',
-                border: health.recoveryScore >= 75
-                  ? '1px solid rgba(74,232,160,0.25)'
-                  : health.recoveryScore >= 50
-                  ? '1px solid rgba(74,158,255,0.25)'
-                  : '1px solid rgba(255,138,138,0.25)',
-              }}>
-              <span className="text-xl flex-shrink-0">
-                {health.recoveryScore >= 75 ? '⚡' : health.recoveryScore >= 50 ? '🌊' : '💙'}
-              </span>
-              <div className="flex-1 min-w-0">
-                <p className="text-[#B8D9FF] text-xs font-medium">
-                  Recovery {health.recoveryScore}/100
-                  {health.avgSleep7d ? ` · ${Math.floor(health.avgSleep7d/60)}h${health.avgSleep7d%60}m avg sleep` : ''}
-                  {health.avgHRV7d   ? ` · HRV ${health.avgHRV7d}ms` : ''}
-                </p>
-                <p className="text-[#4A7AAA] text-[10px]">
-                  {health.recoveryScore >= 75
-                    ? 'Great recovery — try Wim Hof or Box Breathing today'
-                    : health.recoveryScore >= 50
-                    ? 'Moderate recovery — Box or Coherent Breathing recommended'
-                    : 'Low recovery — 4-7-8 or Belly Breathing for gentle restore'}
-                </p>
-              </div>
-              <div className="w-10 h-10 flex-shrink-0">
-                <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
-                  <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(30,51,88,0.4)" strokeWidth="3" />
-                  <circle cx="18" cy="18" r="14" fill="none" strokeWidth="3" strokeLinecap="round"
-                    stroke={health.recoveryScore >= 75 ? '#4AE8A0' : health.recoveryScore >= 50 ? '#4A9EFF' : '#FF8A8A'}
-                    strokeDasharray={`${health.recoveryScore * 0.88} 88`} />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ══ BELOW-FOLD ════════════════════════════════════════════════════════ */}
       <section className="relative z-10 bg-[#040A14]/90 backdrop-blur-sm border-t border-[#1E3358]/30 py-14 px-4 sm:px-6">
         <div className="max-w-2xl mx-auto flex flex-col items-center gap-10">
-
           <div className="text-center">
             <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] mb-2">Breathing pattern</p>
             <h2 className="text-[#7AC4FF] text-xl sm:text-2xl font-light tracking-wide mb-1">
@@ -449,7 +371,6 @@ export default function BreathingPage() {
             <p className="text-[#3D6080] text-xs">Drag bars up · down to adjust · 1–10 seconds</p>
           </div>
 
-          {/* Draggable bars */}
           <div className="w-full flex items-end gap-4 sm:gap-6 px-2" style={{ height: BAR_H + 56 }}>
             {(["inhale","hold","exhale","pause"] as (keyof PhaseDurations)[]).map(key => (
               <DraggablePhaseBar key={key} phaseKey={key} value={phaseDurations[key]}
@@ -458,9 +379,8 @@ export default function BreathingPage() {
             ))}
           </div>
 
-          <div className="w-full h-px bg-[#1E3358]/25" />
+          <div className="w-full h-px" style={{ backgroundColor: ts.border }} />
 
-          {/* Presets */}
           <div className="flex flex-col items-center gap-3 w-full">
             <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA]">Quick presets</p>
             <div className="flex flex-wrap justify-center gap-2">
@@ -470,17 +390,16 @@ export default function BreathingPage() {
             </div>
           </div>
 
-          {/* Info cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
             {[
               { icon: "🌊", title: "Box Breathing",   desc: "4-4-4-4. Equal phases for focus and calm. Used by Navy SEALs." },
               { icon: "🌙", title: "4-7-8 for Sleep", desc: "Long hold + slow exhale activates your parasympathetic system."  },
               { icon: "⚡", title: "Energizing",      desc: "Short sharp cycles boost alertness in under two minutes."         },
             ].map(({ icon, title, desc }) => (
-              <div key={title} className="flex flex-col gap-2 p-4 rounded-2xl bg-[#0B1628]/60 border border-[#1E3358]/40 hover:border-[#2A5499]/60 transition-colors">
+              <div key={title} className="flex flex-col gap-2 p-4 rounded-2xl" style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                 <span className="text-xl">{icon}</span>
-                <p className="text-[#B8D9FF] text-xs font-medium">{title}</p>
-                <p className="text-[#3D6080] text-xs leading-relaxed">{desc}</p>
+                <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>{title}</p>
+                <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
               </div>
             ))}
           </div>
@@ -489,7 +408,6 @@ export default function BreathingPage() {
 
       <div className="relative z-10"><Footer /></div>
 
-      {/* ── Feedback modal ── */}
       <SessionFeedbackModal
         open={feedbackOpen}
         onClose={async () => {

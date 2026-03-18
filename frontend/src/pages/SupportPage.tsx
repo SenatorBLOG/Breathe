@@ -11,9 +11,16 @@ import { useThemeStyles } from '../hooks/useThemeStyles';
 
 // ─── Ad slot ──────────────────────────────────────────────────────────────────
 function AdSlot({ className = '' }: { className?: string }) {
+  const ts = useThemeStyles();
   return (
-    <div className={`flex items-center justify-center border border-dashed border-[#1E3358]/40 rounded-xl bg-[#040A14]/40 ${className}`}>
-      <span className="text-[9px] tracking-[0.25em] uppercase text-[#1A2D48] select-none">Advertisement</span>
+    <div className={`flex items-center justify-center border border-dashed rounded-xl ${className}`}
+      style={{
+        borderColor: ts.border,
+        backgroundColor: `${ts.cardBg}40`,
+      }}>
+      <span className="text-[9px] tracking-widest uppercase select-none" style={{ color: ts.textDim }}>
+        Advertisement
+      </span>
     </div>
   );
 }
@@ -22,18 +29,32 @@ function AdSlot({ className = '' }: { className?: string }) {
 function QuickCard({ icon, title, desc, to, label }: {
   icon: React.ReactNode; title: string; desc: string; to: string; label: string;
 }) {
+  const ts = useThemeStyles();
   return (
     <Link to={to}
-      className="flex flex-col gap-3 p-5 rounded-2xl border border-[#1E3358]/40 bg-[#0B1628]/60 hover:border-[#2A5499]/50 hover:bg-[#0D1B33]/70 transition-all duration-200 group">
+      className="flex flex-col gap-3 p-5 rounded-2xl border transition-all duration-200 group"
+      style={{
+        backgroundColor: ts.cardBg,
+        borderColor: ts.border,
+      }}>
       <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ background: 'rgba(42,84,153,0.2)', border: '1px solid rgba(42,84,153,0.3)' }}>
+        style={{
+          background: `${ts.accent}20`,
+          border: `1px solid ${ts.accent}30`,
+        }}>
         {icon}
       </div>
       <div className="flex-1">
-        <p className="text-[#B8D9FF] text-sm font-medium group-hover:text-white transition-colors">{title}</p>
-        <p className="text-[#4A7AAA] text-xs mt-0.5 leading-relaxed">{desc}</p>
+        <p className="text-sm font-medium group-hover:text-white transition-colors" style={{ color: ts.textPrimary }}>
+          {title}
+        </p>
+        <p className="text-xs mt-0.5 leading-relaxed" style={{ color: ts.textMuted }}>
+          {desc}
+        </p>
       </div>
-      <span className="text-[10px] text-[#4A9EFF] group-hover:underline">{label} →</span>
+      <span className="text-[10px] transition-all group-hover:underline" style={{ color: ts.accent }}>
+        {label} →
+      </span>
     </Link>
   );
 }
@@ -43,10 +64,10 @@ type Category = 'bug' | 'question' | 'feedback' | 'account' | 'other';
 
 const CATEGORIES: { value: Category; label: string; icon: string }[] = [
   { value: 'bug',      label: 'Bug report',    icon: '🐛' },
-  { value: 'question', label: 'Question',       icon: '💭' },
-  { value: 'feedback', label: 'Feedback',       icon: '💡' },
-  { value: 'account',  label: 'Account issue',  icon: '👤' },
-  { value: 'other',    label: 'Other',          icon: '📩' },
+  { value: 'question', label: 'Question',      icon: '💭' },
+  { value: 'feedback', label: 'Feedback',      icon: '💡' },
+  { value: 'account',  label: 'Account issue', icon: '👤' },
+  { value: 'other',    label: 'Other',         icon: '📩' },
 ];
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -78,27 +99,28 @@ export default function SupportPage() {
   };
 
   return (
-    <div className="relative flex flex-col min-h-screen  font-montserrat">
-      {/* Background */}
+    <div className="relative flex flex-col min-h-screen font-montserrat">
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />
 
-        {/* Top ad */}
         <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-4">
           <AdSlot className="h-12" />
         </div>
 
-        {/* ── Hero ── */}
         <header className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-8 pb-6 text-center flex flex-col items-center gap-3">
-          <span className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] border border-[#1E3358]/40 px-4 py-1.5 rounded-full">
+          <span className="text-[10px] tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full"
+            style={{
+              color: ts.textMuted,
+              borderColor: ts.border,
+            }}>
             Support
           </span>
-          <h1 className="text-2xl sm:text-4xl font-light text-[#B8D9FF] tracking-wide">
+          <h1 className="text-2xl sm:text-4xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
             We're here to help
           </h1>
-          <p className="text-[#4A7AAA] text-sm max-w-sm leading-relaxed">
+          <p className="text-sm max-w-sm leading-relaxed" style={{ color: ts.textMuted }}>
             {t("support.subtitle")}
           </p>
         </header>
@@ -106,24 +128,36 @@ export default function SupportPage() {
         <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 pb-20">
           <div className="flex gap-6 items-start">
 
-            {/* ── Form ── */}
+            {/* Form */}
             <div className="flex-1 min-w-0">
               {sent ? (
-                /* Success state */
-                <div className="flex flex-col items-center gap-5 py-16 text-center rounded-2xl border border-[#1E3358]/40 bg-[#0B1628]/60 px-8">
+                <div className="flex flex-col items-center gap-5 py-16 text-center rounded-2xl px-8"
+                  style={{
+                    backgroundColor: ts.cardBg,
+                    border: `1px solid ${ts.border}`,
+                  }}>
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                    style={{ background: 'rgba(74,232,160,0.1)', border: '1px solid rgba(74,232,160,0.2)' }}>
-                    <CheckCircle size={24} className="text-[#4AE8A0]" />
+                    style={{
+                      background: `${ts.accent}10`,
+                      border: `1px solid ${ts.accent}20`,
+                    }}>
+                    <CheckCircle size={24} style={{ color: ts.accent }} />
                   </div>
                   <div>
-                    <p className="text-[#B8D9FF] text-lg font-medium">{t("support.success")}</p>
-                    <p className="text-[#4A7AAA] text-sm mt-1 leading-relaxed">
-                      Thanks {name.split(' ')[0]}. We'll reply to <span className="text-[#4A9EFF]">{email}</span> within 24 hours.
+                    <p className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+                      {t("support.success")}
+                    </p>
+                    <p className="text-sm mt-1 leading-relaxed" style={{ color: ts.textMuted }}>
+                      Thanks {name.split(' ')[0]}. We'll reply to <span style={{ color: ts.accent }}>{email}</span> within 24 hours.
                     </p>
                   </div>
                   <div className="flex gap-3 mt-2">
                     <button onClick={() => { setSent(false); setName(''); setEmail(''); setMessage(''); setCategory('question'); }}
-                      className="px-5 py-2 rounded-xl text-xs text-[#4A9EFF] border border-[#1E3358]/50 hover:border-[#2A5499]/60 transition-all">
+                      className="px-5 py-2 rounded-xl text-xs transition-all"
+                      style={{
+                        color: ts.accent,
+                        border: `1px solid ${ts.border}`,
+                      }}>
                       Send another
                     </button>
                     <Link to="/home-page"
@@ -134,23 +168,29 @@ export default function SupportPage() {
                   </div>
                 </div>
               ) : (
-                /* Form */
-                <div className="rounded-2xl border border-[#1E3358]/40 bg-[#0B1628]/60 overflow-hidden">
+                <div className="rounded-2xl border overflow-hidden"
+                  style={{
+                    backgroundColor: ts.cardBg,
+                    borderColor: ts.border,
+                  }}>
                   <div className="h-px bg-gradient-to-r from-transparent via-[#4A9EFF]/20 to-transparent" />
 
                   <div className="p-5 sm:p-6 flex flex-col gap-5">
-
                     {/* Category */}
                     <div className="flex flex-col gap-2">
-                      <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Topic</label>
+                      <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                        Topic
+                      </label>
                       <div className="flex gap-2 flex-wrap">
                         {CATEGORIES.map(c => (
                           <button key={c.value} onClick={() => setCategory(c.value)}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs border transition-all ${
-                              category === c.value
-                                ? 'bg-[#0D1B33] border-[#2A5499]/60 text-[#7AC4FF]'
-                                : 'border-[#1E3358]/35 text-[#4A7AAA] hover:border-[#1E3358]/60 hover:text-[#5A8FB8]'
-                            }`}>
+                              category === c.value ? "bg-[#0D1B33]" : ""
+                            }`}
+                            style={{
+                              borderColor: category === c.value ? ts.borderHover : ts.border,
+                              color: category === c.value ? ts.textSecondary : ts.textMuted,
+                            }}>
                             <span>{c.icon}</span> {c.label}
                           </button>
                         ))}
@@ -160,38 +200,61 @@ export default function SupportPage() {
                     {/* Name + Email */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Your name</label>
+                        <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                          Your name
+                        </label>
                         <input value={name} onChange={e => setName(e.target.value)}
                           placeholder="Alex"
-                          className="bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-2.5 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors" />
+                          className="rounded-xl px-4 py-2.5 text-sm placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
+                          style={{
+                            backgroundColor: ts.cardBg,
+                            border: `1px solid ${ts.border}`,
+                            color: ts.textSecondary,
+                          }} />
                       </div>
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Email address</label>
+                        <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                          Email address
+                        </label>
                         <input value={email} onChange={e => setEmail(e.target.value)}
                           type="email" placeholder="you@email.com"
-                          className="bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-2.5 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors" />
+                          className="rounded-xl px-4 py-2.5 text-sm placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
+                          style={{
+                            backgroundColor: ts.cardBg,
+                            border: `1px solid ${ts.border}`,
+                            color: ts.textSecondary,
+                          }} />
                       </div>
                     </div>
 
                     {/* Message */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] uppercase tracking-widest text-[#4A7AAA]">Message</label>
+                      <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                        Message
+                      </label>
                       <textarea value={message} onChange={e => setMessage(e.target.value)}
                         rows={5} maxLength={1000}
                         placeholder="Describe your issue or question in detail…"
-                        className="bg-[#060C1A]/70 border border-[#1E3358]/50 rounded-xl px-4 py-3 text-sm text-[#7AC4FF] placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors resize-none leading-relaxed" />
+                        className="rounded-xl px-4 py-3 text-sm placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors resize-none leading-relaxed"
+                        style={{
+                          backgroundColor: ts.cardBg,
+                          border: `1px solid ${ts.border}`,
+                          color: ts.textSecondary,
+                        }} />
                     </div>
 
                     {/* Error */}
                     {error && (
-                      <p className="text-[#FF8A8A] text-xs px-1">{error}</p>
+                      <p className="text-xs px-1" style={{ color: '#FF8A8A' }}>{error}</p>
                     )}
 
                     {/* Submit */}
                     <div className="flex items-center justify-between">
-                      <span className="text-[9px] text-[#3D6080] tabular-nums">{message.length}/1000</span>
+                      <span className="text-[9px] tabular-nums" style={{ color: ts.textDim }}>
+                        {message.length}/1000
+                      </span>
                       <button onClick={submit} disabled={sending || !valid}
-                        className="flex items-center gap-2 px-7 py-2.5 rounded-xl text-sm text-white font-medium tracking-wide transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 disabled:opacity-35"
+                        className="flex items-center gap-2 px-7 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 disabled:opacity-35"
                         style={{ background: ts.btnGradient }}>
                         <Send size={13} />
                         {sending ? 'Sending…' : 'Send message'}
@@ -202,32 +265,31 @@ export default function SupportPage() {
               )}
             </div>
 
-            {/* ── Sidebar ── */}
+            {/* Sidebar */}
             <aside className="hidden lg:flex flex-col gap-4 w-56 flex-shrink-0">
-
               <QuickCard
-                icon={<BookOpen size={14} className="text-[#4A9EFF]" />}
+                icon={<BookOpen size={14} style={{ color: ts.accent }} />}
                 title="Browse FAQ"
                 desc="Most questions are already answered in our help center."
                 to="/faq"
                 label="Open FAQ"
               />
               <QuickCard
-                icon={<Users size={14} className="text-[#4AE8A0]" />}
+                icon={<Users size={14} style={{ color: ts.accent }} />}
                 title="Ask the community"
                 desc="Fellow meditators often have the fastest answers."
                 to="/community"
                 label="Go to community"
               />
               <QuickCard
-                icon={<MessageCircle size={14} className="text-[#FFD97D]" />}
+                icon={<MessageCircle size={14} style={{ color: ts.accentLight }} />}
                 title="Response time"
                 desc="We reply within 24 hours on weekdays. Usually much faster."
                 to="/support"
                 label="Send a message"
               />
               <QuickCard
-                icon={<Mail size={14} className="text-[#7AC4FF]" />}
+                icon={<Mail size={14} style={{ color: ts.accent }} />}
                 title="Email us directly"
                 desc="Prefer email? Reach us any time."
                 to="mailto:support@breatheonline.app"
@@ -241,14 +303,14 @@ export default function SupportPage() {
           {/* Mobile quick links */}
           <div className="lg:hidden grid grid-cols-2 gap-3 mt-6">
             <QuickCard
-              icon={<BookOpen size={14} className="text-[#4A9EFF]" />}
+              icon={<BookOpen size={14} style={{ color: ts.accent }} />}
               title="Browse FAQ"
               desc="Most questions already answered."
               to="/faq"
               label="Open FAQ"
             />
             <QuickCard
-              icon={<Users size={14} className="text-[#4AE8A0]" />}
+              icon={<Users size={14} style={{ color: ts.accent }} />}
               title="Community"
               desc="Ask fellow meditators."
               to="/community"

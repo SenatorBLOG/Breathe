@@ -1,64 +1,64 @@
 // src/components/AICoach/SoulOrb.tsx
-// The living orb — brand mascot + AI Coach trigger
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useThemeStyles } from "../../hooks/useThemeStyles";
 import AICoachModal from './AICoachModal';
 
-// ─── Mood states ──────────────────────────────────────────────────────────────
 type Mood = 'idle' | 'curious' | 'happy' | 'thinking' | 'speaking';
 
 export default function SoulOrb() {
-  const orbRef      = useRef<HTMLDivElement>(null);
-  const [open, setOpen]     = useState(false);
-  const [mood, setMood]     = useState<Mood>('idle');
-  const [blink, setBlink]   = useState(false);
+  const ts = useThemeStyles();
+  const orbRef = useRef<HTMLDivElement>(null);
+
+  const [open, setOpen] = useState(false);
+  const [mood, setMood] = useState<Mood>('idle');
+  const [blink, setBlink] = useState(false);
   const [pupilX, setPupilX] = useState(0);
   const [pupilY, setPupilY] = useState(0);
   const [hovered, setHovered] = useState(false);
-  const [labelVisible, setLabelVisible] = useState(false);
 
-  // ── Blink randomly ─────────────────────────────────────────────────────────
+  // ── Blink ────────────────────────────────────────────────
   useEffect(() => {
-    const schedBlink = () => {
-      const delay = 2000 + Math.random() * 4000;
-      return setTimeout(() => {
+    const loop = () => {
+      const delay = 2500 + Math.random() * 4000;
+      setTimeout(() => {
         setBlink(true);
-        setTimeout(() => { setBlink(false); schedBlink(); }, 150);
+        setTimeout(() => setBlink(false), 120);
+        loop();
       }, delay);
     };
-    const t = schedBlink();
-    return () => clearTimeout(t);
+    loop();
   }, []);
 
-  // ── Mood cycle when idle ───────────────────────────────────────────────────
+  // ── Mood ─────────────────────────────────────────────────
   useEffect(() => {
-    if (open) { setMood('speaking'); return; }
-    if (hovered) { setMood('curious'); return; }
-    const moods: Mood[] = ['idle', 'idle', 'thinking', 'idle', 'idle', 'happy'];
+    if (open) return setMood('speaking');
+    if (hovered) return setMood('curious');
+
+    const moods: Mood[] = ['idle', 'thinking', 'idle', 'happy'];
     let i = 0;
     const t = setInterval(() => {
       i = (i + 1) % moods.length;
       setMood(moods[i]);
-    }, 3000);
+    }, 4000);
+
     return () => clearInterval(t);
   }, [open, hovered]);
 
-  // ── Show label after 2 sec ─────────────────────────────────────────────────
-  useEffect(() => {
-    const t = setTimeout(() => setLabelVisible(true), 2000);
-    return () => clearTimeout(t);
-  }, []);
-
-  // ── Pupils follow mouse ────────────────────────────────────────────────────
+  // ── Mouse tracking ───────────────────────────────────────
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!orbRef.current) return;
+
     const rect = orbRef.current.getBoundingClientRect();
-    const cx   = rect.left + rect.width  / 2;
-    const cy   = rect.top  + rect.height / 2;
-    const dx   = e.clientX - cx;
-    const dy   = e.clientY - cy;
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+
     const dist = Math.sqrt(dx * dx + dy * dy);
-    const max  = 4;
-    const scale = Math.min(dist / 120, 1);
+    const max = 6;
+    const scale = Math.min(dist / 150, 1);
+
     setPupilX((dx / dist || 0) * max * scale);
     setPupilY((dy / dist || 0) * max * scale);
   }, []);
@@ -68,187 +68,149 @@ export default function SoulOrb() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [handleMouseMove]);
 
-  // ── Eye shapes per mood ────────────────────────────────────────────────────
-  const eyeConfig = {
-    idle:     { ry: 5,   squint: 0,  pupilSize: 3.5 },
-    curious:  { ry: 6.5, squint: 0,  pupilSize: 4   },
-    happy:    { ry: 3,   squint: 2,  pupilSize: 3   },
-    thinking: { ry: 4,   squint: 0,  pupilSize: 3   },
-    speaking: { ry: 5.5, squint: 0,  pupilSize: 4   },
-  }[mood];
-
-  const blinkRy = blink ? 0.5 : eyeConfig.ry;
+  const eyeScale =
+    mood === 'happy' ? 0.7 :
+    mood === 'curious' ? 1.1 :
+    1;
 
   return (
     <>
       <style>{`
-        @keyframes orbFloat {
+        @keyframes floatOrb {
           0%,100% { transform: translateY(0px); }
-          50%      { transform: translateY(-8px); }
+          50% { transform: translateY(-12px); }
         }
-        @keyframes orbBreath {
-          0%,100% { transform: scale(1); filter: drop-shadow(0 0 30px rgba(74,158,255,0.5)); }
-          50%      { transform: scale(1.08); filter: drop-shadow(0 0 55px rgba(74,158,255,0.75)); }
+
+        @keyframes pulseGlow {
+          0%,100% { opacity: 0.5; transform: scale(1); }
+          50% { opacity: 0.9; transform: scale(1.08); }
         }
-        @keyframes orbRing {
-          0%   { transform: scale(1);   opacity: 0.35; }
-          100% { transform: scale(1.9); opacity: 0; }
-        }
-        @keyframes labelFade {
-          from { opacity:0; transform: translateY(4px); }
-          to   { opacity:1; transform: translateY(0); }
-        }
-        @keyframes labelPulse {
-          0%,100% { opacity: 0.75; }
-          50%      { opacity: 1; }
-        }
-        .orb-float  { animation: orbFloat 5s ease-in-out infinite; }
-        .orb-breath { animation: orbBreath 4s ease-in-out infinite; }
-        .orb-ring   { animation: orbRing 2.8s ease-out infinite; }
-        .orb-ring-2 { animation: orbRing 2.8s ease-out 0.9s infinite; }
-        .label-in   { animation: labelFade 0.6s ease forwards, labelPulse 3s ease-in-out 1s infinite; }
-        .orb-cursor { cursor: pointer; }
-        .orb-cursor:hover .orb-hover-scale { transform: scale(1.06); transition: transform 0.3s ease; }
+
+        .orb-float { animation: floatOrb 6s ease-in-out infinite; }
+        .orb-glow { animation: pulseGlow 4s ease-in-out infinite; }
       `}</style>
 
-      <div className="flex flex-col items-center gap-0 select-none">
+      <div className="flex flex-col items-center select-none">
 
-        {/* ── ORB ── */}
-        <div ref={orbRef} className="orb-cursor orb-float relative flex items-center justify-center"
-          style={{ width: 200, height: 200 }}
+        {/* ORB */}
+        <div
+          ref={orbRef}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
-          onClick={() => setOpen(v => !v)}>
+          onClick={() => setOpen(!open)}
+          className="relative orb-float cursor-pointer"
+          style={{ width: 200, height: 200 }}
+        >
 
-          {/* Pulse rings */}
-          <div className="orb-ring absolute inset-0 rounded-full border border-[#4A9EFF]/20" />
-          <div className="orb-ring-2 absolute inset-0 rounded-full border border-[#4A9EFF]/15" />
-
-          {/* Main orb body */}
-          <div className="orb-breath orb-hover-scale absolute inset-6 rounded-full"
+          {/* OUTER GLOW */}
+          <div
+            className="absolute inset-0 rounded-full blur-2xl orb-glow"
             style={{
-              background: hovered
-                ? 'radial-gradient(circle at 35% 30%, #9AD4FF, #2A7AFF 50%, #0A1A4F)'
-                : 'radial-gradient(circle at 35% 30%, #7AC4FF, #1A5FCC 58%, #0A1A3F)',
+              background: `${ts.accent}`,
+              opacity: 0.25
+            }}
+          />
+
+          {/* CORE */}
+          <div
+            className="absolute inset-0 rounded-full transition-all duration-500"
+            style={{
+              background: `
+                radial-gradient(circle at 30% 30%, ${ts.accent}AA, ${ts.accent}55 40%, transparent 70%),
+                radial-gradient(circle at 70% 70%, #ffffff22, transparent 60%),
+                ${ts.cardBg}
+              `,
               boxShadow: hovered
-                ? '0 0 70px rgba(74,158,255,0.65), 0 0 140px rgba(74,158,255,0.2), inset 0 0 50px rgba(255,255,255,0.12)'
-                : '0 0 50px rgba(74,158,255,0.45), 0 0 100px rgba(74,158,255,0.12), inset 0 0 40px rgba(255,255,255,0.08)',
-              transition: 'background 0.4s ease, box-shadow 0.4s ease',
-            }} />
+                ? `0 0 120px ${ts.accent}66, inset 0 0 60px ${ts.accent}33`
+                : `0 0 60px ${ts.accent}33, inset 0 0 30px ${ts.accent}22`,
+              backdropFilter: 'blur(20px)',
+              border: `1px solid ${ts.border}`,
+              transform: hovered ? 'scale(1.06)' : 'scale(1)'
+            }}
+          />
 
-          {/* Specular highlight */}
-          <div className="absolute pointer-events-none rounded-full"
+          {/* INNER SHINE */}
+          <div
+            className="absolute inset-0 rounded-full"
             style={{
-              top: '28%', left: '30%', width: '22%', height: '14%',
-              background: 'rgba(255,255,255,0.35)',
-              filter: 'blur(3px)',
-              transform: 'rotate(-25deg)',
-            }} />
+              background: `radial-gradient(circle at 40% 35%, rgba(255,255,255,0.25), transparent 60%)`
+            }}
+          />
 
-          {/* SVG face */}
-          <svg className="absolute" viewBox="0 0 100 100"
-            style={{ width: 80, height: 80, overflow: 'visible' }}>
+          {/* EYES */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex gap-6">
 
-            {/* Thinking eyebrow (left) */}
-            {mood === 'thinking' && (
-              <path d="M 34 36 Q 40 32 46 36" stroke="rgba(200,230,255,0.5)"
-                strokeWidth="1.5" fill="none" strokeLinecap="round" />
-            )}
+              {[0, 1].map((i) => (
+                <div
+                  key={i}
+                  className="relative rounded-full flex items-center justify-center transition-all"
+                  style={{
+                    width: 16 * eyeScale,
+                    height: blink ? 2 : 16 * eyeScale,
+                    background: 'white',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  {!blink && (
+                    <div
+                      className="absolute rounded-full"
+                      style={{
+                        width: 8,
+                        height: 8,
+                        background: '#000',
+                        transform: `translate(${pupilX}px, ${pupilY}px)`
+                      }}
+                    />
+                  )}
+                </div>
+              ))}
 
-            {/* Left eye */}
-            <ellipse
-              cx={40 + (mood === 'thinking' ? -1 : 0)}
-              cy={48}
-              rx={4.5}
-              ry={blinkRy}
-              fill="rgba(180,220,255,0.92)"
-              style={{ transition: 'ry 0.08s ease, cx 0.15s ease' }}
+            </div>
+          </div>
+
+          {/* SOFT SMILE */}
+          {(hovered || mood === 'happy' || open) && (
+            <div
+              className="absolute left-1/2 bottom-[28%] -translate-x-1/2"
+              style={{
+                width: 30,
+                height: 10,
+                borderBottom: '2px solid rgba(0,0,0,0.5)',
+                borderRadius: '0 0 50px 50px',
+                opacity: 0.6
+              }}
             />
-            {/* Left pupil */}
-            {!blink && (
-              <ellipse
-                cx={40 + pupilX + (mood === 'thinking' ? -1.5 : 0)}
-                cy={48 + pupilY}
-                rx={eyeConfig.pupilSize * 0.6}
-                ry={eyeConfig.pupilSize * 0.75}
-                fill="rgba(10,26,64,0.9)"
-                style={{ transition: 'cx 0.1s ease, cy 0.1s ease' }}
-              />
-            )}
-            {/* Left pupil shine */}
-            {!blink && (
-              <ellipse cx={40 + pupilX - 1} cy={48 + pupilY - 1.5} rx={1} ry={1}
-                fill="rgba(255,255,255,0.8)" />
-            )}
-
-            {/* Right eye */}
-            <ellipse
-              cx={60}
-              cy={48}
-              rx={4.5}
-              ry={blinkRy}
-              fill="rgba(180,220,255,0.92)"
-              style={{ transition: 'ry 0.08s ease' }}
-            />
-            {!blink && (
-              <ellipse
-                cx={60 + pupilX}
-                cy={48 + pupilY}
-                rx={eyeConfig.pupilSize * 0.6}
-                ry={eyeConfig.pupilSize * 0.75}
-                fill="rgba(10,26,64,0.9)"
-                style={{ transition: 'cx 0.1s ease, cy 0.1s ease' }}
-              />
-            )}
-            {!blink && (
-              <ellipse cx={60 + pupilX - 1} cy={48 + pupilY - 1.5} rx={1} ry={1}
-                fill="rgba(255,255,255,0.8)" />
-            )}
-
-            {/* Happy squint / smile */}
-            {mood === 'happy' && (
-              <path d="M 42 58 Q 50 64 58 58" stroke="rgba(200,235,255,0.6)"
-                strokeWidth="1.5" fill="none" strokeLinecap="round" />
-            )}
-
-            {/* Speaking — small mouth */}
-            {(mood === 'speaking' || open) && (
-              <ellipse cx={50} cy={60} rx={4} ry={2.5}
-                fill="rgba(10,26,64,0.5)" />
-            )}
-          </svg>
-
-          {/* Open indicator dot */}
-          {open && (
-            <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-[#4AE8A0]"
-              style={{ boxShadow: '0 0 8px rgba(74,232,160,0.8)' }} />
           )}
+
         </div>
 
-        {/* ── Label ── */}
-        {labelVisible && !open && (
-          <div className="label-in flex flex-col items-center gap-1 -mt-1">
-            <div className="w-px h-3 bg-gradient-to-b from-[#4A9EFF]/25 to-transparent" />
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+        {/* TEXT BUBBLE */}
+        {!open && (
+          <div className="mt-3">
+            <div
+              className="px-4 py-2 rounded-2xl backdrop-blur-xl transition-all"
               style={{
-                background: 'rgba(9,17,34,0.85)',
-                border: '1px solid rgba(74,158,255,0.25)',
-                backdropFilter: 'blur(8px)',
-              }}>
-              <span className="text-[9px] text-[#4A9EFF]">✦</span>
-              <span className="text-[10px] text-[#7AC4FF] tracking-wide">
-                {hovered ? 'Click to chat with me' : 'I\'m your AI Coach — ask me anything'}
-              </span>
+                background: `${ts.cardBg}CC`,
+                border: `1px solid ${ts.border}`,
+                color: ts.textPrimary
+              }}
+            >
+              <p className="text-[10px] uppercase tracking-widest flex gap-2">
+                <span style={{ color: ts.accent }}>✦</span>
+                {hovered ? 'Talk to me' : 'Your AI coach'}
+              </p>
             </div>
           </div>
         )}
 
-        {/* ── Inline chat expands below ── */}
+        {/* MODAL */}
         {open && (
-          <div className="w-full max-w-sm mt-3">
+          <div className="w-full max-w-md mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <AICoachModal onClose={() => setOpen(false)} />
           </div>
         )}
+
       </div>
     </>
   );

@@ -10,11 +10,14 @@ import { Textarea } from "../components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Slider } from "../components/ui/slider";
 import Footer from "../components/Footer";
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import ThemeBackground from '../components/ThemeBackground';
 
 export default function NewSessionPage() {
   const navigate = useNavigate();
+  const ts = useThemeStyles();
   const token = localStorage.getItem('token');
-  
+
   const [formData, setFormData] = useState({
     sessionDate: new Date().toISOString().split('T')[0],
     moodBefore: 5,
@@ -32,6 +35,7 @@ export default function NewSessionPage() {
   });
 
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
     if (!token) {
@@ -41,46 +45,61 @@ export default function NewSessionPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await api.post('/sessions', formData);
       toast.success('Session saved');
       navigate('/sessions');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to save session');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="relative min-h-screen bg-[#0A0F1F]">
-      {/* Navigation Bar */}
-      <div className="relative z-10">
+    <div className="relative min-h-screen font-montserrat overflow-x-hidden">
+      <ThemeBackground />
+
+      <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />
-      </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 px-[157px] py-12">
-        <h1 className="text-[#70B8FF] text-[36px] font-normal font-montserrat mb-8">
-          Record New Meditation Session
-        </h1>
+        <div className="flex-1 px-4 sm:px-6 lg:px-[157px] py-12">
+          <h1 className="text-3xl sm:text-4xl font-light mb-8" style={{ color: ts.textPrimary }}>
+            Record New Meditation Session
+          </h1>
 
-        <form onSubmit={handleSubmit} className="max-w-3xl">
-          <div className="space-y-8">
+          <form onSubmit={handleSubmit} className="max-w-3xl space-y-8">
             {/* Date */}
             <div>
-              <Label className="text-[#70B8FF] text-[18px] font-roboto mb-2 block">Session Date</Label>
+              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+                Session Date
+              </Label>
               <Input
                 type="date"
                 value={formData.sessionDate}
                 onChange={(e) => setFormData({ ...formData, sessionDate: e.target.value })}
-                className="bg-[rgba(255,255,255,0.04)] border border-[#C1BBBB] text-[#3A82F7] text-[18px]"
+                className="rounded-xl px-4 py-3 text-sm outline-none focus:border-[#2A5499] transition-colors"
+                style={{
+                  backgroundColor: ts.cardBg,
+                  border: `1px solid ${ts.border}`,
+                  color: ts.textSecondary,
+                }}
               />
             </div>
 
             {/* Time of Day */}
             <div>
-              <Label className="text-[#70B8FF] text-[18px] font-roboto mb-2 block">Time of Day</Label>
+              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+                Time of Day
+              </Label>
               <Select value={formData.timeOfDay} onValueChange={(value: string) => setFormData({ ...formData, timeOfDay: value })}>
-                <SelectTrigger className="bg-[rgba(255,255,255,0.04)] border border-[#C1BBBB] text-[#3A82F7] text-[18px]">
+                <SelectTrigger className="rounded-xl px-4 py-3 text-sm outline-none focus:border-[#2A5499] transition-colors"
+                  style={{
+                    backgroundColor: ts.cardBg,
+                    border: `1px solid ${ts.border}`,
+                    color: ts.textSecondary,
+                  }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -94,7 +113,7 @@ export default function NewSessionPage() {
 
             {/* Session Length */}
             <div>
-              <Label className="text-[#70B8FF] text-[18px] font-roboto mb-2 block">
+              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Session Length: {formData.sessionLength} minutes
               </Label>
               <Slider
@@ -109,7 +128,7 @@ export default function NewSessionPage() {
 
             {/* Cycles */}
             <div>
-              <Label className="text-[#70B8FF] text-[18px] font-roboto mb-2 block">
+              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Number of Cycles: {formData.cycles}
               </Label>
               <Slider
@@ -124,7 +143,7 @@ export default function NewSessionPage() {
 
             {/* Mood Before */}
             <div>
-              <Label className="text-[#70B8FF] text-[18px] font-roboto mb-2 block">
+              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Mood Before: {formData.moodBefore}/10
               </Label>
               <Slider
@@ -139,7 +158,7 @@ export default function NewSessionPage() {
 
             {/* Mood After */}
             <div>
-              <Label className="text-[#70B8FF] text-[18px] font-roboto mb-2 block">
+              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Mood After: {formData.moodAfter}/10
               </Label>
               <Slider
@@ -154,7 +173,7 @@ export default function NewSessionPage() {
 
             {/* Focus Level */}
             <div>
-              <Label className="text-[#70B8FF] text-[18px] font-roboto mb-2 block">
+              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Focus Level: {formData.focusLevel}/10
               </Label>
               <Slider
@@ -169,7 +188,7 @@ export default function NewSessionPage() {
 
             {/* Stress Level */}
             <div>
-              <Label className="text-[#70B8FF] text-[18px] font-roboto mb-2 block">
+              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Stress Level: {formData.stressLevel}/10
               </Label>
               <Slider
@@ -184,7 +203,7 @@ export default function NewSessionPage() {
 
             {/* Breathing Depth */}
             <div>
-              <Label className="text-[#70B8FF] text-[18px] font-roboto mb-2 block">
+              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Breathing Depth: {formData.breathingDepth}/10
               </Label>
               <Slider
@@ -199,7 +218,7 @@ export default function NewSessionPage() {
 
             {/* Calmness Score */}
             <div>
-              <Label className="text-[#70B8FF] text-[18px] font-roboto mb-2 block">
+              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Calmness Score: {formData.calmnessScore}/10
               </Label>
               <Slider
@@ -214,7 +233,7 @@ export default function NewSessionPage() {
 
             {/* Distraction Count */}
             <div>
-              <Label className="text-[#70B8FF] text-[18px] font-roboto mb-2 block">
+              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Distraction Count: {formData.distractionCount}
               </Label>
               <Slider
@@ -229,9 +248,16 @@ export default function NewSessionPage() {
 
             {/* Noise Level */}
             <div>
-              <Label className="text-[#70B8FF] text-[18px] font-roboto mb-2 block">Noise Level</Label>
+              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+                Noise Level
+              </Label>
               <Select value={formData.noiseLevel} onValueChange={(value: string) => setFormData({ ...formData, noiseLevel: value })}>
-                <SelectTrigger className="bg-[rgba(255,255,255,0.04)] border border-[#C1BBBB] text-[#3A82F7] text-[18px]">
+                <SelectTrigger className="rounded-xl px-4 py-3 text-sm outline-none focus:border-[#2A5499] transition-colors"
+                  style={{
+                    backgroundColor: ts.cardBg,
+                    border: `1px solid ${ts.border}`,
+                    color: ts.textSecondary,
+                  }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -245,39 +271,49 @@ export default function NewSessionPage() {
 
             {/* Notes */}
             <div>
-              <Label className="text-[#70B8FF] text-[18px] font-roboto mb-2 block">Notes (Optional)</Label>
+              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+                Notes (Optional)
+              </Label>
               <Textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 placeholder="Any thoughts or observations from this session..."
-                className="bg-[rgba(255,255,255,0.04)] border border-[#C1BBBB] text-[#3A82F7] text-[18px] min-h-[120px]"
+                className="rounded-xl px-4 py-3 text-sm min-h-[120px] outline-none focus:border-[#2A5499] transition-colors resize-none"
+                style={{
+                  backgroundColor: ts.cardBg,
+                  border: `1px solid ${ts.border}`,
+                  color: ts.textSecondary,
+                }}
               />
             </div>
 
-            {error && <p className="text-red-500 text-[16px]">{error}</p>}
+            {error && <p className="text-red-500 text-sm">{error}</p>}
 
             {/* Submit Buttons */}
             <div className="flex gap-4 pt-4">
-              <button 
+              <button
                 type="submit"
-                className="px-5 py-2.5 rounded-full bg-[#3A82F7] text-white shadow-lg hover:shadow-xl transition-shadow"
+                disabled={loading}
+                className="px-5 py-2.5 rounded-full text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] disabled:opacity-50"
+                style={{ background: ts.btnGradient }}
               >
-                <span className="text-white text-[18px] font-normal font-roboto">Save Session</span>
+                Save Session
               </button>
-              <button 
+              <button
                 type="button"
                 onClick={() => navigate('/sessions')}
-                className="px-5 py-2.5 rounded-full border border-[#3A82F7] text-[#3A82F7] shadow-lg hover:shadow-xl hover:bg-[#3A82F7] hover:text-white transition-all"
+                className="px-5 py-2.5 rounded-full border font-medium transition-all hover:bg-[#3A82F7] hover:text-white"
+                style={{
+                  borderColor: ts.accent,
+                  color: ts.accent,
+                }}
               >
-                <span className="text-[18px] font-normal font-roboto">Cancel</span>
+                Cancel
               </button>
             </div>
-          </div>
-        </form>
-      </div>
+          </form>
+        </div>
 
-      {/* Footer */}
-      <div className="relative z-[999]">
         <Footer />
       </div>
     </div>

@@ -1,6 +1,7 @@
 // src/components/BreathingCircle.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
+import { useThemeStyles } from "../hooks/useThemeStyles";
 
 export type Phase = "inhale" | "hold" | "exhale" | "pause";
 
@@ -31,10 +32,11 @@ export function BreathingCircle({
   onToggle,
   size = 520,
   minScale = 0.72,
-  maxScale = 1.1,    // ← reduced from 1.12 so expansion stays within the container
+  maxScale = 1.1,
   glowIntensity = 1,
 }: BreathingCircleProps) {
-  const controls  = useAnimation();
+  const ts = useThemeStyles();
+  const controls = useAnimation();
   const [phase, setPhase] = useState<Phase>("inhale");
   const timeoutRef = useRef<number | null>(null);
 
@@ -42,14 +44,17 @@ export function BreathingCircle({
     inhale: 1.0, hold: 0.92, exhale: 0.45, pause: 0.36,
   };
 
-  // Cleanup on unmount
   useEffect(() => () => { if (timeoutRef.current) window.clearTimeout(timeoutRef.current); }, []);
 
   useEffect(() => {
     if (timeoutRef.current) { window.clearTimeout(timeoutRef.current); timeoutRef.current = null; }
 
     if (!isActive) {
-      controls.start({ scale: 1, boxShadow: "0 16px 80px rgba(20,40,80,0.12)", transition: { duration: 0.6, ease: "easeOut" } });
+      controls.start({ 
+        scale: 1, 
+        boxShadow: `0 16px 80px ${ts.accent}20`, 
+        transition: { duration: 0.6, ease: "easeOut" } 
+      });
       setPhase("inhale");
       onPhaseChange?.("inhale", intensityByPhase["inhale"]);
       return;
@@ -63,12 +68,12 @@ export function BreathingCircle({
 
       const expanding = p === "inhale" || p === "hold";
       const targetScale = expanding ? maxScale : minScale;
-      const glowFactor  = expanding ? 1.0 * glowIntensity : 0.5 * glowIntensity;
+      const glowFactor = expanding ? 1.0 * glowIntensity : 0.5 * glowIntensity;
 
       controls.start({
         scale: targetScale,
         boxShadow: `
-          0 40px 180px rgba(80,170,255,${0.12 * glowFactor}),
+          0 40px 180px ${ts.accent}${Math.floor(12 * glowFactor).toString(16).padStart(2, '0')},
           inset 0 0 80px rgba(255,255,255,${0.03 * glowFactor})
         `,
         transition: { duration: phaseDurations[p], ease: "easeInOut" },
@@ -83,7 +88,8 @@ export function BreathingCircle({
     runPhase(phase);
 
     return () => { if (timeoutRef.current) { window.clearTimeout(timeoutRef.current); timeoutRef.current = null; } };
-  }, [isActive, phaseDurations, glowIntensity, minScale, maxScale]);
+    // Добавляем ts в зависимости, чтобы анимация обновилась при смене темы
+  }, [isActive, phaseDurations, glowIntensity, minScale, maxScale, ts.accent]);
 
   const LABEL: Record<Phase, string> = {
     inhale: "Inhale", hold: "Hold", exhale: "Exhale", pause: "Pause",
@@ -107,30 +113,31 @@ export function BreathingCircle({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          // Градиент теперь строится на цветах темы
           background: `
             radial-gradient(
-              rgba(112,184,255,0.35) 20%,
-              rgba(101,168,255,0.7)  80%,
-              rgba(112,184,255,1)    36%,
-              rgba(255,255,255,1)   100%
+              circle at center,
+              ${ts.accentLight}55 20%,
+              ${ts.accent}B3 80%,
+              ${ts.accent} 100%
             )
           `,
-          border: "1px solid rgba(112,184,255,1)",
-          boxShadow: "0 0 120px rgba(80,170,255,0.15)",
+          border: `1px solid ${ts.accent}`,
+          boxShadow: `0 0 120px ${ts.accent}26`,
         }}
       >
         <div className="relative z-20 text-center select-none pointer-events-none">
           <div style={{
-            color: "#fff",
+            color: "#fff", // Текст внутри яркой сферы лучше оставить белым для читаемости
             fontSize: "clamp(24px, 5.2vw, 68px)",
             fontWeight: 800,
-            textShadow: "0 10px 36px rgba(90,170,255,0.3)",
+            textShadow: `0 10px 36px ${ts.accent}4D`,
             lineHeight: 1,
           }}>
             {isActive ? LABEL[phase] : "Start"}
           </div>
           <div style={{
-            color: "rgba(220,235,255,0.9)",
+            color: "rgba(255,255,255,0.8)", // Подпись тоже белая/прозрачная
             marginTop: 8,
             fontSize: "clamp(11px, 1.5vw, 18px)",
           }}>

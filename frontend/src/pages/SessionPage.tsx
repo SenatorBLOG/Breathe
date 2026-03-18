@@ -42,38 +42,41 @@ function fmtTime(iso: string) {
 function moodEmoji(v: number) {
   if (v <= 2) return "😞"; if (v <= 4) return "😐"; if (v <= 6) return "🙂"; if (v <= 8) return "😊"; return "🌟";
 }
-function deltaColor(before: number, after: number) {
-  return after > before ? "#4A9EFF" : after < before ? "#FF8A8A" : "#3D6080";
-}
 
 // ─── Ad slot ──────────────────────────────────────────────────────────────────
 function AdSlot({ label = "Advertisement", className = "" }: { label?: string; className?: string }) {
+  const ts = useThemeStyles();
   return (
-    <div className={`flex items-center justify-center border border-dashed border-[#1E3358]/40 rounded-xl bg-[#040A14]/40 ${className}`}>
-      <ThemeBackground />
-      <span className="text-[9px] tracking-[0.25em] uppercase text-[#1A2D48] select-none">{label}</span>
+    <div
+      className={`flex items-center justify-center border border-dashed rounded-xl ${className}`}
+      style={{ borderColor: ts.border, backgroundColor: `${ts.cardBg}40` }}
+    >
+      <span className="text-[9px] tracking-[0.25em] uppercase select-none" style={{ color: ts.textDim }}>{label}</span>
     </div>
   );
 }
 
 // ─── Stat summary card ────────────────────────────────────────────────────────
 function SummaryCard({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub?: string }) {
+  const ts = useThemeStyles();
   return (
-    <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#0B1628]/70 border border-[#1E3358]/50">
-      <span className="text-[#4A9EFF]/70">{icon}</span>
+    <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border"
+      style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}>
+      <span style={{ color: `${ts.accent}BB` }}>{icon}</span>
       <div>
-        <p className="text-[#7AC4FF] text-base sm:text-lg font-medium tabular-nums leading-none">{value}</p>
-        <p className="text-[#4A7AAA] text-[9px] uppercase tracking-widest mt-0.5">{label}</p>
-        {sub && <p className="text-[#3D6080] text-[9px] mt-0.5">{sub}</p>}
+        <p className="text-base sm:text-lg font-medium tabular-nums leading-none" style={{ color: ts.textPrimary }}>{value}</p>
+        <p className="text-[9px] uppercase tracking-widest mt-0.5" style={{ color: ts.textMuted }}>{label}</p>
+        {sub && <p className="text-[9px] mt-0.5" style={{ color: ts.textDim }}>{sub}</p>}
       </div>
     </div>
   );
 }
 
 // ─── Mini bar (score visualiser) ─────────────────────────────────────────────
-function MiniBar({ value, max = 10, color = "#3A82F7" }: { value: number; max?: number; color?: string }) {
+function MiniBar({ value, max = 10, color }: { value: number; max?: number; color: string }) {
+  const ts = useThemeStyles();
   return (
-    <div className="flex-1 h-1 rounded-full bg-[#1E3358]/40 overflow-hidden">
+    <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: `${ts.border}66` }}>
       <div className="h-full rounded-full transition-all" style={{ width: `${(value / max) * 100}%`, background: color }} />
     </div>
   );
@@ -81,9 +84,10 @@ function MiniBar({ value, max = 10, color = "#3A82F7" }: { value: number; max?: 
 
 // ─── Score row ────────────────────────────────────────────────────────────────
 function ScoreRow({ label, value, color }: { label: string; value: number; color: string }) {
+  const ts = useThemeStyles();
   return (
     <div className="flex items-center gap-2">
-      <span className="text-[10px] text-[#3D6080] w-16 flex-shrink-0">{label}</span>
+      <span className="text-[10px] w-16 flex-shrink-0" style={{ color: ts.textDim }}>{label}</span>
       <MiniBar value={value} color={color} />
       <span className="text-[10px] tabular-nums flex-shrink-0" style={{ color }}>{value}</span>
     </div>
@@ -92,80 +96,75 @@ function ScoreRow({ label, value, color }: { label: string; value: number; color
 
 // ─── Session card ─────────────────────────────────────────────────────────────
 function SessionCard({ session, onDelete }: { session: Session; onDelete: (id: string) => void }) {
+  const ts = useThemeStyles();
   const [expanded, setExpanded] = useState(false);
   const delta = session.moodAfter - session.moodBefore;
+  const deltaCol = delta > 0 ? ts.accent : delta < 0 ? "#FF8A8A" : ts.textDim;
 
   return (
-    <div className={`flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden ${
-      expanded
-        ? "bg-[#0D1B33]/90 border-[#2A5499]/55 shadow-[0_0_24px_rgba(74,158,255,0.08)]"
-        : "bg-[#0B1628]/60 border-[#1E3358]/45 hover:border-[#1E3358]/70 hover:bg-[#0B1628]/80"
-    }`}>
+    <div
+      className="flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden"
+      style={{
+        backgroundColor: expanded ? ts.cardBgHover : ts.cardBg,
+        borderColor: expanded ? ts.borderHover : ts.border,
+        boxShadow: expanded ? `0 0 24px ${ts.accent}10` : "none",
+      }}
+    >
       {/* Header row */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer select-none"
-        onClick={() => setExpanded(e => !e)}
-      >
-        {/* Mood emoji */}
+      <div className="flex items-center gap-3 px-4 py-3 cursor-pointer select-none"
+        onClick={() => setExpanded(e => !e)}>
         <span className="text-xl flex-shrink-0">{moodEmoji(session.moodAfter)}</span>
 
-        {/* Date + meta */}
         <div className="flex-1 min-w-0">
-          <p className="text-[#B8D9FF] text-xs font-medium truncate">{fmtDate(session.sessionDate)}</p>
-          <p className="text-[#4A7AAA] text-[10px] truncate">
+          <p className="text-xs font-medium truncate" style={{ color: ts.textPrimary }}>{fmtDate(session.sessionDate)}</p>
+          <p className="text-[10px] truncate" style={{ color: ts.textMuted }}>
             {fmtTime(session.sessionDate)} · {session.sessionLength}m · {session.cycles} cycles · {session.noiseLevel}
           </p>
         </div>
 
-        {/* Mood delta badge */}
-        <span
-          className="text-[10px] px-2 py-0.5 rounded-full border flex-shrink-0 tabular-nums"
-          style={{ color: deltaColor(session.moodBefore, session.moodAfter), borderColor: `${deltaColor(session.moodBefore, session.moodAfter)}33`, background: `${deltaColor(session.moodBefore, session.moodAfter)}0D` }}
-        >
+        <span className="text-[10px] px-2 py-0.5 rounded-full border flex-shrink-0 tabular-nums"
+          style={{ color: deltaCol, borderColor: `${deltaCol}33`, background: `${deltaCol}0D` }}>
           {session.moodBefore}→{session.moodAfter} {delta > 0 ? `+${delta}` : delta < 0 ? `${delta}` : "="}
         </span>
 
-        {/* Expand chevron */}
-        <span className="text-[#3D6080] flex-shrink-0">
+        <span className="flex-shrink-0" style={{ color: ts.textDim }}>
           {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </span>
       </div>
 
       {/* Expanded detail */}
       {expanded && (
-        <div className="px-4 pb-4 flex flex-col gap-3 border-t border-[#1E3358]/30 pt-3">
-          {/* Scores */}
+        <div className="px-4 pb-4 flex flex-col gap-3 border-t pt-3" style={{ borderColor: `${ts.border}50` }}>
           <div className="flex flex-col gap-1.5">
-            <ScoreRow label="Focus"     value={session.focusLevel}     color="#3A82F7" />
-            <ScoreRow label="Calmness"  value={session.calmnessScore}  color="#7AC4FF" />
-            <ScoreRow label="Breath"    value={session.breathingDepth} color="#4A9EFF" />
-            <ScoreRow label="Stress"    value={session.stressLevel}    color="#FF8A8A" />
+            <ScoreRow label="Focus"    value={session.focusLevel}     color={ts.accent} />
+            <ScoreRow label="Calmness" value={session.calmnessScore}  color={ts.accentLight} />
+            <ScoreRow label="Breath"   value={session.breathingDepth} color={ts.accent} />
+            <ScoreRow label="Stress"   value={session.stressLevel}    color="#FF8A8A" />
           </div>
 
-          {/* Distractions */}
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-[#4A7AAA]">Distractions:</span>
+            <span className="text-[10px]" style={{ color: ts.textMuted }}>Distractions:</span>
             <div className="flex gap-1">
               {Array.from({ length: Math.min(session.distractionCount, 10) }).map((_, i) => (
                 <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#FF8A8A]/40" />
               ))}
-              {session.distractionCount === 0 && <span className="text-[10px] text-[#3D6080]">none</span>}
+              {session.distractionCount === 0 && <span className="text-[10px]" style={{ color: ts.textDim }}>none</span>}
             </div>
-            {session.distractionCount > 10 && <span className="text-[10px] text-[#3D6080]">+{session.distractionCount - 10}</span>}
+            {session.distractionCount > 10 && (
+              <span className="text-[10px]" style={{ color: ts.textDim }}>+{session.distractionCount - 10}</span>
+            )}
           </div>
 
-          {/* Notes */}
           {session.notes && (
-            <p className="text-[#4A7AAA] text-[10px] italic leading-relaxed border-t border-[#1E3358]/25 pt-2">
+            <p className="text-[10px] italic leading-relaxed border-t pt-2"
+              style={{ color: ts.textMuted, borderColor: `${ts.border}40` }}>
               "{session.notes}"
             </p>
           )}
 
-          {/* Delete */}
-          <button
-            onClick={() => onDelete(session._id)}
-            className="self-end flex items-center gap-1.5 text-[10px] text-[#4A7AAA] hover:text-[#FF8A8A] transition-colors"
-          >
+          <button onClick={() => onDelete(session._id)}
+            className="self-end flex items-center gap-1.5 text-[10px] hover:text-[#FF8A8A] transition-colors"
+            style={{ color: ts.textMuted }}>
             <Trash2 size={11} /> Delete
           </button>
         </div>
@@ -174,7 +173,7 @@ function SessionCard({ session, onDelete }: { session: Session; onDelete: (id: s
   );
 }
 
-// ─── Inline "Add Session" form (same fields as FeedbackModal) ─────────────────
+// ─── Inline "Add Session" form ────────────────────────────────────────────────
 const NOISE_OPTS = ["Silent", "Quiet", "Moderate", "Noisy"] as const;
 const FEELINGS   = ["focused","calm","energized","drowsy","distracted","peaceful","anxious","refreshed"] as const;
 const FEELING_ICONS: Record<string, string> = {
@@ -190,16 +189,20 @@ const emptyForm = {
   noiseLevel: "Quiet", sessionLength: 10, cycles: 5, notes: "",
 };
 
-function DotSlider({ value, max = 10, onChange, color = "#3A82F7" }: {
-  value: number; max?: number; onChange: (v: number) => void; color?: string;
+function DotSlider({ value, max = 10, onChange, color }: {
+  value: number; max?: number; onChange: (v: number) => void; color: string;
 }) {
+  const ts = useThemeStyles();
   return (
     <div className="flex items-center gap-1 flex-wrap">
       {Array.from({ length: max + 1 }, (_, i) => (
         <button key={i} type="button" onClick={() => onChange(i)}
           className="rounded-full transition-all duration-100"
-          style={{ width: i <= value ? 12 : 10, height: i <= value ? 12 : 10, flexShrink: 0,
-            background: i <= value ? color : "#1E3358", opacity: i <= value ? 1 : 0.35 }} />
+          style={{
+            width: i <= value ? 12 : 10, height: i <= value ? 12 : 10, flexShrink: 0,
+            background: i <= value ? color : ts.border,
+            opacity: i <= value ? 1 : 0.4,
+          }} />
       ))}
       <span className="text-[10px] tabular-nums ml-1" style={{ color }}>{value}</span>
     </div>
@@ -207,8 +210,9 @@ function DotSlider({ value, max = 10, onChange, color = "#3A82F7" }: {
 }
 
 function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) => void; onClose: () => void }) {
-  const [step, setStep]     = useState(0);
-  const [form, setForm]     = useState({ ...emptyForm });
+  const ts = useThemeStyles();
+  const [step, setStep]         = useState(0);
+  const [form, setForm]         = useState({ ...emptyForm });
   const [feelings, setFeelings] = useState<string[]>([]);
   const set = <K extends keyof typeof emptyForm>(k: K, v: typeof emptyForm[K]) => setForm(p => ({ ...p, [k]: v }));
   const toggleFeeling = (f: string) => setFeelings(p => p.includes(f) ? p.filter(x => x !== f) : [...p, f]);
@@ -221,35 +225,55 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
 
   const STEPS = ["When & duration", "Mood shift", "How you felt", "Quality"];
 
+  const inputCls = "outline-none transition-colors text-xs rounded-xl px-3 py-2";
+  const inputStyle = {
+    backgroundColor: ts.cardBg,
+    border: `1px solid ${ts.border}`,
+    color: ts.textPrimary,
+  };
+
+  const moodDelta = form.moodAfter - form.moodBefore;
+  const moodDeltaColor = moodDelta > 0 ? ts.accent : moodDelta < 0 ? "#FF8A8A" : ts.textDim;
+
   return (
-    <div className="rounded-3xl overflow-hidden border border-[#2A5499]/40 bg-[#070E1F]/95"
-      style={{ boxShadow: "0 0 60px rgba(74,158,255,0.07), 0 20px 50px rgba(0,0,0,0.6)" }}>
+    <div className="rounded-3xl overflow-hidden border"
+      style={{
+        backgroundColor: ts.cardBg,
+        borderColor: ts.borderHover,
+        boxShadow: `0 0 60px ${ts.accent}10, 0 20px 50px rgba(0,0,0,0.4)`,
+      }}>
       {/* Top glow */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-[#4A9EFF]/30 to-transparent" />
+      <div className="h-px w-full"
+        style={{ background: `linear-gradient(to right, transparent, ${ts.accentLight}4D, transparent)` }} />
 
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-[#1E3358]/30">
+      <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: ts.border }}>
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)', boxShadow: "0 0 14px rgba(74,158,255,0.35)" }}>
+            style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
             <Brain size={13} className="text-white" />
           </div>
           <div>
-            <p className="text-[#B8D9FF] text-sm font-medium leading-none">Log a session</p>
-            <p className="text-[#4A7AAA] text-[10px] mt-0.5">Your data trains your personal AI coach</p>
+            <p className="text-sm font-medium leading-none" style={{ color: ts.textPrimary }}>Log a session</p>
+            <p className="text-[10px] mt-0.5" style={{ color: ts.textMuted }}>Your data trains your personal AI coach</p>
           </div>
         </div>
-        <button onClick={onClose} className="text-[#4A7AAA] hover:text-[#5A8FB8] transition-colors p-1"><X size={15} /></button>
+        <button onClick={onClose} className="transition-colors p-1" style={{ color: ts.textMuted }}>
+          <X size={15} />
+        </button>
       </div>
 
       {/* Step tabs */}
-      <div className="flex border-b border-[#1E3358]/25">
+      <div className="flex border-b" style={{ borderColor: ts.border }}>
         {STEPS.map((s, i) => (
           <button key={i} onClick={() => setStep(i)}
-            className={`flex-1 py-2 text-[9px] uppercase tracking-widest transition-colors ${
-              step === i ? "text-[#7AC4FF] border-b border-[#4A9EFF]" : "text-[#3D6080] hover:text-[#3D6080]"
-            }`}
-          >{s}</button>
+            className="flex-1 py-2 text-[9px] uppercase tracking-widest transition-colors"
+            style={{
+              color: step === i ? ts.textPrimary : ts.textDim,
+              borderBottom: step === i ? `1px solid ${ts.accent}` : "none",
+            }}>
+            {s}
+          </button>
         ))}
       </div>
 
@@ -259,33 +283,38 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         {step === 0 && (
           <>
             <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] uppercase tracking-widest text-[#3D6080]">Date & time</label>
+              <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textDim }}>Date & time</label>
               <input type="datetime-local" value={form.sessionDate}
                 onChange={e => set("sessionDate", e.target.value)}
-                className="bg-[#060C1A]/60 border border-[#1E3358]/50 rounded-xl px-3 py-2 text-xs text-[#7AC4FF] outline-none focus:border-[#2A5499] transition-colors" />
+                className={inputCls} style={inputStyle} />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] uppercase tracking-widest text-[#3D6080]">Duration (min)</label>
+                <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textDim }}>Duration (min)</label>
                 <input type="number" min={1} max={120} value={form.sessionLength}
                   onChange={e => set("sessionLength", Number(e.target.value))}
-                  className="bg-[#060C1A]/60 border border-[#1E3358]/50 rounded-xl px-3 py-2 text-xs text-[#7AC4FF] outline-none focus:border-[#2A5499] transition-colors" />
+                  className={inputCls} style={inputStyle} />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] uppercase tracking-widest text-[#3D6080]">Cycles</label>
+                <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textDim }}>Cycles</label>
                 <input type="number" min={0} max={200} value={form.cycles}
                   onChange={e => set("cycles", Number(e.target.value))}
-                  className="bg-[#060C1A]/60 border border-[#1E3358]/50 rounded-xl px-3 py-2 text-xs text-[#7AC4FF] outline-none focus:border-[#2A5499] transition-colors" />
+                  className={inputCls} style={inputStyle} />
               </div>
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] uppercase tracking-widest text-[#3D6080]">Noise level</label>
+              <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textDim }}>Noise level</label>
               <div className="flex gap-2">
                 {NOISE_OPTS.map(n => (
                   <button key={n} type="button" onClick={() => set("noiseLevel", n)}
-                    className={`flex-1 py-2 rounded-xl text-[10px] border transition-all ${
-                      form.noiseLevel === n ? "border-[#2A5499]/70 bg-[#0D1B33] text-[#7AC4FF]" : "border-[#1E3358]/35 text-[#3D6080] hover:border-[#1E3358]"
-                    }`}>{n}</button>
+                    className="flex-1 py-2 rounded-xl text-[10px] border transition-all"
+                    style={{
+                      borderColor: form.noiseLevel === n ? ts.borderHover : ts.border,
+                      backgroundColor: form.noiseLevel === n ? ts.cardBgHover : "transparent",
+                      color: form.noiseLevel === n ? ts.textPrimary : ts.textMuted,
+                    }}>
+                    {n}
+                  </button>
                 ))}
               </div>
             </div>
@@ -295,26 +324,26 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         {/* Step 1 — mood shift */}
         {step === 1 && (
           <div className="flex flex-col gap-4">
-            <p className="text-[#4A7AAA] text-xs">How did your mood shift during this session?</p>
-            {(["Before","After"] as const).map((label, i) => {
+            <p className="text-xs" style={{ color: ts.textMuted }}>How did your mood shift during this session?</p>
+            {(["Before", "After"] as const).map((label, i) => {
               const key = i === 0 ? "moodBefore" : "moodAfter" as const;
-              const val = form[key]; const color = i === 0 ? "#3D6080" : "#3A82F7";
+              const val = form[key];
+              const color = i === 0 ? ts.textDim : ts.accent;
               return (
                 <div key={label} className="flex items-center gap-3">
-                  <span className="text-[10px] uppercase tracking-widest text-[#4A7AAA] w-12 flex-shrink-0">{label}</span>
+                  <span className="text-[10px] uppercase tracking-widest w-12 flex-shrink-0" style={{ color: ts.textMuted }}>{label}</span>
                   <input type="range" min={1} max={10} step={1} value={val}
                     onChange={e => set(key, Number(e.target.value))}
                     className="flex-1 appearance-none h-1.5 rounded-full cursor-pointer"
-                    style={{ background: `linear-gradient(to right, ${color} ${(val-1)/9*100}%, rgba(30,51,88,0.5) ${(val-1)/9*100}%)`, accentColor: color }} />
+                    style={{ background: `linear-gradient(to right, ${color} ${(val-1)/9*100}%, ${ts.border}80 ${(val-1)/9*100}%)`, accentColor: color }} />
                   <span className="text-xs tabular-nums w-5 text-right flex-shrink-0" style={{ color }}>{val}</span>
                 </div>
               );
             })}
             <div className="flex items-center justify-center">
               <span className="text-xs px-3 py-1 rounded-full border tabular-nums"
-                style={{ color: deltaColor(form.moodBefore, form.moodAfter), borderColor: `${deltaColor(form.moodBefore, form.moodAfter)}33`, background: `${deltaColor(form.moodBefore, form.moodAfter)}0D` }}>
-                {form.moodAfter > form.moodBefore ? `+${form.moodAfter - form.moodBefore} better` :
-                 form.moodAfter < form.moodBefore ? `${form.moodAfter - form.moodBefore} worse` : "no change"}
+                style={{ color: moodDeltaColor, borderColor: `${moodDeltaColor}33`, background: `${moodDeltaColor}0D` }}>
+                {moodDelta > 0 ? `+${moodDelta} better` : moodDelta < 0 ? `${moodDelta} worse` : "no change"}
               </span>
             </div>
           </div>
@@ -323,17 +352,19 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         {/* Step 2 — feelings grid */}
         {step === 2 && (
           <div className="flex flex-col gap-3">
-            <p className="text-[#4A7AAA] text-xs">How did you feel after? Pick all that apply.</p>
+            <p className="text-xs" style={{ color: ts.textMuted }}>How did you feel after? Pick all that apply.</p>
             <div className="grid grid-cols-4 gap-2">
               {FEELINGS.map(f => {
                 const on = feelings.includes(f);
                 return (
                   <button key={f} type="button" onClick={() => toggleFeeling(f)}
-                    className={`flex flex-col items-center gap-1 py-2.5 rounded-xl border text-center transition-all duration-200 ${
-                      on ? "border-[#2A5499]/70 bg-[#0D1B33]" : "border-[#1E3358]/35 hover:border-[#1E3358]/60"
-                    }`}>
+                    className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-center transition-all duration-200"
+                    style={{
+                      borderColor: on ? ts.borderHover : ts.border,
+                      backgroundColor: on ? ts.cardBgHover : "transparent",
+                    }}>
                     <span className={`text-base transition-all ${on ? "" : "opacity-45"}`}>{FEELING_ICONS[f]}</span>
-                    <span className={`text-[9px] uppercase tracking-wide ${on ? "text-[#7AC4FF]" : "text-[#3D6080]"}`}>{f}</span>
+                    <span className="text-[9px] uppercase tracking-wide" style={{ color: on ? ts.textPrimary : ts.textDim }}>{f}</span>
                   </button>
                 );
               })}
@@ -345,21 +376,21 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         {step === 3 && (
           <div className="flex flex-col gap-3">
             {[
-              { label: "Focus",    key: "focusLevel" as const,    color: "#3A82F7" },
-              { label: "Calmness", key: "calmnessScore" as const, color: "#7AC4FF" },
-              { label: "Breath",   key: "breathingDepth" as const,color: "#4A9EFF" },
+              { label: "Focus",    key: "focusLevel" as const,    color: ts.accent },
+              { label: "Calmness", key: "calmnessScore" as const, color: ts.accentLight },
+              { label: "Breath",   key: "breathingDepth" as const,color: ts.accent },
               { label: "Stress",   key: "stressLevel" as const,   color: "#FF8A8A" },
             ].map(({ label, key, color }) => (
               <div key={key} className="flex flex-col gap-1">
-                <span className="text-[10px] text-[#3D6080] uppercase tracking-widest">{label}</span>
+                <span className="text-[10px] uppercase tracking-widest" style={{ color: ts.textDim }}>{label}</span>
                 <DotSlider value={form[key] as number} onChange={v => set(key, v)} color={color} />
               </div>
             ))}
             <div className="flex flex-col gap-1 mt-1">
-              <span className="text-[10px] text-[#3D6080] uppercase tracking-widest">Notes (optional)</span>
+              <span className="text-[10px] uppercase tracking-widest" style={{ color: ts.textDim }}>Notes (optional)</span>
               <textarea value={form.notes} onChange={e => set("notes", e.target.value)} rows={2}
                 placeholder="Any observations…"
-                className="bg-[#060C1A]/60 border border-[#1E3358]/50 rounded-xl px-3 py-2 text-xs text-[#7AC4FF] placeholder-[#1A2D48] outline-none focus:border-[#2A5499] resize-none transition-colors" />
+                className={`${inputCls} resize-none`} style={inputStyle} />
             </div>
           </div>
         )}
@@ -369,21 +400,22 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
       <div className="flex items-center gap-3 px-6 pb-5">
         {step > 0 && (
           <button onClick={() => setStep(s => s - 1)}
-            className="px-4 py-2 rounded-xl text-xs text-[#3D6080] border border-[#1E3358]/40 hover:border-[#1E3358]/70 hover:text-[#5A8FB8] transition-all">
+            className="px-4 py-2 rounded-xl text-xs transition-all"
+            style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}>
             Back
           </button>
         )}
         <div className="flex-1" />
         {step < 3 ? (
           <button onClick={() => setStep(s => s + 1)}
-            className="px-6 py-2 rounded-xl text-xs text-white font-medium tracking-wide hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 transition-all"
-            style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)' }}>
+            className="px-6 py-2 rounded-xl text-xs text-white font-medium tracking-wide hover:scale-105 active:scale-95 transition-all"
+            style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
             Continue →
           </button>
         ) : (
           <button onClick={handleSave}
-            className="px-6 py-2 rounded-xl text-xs text-white font-medium tracking-wide hover:shadow-[0_0_24px_rgba(58,130,247,0.5)] hover:scale-105 active:scale-95 transition-all"
-            style={{ background: 'linear-gradient(135deg,#1A5FCC,#3A82F7)', boxShadow: "0 0 20px rgba(74,158,255,0.15)" }}>
+            className="px-6 py-2 rounded-xl text-xs text-white font-medium tracking-wide hover:scale-105 active:scale-95 transition-all"
+            style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
             Save session ✓
           </button>
         )}
@@ -467,7 +499,6 @@ export default function SessionsPage() {
     return out;
   }, [sessions, search, sortKey, sortDir, minCycles, minDuration]);
 
-  // Summary stats
   const totalMins   = Math.round(sessions.reduce((s, x) => s + x.sessionLength, 0));
   const totalCycles = Math.round(sessions.reduce((s, x) => s + x.cycles, 0));
   const avgMoodDelta = sessions.length
@@ -475,40 +506,39 @@ export default function SessionsPage() {
     : "—";
 
   return (
-    <div className="relative flex flex-col min-h-screen  font-montserrat">
+    <div className="relative flex flex-col min-h-screen font-montserrat">
       <style>{`
         @keyframes sessFadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
         .sess-in { animation: sessFadeUp 0.5s ease forwards; }
         input[type=range]::-webkit-slider-thumb {
           -webkit-appearance:none; width:13px; height:13px;
-          border-radius:50%; background:#7AC4FF;
-          box-shadow: 0 0 6px rgba(74,158,255,0.5); cursor:pointer; margin-top:-4px;
+          border-radius:50%; background:${ts.accentLight};
+          box-shadow: 0 0 6px ${ts.accent}80; cursor:pointer; margin-top:-4px;
         }
         input[type=range]::-webkit-slider-runnable-track { height:4px; border-radius:4px; }
       `}</style>
 
-      {/* Star background */}
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />
 
-        {/* ── Top ad ── */}
+        {/* Top ad */}
         <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-4">
           <AdSlot label="Ad · 728×90 leaderboard" className="h-12 sm:h-14" />
         </div>
 
-        {/* ── Page header ── */}
+        {/* Page header */}
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-6 pb-2">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] mb-1">Breathe · History</p>
-              <h1 className="text-2xl sm:text-3xl font-light text-[#B8D9FF] tracking-wide">My Sessions</h1>
+              <p className="text-[10px] tracking-[0.3em] uppercase mb-1" style={{ color: ts.textMuted }}>Breathe · History</p>
+              <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>My Sessions</h1>
             </div>
             <button
               onClick={() => setShowAdd(v => !v)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium tracking-wide transition-all hover:shadow-[0_0_24px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95"
-              style={{ background: ts.btnGradient }}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium tracking-wide transition-all hover:scale-105 active:scale-95"
+              style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
             >
               {showAdd ? <X size={14} /> : <Plus size={14} />}
               {showAdd ? t("sessions.cancel") : t("sessions.logSession")}
@@ -516,71 +546,70 @@ export default function SessionsPage() {
           </div>
         </header>
 
-        {/* ── Main body ── */}
+        {/* Main body */}
         <div className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 pb-20">
           <div className="flex gap-5">
 
-            {/* ── LEFT sidebar ── */}
+            {/* LEFT sidebar */}
             <aside className="hidden lg:flex flex-col gap-4 w-56 flex-shrink-0 pt-4">
-              {/* Summary stats */}
               <div className="flex flex-col gap-2">
-                <p className="text-[9px] tracking-[0.25em] uppercase text-[#3D6080] px-1 mb-1">Overview</p>
-                <SummaryCard icon={<Timer size={14} />}   label={t("sessions.totalMinutes")} value={`${totalMins}m`} />
-                <SummaryCard icon={<Wind size={14} />}    label={t("sessions.totalCycles")}  value={String(totalCycles)} />
-                <SummaryCard icon={<Flame size={14} />}   label={t("sessions.sessions")}      value={String(sessions.length)} />
-                <SummaryCard icon={<TrendingUp size={14} />} label="Avg mood shift" value={typeof avgMoodDelta === "string" && avgMoodDelta !== "—" && Number(avgMoodDelta) > 0 ? `+${avgMoodDelta}` : String(avgMoodDelta)} />
+                <p className="text-[9px] tracking-[0.25em] uppercase px-1 mb-1" style={{ color: ts.textDim }}>Overview</p>
+                <SummaryCard icon={<Timer size={14} />}      label={t("sessions.totalMinutes")} value={`${totalMins}m`} />
+                <SummaryCard icon={<Wind size={14} />}       label={t("sessions.totalCycles")}  value={String(totalCycles)} />
+                <SummaryCard icon={<Flame size={14} />}      label={t("sessions.sessions")}     value={String(sessions.length)} />
+                <SummaryCard icon={<TrendingUp size={14} />} label="Avg mood shift"
+                  value={typeof avgMoodDelta === "string" && avgMoodDelta !== "—" && Number(avgMoodDelta) > 0 ? `+${avgMoodDelta}` : String(avgMoodDelta)} />
               </div>
 
               {/* Filters */}
-              <div className="flex flex-col gap-2 bg-[#0B1628]/60 border border-[#1E3358]/40 rounded-2xl p-4">
-                <p className="text-[9px] tracking-[0.25em] uppercase text-[#3D6080] mb-1">Filters</p>
+              <div className="flex flex-col gap-2 rounded-2xl p-4 border"
+                style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}>
+                <p className="text-[9px] tracking-[0.25em] uppercase mb-1" style={{ color: ts.textDim }}>Filters</p>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] text-[#4A7AAA]">Min cycles: {minCycles}</label>
+                  <label className="text-[10px]" style={{ color: ts.textMuted }}>Min cycles: {minCycles}</label>
                   <input type="range" min={0} max={20} value={minCycles} onChange={e => setMinCycles(Number(e.target.value))}
                     className="w-full appearance-none h-1.5 rounded-full cursor-pointer"
-                    style={{ background: `linear-gradient(to right, #3A82F7 ${minCycles/20*100}%, rgba(30,51,88,0.5) ${minCycles/20*100}%)`, accentColor: "#3A82F7" }} />
+                    style={{ background: `linear-gradient(to right, ${ts.accent} ${minCycles/20*100}%, ${ts.border}80 ${minCycles/20*100}%)`, accentColor: ts.accent }} />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] text-[#4A7AAA]">Min duration: {minDuration}m</label>
+                  <label className="text-[10px]" style={{ color: ts.textMuted }}>Min duration: {minDuration}m</label>
                   <input type="range" min={0} max={60} value={minDuration} onChange={e => setMinDuration(Number(e.target.value))}
                     className="w-full appearance-none h-1.5 rounded-full cursor-pointer"
-                    style={{ background: `linear-gradient(to right, #7AC4FF ${minDuration/60*100}%, rgba(30,51,88,0.5) ${minDuration/60*100}%)`, accentColor: "#7AC4FF" }} />
+                    style={{ background: `linear-gradient(to right, ${ts.accentLight} ${minDuration/60*100}%, ${ts.border}80 ${minDuration/60*100}%)`, accentColor: ts.accentLight }} />
                 </div>
                 {(minCycles > 0 || minDuration > 0) && (
                   <button onClick={() => { setMinCycles(0); setMinDuration(0); }}
-                    className="text-[9px] text-[#4A9EFF] hover:underline self-end mt-1">
+                    className="text-[9px] hover:underline self-end mt-1" style={{ color: ts.accent }}>
                     Reset filters
                   </button>
                 )}
               </div>
 
-              {/* Sidebar ad */}
               <AdSlot label="Ad · 160×600" className="flex-1 min-h-48" />
 
               {/* AI hint */}
-              <div className="rounded-2xl bg-[#0B1628]/60 border border-[#1E3358]/40 p-4">
+              <div className="rounded-2xl border p-4" style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}>
                 <div className="flex items-center gap-2 mb-2">
-                  <Sparkles size={11} className="text-[#2A5499]" />
-                  <p className="text-[9px] tracking-[0.2em] uppercase text-[#4A7AAA]">AI coach</p>
+                  <Sparkles size={11} style={{ color: ts.accent }} />
+                  <p className="text-[9px] tracking-[0.2em] uppercase" style={{ color: ts.textMuted }}>AI coach</p>
                 </div>
-                <p className="text-[#4A7AAA] text-[10px] leading-relaxed">
+                <p className="text-[10px] leading-relaxed" style={{ color: ts.textMuted }}>
                   Your session history is used to personalise breathing pattern recommendations.
                 </p>
               </div>
 
-              {/* Delete all */}
               {sessions.length > 0 && (
                 <button onClick={handleDeleteAll}
-                  className="flex items-center gap-1.5 text-[10px] text-[#4A7AAA] hover:text-[#FF8A8A] transition-colors px-1">
+                  className="flex items-center gap-1.5 text-[10px] hover:text-[#FF8A8A] transition-colors px-1"
+                  style={{ color: ts.textMuted }}>
                   <Trash2 size={11} /> Delete all sessions
                 </button>
               )}
             </aside>
 
-            {/* ── Main content ── */}
+            {/* Main content */}
             <div className="flex-1 min-w-0 flex flex-col gap-4 pt-4">
 
-              {/* Add session panel */}
               {showAdd && (
                 <div className="sess-in">
                   <AddSessionPanel onAdd={handleAdd} onClose={() => setShowAdd(false)} />
@@ -590,51 +619,54 @@ export default function SessionsPage() {
               {/* Search + sort bar */}
               <div className="flex items-center gap-2 flex-wrap">
                 <div className="relative flex-1 min-w-48">
-                  <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A7AAA] pointer-events-none" />
+                  <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: ts.textMuted }} />
                   <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t("sessions.search")}
-                    className="w-full pl-8 pr-8 py-2 rounded-xl bg-[#0B1628]/70 border border-[#1E3358]/50 text-[#7AC4FF] text-xs placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors" />
+                    className="w-full pl-8 pr-8 py-2 rounded-xl text-xs outline-none transition-colors"
+                    style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}`, color: ts.textPrimary }} />
                   {search && (
-                    <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A7AAA] hover:text-[#5A8FB8]">
+                    <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
+                      style={{ color: ts.textMuted }}>
                       <X size={11} />
                     </button>
                   )}
                 </div>
 
-                {/* Sort pills */}
                 <div className="flex items-center gap-1.5">
                   {(["date","duration","cycles","mood"] as SortKey[]).map(k => (
                     <button key={k} onClick={() => toggleSort(k)}
-                      className={`flex items-center gap-1 px-3 py-2 rounded-xl text-[10px] uppercase tracking-widest border transition-all ${
-                        sortKey === k
-                          ? "bg-[#0D1B33] border-[#2A5499]/60 text-[#7AC4FF]"
-                          : "border-[#1E3358]/35 text-[#4A7AAA] hover:border-[#1E3358]/60"
-                      }`}>
+                      className="flex items-center gap-1 px-3 py-2 rounded-xl text-[10px] uppercase tracking-widest border transition-all"
+                      style={{
+                        backgroundColor: sortKey === k ? ts.cardBgHover : "transparent",
+                        borderColor: sortKey === k ? ts.borderHover : ts.border,
+                        color: sortKey === k ? ts.textPrimary : ts.textMuted,
+                      }}>
                       {k}
                       {sortKey === k && (sortDir === "desc" ? <ChevronDown size={10} /> : <ChevronUp size={10} />)}
                     </button>
                   ))}
                 </div>
 
-                {/* Mobile filter toggle */}
                 <button onClick={() => setFilterOpen(v => !v)}
-                  className="lg:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] text-[#4A7AAA] border border-[#1E3358]/35 hover:border-[#1E3358]/60 transition-all">
+                  className="lg:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] border transition-all"
+                  style={{ color: ts.textMuted, borderColor: ts.border }}>
                   <SlidersHorizontal size={11} /> Filters
                 </button>
               </div>
 
               {/* Mobile filters */}
               {filterOpen && (
-                <div className="lg:hidden flex flex-col gap-3 p-4 rounded-2xl bg-[#0B1628]/60 border border-[#1E3358]/40 sess-in">
+                <div className="lg:hidden flex flex-col gap-3 p-4 rounded-2xl border sess-in"
+                  style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}>
                   <div className="grid grid-cols-2 gap-4">
                     {[
-                      { label: `Min cycles: ${minCycles}`, val: minCycles, max: 20, set: setMinCycles, color: "#3A82F7" },
-                      { label: `Min duration: ${minDuration}m`, val: minDuration, max: 60, set: setMinDuration, color: "#7AC4FF" },
-                    ].map(({ label, val, max, set: s, color }) => (
+                      { label: `Min cycles: ${minCycles}`,   val: minCycles,   max: 20, setFn: setMinCycles,   color: ts.accent },
+                      { label: `Min duration: ${minDuration}m`, val: minDuration, max: 60, setFn: setMinDuration, color: ts.accentLight },
+                    ].map(({ label, val, max, setFn, color }) => (
                       <div key={label} className="flex flex-col gap-1.5">
-                        <label className="text-[10px] text-[#4A7AAA]">{label}</label>
-                        <input type="range" min={0} max={max} value={val} onChange={e => s(Number(e.target.value))}
+                        <label className="text-[10px]" style={{ color: ts.textMuted }}>{label}</label>
+                        <input type="range" min={0} max={max} value={val} onChange={e => setFn(Number(e.target.value))}
                           className="w-full appearance-none h-1.5 rounded-full cursor-pointer"
-                          style={{ background: `linear-gradient(to right, ${color} ${val/max*100}%, rgba(30,51,88,0.5) ${val/max*100}%)`, accentColor: color }} />
+                          style={{ background: `linear-gradient(to right, ${color} ${val/max*100}%, ${ts.border}80 ${val/max*100}%)`, accentColor: color }} />
                       </div>
                     ))}
                   </div>
@@ -642,7 +674,7 @@ export default function SessionsPage() {
               )}
 
               {/* Status */}
-              <p className="text-[10px] text-[#4A7AAA] tracking-wide">
+              <p className="text-[10px] tracking-wide" style={{ color: ts.textMuted }}>
                 {loading ? "Loading…" : `${filtered.length} of ${sessions.length} sessions`}
                 {(minCycles > 0 || minDuration > 0 || search) ? " · filtered" : ""}
               </p>
@@ -651,18 +683,19 @@ export default function SessionsPage() {
               {loading ? (
                 <div className="flex flex-col gap-2">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <div key={i} className="h-16 rounded-2xl animate-pulse bg-[#0A1525]" style={{ opacity: 0.5 - i * 0.08 }} />
+                    <div key={i} className="h-16 rounded-2xl animate-pulse"
+                      style={{ backgroundColor: ts.cardBg, opacity: 0.5 - i * 0.08 }} />
                   ))}
                 </div>
               ) : filtered.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 py-20">
-                  <Calendar size={32} className="text-[#3D6080]" />
-                  <p className="text-[#4A7AAA] text-sm">
+                  <Calendar size={32} style={{ color: ts.textDim }} />
+                  <p className="text-sm" style={{ color: ts.textMuted }}>
                     {sessions.length === 0 ? "No sessions yet — start meditating!" : "No sessions match your filters"}
                   </p>
                   {sessions.length === 0 && (
                     <Link to="/breathing"
-                      className="px-6 py-2.5 rounded-full text-white text-xs font-medium hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] transition-all"
+                      className="px-6 py-2.5 rounded-full text-white text-xs font-medium hover:scale-105 transition-all"
                       style={{ background: ts.btnGradient }}>
                       Start meditating →
                     </Link>
@@ -678,7 +711,6 @@ export default function SessionsPage() {
                 </div>
               )}
 
-              {/* Bottom ad */}
               {!loading && filtered.length > 4 && (
                 <AdSlot label="Ad · 300×250 rectangle" className="h-28 mt-2" />
               )}
