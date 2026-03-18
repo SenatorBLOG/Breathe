@@ -7,6 +7,7 @@ import api from '../api';
 import { toast } from 'sonner';
 import { RefreshCw, Unlink, Moon, Heart, Activity, Zap, ChevronRight, Watch } from 'lucide-react';
 import AppleHealthImport from '../components/AppleHealthImport';
+import HeartRateMonitor from '../components/HeartRateMonitor';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface SleepDay { date: string; duration: number; efficiency?: number; score?: number; deepMins?: number; remMins?: number; }
@@ -335,10 +336,16 @@ export default function ProfilePage() {
         <main className="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-10 flex flex-col gap-6">
 
           {/* Header */}
-          <div>
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] mb-1">Breathe · Profile</p>
-            <h1 className="text-2xl sm:text-3xl font-light text-[#B8D9FF] tracking-wide">Health Integrations</h1>
-            <p className="text-[#4A7AAA] text-xs mt-1">Connect your wearable to get AI coaching based on your real sleep and HRV data.</p>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] mb-1">Breathe · Profile</p>
+              <h1 className="text-2xl sm:text-3xl font-light text-[#B8D9FF] tracking-wide">Health Integrations</h1>
+              <p className="text-[#4A7AAA] text-xs mt-1">Connect your wearable to get AI coaching based on your real sleep and HRV data.</p>
+            </div>
+            <Link to="/data-consent"
+              className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] text-[#4A9EFF] border border-[#1E3358]/50 hover:border-[#2A5499]/60 transition-all">
+              Why we need data →
+            </Link>
           </div>
 
           {/* AI insight */}
@@ -381,6 +388,7 @@ export default function ProfilePage() {
                   onSync={sync}
                   syncing={syncing}
                 />
+                <HeartRateMonitor variant="full" />
                 <AppleHealthImport onImported={() => fetchStatus()} />
               </>
             )}

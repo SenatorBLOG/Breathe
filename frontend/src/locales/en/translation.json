@@ -264,5 +264,38 @@
     "noAccountNeeded": "No account needed",
     "noDownload": "No download",
     "advertisement": "Advertisement"
+  },
+  "home": {
+    "exploreMindfulness": "Explore Mindfulness",
+    "howBreathWorks": "How Breathe Works",
+    "followOrb": "Follow the Orb",
+    "followOrbDesc": "Inhale as it expands, exhale as it contracts. Zero effort, full effect.",
+    "buildHabit": "Build the Habit",
+    "buildHabitDesc": "3–5 min daily sessions. Morning, lunch, bedtime — you choose the rhythm.",
+    "feelChange": "Feel the Change",
+    "feelChangeDesc": "Track progress, unlock achievements, and watch your baseline calm rise.",
+    "readyToBegin": "Ready to begin?",
+    "readyDesc": "Your first session takes less than 5 minutes. No account needed.",
+    "beginSession": "🌬 Begin Session",
+    "todaysPick": "Today's Pick",
+    "quickLinks": "Quick Links",
+    "readyCalm": "Ready to find your calm?",
+    "readyCalmDesc": "Your first guided breath session is one tap away.",
+    "startNow": "🌬 Start Now",
+    "sleepPool": "Sleep Pool",
+    "focusPool": "Focus Pool",
+    "beginnerPool": "Beginner Pool",
+    "contentCards": {
+      "sleepTitle": "Breathwork for Deep Sleep",
+      "sleepDesc": "How controlled breathing activates your parasympathetic system and knocks you out in under 10 minutes.",
+      "scienceTitle": "Why Slow Breath = Calm Mind",
+      "scienceDesc": "Neuroscience behind the breath-brain connection — and how 6 breaths per minute changes everything.",
+      "morningTitle": "Morning Ritual in 3 Minutes",
+      "morningDesc": "Start every day with a simple pranayama sequence that sets your nervous system for focused flow.",
+      "progressTitle": "Your Progress Dashboard",
+      "progressDesc": "View streaks, session history, and breathing stats to keep your practice consistent and rewarding.",
+      "communityTitle": "Join the Community",
+      "communityDesc": "Share your journey, ask questions, and celebrate milestones with meditators from around the world."
+    }
   }
 }

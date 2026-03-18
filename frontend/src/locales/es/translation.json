@@ -1,4 +1,3 @@
-
 {
   "nav": {
     "home": "Inicio",
@@ -265,5 +264,38 @@
     "noAccountNeeded": "Sin cuenta",
     "noDownload": "Sin descarga",
     "advertisement": "Publicidad"
+  },
+  "home": {
+    "exploreMindfulness": "Explorar el Mindfulness",
+    "howBreathWorks": "Cómo funciona Breathe",
+    "followOrb": "Sigue el Orbe",
+    "followOrbDesc": "Inhala cuando se expande, exhala cuando se contrae.",
+    "buildHabit": "Crea el Hábito",
+    "buildHabitDesc": "Sesiones de 3–5 min diarias. Mañana, almuerzo, noche — tú eliges.",
+    "feelChange": "Siente el Cambio",
+    "feelChangeDesc": "Rastrea tu progreso y observa cómo crece tu calma base.",
+    "readyToBegin": "¿Listo para empezar?",
+    "readyDesc": "Tu primera sesión toma menos de 5 minutos. Sin cuenta.",
+    "beginSession": "🌬 Comenzar sesión",
+    "todaysPick": "Selección del día",
+    "quickLinks": "Accesos rápidos",
+    "readyCalm": "¿Listo para encontrar tu calma?",
+    "readyCalmDesc": "Tu primera sesión de respiración guiada a un toque.",
+    "startNow": "🌬 Empezar ahora",
+    "sleepPool": "Para dormir",
+    "focusPool": "Para enfocarse",
+    "beginnerPool": "Para principiantes",
+    "contentCards": {
+      "sleepTitle": "Respiración para el sueño profundo",
+      "sleepDesc": "Cómo la respiración controlada activa tu sistema parasimpático.",
+      "scienceTitle": "Por qué respirar lento = mente tranquila",
+      "scienceDesc": "La neurociencia detrás de la conexión respiración-cerebro.",
+      "morningTitle": "Ritual matutino en 3 minutos",
+      "morningDesc": "Empieza cada día con una secuencia simple para tu sistema nervioso.",
+      "progressTitle": "Tu panel de progreso",
+      "progressDesc": "Ve tus rachas, historial de sesiones y estadísticas de respiración.",
+      "communityTitle": "Únete a la comunidad",
+      "communityDesc": "Comparte tu viaje, haz preguntas y celebra logros."
+    }
   }
 }

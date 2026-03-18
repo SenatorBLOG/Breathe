@@ -273,13 +273,13 @@ export default function HomePage() {
 
               {/* Feature row */}
               <div>
-                <h2 className="text-lg sm:text-xl font-medium text-[#B8D9FF] mb-4 tracking-wide">Explore Mindfulness</h2>
+                <h2 className="text-lg sm:text-xl font-medium text-[#B8D9FF] mb-4 tracking-wide">{t('home.exploreMindfulness')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <ContentCard icon="🌊" tag="Guide" title="Breathwork for Deep Sleep" desc="How controlled breathing activates your parasympathetic system and knocks you out in under 10 minutes." href="/faq" />
-                  <ContentCard icon="⚡" tag="Science" title="Why Slow Breath = Calm Mind" desc="Neuroscience behind the breath-brain connection — and how 6 breaths per minute changes everything." href="/faq" />
-                  <ContentCard icon="🧘" tag="Practice" title="Morning Ritual in 3 Minutes" desc="Start every day with a simple pranayama sequence that sets your nervous system for focused flow." href="/breathing" />
-                  <ContentCard icon="📊" tag="Track" title="Your Progress Dashboard" desc="View streaks, session history, and breathing stats to keep your practice consistent and rewarding." href="/sessions" />
-                  <ContentCard icon="🌍" tag="Community" title="Join the Community" desc="Share your journey, ask questions, and celebrate milestones with meditators from around the world." href="/community" />
+                  <ContentCard icon="🌊" tag="Guide" title={t('home.contentCards.sleepTitle')} desc={t('home.contentCards.sleepDesc')} href="/faq" />
+                  <ContentCard icon="⚡" tag="Science" title={t('home.contentCards.scienceTitle')} desc={t('home.contentCards.scienceDesc')} href="/faq" />
+                  <ContentCard icon="🧘" tag="Practice" title={t('home.contentCards.morningTitle')} desc={t('home.contentCards.morningDesc')} href="/breathing" />
+                  <ContentCard icon="📊" tag="Track" title={t('home.contentCards.progressTitle')} desc={t('home.contentCards.progressDesc')} href="/sessions" />
+                  <ContentCard icon="🌍" tag="Community" title={t('home.contentCards.communityTitle')} desc={t('home.contentCards.communityDesc')} href="/community" />
                 </div>
               </div>
 
@@ -294,12 +294,12 @@ export default function HomePage() {
 
               {/* How it works — condensed 3-step */}
               <div>
-                <h2 className="text-lg sm:text-xl font-medium text-[#B8D9FF] mb-4 tracking-wide">How Breathe Works</h2>
+                <h2 className="text-lg sm:text-xl font-medium text-[#B8D9FF] mb-4 tracking-wide">{t('home.howBreathWorks')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {[
-                    { icon: '/icons/Spiral_png.png', step: '01', title: 'Follow the Orb', desc: 'Inhale as it expands, exhale as it contracts. Zero effort, full effect.' },
-                    { icon: '/icons/Constellation_png.png', step: '02', title: 'Build the Habit', desc: '3–5 min daily sessions. Morning, lunch, bedtime — you choose the rhythm.' },
-                    { icon: '/icons/Waves_png.png', step: '03', title: 'Feel the Change', desc: 'Track progress, unlock achievements, and watch your baseline calm rise.' },
+                    { icon: '/icons/Spiral_png.png', step: '01', title: t('home.followOrb'), desc: t('home.followOrbDesc') },
+                    { icon: '/icons/Constellation_png.png', step: '02', title: t('home.buildHabit'), desc: t('home.buildHabitDesc') },
+                    { icon: '/icons/Waves_png.png', step: '03', title: t('home.feelChange'), desc: t('home.feelChangeDesc') },
                   ].map(({ icon, step, title, desc }) => (
                     <div key={step} className="flex flex-col items-center text-center gap-3 bg-[#0B1628]/60 border border-[#1E3358]/40 rounded-2xl p-5 hover:border-[#2A5499]/60 transition-colors">
                       <img src={icon} alt={title} className="w-16 h-16 object-contain opacity-80" />
@@ -323,8 +323,8 @@ export default function HomePage() {
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#4A9EFF]/5 blur-2xl" />
                 <img src="/icons/Lotus_png.png" alt="Lotus" className="w-20 h-20 object-contain opacity-90" />
                 <div>
-                  <p className="text-[#7AC4FF] text-base font-medium mb-1">Ready to begin?</p>
-                  <p className="text-[#3D6080] text-xs leading-relaxed">Your first session takes less than 5 minutes. No account needed.</p>
+                  <p className="text-[#7AC4FF] text-base font-medium mb-1">{t('home.readyToBegin')}</p>
+                  <p className="text-[#3D6080] text-xs leading-relaxed">{t('home.readyDesc')}</p>
                 </div>
                 <Link
                   to="/breathing"
@@ -336,7 +336,7 @@ export default function HomePage() {
 
               {/* Today's top */}
               <div className="bg-[#0B1628]/70 border border-[#1E3358]/50 rounded-2xl p-4">
-                <h3 className="text-xs uppercase tracking-widest text-[#3D6080] mb-3">Today's Pick</h3>
+                <h3 className="text-xs uppercase tracking-widest text-[#3D6080] mb-3">{t('home.todaysPick')}</h3>
                 <div className="flex flex-col gap-2">
                   {[
                     { rank: '1', title: '4-7-8 for Sleep', views: '2.4K sessions' },
@@ -361,7 +361,7 @@ export default function HomePage() {
 
               {/* Links pool */}
               <div className="bg-[#0B1628]/70 border border-[#1E3358]/50 rounded-2xl p-4">
-                <h3 className="text-xs uppercase tracking-widest text-[#3D6080] mb-3">Quick Links</h3>
+                <h3 className="text-xs uppercase tracking-widest text-[#3D6080] mb-3">{t('home.quickLinks')}</h3>
                 <ul className="flex flex-col gap-2">
                   {[
                     { label: 'Meditation Library', href: '/breathing' },
@@ -444,8 +444,8 @@ export default function HomePage() {
             <div className="flex items-center gap-5">
               <img src="/icons/Lotus_png.png" alt="" className="w-14 h-14 object-contain opacity-80 hidden sm:block" />
               <div>
-                <h2 className="text-xl sm:text-2xl font-light text-[#B8D9FF] mb-1">Ready to find your calm?</h2>
-                <p className="text-[#3D6080] text-sm">Your first guided breath session is one tap away.</p>
+                <h2 className="text-xl sm:text-2xl font-light text-[#B8D9FF] mb-1">{t('home.readyCalm')}</h2>
+                <p className="text-[#3D6080] text-sm">{t('home.readyCalmDesc')}</p>
               </div>
             </div>
             <Link
