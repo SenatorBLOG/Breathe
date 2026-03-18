@@ -1,10 +1,18 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from './contexts/AuthContext';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function NavBar() {
   const { isAuthenticated, user, logout } = useContext(AuthContext);
+  const { t, i18n } = useTranslation();
+  const [langOpen, setLangOpen] = useState(false);
+  const LANGS = [
+    { code: 'en', label: 'English', flag: '🇬🇧' },
+    { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+    { code: 'es', label: 'Español', flag: '🇪🇸' },
+  ];
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -134,6 +142,28 @@ export default function NavBar() {
                   Sign out
                 </button>
               </>
+            )}
+          </div>
+
+          {/* ── Language switcher ── */}
+          <div className="relative">
+            <button onClick={() => setLangOpen(v => !v)}
+              className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[#4A7AAA] hover:text-[#7AC4FF] transition-colors text-xs border border-[#1E3358]/40 hover:border-[#2A5499]/50">
+              <Globe size={12} />
+              <span className="hidden sm:inline uppercase tracking-wide">{i18n.language.slice(0,2)}</span>
+            </button>
+            {langOpen && (
+              <div className="absolute right-0 top-full mt-1 flex flex-col gap-0.5 rounded-xl overflow-hidden z-50"
+                style={{ background: 'rgba(9,17,34,0.97)', border: '1px solid rgba(30,51,88,0.6)', minWidth: 130, boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+                {LANGS.map(l => (
+                  <button key={l.code} onClick={() => { i18n.changeLanguage(l.code); setLangOpen(false); }}
+                    className={`flex items-center gap-2 px-3 py-2 text-xs transition-colors text-left ${
+                      i18n.language.startsWith(l.code) ? 'text-[#7AC4FF] bg-[#0D1B33]' : 'text-[#4A7AAA] hover:text-[#B8D9FF] hover:bg-[#0A1525]'
+                    }`}>
+                    <span>{l.flag}</span>{l.label}
+                  </button>
+                ))}
+              </div>
             )}
           </div>
 
