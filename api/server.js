@@ -4,10 +4,6 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const { ipKeyGenerator } = require("express-rate-limit");
-const mongoSanitize = require("express-mongo-sanitize");
-const hpp = require("hpp");
-
 dotenv.config();
 
 const app = express();
@@ -48,7 +44,6 @@ const authLimiter = rateLimit({
   message: { error: "Too many attempts. Please try again in 15 minutes." },
   standardHeaders: 'draft-7',
   legacyHeaders: false,
-  keyGenerator: (req) => ipKeyGenerator(req),
 });
 app.use("/api/auth/login",    authLimiter);
 app.use("/api/auth/register", authLimiter);
@@ -58,15 +53,9 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 300,
   message: { error: "Too many requests. Please slow down." },
-  keyGenerator: (req) => ipKeyGenerator(req),
 });
 app.use(limiter);
 
-// ── MongoDB injection protection ─────────────────────────────────
-app.use(mongoSanitize());
-
-// ── HTTP Parameter Pollution ─────────────────────────────────────
-app.use(hpp());
 console.log("MONGO_URI =", process.env.MONGO_URI);
 // Mongo connection
 let isConnected = false;

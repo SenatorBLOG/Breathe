@@ -2,7 +2,6 @@ const express = require('express');
 const router  = express.Router();
 const { body, validationResult } = require('express-validator');
 const rateLimit     = require('express-rate-limit');
-const { ipKeyGenerator } = require('express-rate-limit');
 const GlobePin      = require('../models/GlobePin');
 const auth          = require('../middleware/auth');
 const optionalAuth  = require('../middleware/optionalAuth');
@@ -14,7 +13,6 @@ const getLimiter = rateLimit({
   message: { error: 'Too many requests. Please slow down.' },
   standardHeaders: 'draft-7',
   legacyHeaders: false,
-  keyGenerator: (req) => ipKeyGenerator(req),
 });
 
 const likeLimiter = rateLimit({
@@ -23,7 +21,6 @@ const likeLimiter = rateLimit({
   message: { error: 'Too many requests. Please slow down.' },
   standardHeaders: 'draft-7',
   legacyHeaders: false,
-  keyGenerator: (req) => ipKeyGenerator(req),
 });
 
 // ── GET /globe/pins ───────────────────────────────────────────────────────────
