@@ -28,7 +28,6 @@ export default function GlobePage() {
   const [selectedPin,     setSelectedPin]     = useState<GlobePin | null>(null);
   const [filterTechnique, setFilterTechnique] = useState('all');
   const [addPinMode,      setAddPinMode]      = useState(false);
-  const [clickedLatLng,   setClickedLatLng]   = useState<{ lat: number; lng: number } | null>(null);
   const [sidebarOpen,     setSidebarOpen]     = useState(false);
   const [loading,         setLoading]         = useState(true);
 
@@ -66,12 +65,7 @@ export default function GlobePage() {
     if (pin) setSidebarOpen(true);
   }, []);
 
-  const handleGlobeClick = useCallback((lat: number, lng: number) => {
-    if (addPinMode) {
-      setClickedLatLng({ lat, lng });
-      setSidebarOpen(true);
-    }
-  }, [addPinMode]);
+  const handleGlobeClick = useCallback(() => {}, []);
 
   const handleLike = useCallback(async (id: string) => {
     try {
@@ -107,7 +101,6 @@ export default function GlobePage() {
       const res = await api.post<GlobePin>('/globe', data);
       setPins(prev => [res.data, ...prev]);
       setAddPinMode(false);
-      setClickedLatLng(null);
       setStats(prev => prev ? { ...prev, totalPins: prev.totalPins + 1 } : prev);
       toast.success('Your meditation spot has been pinned!');
     } catch (err: unknown) {
@@ -120,7 +113,6 @@ export default function GlobePage() {
   const handleToggleAddPin = useCallback(() => {
     const next = !addPinMode;
     setAddPinMode(next);
-    if (!next) setClickedLatLng(null);
     if (next) setSidebarOpen(true);
   }, [addPinMode]);
 
@@ -143,7 +135,6 @@ export default function GlobePage() {
       onClose={handleClosePin}
       isAuthenticated={isAuthenticated}
       currentUserId={user?._id ?? user?.id}
-      clickedLatLng={clickedLatLng}
     />
   );
 
