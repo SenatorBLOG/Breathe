@@ -11,7 +11,7 @@ const getLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   message: { error: 'Too many requests. Please slow down.' },
-  standardHeaders: true,
+  standardHeaders: 'draft-7',
   legacyHeaders: false,
   keyGenerator: (req) => req.ip,
 });
@@ -20,7 +20,7 @@ const likeLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 200,
   message: { error: 'Too many requests. Please slow down.' },
-  standardHeaders: true,
+  standardHeaders: 'draft-7',
   legacyHeaders: false,
   keyGenerator: (req) => req.ip,
 });
