@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
+const { ipKeyGenerator } = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const hpp = require("hpp");
 
@@ -47,7 +48,7 @@ const authLimiter = rateLimit({
   message: { error: "Too many attempts. Please try again in 15 minutes." },
   standardHeaders: 'draft-7',
   legacyHeaders: false,
-  keyGenerator: (req) => req.ip,
+  keyGenerator: (req) => ipKeyGenerator(req),
 });
 app.use("/api/auth/login",    authLimiter);
 app.use("/api/auth/register", authLimiter);
@@ -57,7 +58,7 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 300,
   message: { error: "Too many requests. Please slow down." },
-  keyGenerator: (req) => req.ip,
+  keyGenerator: (req) => ipKeyGenerator(req),
 });
 app.use(limiter);
 
