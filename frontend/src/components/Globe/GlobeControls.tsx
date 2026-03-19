@@ -44,7 +44,6 @@ interface GlobeControlsProps {
   onClose:         () => void;
   isAuthenticated: boolean;
   currentUserId?:  string;
-  clickedLatLng:   { lat: number; lng: number } | null;
 }
 
 interface AddPinFormData {
@@ -80,10 +79,11 @@ export default function GlobeControls({
   onClose,
   isAuthenticated,
   currentUserId,
-  clickedLatLng,
 }: GlobeControlsProps) {
   const ts = useThemeStyles();
   const [form, setForm] = useState<typeof DEFAULT_FORM>(DEFAULT_FORM);
+  const [latInput, setLatInput] = useState('');
+  const [lngInput, setLngInput] = useState('');
 
   function handleFormChange(field: keyof typeof DEFAULT_FORM, value: string) {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -91,9 +91,14 @@ export default function GlobeControls({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!clickedLatLng) return;
-    onAddPin({ ...form, lat: clickedLatLng.lat, lng: clickedLatLng.lng });
+    const lat = parseFloat(latInput);
+    const lng = parseFloat(lngInput);
+    if (isNaN(lat) || lat < -90 || lat > 90) return;
+    if (isNaN(lng) || lng < -180 || lng > 180) return;
+    onAddPin({ ...form, lat, lng });
     setForm(DEFAULT_FORM);
+    setLatInput('');
+    setLngInput('');
   }
 
   const sectionStyle: React.CSSProperties = {
@@ -232,120 +237,118 @@ export default function GlobeControls({
 
         {isAuthenticated && addPinMode && (
           <div>
-            <div style={{ fontSize: 12, color: ts.textSecondary, marginBottom: 8, fontWeight: 500 }}>
-              🎯 Click anywhere on the globe to pick your spot
-            </div>
-
-            {clickedLatLng && (
-              <form onSubmit={handleSubmit}>
-                {/* Lat / Lng display */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
-                  <div>
-                    <label style={labelStyle}>Lat</label>
-                    <input
-                      readOnly
-                      value={clickedLatLng.lat.toFixed(4)}
-                      style={{ ...inputStyle, color: ts.textMuted }}
-                    />
-                  </div>
-                  <div>
-                    <label style={labelStyle}>Lng</label>
-                    <input
-                      readOnly
-                      value={clickedLatLng.lng.toFixed(4)}
-                      style={{ ...inputStyle, color: ts.textMuted }}
-                    />
-                  </div>
-                </div>
-
-                {/* City */}
-                <div style={{ marginBottom: 8 }}>
-                  <label style={labelStyle}>City</label>
+            <form onSubmit={handleSubmit}>
+              {/* Lat / Lng editable inputs */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
+                <div>
+                  <label style={labelStyle}>Latitude (-90 to 90)</label>
                   <input
-                    value={form.city}
-                    onChange={e => handleFormChange('city', e.target.value)}
-                    placeholder="e.g. Tokyo"
+                    type="number"
+                    value={latInput}
+                    onChange={e => setLatInput(e.target.value)}
+                    placeholder="e.g. 48.86"
+                    step="0.0001"
+                    min="-90"
+                    max="90"
                     style={inputStyle}
-                    maxLength={100}
                   />
                 </div>
-
-                {/* Country */}
-                <div style={{ marginBottom: 8 }}>
-                  <label style={labelStyle}>Country</label>
+                <div>
+                  <label style={labelStyle}>Longitude (-180 to 180)</label>
                   <input
-                    value={form.country}
-                    onChange={e => handleFormChange('country', e.target.value)}
-                    placeholder="e.g. Japan"
+                    type="number"
+                    value={lngInput}
+                    onChange={e => setLngInput(e.target.value)}
+                    placeholder="e.g. 2.35"
+                    step="0.0001"
+                    min="-180"
+                    max="180"
                     style={inputStyle}
-                    maxLength={100}
                   />
                 </div>
+              </div>
 
-                {/* Title */}
-                <div style={{ marginBottom: 8 }}>
-                  <label style={labelStyle}>Title (max 80 chars)</label>
-                  <input
-                    value={form.title}
-                    onChange={e => handleFormChange('title', e.target.value)}
-                    placeholder="Meditation spot"
-                    style={inputStyle}
-                    maxLength={80}
-                  />
-                </div>
+              {/* City */}
+              <div style={{ marginBottom: 8 }}>
+                <label style={labelStyle}>City</label>
+                <input
+                  value={form.city}
+                  onChange={e => handleFormChange('city', e.target.value)}
+                  placeholder="e.g. Tokyo"
+                  style={inputStyle}
+                  maxLength={100}
+                />
+              </div>
 
-                {/* Note */}
-                <div style={{ marginBottom: 8 }}>
-                  <label style={labelStyle}>Note (max 300 chars)</label>
-                  <textarea
-                    value={form.note}
-                    onChange={e => handleFormChange('note', e.target.value)}
-                    placeholder="Share your experience..."
-                    style={{ ...inputStyle, resize: 'vertical', minHeight: 60 }}
-                    maxLength={300}
-                  />
-                </div>
+              {/* Country */}
+              <div style={{ marginBottom: 8 }}>
+                <label style={labelStyle}>Country</label>
+                <input
+                  value={form.country}
+                  onChange={e => handleFormChange('country', e.target.value)}
+                  placeholder="e.g. Japan"
+                  style={inputStyle}
+                  maxLength={100}
+                />
+              </div>
 
-                {/* Technique */}
-                <div style={{ marginBottom: 8 }}>
-                  <label style={labelStyle}>Technique</label>
-                  <select
-                    value={form.technique}
-                    onChange={e => handleFormChange('technique', e.target.value)}
-                    style={inputStyle}
-                  >
-                    {TECHNIQUE_OPTIONS.filter(o => o.value !== 'all').map(o => (
-                      <option key={o.value} value={o.value}>{o.label}</option>
-                    ))}
-                  </select>
-                </div>
+              {/* Title */}
+              <div style={{ marginBottom: 8 }}>
+                <label style={labelStyle}>Title (max 80 chars)</label>
+                <input
+                  value={form.title}
+                  onChange={e => handleFormChange('title', e.target.value)}
+                  placeholder="Meditation spot"
+                  style={inputStyle}
+                  maxLength={80}
+                />
+              </div>
 
-                {/* Session Link */}
-                <div style={{ marginBottom: 8 }}>
-                  <label style={labelStyle}>Session link (optional)</label>
-                  <input
-                    value={form.sessionLink}
-                    onChange={e => handleFormChange('sessionLink', e.target.value)}
-                    placeholder="https://..."
-                    style={inputStyle}
-                    maxLength={500}
-                  />
-                </div>
+              {/* Note */}
+              <div style={{ marginBottom: 8 }}>
+                <label style={labelStyle}>Note (max 300 chars)</label>
+                <textarea
+                  value={form.note}
+                  onChange={e => handleFormChange('note', e.target.value)}
+                  placeholder="Share your experience..."
+                  style={{ ...inputStyle, resize: 'vertical', minHeight: 60 }}
+                  maxLength={300}
+                />
+              </div>
 
-                <button type="submit" style={btnPrimary}>
-                  📍 Drop pin
-                </button>
-                <button type="button" onClick={onToggleAddPin} style={btnSecondary}>
-                  Cancel
-                </button>
-              </form>
-            )}
+              {/* Technique */}
+              <div style={{ marginBottom: 8 }}>
+                <label style={labelStyle}>Technique</label>
+                <select
+                  value={form.technique}
+                  onChange={e => handleFormChange('technique', e.target.value)}
+                  style={inputStyle}
+                >
+                  {TECHNIQUE_OPTIONS.filter(o => o.value !== 'all').map(o => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </select>
+              </div>
 
-            {!clickedLatLng && (
+              {/* Session Link */}
+              <div style={{ marginBottom: 8 }}>
+                <label style={labelStyle}>Session link (optional)</label>
+                <input
+                  value={form.sessionLink}
+                  onChange={e => handleFormChange('sessionLink', e.target.value)}
+                  placeholder="https://..."
+                  style={inputStyle}
+                  maxLength={500}
+                />
+              </div>
+
+              <button type="submit" style={btnPrimary}>
+                📍 Drop pin
+              </button>
               <button type="button" onClick={onToggleAddPin} style={btnSecondary}>
                 Cancel
               </button>
-            )}
+            </form>
           </div>
         )}
       </div>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback, useState } from 'react';
 import * as THREE from 'three';
 import * as topojson from 'topojson-client';
 import type { Topology } from 'topojson-specification';
+import { WORLD_CITIES, type CityData } from './citiesData';
 
 export interface GlobePin {
   _id: string;
@@ -29,10 +30,14 @@ const PIN_COLORS: Record<string, string> = {
 };
 
 const GLOBE_THEMES = {
-  night:  { sphere: 0x020B1A, wire: 0x1E3358, glow: 0x4A9EFF },
-  day:    { sphere: 0xD4E8FF, wire: 0xB0C8E8, glow: 0xE8A020 },
-  nature: { sphere: 0x0A1F0E, wire: 0x1A4028, glow: 0x2ECC71 },
+  night:  { wire: 0x1E3358, coast: 0x4A9EFF, border: 0x2A5CAA },
+  day:    { wire: 0xB0C8E8, coast: 0x1A6FBF, border: 0x2A5FAF },
+  nature: { wire: 0x1A4028, coast: 0x4AE8A0, border: 0x1A7A4A },
 };
+
+// Ocean and land colors (fixed, dark, contrasting blue vs green)
+const OCEAN_COLOR = '#06122A';
+const LAND_COLOR  = '#0E2414';
 
 export function latLngToVector3(lat: number, lng: number, radius = 2.05): THREE.Vector3 {
   const phi   = (90 - lat)  * (Math.PI / 180);
@@ -51,6 +56,42 @@ export function vector3ToLatLng(point: THREE.Vector3): { lat: number; lng: numbe
   return { lat, lng: lng < -180 ? lng + 360 : lng };
 }
 
+function buildEarthTexture(world: Topology): THREE.CanvasTexture {
+  const W = 2048, H = 1024;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const ctx = c.getContext('2d')!;
+
+  // Ocean fill
+  ctx.fillStyle = OCEAN_COLOR;
+  ctx.fillRect(0, 0, W, H);
+
+  // Land fill
+  const land = topojson.feature(world, (world.objects as any).land) as any;
+  ctx.fillStyle = LAND_COLOR;
+  const geom = land.geometry;
+  const allPolys: number[][][][] = geom.type === 'Polygon'
+    ? [geom.coordinates]
+    : geom.coordinates;
+
+  for (const poly of allPolys) {
+    ctx.beginPath();
+    for (const ring of poly) {
+      let first = true;
+      for (const [lng, lat] of ring) {
+        const x = (lng + 180) / 360 * W;
+        const y = (90 - lat) / 180 * H;
+        if (first) { ctx.moveTo(x, y); first = false; }
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+    }
+    ctx.fill('evenodd');
+  }
+
+  return new THREE.CanvasTexture(c);
+}
+
 interface UseGlobeOptions {
   canvasRef: React.RefObject<HTMLCanvasElement>;
   pins: GlobePin[];
@@ -66,11 +107,11 @@ export function useGlobe({
   theme,
   filterTechnique,
   onPinClick,
-  onGlobeClick,
 }: UseGlobeOptions) {
-  const [hoveredPin, setHoveredPin]   = useState<GlobePin | null>(null);
-  const [addPinMode, setAddPinMode]   = useState(false);
-  const [hoveredPos, setHoveredPos]   = useState<{ x: number; y: number } | null>(null);
+  const [hoveredPin,  setHoveredPin]  = useState<GlobePin | null>(null);
+  const [hoveredCity, setHoveredCity] = useState<CityData | null>(null);
+  const [addPinMode,  setAddPinMode]  = useState(false);
+  const [hoveredPos,  setHoveredPos]  = useState<{ x: number; y: number } | null>(null);
 
   // Scene refs
   const sceneRef        = useRef<THREE.Scene | null>(null);
@@ -81,83 +122,102 @@ export function useGlobe({
   const wireMeshRef     = useRef<THREE.LineSegments | null>(null);
   const pinMeshesRef    = useRef<THREE.Mesh[]>([]);
   const borderLinesRef  = useRef<THREE.Line[]>([]);
+  const cityMeshesRef   = useRef<THREE.Mesh[]>([]);
   const rafRef          = useRef<number>(0);
 
-  // Interaction state refs (avoid stale closures in event handlers)
-  const isDraggingRef       = useRef(false);
-  const lastMouseRef        = useRef({ x: 0, y: 0 });
-  const velocityRef         = useRef({ x: 0, y: 0 });
-  const lastInteractionRef  = useRef(0);
-  const addPinModeRef       = useRef(false);
-  const onPinClickRef       = useRef(onPinClick);
-  const onGlobeClickRef     = useRef(onGlobeClick);
-  const hoveredPinRef       = useRef<GlobePin | null>(null);
+  // Interaction refs
+  const isDraggingRef      = useRef(false);
+  const lastMouseRef       = useRef({ x: 0, y: 0 });
+  const velocityRef        = useRef({ x: 0, y: 0 });
+  const lastInteractionRef = useRef(0);
+  const addPinModeRef      = useRef(false);
+  const onPinClickRef      = useRef(onPinClick);
 
-  // Keep callback refs fresh
-  useEffect(() => { onPinClickRef.current  = onPinClick;  }, [onPinClick]);
-  useEffect(() => { onGlobeClickRef.current = onGlobeClick; }, [onGlobeClick]);
-  useEffect(() => { addPinModeRef.current  = addPinMode;  }, [addPinMode]);
+  // Hover refs declared at hook body level (not inside useEffect)
+  const hoveredPinRef  = useRef<GlobePin | null>(null);
+  const hoveredCityRef = useRef<CityData | null>(null);
 
-  // ── Init effect ─────────────────────────────────────────────────────────────
+  useEffect(() => { onPinClickRef.current = onPinClick; }, [onPinClick]);
+  useEffect(() => { addPinModeRef.current = addPinMode; }, [addPinMode]);
+
+  // ── Init ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const parent = canvas.parentElement ?? canvas;
-    const w0 = parent.clientWidth  || canvas.offsetWidth  || 800;
-    const h0 = parent.clientHeight || canvas.offsetHeight || 600;
+    const w0 = parent.clientWidth  || 800;
+    const h0 = parent.clientHeight || 600;
 
-    // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000000);
-    scene.background = null; // transparent
     sceneRef.current = scene;
 
-    // Camera
     const camera = new THREE.PerspectiveCamera(45, w0 / h0, 0.1, 100);
     camera.position.z = 5;
     cameraRef.current = camera;
 
-    // Renderer
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setSize(w0, h0);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
     rendererRef.current = renderer;
 
-    // Globe group
     const globeGroup = new THREE.Group();
     scene.add(globeGroup);
     globeGroupRef.current = globeGroup;
 
-    // Globe sphere
-    const themeColors = GLOBE_THEMES[theme] ?? GLOBE_THEMES.night;
-    const sphereGeo   = new THREE.SphereGeometry(2, 64, 64);
-    const sphereMat   = new THREE.MeshPhongMaterial({
-      color:     themeColors.sphere,
-      emissive:  themeColors.glow,
-      emissiveIntensity: 0.06,
-      shininess: 20,
-      transparent: true,
-      opacity: 0.95,
+    // Globe sphere — starts with solid color, texture applied async
+    const sphereGeo = new THREE.SphereGeometry(2, 64, 64);
+    const sphereMat = new THREE.MeshPhongMaterial({
+      color:     0x06122A,
+      emissive:  0x010508,
+      emissiveIntensity: 0.4,
+      shininess: 25,
     });
     const globeMesh = new THREE.Mesh(sphereGeo, sphereMat);
     globeGroup.add(globeMesh);
     globeMeshRef.current = globeMesh;
 
     // Wireframe
-    const wireGeo  = new THREE.WireframeGeometry(new THREE.SphereGeometry(2.01, 24, 24));
-    const wireMat  = new THREE.LineBasicMaterial({
-      color: themeColors.wire,
-      transparent: true,
-      opacity: 0.08,
-    });
+    const wireGeo   = new THREE.WireframeGeometry(new THREE.SphereGeometry(2.01, 24, 24));
+    const wireMat   = new THREE.LineBasicMaterial({ color: 0x1E3358, transparent: true, opacity: 0.08 });
     const wireLines = new THREE.LineSegments(wireGeo, wireMat);
     globeGroup.add(wireLines);
     wireMeshRef.current = wireLines;
 
-    // ── World country borders ────────────────────────────────────────────────
-    let bordersCancelled = false;
+    // Lights
+    const ambient  = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambient);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    dirLight.position.set(5, 3, 5);
+    scene.add(dirLight);
+    const rimLight = new THREE.DirectionalLight(0x4A9EFF, 0.3);
+    rimLight.position.set(-5, -2, -5);
+    scene.add(rimLight);
+
+    // Entry animation
+    globeGroup.scale.setScalar(0);
+    const animStart = performance.now();
+    function entryAnim(now: number) {
+      const t = Math.min((now - animStart) / 800, 1);
+      globeGroup.scale.setScalar(1 - Math.pow(1 - t, 3));
+      if (t < 1) requestAnimationFrame(entryAnim);
+    }
+    requestAnimationFrame(entryAnim);
+
+    // Resize
+    const ro = new ResizeObserver(() => {
+      const w = parent.clientWidth;
+      const h = parent.clientHeight;
+      if (w === 0 || h === 0) return;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    });
+    ro.observe(parent);
+
+    // ── Async: earth texture + borders + cities ──────────────────────────────
+    let cancelled = false;
 
     function addGeoLines(coords: number[][][], color: number, opacity: number, radius: number) {
       const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity });
@@ -174,114 +234,161 @@ export function useGlobe({
     (async () => {
       try {
         const world = (await import('world-atlas/countries-110m.json')).default as unknown as Topology;
-        if (bordersCancelled) return;
+        if (cancelled) return;
 
-        // Coastlines — bright accent
+        // Earth texture (ocean + land)
+        const texture = buildEarthTexture(world);
+        const mat = globeMeshRef.current!.material as THREE.MeshPhongMaterial;
+        mat.map   = texture;
+        mat.color.setHex(0xFFFFFF);
+        mat.emissive.setHex(0x000000);
+        mat.emissiveIntensity = 0;
+        mat.shininess = 20;
+        mat.needsUpdate = true;
+
+        // Coastlines
         const coast = topojson.mesh(world, (world.objects as any).land);
-        addGeoLines(coast.coordinates as number[][][], 0x4A9EFF, 0.75, 2.025);
+        addGeoLines(coast.coordinates as number[][][], 0x4A9EFF, 0.8, 2.025);
 
-        // Internal country borders — dimmer
+        // Country borders
         const borders = topojson.mesh(world, (world.objects as any).countries, (a: any, b: any) => a !== b);
-        addGeoLines(borders.coordinates as number[][][], 0x2A5CAA, 0.4, 2.022);
+        addGeoLines(borders.coordinates as number[][][], 0x2A5CAA, 0.45, 2.022);
+
+        if (cancelled) return;
+
+        // City dots
+        for (const city of WORLD_CITIES) {
+          const r     = city.tier === 1 ? 0.018 : 0.012;
+          const color = city.tier === 1 ? 0xE8E8FF : 0xA0A8C0;
+          const geo   = new THREE.SphereGeometry(r, 6, 6);
+          const mat   = new THREE.MeshBasicMaterial({ color });
+          const mesh  = new THREE.Mesh(geo, mat);
+          mesh.position.copy(latLngToVector3(city.lat, city.lng, 2.03));
+          mesh.userData = { __cityData: city };
+          mesh.visible  = false; // shown based on zoom
+          globeGroup.add(mesh);
+          cityMeshesRef.current.push(mesh);
+        }
       } catch (e) {
-        console.warn('World borders failed to load', e);
+        console.warn('Globe assets failed to load', e);
       }
     })();
 
-    // Lights
-    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambient);
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight.position.set(5, 3, 5);
-    scene.add(dirLight);
+    // ── Input events ─────────────────────────────────────────────────────────
+    const raycaster = new THREE.Raycaster();
+    raycaster.params.Points = { threshold: 0.05 };
 
-    // Entry animation: scale from 0 to 1 over 800ms
-    globeGroup.scale.setScalar(0);
-    const animStart = performance.now();
-    const animDur   = 800;
-    function entryAnim(now: number) {
-      const t = Math.min((now - animStart) / animDur, 1);
-      const ease = 1 - Math.pow(1 - t, 3); // ease-out-cubic
-      globeGroup.scale.setScalar(ease);
-      if (t < 1) requestAnimationFrame(entryAnim);
+    function getNDC(cx: number, cy: number): THREE.Vector2 {
+      const rect = canvas.getBoundingClientRect();
+      return new THREE.Vector2(
+        ((cx - rect.left) / rect.width)  * 2 - 1,
+        -((cy - rect.top) / rect.height) * 2 + 1
+      );
     }
-    requestAnimationFrame(entryAnim);
 
-    // ── Resize handling ──────────────────────────────────────────────────────
-    const ro = new ResizeObserver(() => {
-      const w = parent.clientWidth;
-      const h = parent.clientHeight;
-      if (w === 0 || h === 0) return;
-      renderer.setSize(w, h);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    });
-    ro.observe(parent);
+    function handleRaycast(cx: number, cy: number) {
+      const ndc = getNDC(cx, cy);
+      raycaster.setFromCamera(ndc, camera);
 
-    // ── Mouse drag rotation ──────────────────────────────────────────────────
+      // Check pins
+      const pinHits = raycaster.intersectObjects(pinMeshesRef.current);
+      if (pinHits.length > 0) {
+        const pin = pinHits[0].object.userData as GlobePin;
+        if (hoveredPinRef.current?._id !== pin._id) {
+          pinMeshesRef.current.forEach(m => m.scale.setScalar(1));
+          (pinHits[0].object as THREE.Mesh).scale.setScalar(2.5);
+          setHoveredPin(pin);
+          hoveredPinRef.current = pin;
+          setHoveredCity(null);
+          hoveredCityRef.current = null;
+        }
+        setHoveredPos({ x: cx, y: cy });
+        canvas.style.cursor = 'pointer';
+        return;
+      }
+
+      // Check cities
+      const visibleCities = cityMeshesRef.current.filter(m => m.visible);
+      const cityHits = raycaster.intersectObjects(visibleCities);
+      if (cityHits.length > 0) {
+        const city = cityHits[0].object.userData.__cityData as CityData;
+        if (hoveredCityRef.current?.name !== city.name) {
+          setHoveredCity(city);
+          hoveredCityRef.current = city;
+          setHoveredPin(null);
+          hoveredPinRef.current = null;
+        }
+        setHoveredPos({ x: cx, y: cy });
+        canvas.style.cursor = 'pointer';
+        return;
+      }
+
+      // Nothing hovered
+      if (hoveredPinRef.current !== null || hoveredCityRef.current !== null) {
+        pinMeshesRef.current.forEach(m => m.scale.setScalar(1));
+        setHoveredPin(null);
+        hoveredPinRef.current = null;
+        setHoveredCity(null);
+        hoveredCityRef.current = null;
+        setHoveredPos(null);
+      }
+      canvas.style.cursor = addPinModeRef.current ? 'crosshair' : 'grab';
+    }
+
+    function handleClick(cx: number, cy: number) {
+      const ndc = getNDC(cx, cy);
+      raycaster.setFromCamera(ndc, camera);
+      const pinHits = raycaster.intersectObjects(pinMeshesRef.current);
+      if (pinHits.length > 0) {
+        onPinClickRef.current(pinHits[0].object.userData as GlobePin);
+      }
+    }
+
     function onMouseDown(e: MouseEvent) {
       isDraggingRef.current = true;
       lastMouseRef.current  = { x: e.clientX, y: e.clientY };
       velocityRef.current   = { x: 0, y: 0 };
     }
-
     function onMouseMove(e: MouseEvent) {
-      if (!isDraggingRef.current) {
-        // Raycasting for hover
-        handleRaycast(e.clientX, e.clientY);
-        return;
-      }
+      if (!isDraggingRef.current) { handleRaycast(e.clientX, e.clientY); return; }
       const dx = e.clientX - lastMouseRef.current.x;
       const dy = e.clientY - lastMouseRef.current.y;
       lastMouseRef.current = { x: e.clientX, y: e.clientY };
       velocityRef.current  = { x: dx, y: dy };
-
       globeGroup.rotation.y += dx * 0.005;
       globeGroup.rotation.x += dy * 0.005;
       globeGroup.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, globeGroup.rotation.x));
       lastInteractionRef.current = Date.now();
     }
-
     function onMouseUp(e: MouseEvent) {
       if (!isDraggingRef.current) return;
       isDraggingRef.current = false;
       lastInteractionRef.current = Date.now();
-
-      // Check if it was a click (no significant drag)
       const dx = e.clientX - lastMouseRef.current.x;
       const dy = e.clientY - lastMouseRef.current.y;
-      if (Math.abs(dx) < 3 && Math.abs(dy) < 3) {
-        handleClick(e.clientX, e.clientY);
-      }
+      if (Math.abs(dx) < 3 && Math.abs(dy) < 3) handleClick(e.clientX, e.clientY);
     }
-
     function onMouseLeave() {
       isDraggingRef.current = false;
       setHoveredPin(null);
-      hoveredPinRef.current = null;
+      setHoveredCity(null);
       setHoveredPos(null);
     }
 
-    // ── Touch events ─────────────────────────────────────────────────────────
     let lastTouchDist = 0;
-
-    function getTouchDist(touches: TouchList) {
-      const dx = touches[0].clientX - touches[1].clientX;
-      const dy = touches[0].clientY - touches[1].clientY;
+    function getTouchDist(t: TouchList) {
+      const dx = t[0].clientX - t[1].clientX;
+      const dy = t[0].clientY - t[1].clientY;
       return Math.sqrt(dx * dx + dy * dy);
     }
-
     function onTouchStart(e: TouchEvent) {
       if (e.touches.length === 1) {
         isDraggingRef.current = true;
         lastMouseRef.current  = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         velocityRef.current   = { x: 0, y: 0 };
-      } else if (e.touches.length === 2) {
-        lastTouchDist = getTouchDist(e.touches);
-      }
+      } else if (e.touches.length === 2) lastTouchDist = getTouchDist(e.touches);
       lastInteractionRef.current = Date.now();
     }
-
     function onTouchMove(e: TouchEvent) {
       e.preventDefault();
       if (e.touches.length === 1 && isDraggingRef.current) {
@@ -289,98 +396,24 @@ export function useGlobe({
         const dy = e.touches[0].clientY - lastMouseRef.current.y;
         lastMouseRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         velocityRef.current  = { x: dx, y: dy };
-
         globeGroup.rotation.y += dx * 0.005;
         globeGroup.rotation.x += dy * 0.005;
         globeGroup.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, globeGroup.rotation.x));
         lastInteractionRef.current = Date.now();
       } else if (e.touches.length === 2) {
-        const dist  = getTouchDist(e.touches);
-        const delta = dist - lastTouchDist;
-        camera.position.z = Math.max(3.5, Math.min(8, camera.position.z - delta * 0.01));
+        const dist = getTouchDist(e.touches);
+        camera.position.z = Math.max(3.5, Math.min(8, camera.position.z - (dist - lastTouchDist) * 0.01));
         lastTouchDist = dist;
         lastInteractionRef.current = Date.now();
       }
     }
-
-    function onTouchEnd() {
-      isDraggingRef.current = false;
-      lastInteractionRef.current = Date.now();
-    }
-
-    // ── Scroll / zoom ─────────────────────────────────────────────────────────
+    function onTouchEnd() { isDraggingRef.current = false; lastInteractionRef.current = Date.now(); }
     function onWheel(e: WheelEvent) {
       e.preventDefault();
       camera.position.z = Math.max(3.5, Math.min(8, camera.position.z + e.deltaY * 0.005));
       lastInteractionRef.current = Date.now();
     }
 
-    // ── Raycasting helpers ────────────────────────────────────────────────────
-    const raycaster = new THREE.Raycaster();
-    raycaster.params.Points = { threshold: 0.05 };
-
-    function getNDC(clientX: number, clientY: number): THREE.Vector2 {
-      const rect = canvas.getBoundingClientRect();
-      return new THREE.Vector2(
-        ((clientX - rect.left)  / rect.width)  * 2 - 1,
-        -((clientY - rect.top) / rect.height) * 2 + 1
-      );
-    }
-
-    function handleRaycast(clientX: number, clientY: number) {
-      const ndc = getNDC(clientX, clientY);
-      raycaster.setFromCamera(ndc, camera);
-
-      const intersects = raycaster.intersectObjects(pinMeshesRef.current);
-      if (intersects.length > 0) {
-        const mesh = intersects[0].object as THREE.Mesh;
-        const pin  = mesh.userData as GlobePin;
-        if (hoveredPinRef.current?._id !== pin._id) {
-          // Reset previous hovered scale
-          pinMeshesRef.current.forEach(m => m.scale.setScalar(1));
-          mesh.scale.setScalar(2.5);
-          setHoveredPin(pin);
-          hoveredPinRef.current = pin;
-        }
-        setHoveredPos({ x: clientX, y: clientY });
-        canvas.style.cursor = 'pointer';
-      } else {
-        if (hoveredPinRef.current !== null) {
-          pinMeshesRef.current.forEach(m => m.scale.setScalar(1));
-          setHoveredPin(null);
-          hoveredPinRef.current = null;
-          setHoveredPos(null);
-        }
-        canvas.style.cursor = addPinModeRef.current ? 'crosshair' : 'grab';
-      }
-    }
-
-    function handleClick(clientX: number, clientY: number) {
-      const ndc = getNDC(clientX, clientY);
-      raycaster.setFromCamera(ndc, camera);
-
-      // Check pins first
-      const pinHits = raycaster.intersectObjects(pinMeshesRef.current);
-      if (pinHits.length > 0) {
-        const pin = pinHits[0].object.userData as GlobePin;
-        onPinClickRef.current(pin);
-        return;
-      }
-
-      // If in add-pin mode, hit-test globe sphere
-      if (addPinModeRef.current && globeMeshRef.current) {
-        const globeHits = raycaster.intersectObject(globeMeshRef.current);
-        if (globeHits.length > 0) {
-          const point   = globeHits[0].point;
-          // Transform from world space to globe-group local space
-          const local   = globeGroup.worldToLocal(point.clone());
-          const { lat, lng } = vector3ToLatLng(local);
-          onGlobeClickRef.current(lat, lng);
-        }
-      }
-    }
-
-    // ── Register events ───────────────────────────────────────────────────────
     canvas.addEventListener('mousedown',  onMouseDown);
     canvas.addEventListener('mousemove',  onMouseMove);
     canvas.addEventListener('mouseup',    onMouseUp);
@@ -394,10 +427,10 @@ export function useGlobe({
     function animate() {
       rafRef.current = requestAnimationFrame(animate);
 
-      const timeSinceInteract = Date.now() - lastInteractionRef.current;
-      const autoRotate        = timeSinceInteract > 3000 && !isDraggingRef.current;
+      const z    = camera.position.z;
+      const idle = Date.now() - lastInteractionRef.current;
 
-      // Apply velocity damping
+      // Velocity damping
       if (!isDraggingRef.current) {
         globeGroup.rotation.y += velocityRef.current.x * 0.003;
         globeGroup.rotation.x += velocityRef.current.y * 0.003;
@@ -406,18 +439,21 @@ export function useGlobe({
         velocityRef.current.y *= 0.92;
       }
 
-      // Auto-rotation
-      if (autoRotate) {
-        globeGroup.rotation.y += 0.001;
-      }
+      // Auto-rotate when idle
+      if (idle > 3000 && !isDraggingRef.current) globeGroup.rotation.y += 0.001;
+
+      // City visibility based on zoom
+      cityMeshesRef.current.forEach((mesh, i) => {
+        const tier = WORLD_CITIES[i].tier;
+        mesh.visible = (tier === 1 && z < 6) || (tier === 2 && z < 4.8);
+      });
 
       renderer.render(scene, camera);
     }
     animate();
 
-    // ── Cleanup ───────────────────────────────────────────────────────────────
     return () => {
-      bordersCancelled = true;
+      cancelled = true;
       cancelAnimationFrame(rafRef.current);
       ro.disconnect();
       canvas.removeEventListener('mousedown',  onMouseDown);
@@ -430,74 +466,55 @@ export function useGlobe({
       canvas.removeEventListener('wheel',      onWheel);
       borderLinesRef.current.forEach(l => { l.geometry.dispose(); (l.material as THREE.Material).dispose(); });
       borderLinesRef.current = [];
+      cityMeshesRef.current.forEach(m => { m.geometry.dispose(); (m.material as THREE.Material).dispose(); });
+      cityMeshesRef.current = [];
       renderer.dispose();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasRef]);
 
-  // ── Update pins ─────────────────────────────────────────────────────────────
+  // ── Update pins ────────────────────────────────────────────────────────────
   useEffect(() => {
     const globeGroup = globeGroupRef.current;
     if (!globeGroup) return;
-
-    // Remove old pin meshes
     pinMeshesRef.current.forEach(m => {
       globeGroup.remove(m);
-      (m.geometry as THREE.BufferGeometry).dispose();
-      ((m.material as THREE.Material)).dispose();
+      m.geometry.dispose();
+      (m.material as THREE.Material).dispose();
     });
     pinMeshesRef.current = [];
-
     const filtered = filterTechnique && filterTechnique !== 'all'
       ? pins.filter(p => p.technique === filterTechnique)
       : pins;
-
-    const MAX_PINS = 500;
-    const visible  = filtered.slice(0, MAX_PINS);
-
-    for (const pin of visible) {
-      const colorHex = PIN_COLORS[pin.technique] ?? PIN_COLORS.other;
-      const color    = new THREE.Color(colorHex);
-      const geo      = new THREE.SphereGeometry(0.015, 8, 8);
-      const mat      = new THREE.MeshBasicMaterial({ color });
-      const mesh     = new THREE.Mesh(geo, mat);
-
-      const pos = latLngToVector3(pin.lat, pin.lng);
-      mesh.position.copy(pos);
+    for (const pin of filtered.slice(0, 500)) {
+      const color = new THREE.Color(PIN_COLORS[pin.technique] ?? PIN_COLORS.other);
+      const geo   = new THREE.SphereGeometry(0.018, 8, 8);
+      const mat   = new THREE.MeshBasicMaterial({ color });
+      const mesh  = new THREE.Mesh(geo, mat);
+      mesh.position.copy(latLngToVector3(pin.lat, pin.lng, 2.05));
       mesh.userData = pin;
-
       globeGroup.add(mesh);
       pinMeshesRef.current.push(mesh);
     }
   }, [pins, filterTechnique]);
 
-  // ── Update theme ─────────────────────────────────────────────────────────────
+  // ── Update theme ───────────────────────────────────────────────────────────
   useEffect(() => {
-    const globeMesh = globeMeshRef.current;
-    const wireMesh  = wireMeshRef.current;
-    if (!globeMesh || !wireMesh) return;
-
-    const themeColors = GLOBE_THEMES[theme] ?? GLOBE_THEMES.night;
-    (globeMesh.material as THREE.MeshPhongMaterial).color.setHex(themeColors.sphere);
-    (globeMesh.material as THREE.MeshPhongMaterial).emissive.setHex(themeColors.glow);
-    (wireMesh.material  as THREE.LineBasicMaterial).color.setHex(themeColors.wire);
-
-    // Recolor borders: first half = coastlines, second half = country borders
+    const wireMesh = wireMeshRef.current;
+    if (!wireMesh) return;
+    const tc = GLOBE_THEMES[theme] ?? GLOBE_THEMES.night;
+    (wireMesh.material as THREE.LineBasicMaterial).color.setHex(tc.wire);
     const lines = borderLinesRef.current;
     const mid   = Math.floor(lines.length / 2);
-    const coastColor   = theme === 'nature' ? 0x4AE8A0 : theme === 'day' ? 0x1A6FBF : 0x4A9EFF;
-    const borderColor  = theme === 'nature' ? 0x1A7A4A : theme === 'day' ? 0x2A5FAF : 0x2A5CAA;
-    lines.slice(0, mid).forEach(l => (l.material as THREE.LineBasicMaterial).color.setHex(coastColor));
-    lines.slice(mid).forEach(l  => (l.material as THREE.LineBasicMaterial).color.setHex(borderColor));
+    lines.slice(0, mid).forEach(l => (l.material as THREE.LineBasicMaterial).color.setHex(tc.coast));
+    lines.slice(mid).forEach(l  => (l.material as THREE.LineBasicMaterial).color.setHex(tc.border));
   }, [theme]);
 
   const setAddPinModeCallback = useCallback((v: boolean) => {
     setAddPinMode(v);
     addPinModeRef.current = v;
-    if (canvasRef.current) {
-      canvasRef.current.style.cursor = v ? 'crosshair' : 'grab';
-    }
+    if (canvasRef.current) canvasRef.current.style.cursor = v ? 'crosshair' : 'grab';
   }, [canvasRef]);
 
-  return { hoveredPin, addPinMode, setAddPinMode: setAddPinModeCallback, hoveredPos };
+  return { hoveredPin, hoveredCity, addPinMode, setAddPinMode: setAddPinModeCallback, hoveredPos };
 }
