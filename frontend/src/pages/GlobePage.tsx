@@ -150,11 +150,12 @@ export default function GlobePage() {
   return (
     <div
       style={{
-        minHeight:   '100vh',
+        height:      '100vh',
         display:     'flex',
         flexDirection: 'column',
         color:       ts.textPrimary,
         position:    'relative',
+        overflow:    'hidden',
       }}
     >
       <ThemeBackground />
@@ -164,6 +165,7 @@ export default function GlobePage() {
       <main
         style={{
           flex:     1,
+          minHeight: 0,
           display:  'flex',
           overflow: 'hidden',
           position: 'relative',
@@ -173,8 +175,8 @@ export default function GlobePage() {
         <div
           style={{
             flex:     1,
+            minWidth:  0,
             position: 'relative',
-            minHeight: 400,
           }}
         >
           {loading && (
