@@ -101,6 +101,8 @@ export function useGlobe({
     if (!canvas) return;
 
     const parent = canvas.parentElement ?? canvas;
+    const w0 = parent.clientWidth  || canvas.offsetWidth  || 800;
+    const h0 = parent.clientHeight || canvas.offsetHeight || 600;
 
     // Scene
     const scene = new THREE.Scene();
@@ -109,18 +111,13 @@ export function useGlobe({
     sceneRef.current = scene;
 
     // Camera
-    const camera = new THREE.PerspectiveCamera(
-      45,
-      parent.clientWidth / parent.clientHeight,
-      0.1,
-      100
-    );
+    const camera = new THREE.PerspectiveCamera(45, w0 / h0, 0.1, 100);
     camera.position.z = 5;
     cameraRef.current = camera;
 
     // Renderer
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setSize(parent.clientWidth, parent.clientHeight);
+    renderer.setSize(w0, h0);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
     rendererRef.current = renderer;
