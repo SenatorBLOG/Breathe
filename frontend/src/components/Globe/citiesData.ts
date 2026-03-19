@@ -2,7 +2,7 @@ export interface CityData {
   name: string;
   lat: number;
   lng: number;
-  tier: 1 | 2;
+  tier: 1 | 2 | 3;
 }
 
 export const WORLD_CITIES: CityData[] = [
@@ -84,4 +84,39 @@ export const WORLD_CITIES: CityData[] = [
   { name: 'Yangon',         lat: 16.87,  lng: 96.20,   tier: 2 },
   { name: 'Chennai',        lat: 13.08,  lng: 80.27,   tier: 2 },
   { name: 'Guangzhou',      lat: 23.13,  lng: 113.26,  tier: 1 },
+  // ── Tier 2/3: Europe detail ─────────────────────────────────────
+  { name: 'Munich',         lat: 48.14,  lng: 11.58,   tier: 2 },
+  { name: 'Milan',          lat: 45.46,  lng: 9.19,    tier: 2 },
+  { name: 'Prague',         lat: 50.08,  lng: 14.44,   tier: 2 },
+  { name: 'Budapest',       lat: 47.50,  lng: 19.04,   tier: 2 },
+  { name: 'Brussels',       lat: 50.85,  lng: 4.35,    tier: 2 },
+  { name: 'Dublin',         lat: 53.35,  lng: -6.26,   tier: 2 },
+  { name: 'Lisbon',         lat: 38.72,  lng: -9.14,   tier: 2 },
+  { name: 'Helsinki',       lat: 60.17,  lng: 24.94,   tier: 2 },
+  { name: 'Bucharest',      lat: 44.43,  lng: 26.10,   tier: 2 },
+  { name: 'Zurich',         lat: 47.37,  lng: 8.54,    tier: 3 },
+  { name: 'Geneva',         lat: 46.20,  lng: 6.15,    tier: 3 },
+  { name: 'Bern',           lat: 46.95,  lng: 7.45,    tier: 3 },
+  { name: 'Edinburgh',      lat: 55.95,  lng: -3.19,   tier: 3 },
+  { name: 'Hamburg',         lat: 53.55,  lng: 9.99,    tier: 3 },
+  { name: 'Frankfurt',      lat: 50.11,  lng: 8.68,    tier: 3 },
+  { name: 'Lyon',           lat: 45.76,  lng: 4.83,    tier: 3 },
+  { name: 'Florence',       lat: 43.77,  lng: 11.25,   tier: 3 },
+  { name: 'Porto',          lat: 41.16,  lng: -8.63,   tier: 3 },
+  { name: 'Marseille',      lat: 43.30,  lng: 5.37,    tier: 3 },
+  { name: 'Kraków',         lat: 50.06,  lng: 19.94,   tier: 3 },
+  { name: 'Düsseldorf',     lat: 51.23,  lng: 6.78,    tier: 3 },
+  // ── Tier 3: Americas detail ─────────────────────────────────────
+  { name: 'Austin',         lat: 30.27,  lng: -97.74,  tier: 3 },
+  { name: 'Boston',         lat: 42.36,  lng: -71.06,  tier: 3 },
+  { name: 'San Diego',      lat: 32.72,  lng: -117.16, tier: 3 },
+  { name: 'Atlanta',        lat: 33.75,  lng: -84.39,  tier: 3 },
+  { name: 'Calgary',        lat: 51.05,  lng: -114.07, tier: 3 },
+  { name: 'Medellín',       lat: 6.25,   lng: -75.56,  tier: 3 },
+  // ── Tier 3: Asia/Oceania detail ─────────────────────────────────
+  { name: 'Bali',           lat: -8.34,  lng: 115.09,  tier: 3 },
+  { name: 'Chiang Mai',     lat: 18.79,  lng: 98.98,   tier: 3 },
+  { name: 'Kyoto',          lat: 35.01,  lng: 135.77,  tier: 3 },
+  { name: 'Shenzhen',       lat: 22.54,  lng: 114.06,  tier: 3 },
+  { name: 'Wellington',     lat: -41.29, lng: 174.78,  tier: 3 },
 ];
