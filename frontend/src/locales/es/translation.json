@@ -61,7 +61,33 @@
     "streak": "Racha",
     "allTime": "Total",
     "aiCoach": "Preguntar al entrenador IA",
-    "coachActive": "Entrenador IA: "
+    "coachActive": "Entrenador IA: ",
+    "sessions": "Sesiones",
+    "phaseLabels": {
+      "inhale": "Inhalar",
+      "hold": "Retener",
+      "exhale": "Exhalar",
+      "rest": "Descanso"
+    },
+    "infoCards": {
+      "box": "Respiración cuadrada",
+      "boxDesc": "4-4-4-4. Fases iguales para enfoque y calma. Usado por los Navy SEALs.",
+      "sleep": "4-7-8 para dormir",
+      "sleepDesc": "Retención larga + exhalación lenta activa el sistema parasimpático.",
+      "energy": "Energizante",
+      "energyDesc": "Ciclos cortos e intensos aumentan el estado de alerta en menos de dos minutos."
+    },
+    "guidance": {
+      "title": "Modo de guía",
+      "visual": "Visual",
+      "sound": "Sonido",
+      "vibration": "Vibración",
+      "voice": "Voz",
+      "unsupported": "no disponible",
+      "vibrationHint": "La vibración requiere Android + Chrome",
+      "voiceHint": "Usa la síntesis de voz integrada del navegador",
+      "eyesClosedHint": "Ya puedes cerrar los ojos — la app te guiará"
+    }
   },
   "community": {
     "title": "Comunidad",
@@ -109,7 +135,29 @@
     "filters": "Filtros",
     "minCycles": "Ciclos mínimos",
     "minDuration": "Duración mínima",
-    "resetFilters": "Restablecer filtros"
+    "resetFilters": "Restablecer filtros",
+    "steps": {
+      "when": "Fecha y duración",
+      "mood": "Cambio de humor",
+      "feelings": "Cómo te sentiste",
+      "quality": "Calidad"
+    },
+    "noise": {
+      "silent": "Silencio",
+      "quiet": "Tranquilo",
+      "moderate": "Moderado",
+      "noisy": "Ruidoso"
+    },
+    "feelings": {
+      "focused": "Enfocado",
+      "calm": "Tranquilo",
+      "energized": "Energizado",
+      "drowsy": "Somnoliento",
+      "distracted": "Distraído",
+      "peaceful": "En paz",
+      "anxious": "Ansioso",
+      "refreshed": "Renovado"
+    }
   },
   "stats": {
     "title": "Tu progreso",
@@ -297,5 +345,38 @@
       "communityTitle": "Únete a la comunidad",
       "communityDesc": "Comparte tu viaje, haz preguntas y celebra logros."
     }
+  },
+  "onboarding": {
+    "welcome": "Bienvenido a Breathe",
+    "desc1": "Respiración guiada para el sueño, la ansiedad y el enfoque",
+    "desc2": "Registra tus sesiones y estado de ánimo con el tiempo",
+    "desc3": "Gratis para siempre · Sin anuncios · Funciona sin internet",
+    "goalTitle": "¿Qué te trae aquí?",
+    "goals": {
+      "sleep": "Dormir mejor", "sleepDesc": "Conciliar el sueño más rápido",
+      "anxiety": "Menos ansiedad", "anxietyDesc": "Calmar pensamientos acelerados",
+      "focus": "Más enfoque", "focusDesc": "Claridad y presencia",
+      "energy": "Más energía", "energyDesc": "Alerta natural"
+    },
+    "guidanceTitle": "¿Cómo quieres ser guiado?",
+    "guidanceSub": "Puedes cambiarlo en cualquier momento en la página de respiración",
+    "guidanceModes": {
+      "visual": "Visual", "visualDesc": "Sigue el círculo",
+      "sound": "Sonido", "soundDesc": "Tonos por cada fase",
+      "vibration": "Vibración", "vibrationDesc": "Solo Android",
+      "voice": "Voz", "voiceDesc": "Instrucciones habladas"
+    },
+    "guidanceHint": "Puedes cerrar los ojos — te guiaremos",
+    "guidanceUnavailable": "no disponible",
+    "wearableTitle": "Conecta tu dispositivo",
+    "wearableSub": "Recomendaciones personalizadas según tu sueño y VFC",
+    "connectFitbit": "Conectar Fitbit",
+    "connectGoogleFit": "Conectar Google Fit",
+    "wearableLater": "Lo haré más tarde →",
+    "notifTitle": "Mantén la constancia",
+    "notifToggle": "Recordatorio diario de respiración",
+    "notifDesc": "Te avisaremos a tu hora preferida",
+    "start": "Empezar a respirar →",
+    "skipAll": "Omitir todo →"
   }
 }

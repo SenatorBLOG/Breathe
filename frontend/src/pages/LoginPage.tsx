@@ -1,7 +1,7 @@
 // src/pages/LoginPage.tsx
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
@@ -24,12 +24,24 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const googleRef = useRef<HTMLDivElement>(null);
 
-  const triggerGoogleLogin = () => {
-    const btn = googleRef.current?.querySelector<HTMLElement>('div[jscontroller], div[jsname], div > div');
-    btn?.click();
-  };
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setLoading(true);
+      try {
+        const res = await api.post('/auth/google', { access_token: tokenResponse.access_token });
+        login(res.data.token, res.data.user);
+        localStorage.setItem('userId', res.data.user?._id ?? '');
+        toast.success('Welcome to Breathe');
+        navigate('/home-page');
+      } catch {
+        toast.error('Google login failed');
+      } finally {
+        setLoading(false);
+      }
+    },
+    onError: () => toast.error('Google login failed'),
+  });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,21 +62,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogle = async (credential: string) => {
-    setLoading(true);
-    try {
-      const res = await api.post('/auth/google', { credential });
-      login(res.data.token, res.data.user);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('userId', res.data.user?._id ?? '');
-      toast.success('Welcome to Breathe');
-      navigate('/home-page');
-    } catch {
-      toast.error('Google login failed');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="relative min-h-screen font-montserrat overflow-x-hidden">
@@ -260,18 +257,9 @@ export default function LoginPage() {
 
                   {/* Google */}
                   <div className="relative">
-                    {/* Hidden off-screen GoogleLogin — handles actual OAuth flow */}
-                    <div ref={googleRef} style={{ position: 'fixed', top: '-9999px', left: '-9999px' }}>
-                      <GoogleLogin
-                        onSuccess={cr => { if (cr.credential) handleGoogle(cr.credential); }}
-                        onError={() => toast.error('Google login failed')}
-                        useOneTap={false}
-                      />
-                    </div>
-                    {/* Themed custom button */}
                     <button
                       type="button"
-                      onClick={triggerGoogleLogin}
+                      onClick={() => googleLogin()}
                       className="flex items-center justify-center gap-3 w-full py-3 px-5 rounded-xl border text-sm transition-all hover:opacity-90 active:scale-[0.98]"
                       style={{ backgroundColor: ts.cardBg, borderColor: ts.border, color: ts.textSecondary }}
                     >

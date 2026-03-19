@@ -61,7 +61,33 @@
     "streak": "Streak",
     "allTime": "All time",
     "aiCoach": "Ask AI Coach",
-    "coachActive": "AI Coach: "
+    "coachActive": "AI Coach: ",
+    "sessions": "Sessions",
+    "phaseLabels": {
+      "inhale": "Inhale",
+      "hold": "Hold",
+      "exhale": "Exhale",
+      "rest": "Rest"
+    },
+    "infoCards": {
+      "box": "Box Breathing",
+      "boxDesc": "4-4-4-4. Equal phases for focus and calm. Used by Navy SEALs.",
+      "sleep": "4-7-8 for Sleep",
+      "sleepDesc": "Long hold + slow exhale activates your parasympathetic system.",
+      "energy": "Energizing",
+      "energyDesc": "Short sharp cycles boost alertness in under two minutes."
+    },
+    "guidance": {
+      "title": "Guidance mode",
+      "visual": "Visual",
+      "sound": "Sound",
+      "vibration": "Vibration",
+      "voice": "Voice",
+      "unsupported": "unavailable",
+      "vibrationHint": "Vibration requires Android + Chrome",
+      "voiceHint": "Uses your browser's built-in speech",
+      "eyesClosedHint": "You can now close your eyes — the app will guide you"
+    }
   },
   "community": {
     "title": "Community",
@@ -109,7 +135,29 @@
     "filters": "Filters",
     "minCycles": "Min cycles",
     "minDuration": "Min duration",
-    "resetFilters": "Reset filters"
+    "resetFilters": "Reset filters",
+    "steps": {
+      "when": "When & duration",
+      "mood": "Mood shift",
+      "feelings": "How you felt",
+      "quality": "Quality"
+    },
+    "noise": {
+      "silent": "Silent",
+      "quiet": "Quiet",
+      "moderate": "Moderate",
+      "noisy": "Noisy"
+    },
+    "feelings": {
+      "focused": "Focused",
+      "calm": "Calm",
+      "energized": "Energized",
+      "drowsy": "Drowsy",
+      "distracted": "Distracted",
+      "peaceful": "Peaceful",
+      "anxious": "Anxious",
+      "refreshed": "Refreshed"
+    }
   },
   "stats": {
     "title": "Your Progress",
@@ -297,5 +345,38 @@
       "communityTitle": "Join the Community",
       "communityDesc": "Share your journey, ask questions, and celebrate milestones with meditators from around the world."
     }
+  },
+  "onboarding": {
+    "welcome": "Welcome to Breathe",
+    "desc1": "Guided breathing for sleep, anxiety and focus",
+    "desc2": "Tracks your sessions and mood over time",
+    "desc3": "Free forever · No ads · Works offline",
+    "goalTitle": "What brings you here?",
+    "goals": {
+      "sleep": "Better Sleep", "sleepDesc": "Fall asleep faster",
+      "anxiety": "Less Anxiety", "anxietyDesc": "Calm racing thoughts",
+      "focus": "More Focus", "focusDesc": "Sharp and present",
+      "energy": "More Energy", "energyDesc": "Natural alertness"
+    },
+    "guidanceTitle": "How should we guide you?",
+    "guidanceSub": "You can change this anytime on the breathing page",
+    "guidanceModes": {
+      "visual": "Visual", "visualDesc": "Watch the circle",
+      "sound": "Sound", "soundDesc": "Tones for each phase",
+      "vibration": "Vibration", "vibrationDesc": "Android only",
+      "voice": "Voice", "voiceDesc": "Spoken instructions"
+    },
+    "guidanceHint": "You can close your eyes — we'll guide you",
+    "guidanceUnavailable": "unavailable",
+    "wearableTitle": "Connect your wearable",
+    "wearableSub": "Personalized recommendations based on your sleep and HRV",
+    "connectFitbit": "Connect Fitbit",
+    "connectGoogleFit": "Connect Google Fit",
+    "wearableLater": "I'll do this later →",
+    "notifTitle": "Stay consistent",
+    "notifToggle": "Daily breathing reminder",
+    "notifDesc": "We'll nudge you at your preferred time",
+    "start": "Start breathing →",
+    "skipAll": "Skip all →"
   }
 }

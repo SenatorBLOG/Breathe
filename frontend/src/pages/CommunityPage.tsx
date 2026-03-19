@@ -287,6 +287,7 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
   onLoginRequired: () => void; onDelete: (id: string) => void;
 }) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [liked, setLiked] = useState(post.likedByMe);
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [commentCount, setCount] = useState(post.commentCount);
@@ -332,7 +333,7 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
         <div className="flex items-center gap-2 flex-shrink-0">
           <span className="text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wide"
             style={{ color: cat.color, background: cat.bg }}>
-            {cat.label}
+            {t(`community.categories.${post.category}`, cat.label)}
           </span>
           {currentUserId === post.author._id ? (
             <button onClick={() => onDelete(post._id)}
@@ -642,7 +643,7 @@ export default function CommunityPage() {
                       backgroundColor: category === c ? ts.cardBgHover : ts.cardBg,
                       borderColor: category === c ? ts.borderHover : ts.border,
                     }}>
-                    {c === 'all' ? 'All' : CATEGORY_META[c]?.label || c}
+                    {t(`community.categories.${c}`, c)}
                   </button>
                 ))}
               </div>
@@ -713,9 +714,9 @@ export default function CommunityPage() {
 
               {/* Rules */}
               <div className="rounded-2xl p-4 border" style={{ borderColor: ts.border, backgroundColor: ts.cardBg }}>
-                <p className="text-[10px] uppercase tracking-widest mb-3" style={{ color: ts.textMuted }}>House rules</p>
-                {['Be supportive', 'Stay on topic', 'No spam', 'Respect privacy'].map((r, i) => (
-                  <div key={r} className="flex items-center gap-2 py-1.5 border-b last:border-0" style={{ borderColor: ts.border }}>
+                <p className="text-[10px] uppercase tracking-widest mb-3" style={{ color: ts.textMuted }}>{t('community.rules')}</p>
+                {([t('community.rule1'), t('community.rule2'), t('community.rule3'), t('community.rule4')]).map((r, i) => (
+                  <div key={i} className="flex items-center gap-2 py-1.5 border-b last:border-0" style={{ borderColor: ts.border }}>
                     <span className="text-[9px] font-mono" style={{ color: ts.textDim }}>{i + 1}</span>
                     <span className="text-[10px]" style={{ color: ts.textMuted }}>{r}</span>
                   </div>

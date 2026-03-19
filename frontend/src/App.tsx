@@ -16,6 +16,8 @@ import WimHofPage from './pages/techniques/WimHofPage';
 import BreathingAnxietyPage from './pages/techniques/BreathingAnxietyPage';
 import ProfilePage from './pages/ProfilePage';
 import DataConsentPage from './pages/DataConsentPage';
+import OnboardingPage from './pages/OnboardingPage';
+import GlobePage from './pages/GlobePage';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import AICoachButton from './components/AICoach/AICoachButton';
@@ -58,6 +60,8 @@ export default function App() {
               <Route path="/profile"               element={<ProfilePage />} />
               <Route path="/data-consent"           element={<DataConsentPage />} />
               <Route path="/music-library" element={<MusicLibrary />} />
+              <Route path="/onboarding"   element={<OnboardingPage />} />
+              <Route path="/globe"         element={<GlobePage />} />
               <Route path="*"              element={<HomePage />} />
             </Routes>
             <AICoachButton variant="floating" />

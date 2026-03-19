@@ -1,7 +1,8 @@
 // src/pages/SignUpPage.tsx
-import React, { useState, useRef } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
+import { AuthContext } from '../components/contexts/AuthContext';
+import { useGoogleLogin } from '@react-oauth/google';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
@@ -15,6 +16,7 @@ export default function SignUpPage() {
   const { t } = useTranslation();
   const ts = useThemeStyles();
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -23,12 +25,26 @@ export default function SignUpPage() {
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const googleRef = useRef<HTMLDivElement>(null);
 
-  const triggerGoogleLogin = () => {
-    const btn = googleRef.current?.querySelector<HTMLElement>('div[jscontroller], div[jsname], div > div');
-    btn?.click();
-  };
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setLoading(true);
+      try {
+        const res = await api.post('/auth/google', { access_token: tokenResponse.access_token });
+        login(res.data.token, res.data.user);
+        localStorage.setItem('userId', res.data.user?._id ?? '');
+        toast.success('Signed up with Google! Welcome to Breathe');
+        navigate('/home-page');
+      } catch (err: any) {
+        const msg = err.response?.data?.error || 'Google sign up failed';
+        setError(msg);
+        toast.error(msg);
+      } finally {
+        setLoading(false);
+      }
+    },
+    onError: () => toast.error('Google sign up failed'),
+  });
 
   // Password strength
   const strength = [
@@ -50,27 +66,9 @@ export default function SignUpPage() {
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('userId', res.data.user?._id ?? '');
       toast.success('Account created! Welcome to Breathe 🌊');
-      navigate('/home-page');
+      navigate('/onboarding');
     } catch (err: any) {
       const msg = err.response?.data?.error || 'Failed to create account';
-      setError(msg);
-      toast.error(msg);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogle = async (credential?: string) => {
-    if (!credential) return;
-    setLoading(true);
-    try {
-      const res = await api.post('/auth/google', { credential });
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('userId', res.data.user?._id ?? '');
-      toast.success('Signed up with Google! Welcome to Breathe');
-      navigate('/home-page');
-    } catch (err: any) {
-      const msg = err.response?.data?.error || 'Google sign up failed';
       setError(msg);
       toast.error(msg);
     } finally {
@@ -317,18 +315,9 @@ export default function SignUpPage() {
 
                   {/* Google */}
                   <div className="relative">
-                    {/* Hidden off-screen GoogleLogin — handles actual OAuth flow */}
-                    <div ref={googleRef} style={{ position: 'fixed', top: '-9999px', left: '-9999px' }}>
-                      <GoogleLogin
-                        onSuccess={cr => handleGoogle(cr.credential)}
-                        onError={() => toast.error('Google sign up failed')}
-                        useOneTap={false}
-                      />
-                    </div>
-                    {/* Themed custom button */}
                     <button
                       type="button"
-                      onClick={triggerGoogleLogin}
+                      onClick={() => googleLogin()}
                       className="flex items-center justify-center gap-3 w-full py-3 px-5 rounded-xl border text-sm transition-all hover:opacity-90 active:scale-[0.98]"
                       style={{ backgroundColor: ts.cardBg, borderColor: ts.border, color: ts.textSecondary }}
                     >

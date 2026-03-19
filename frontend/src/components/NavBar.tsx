@@ -86,6 +86,7 @@ export default function NavBar() {
           <div className="hidden md:flex items-center gap-6">
             <NavLink to="/home-page">{t("nav.home")}</NavLink>
             <NavLink to="/breathing">{t("nav.meditate")}</NavLink>
+            <NavLink to="/globe">🌍 {t("nav.globe", "Globe")}</NavLink>
             <NavLink to="/music-library">{t("nav.sounds")}</NavLink>
             <NavLink to="/community">{t("nav.community")}</NavLink>
             {isAuthenticated ? (
@@ -138,17 +139,17 @@ export default function NavBar() {
             )}
           </div>
 
-          {/* Theme toggle */}
+          {/* Theme toggle — desktop only */}
           <button onClick={toggleTheme}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-colors text-xs"
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-colors text-xs"
             style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}
             title={`Switch theme (current: ${THEME_META[theme].label})`}>
             <span className="text-sm">{THEME_META[theme].icon}</span>
-            <span className="hidden sm:inline text-[10px] tracking-wide">{THEME_META[theme].label}</span>
+            <span className="text-[10px] tracking-wide">{THEME_META[theme].label}</span>
           </button>
 
-          {/* Language switcher */}
-          <div className="relative">
+          {/* Language switcher — desktop only */}
+          <div className="hidden md:flex relative">
             <button onClick={() => setLangOpen(v => !v)}
               className="flex items-center gap-1 px-2 py-1.5 rounded-lg transition-colors text-xs"
               style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}>
@@ -189,6 +190,7 @@ export default function NavBar() {
               {[
                 { to: '/home-page',    label: t('nav.home') },
                 { to: '/breathing',    label: t('nav.meditate') },
+                { to: '/globe',        label: `🌍 ${t('nav.globe', 'Globe')}` },
                 { to: '/music-library',label: t('nav.sounds') },
                 { to: '/community',    label: t('nav.community') },
                 ...(isAuthenticated
@@ -234,6 +236,31 @@ export default function NavBar() {
                     </button>
                   </>
                 )}
+              </div>
+
+              {/* Theme + language at bottom of mobile drawer */}
+              <div className="flex items-center justify-between pt-3 mt-1 border-t"
+                style={{ borderColor: ts.border }}>
+                <button onClick={toggleTheme}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-colors"
+                  style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}>
+                  <span>{THEME_META[theme].icon}</span>
+                  <span className="text-xs">{THEME_META[theme].label}</span>
+                </button>
+                <div className="flex gap-1">
+                  {LANGS.map(l => (
+                    <button key={l.code}
+                      onClick={() => { i18n.changeLanguage(l.code); }}
+                      className="px-2.5 py-1.5 rounded-lg text-xs transition-colors"
+                      style={{
+                        color: i18n.language.startsWith(l.code) ? ts.accentLight : ts.textMuted,
+                        background: i18n.language.startsWith(l.code) ? ts.cardBgHover : 'transparent',
+                        border: `1px solid ${i18n.language.startsWith(l.code) ? ts.borderHover : ts.border}`,
+                      }}>
+                      {l.flag}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
