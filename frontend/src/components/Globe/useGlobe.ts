@@ -1,5 +1,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import * as THREE from 'three';
+import * as topojson from 'topojson-client';
+import type { Topology } from 'topojson-specification';
 
 export interface GlobePin {
   _id: string;
@@ -78,6 +80,7 @@ export function useGlobe({
   const globeMeshRef    = useRef<THREE.Mesh | null>(null);
   const wireMeshRef     = useRef<THREE.LineSegments | null>(null);
   const pinMeshesRef    = useRef<THREE.Mesh[]>([]);
+  const borderLinesRef  = useRef<THREE.Line[]>([]);
   const rafRef          = useRef<number>(0);
 
   // Interaction state refs (avoid stale closures in event handlers)
@@ -152,6 +155,38 @@ export function useGlobe({
     const wireLines = new THREE.LineSegments(wireGeo, wireMat);
     globeGroup.add(wireLines);
     wireMeshRef.current = wireLines;
+
+    // ── World country borders ────────────────────────────────────────────────
+    let bordersCancelled = false;
+
+    function addGeoLines(coords: number[][][], color: number, opacity: number, radius: number) {
+      const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity });
+      for (const line of coords) {
+        if (line.length < 2) continue;
+        const pts = line.map(([lng, lat]) => latLngToVector3(lat, lng, radius));
+        const geo = new THREE.BufferGeometry().setFromPoints(pts);
+        const l   = new THREE.Line(geo, mat);
+        globeGroup.add(l);
+        borderLinesRef.current.push(l);
+      }
+    }
+
+    (async () => {
+      try {
+        const world = (await import('world-atlas/countries-110m.json')).default as unknown as Topology;
+        if (bordersCancelled) return;
+
+        // Coastlines — bright accent
+        const coast = topojson.mesh(world, (world.objects as any).land);
+        addGeoLines(coast.coordinates as number[][][], 0x4A9EFF, 0.75, 2.025);
+
+        // Internal country borders — dimmer
+        const borders = topojson.mesh(world, (world.objects as any).countries, (a: any, b: any) => a !== b);
+        addGeoLines(borders.coordinates as number[][][], 0x2A5CAA, 0.4, 2.022);
+      } catch (e) {
+        console.warn('World borders failed to load', e);
+      }
+    })();
 
     // Lights
     const ambient = new THREE.AmbientLight(0xffffff, 0.6);
@@ -382,6 +417,7 @@ export function useGlobe({
 
     // ── Cleanup ───────────────────────────────────────────────────────────────
     return () => {
+      bordersCancelled = true;
       cancelAnimationFrame(rafRef.current);
       ro.disconnect();
       canvas.removeEventListener('mousedown',  onMouseDown);
@@ -392,6 +428,8 @@ export function useGlobe({
       canvas.removeEventListener('touchmove',  onTouchMove);
       canvas.removeEventListener('touchend',   onTouchEnd);
       canvas.removeEventListener('wheel',      onWheel);
+      borderLinesRef.current.forEach(l => { l.geometry.dispose(); (l.material as THREE.Material).dispose(); });
+      borderLinesRef.current = [];
       renderer.dispose();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -443,6 +481,14 @@ export function useGlobe({
     (globeMesh.material as THREE.MeshPhongMaterial).color.setHex(themeColors.sphere);
     (globeMesh.material as THREE.MeshPhongMaterial).emissive.setHex(themeColors.glow);
     (wireMesh.material  as THREE.LineBasicMaterial).color.setHex(themeColors.wire);
+
+    // Recolor borders: first half = coastlines, second half = country borders
+    const lines = borderLinesRef.current;
+    const mid   = Math.floor(lines.length / 2);
+    const coastColor   = theme === 'nature' ? 0x4AE8A0 : theme === 'day' ? 0x1A6FBF : 0x4A9EFF;
+    const borderColor  = theme === 'nature' ? 0x1A7A4A : theme === 'day' ? 0x2A5FAF : 0x2A5CAA;
+    lines.slice(0, mid).forEach(l => (l.material as THREE.LineBasicMaterial).color.setHex(coastColor));
+    lines.slice(mid).forEach(l  => (l.material as THREE.LineBasicMaterial).color.setHex(borderColor));
   }, [theme]);
 
   const setAddPinModeCallback = useCallback((v: boolean) => {
