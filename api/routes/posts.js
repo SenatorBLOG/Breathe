@@ -5,6 +5,8 @@ const Post    = require('../models/Post');
 const Comment = require('../models/Comment');
 const auth         = require('../middleware/auth');
 const optionalAuth = require('../middleware/optionalAuth');
+const { body, validationResult } = require('express-validator');
+const validator = require('validator');
 
 // ─── Helper: safe user id ─────────────────────────────────────────────────────
 function uid(req) {
@@ -59,19 +61,32 @@ router.get('/', optionalAuth, async (req, res) => {
 });
 
 // ─── POST /api/posts — create (auth required) ────────────────────────────────
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, [
+  body('text')
+    .trim()
+    .isLength({ min: 1, max: 600 })
+    .withMessage('Post text must be 1–600 characters'),
+  body('category')
+    .optional()
+    .isIn(['experience', 'question', 'achievement', 'tip'])
+    .withMessage('Invalid category'),
+  body('tags')
+    .optional()
+    .isArray({ max: 5 })
+    .withMessage('Max 5 tags'),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array()[0].msg });
+  }
+
   try {
     const authorId = uid(req);
-    console.log('Creating post, authorId:', authorId, 'req.user:', req.user);
-
     if (!authorId) {
       return res.status(401).json({ error: 'Could not identify user' });
     }
 
     const { text, category, tags, sessionRef } = req.body;
-    if (!text || text.trim().length === 0) {
-      return res.status(400).json({ error: 'Text is required' });
-    }
 
     const cleanTags = Array.isArray(tags)
       ? tags.map(t => t.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()).filter(Boolean).slice(0, 5)
@@ -79,7 +94,7 @@ router.post('/', auth, async (req, res) => {
 
     const post = await Post.create({
       author:     authorId,
-      text:       text.trim(),
+      text:       validator.escape(text.trim()),
       category:   category || 'experience',
       tags:       cleanTags,
       sessionRef: sessionRef || null,
@@ -88,8 +103,8 @@ router.post('/', auth, async (req, res) => {
     await post.populate('author', 'username name email');
     res.status(201).json(formatPost(post, authorId));
   } catch (err) {
-    console.error('POST /posts error:', err.message, err.stack);
-    res.status(500).json({ error: 'Failed to create post', detail: err.message });
+    console.error('POST /posts error:', err.message);
+    res.status(500).json({ error: 'Failed to create post' });
   }
 });
 

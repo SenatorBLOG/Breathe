@@ -5,6 +5,8 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const { ipKeyGenerator } = require("express-rate-limit");
+const mongoSanitize = require("express-mongo-sanitize");
+const hpp = require("hpp");
 
 dotenv.config();
 
@@ -36,16 +38,35 @@ app.use(cors({
 }));
 
 app.use(helmet());
+app.disable("x-powered-by");
 app.use(express.json());
 
-// Rate limit
+// ── Auth rate limit — 10 attempts / 15 min ───────────────────────
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: "Too many attempts. Please try again in 15 minutes." },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => ipKeyGenerator(req),
+});
+app.use("/api/auth/login",    authLimiter);
+app.use("/api/auth/register", authLimiter);
+
+// ── General API rate limit — 300 req / 15 min ────────────────────
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
-  keyGenerator: (req) => ipKeyGenerator(req)
+  max: 300,
+  message: { error: "Too many requests. Please slow down." },
+  keyGenerator: (req) => ipKeyGenerator(req),
 });
-
 app.use(limiter);
+
+// ── MongoDB injection protection ─────────────────────────────────
+app.use(mongoSanitize());
+
+// ── HTTP Parameter Pollution ─────────────────────────────────────
+app.use(hpp());
 console.log("MONGO_URI =", process.env.MONGO_URI);
 // Mongo connection
 let isConnected = false;
@@ -85,6 +106,7 @@ app.use('/api/support', require('./routes/support'));
 app.use('/api/coach', require('./routes/coach'));
 app.use('/api/newsletter', require('./routes/newsletter'));
 app.use('/api/integrations', require('./routes/integrations'));
+app.use('/api/globe',        require('./routes/globe'));
 
 // Healthcheck
 app.get("/api/ping", (req, res) => {
@@ -93,6 +115,15 @@ app.get("/api/ping", (req, res) => {
 
 app.get("/", (req, res) => {
   res.send("Breathe API running");
+});
+
+// ── Global error handler ─────────────────────────────────────────
+app.use((err, req, res, _next) => {
+  console.error(err.stack);
+  const isDev = process.env.NODE_ENV !== "production";
+  res.status(err.status || 500).json({
+    error: isDev ? err.message : "Something went wrong",
+  });
 });
 
 // IMPORTANT for Railway

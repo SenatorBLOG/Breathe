@@ -3,6 +3,8 @@ import NavBar from '../components/NavBar';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useBreathingGuidance, type GuidanceMode } from '../hooks/useBreathingGuidance';
+import GuidanceModeSelector from '../components/GuidanceModeSelector';
 import { useHealthData } from '../hooks/useHealthData';
 import { calcCalmScore, type SessionBiometrics } from '../utils/calmScore';
 import CalmScoreResult from '../components/CalmScoreResult';
@@ -69,7 +71,14 @@ function DraggablePhaseBar({ phaseKey, value, onChange, isActivePhase }: {
   phaseKey: keyof PhaseDurations; value: number; onChange: (v: number) => void; isActivePhase: boolean;
 }) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const meta = PHASE_META[phaseKey];
+  const phaseLabel: Record<keyof PhaseDurations, string> = {
+    inhale: t('breathing.phaseLabels.inhale'),
+    hold:   t('breathing.phaseLabels.hold'),
+    exhale: t('breathing.phaseLabels.exhale'),
+    pause:  t('breathing.phaseLabels.rest'),
+  };
   const dragging = useRef(false);
   const startY   = useRef(0);
   const startVal = useRef(value);
@@ -120,7 +129,7 @@ function DraggablePhaseBar({ phaseKey, value, onChange, isActivePhase }: {
           style={{ bottom: fillH - 7, background: isActivePhase ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.12)" }} />
       </div>
       <span className={`text-[10px] tracking-widest uppercase transition-colors duration-200 ${isActivePhase ? "" : ""}`} style={{ color: isActivePhase ? ts.textSecondary : ts.textMuted }}>
-        {meta.label}
+        {phaseLabel[phaseKey]}
       </span>
     </div>
   );
@@ -149,9 +158,13 @@ function PresetPill({ name, pattern, onApply, current }: {
 }
 
 export default function BreathingPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const ts = useThemeStyles();
   const [isActive, setIsActive] = useState(false);
+  const [guidanceModes, setGuidanceModes] = useState<GuidanceMode[]>(() => {
+    const saved = localStorage.getItem('breathe_guidance_modes');
+    return saved ? JSON.parse(saved) : ['visual'];
+  });
   const location = useLocation();
   const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>(() => {
     const state = location.state as { coachPreset?: PhaseDurations } | null;
@@ -183,7 +196,22 @@ export default function BreathingPage() {
     "/videos/med-04.mp4","/videos/med-05.mp4","/videos/med-06.mp4","/videos/med-07.mp4",
   ];
 
-  const handlePhaseChange = useCallback((p: Phase) => setPhase(p), []);
+  useEffect(() => {
+    localStorage.setItem('breathe_guidance_modes', JSON.stringify(guidanceModes));
+  }, [guidanceModes]);
+
+  const { guidePhase } = useBreathingGuidance({
+    modes: guidanceModes,
+    enabled: isActive,
+    language: i18n.language,
+  });
+
+  const handlePhaseChange = useCallback((p: Phase) => {
+    setPhase(p);
+    if (p && isActive) {
+      guidePhase(p as 'inhale' | 'hold' | 'exhale' | 'pause', t);
+    }
+  }, [guidePhase, isActive, t]);
   const desiredPlaySeconds = useMemo(() => {
     const t = phaseDurations.inhale + phaseDurations.hold + phaseDurations.exhale + phaseDurations.pause;
     return t / 2;
@@ -392,9 +420,9 @@ export default function BreathingPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
             {[
-              { icon: "🌊", title: "Box Breathing",   desc: "4-4-4-4. Equal phases for focus and calm. Used by Navy SEALs." },
-              { icon: "🌙", title: "4-7-8 for Sleep", desc: "Long hold + slow exhale activates your parasympathetic system."  },
-              { icon: "⚡", title: "Energizing",      desc: "Short sharp cycles boost alertness in under two minutes."         },
+              { icon: "🌊", title: t('breathing.infoCards.box'),   desc: t('breathing.infoCards.boxDesc')   },
+              { icon: "🌙", title: t('breathing.infoCards.sleep'),  desc: t('breathing.infoCards.sleepDesc') },
+              { icon: "⚡", title: t('breathing.infoCards.energy'), desc: t('breathing.infoCards.energyDesc') },
             ].map(({ icon, title, desc }) => (
               <div key={title} className="flex flex-col gap-2 p-4 rounded-2xl" style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                 <span className="text-xl">{icon}</span>

@@ -211,6 +211,7 @@ function DotSlider({ value, max = 10, onChange, color }: {
 
 function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) => void; onClose: () => void }) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [step, setStep]         = useState(0);
   const [form, setForm]         = useState({ ...emptyForm });
   const [feelings, setFeelings] = useState<string[]>([]);
@@ -223,7 +224,17 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
     setStep(0); setForm({ ...emptyForm }); setFeelings([]);
   };
 
-  const STEPS = ["When & duration", "Mood shift", "How you felt", "Quality"];
+  const STEPS = [t('sessions.steps.when'), t('sessions.steps.mood'), t('sessions.steps.feelings'), t('sessions.steps.quality')];
+  const NOISE_LABELS: Record<string, string> = {
+    Silent: t('sessions.noise.silent'), Quiet: t('sessions.noise.quiet'),
+    Moderate: t('sessions.noise.moderate'), Noisy: t('sessions.noise.noisy'),
+  };
+  const FEELING_LABELS: Record<string, string> = {
+    focused: t('sessions.feelings.focused'), calm: t('sessions.feelings.calm'),
+    energized: t('sessions.feelings.energized'), drowsy: t('sessions.feelings.drowsy'),
+    distracted: t('sessions.feelings.distracted'), peaceful: t('sessions.feelings.peaceful'),
+    anxious: t('sessions.feelings.anxious'), refreshed: t('sessions.feelings.refreshed'),
+  };
 
   const inputCls = "outline-none transition-colors text-xs rounded-xl px-3 py-2";
   const inputStyle = {
@@ -313,7 +324,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
                       backgroundColor: form.noiseLevel === n ? ts.cardBgHover : "transparent",
                       color: form.noiseLevel === n ? ts.textPrimary : ts.textMuted,
                     }}>
-                    {n}
+                    {NOISE_LABELS[n] ?? n}
                   </button>
                 ))}
               </div>
@@ -364,7 +375,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
                       backgroundColor: on ? ts.cardBgHover : "transparent",
                     }}>
                     <span className={`text-base transition-all ${on ? "" : "opacity-45"}`}>{FEELING_ICONS[f]}</span>
-                    <span className="text-[9px] uppercase tracking-wide" style={{ color: on ? ts.textPrimary : ts.textDim }}>{f}</span>
+                    <span className="text-[9px] uppercase tracking-wide" style={{ color: on ? ts.textPrimary : ts.textDim }}>{FEELING_LABELS[f] ?? f}</span>
                   </button>
                 );
               })}
