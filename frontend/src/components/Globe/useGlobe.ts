@@ -67,27 +67,36 @@ function buildEarthTexture(world: Topology): THREE.CanvasTexture {
   ctx.fillStyle = OCEAN_COLOR;
   ctx.fillRect(0, 0, W, H);
 
-  // Land fill
-  const land = topojson.feature(world, (world.objects as any).land) as any;
-  ctx.fillStyle = LAND_COLOR;
-  const geom = land.geometry;
-  const allPolys: number[][][][] = geom.type === 'Polygon'
-    ? [geom.coordinates]
-    : geom.coordinates;
+  // Land fill — world.objects.land may be a GeometryCollection, so
+  // topojson.feature returns a FeatureCollection; iterate over features
+  const landResult = topojson.feature(world, (world.objects as any).land) as any;
+  const landFeatures: any[] = landResult.type === 'FeatureCollection'
+    ? landResult.features
+    : [landResult];
 
-  for (const poly of allPolys) {
-    ctx.beginPath();
-    for (const ring of poly) {
-      let first = true;
-      for (const [lng, lat] of ring) {
-        const x = (lng + 180) / 360 * W;
-        const y = (90 - lat) / 180 * H;
-        if (first) { ctx.moveTo(x, y); first = false; }
-        else ctx.lineTo(x, y);
+  ctx.fillStyle = LAND_COLOR;
+  for (const feat of landFeatures) {
+    const geom = feat.geometry ?? feat;
+    if (!geom) continue;
+    const allPolys: number[][][][] = geom.type === 'Polygon'
+      ? [geom.coordinates]
+      : geom.type === 'MultiPolygon'
+        ? geom.coordinates
+        : [];
+    for (const poly of allPolys) {
+      ctx.beginPath();
+      for (const ring of poly) {
+        let first = true;
+        for (const [lng, lat] of ring) {
+          const x = (lng + 180) / 360 * W;
+          const y = (90 - lat) / 180 * H;
+          if (first) { ctx.moveTo(x, y); first = false; }
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
       }
-      ctx.closePath();
+      ctx.fill('evenodd');
     }
-    ctx.fill('evenodd');
   }
 
   return new THREE.CanvasTexture(c);
