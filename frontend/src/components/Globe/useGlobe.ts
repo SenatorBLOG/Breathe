@@ -99,6 +99,18 @@ function buildEarthTexture(world: Topology): THREE.CanvasTexture {
     }
   }
 
+  // Graticule grid (subtle lat/lng lines for orientation)
+  ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+  ctx.lineWidth = 1;
+  for (let lat = -60; lat <= 60; lat += 30) {
+    const y = (90 - lat) / 180 * H;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+  for (let lng = -150; lng <= 180; lng += 30) {
+    const x = (lng + 180) / 360 * W;
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+
   return new THREE.CanvasTexture(c);
 }
 
@@ -412,7 +424,7 @@ export function useGlobe({
         lastInteractionRef.current = Date.now();
       } else if (e.touches.length === 2) {
         const dist = getTouchDist(e.touches);
-        camera.position.z = Math.max(3.5, Math.min(8, camera.position.z - (dist - lastTouchDist) * 0.01));
+        camera.position.z = Math.max(2.3, Math.min(8, camera.position.z - (dist - lastTouchDist) * 0.01));
         lastTouchDist = dist;
         lastInteractionRef.current = Date.now();
       }
@@ -420,7 +432,7 @@ export function useGlobe({
     function onTouchEnd() { isDraggingRef.current = false; lastInteractionRef.current = Date.now(); }
     function onWheel(e: WheelEvent) {
       e.preventDefault();
-      camera.position.z = Math.max(3.5, Math.min(8, camera.position.z + e.deltaY * 0.005));
+      camera.position.z = Math.max(2.3, Math.min(8, camera.position.z + e.deltaY * 0.005));
       lastInteractionRef.current = Date.now();
     }
 
@@ -455,7 +467,10 @@ export function useGlobe({
       // City visibility based on zoom
       cityMeshesRef.current.forEach((mesh, i) => {
         const tier = WORLD_CITIES[i].tier;
-        mesh.visible = (tier === 1 && z < 6) || (tier === 2 && z < 4.8);
+        mesh.visible = (tier === 1 && z < 6) || (tier === 2 && z < 4.8) || (tier === 3 && z < 3.5);
+        // Scale up city dots when deeply zoomed
+        const s = z < 3 ? 2.5 : z < 4 ? 1.5 : 1;
+        if (mesh.visible) mesh.scale.setScalar(s);
       });
 
       renderer.render(scene, camera);
