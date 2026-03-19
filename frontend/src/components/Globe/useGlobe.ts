@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import * as topojson from 'topojson-client';
 import type { Topology } from 'topojson-specification';
 import { WORLD_CITIES, type CityData } from './citiesData';
+import worldAtlasData from 'world-atlas/countries-110m.json';
 
 export interface GlobePin {
   _id: string;
@@ -233,7 +234,7 @@ export function useGlobe({
 
     (async () => {
       try {
-        const world = (await import('world-atlas/countries-110m.json')).default as unknown as Topology;
+        const world = worldAtlasData as unknown as Topology;
         if (cancelled) return;
 
         // Earth texture (ocean + land)
