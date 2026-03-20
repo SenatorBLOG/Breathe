@@ -45,12 +45,28 @@ export default function GlobePinMarker({ pin, screenPos }: Props) {
         border:      `1px solid ${ts.border}`,
         borderRadius: 10,
         padding:     '8px 10px',
-        maxWidth:    160,
+        maxWidth:    180,
         pointerEvents: 'none',
         backdropFilter: 'blur(12px)',
         boxShadow:   '0 4px 20px rgba(0,0,0,0.4)',
       }}
     >
+      {/* Photo */}
+      {pin.photoUrl && (
+        <img
+          src={pin.photoUrl}
+          alt={pin.title}
+          onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+          style={{
+            width:        '100%',
+            height:       90,
+            objectFit:    'cover',
+            borderRadius: 6,
+            marginBottom: 6,
+          }}
+        />
+      )}
+
       {/* Location */}
       <div
         style={{

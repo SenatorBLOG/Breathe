@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import * as topojson from 'topojson-client';
 import type { Topology } from 'topojson-specification';
 import { WORLD_CITIES, type CityData } from './citiesData';
-import worldAtlasData from 'world-atlas/countries-110m.json';
+import worldAtlasData from 'world-atlas/countries-50m.json';
 
 export interface GlobePin {
   _id: string;
@@ -18,6 +18,7 @@ export interface GlobePin {
   likeCount: number;
   userId?: string;
   createdAt: string;
+  photoUrl?: string;
 }
 
 const PIN_COLORS: Record<string, string> = {
@@ -57,70 +58,233 @@ export function vector3ToLatLng(point: THREE.Vector3): { lat: number; lng: numbe
   return { lat, lng: lng < -180 ? lng + 360 : lng };
 }
 
-function buildEarthTexture(world: Topology): THREE.CanvasTexture {
-  const W = 2048, H = 1024;
+// ── ISO 3166-1 numeric → country name (subset covering world-atlas ids) ───────
+const ISO_COUNTRIES: Record<number, string> = {
+  4:'Afghanistan',8:'Albania',12:'Algeria',24:'Angola',32:'Argentina',
+  36:'Australia',40:'Austria',50:'Bangladesh',56:'Belgium',64:'Bhutan',
+  68:'Bolivia',76:'Brazil',100:'Bulgaria',116:'Cambodia',120:'Cameroon',
+  124:'Canada',144:'Sri Lanka',152:'Chile',156:'China',170:'Colombia',
+  191:'Croatia',192:'Cuba',196:'Cyprus',203:'Czech Republic',208:'Denmark',
+  218:'Ecuador',818:'Egypt',231:'Ethiopia',246:'Finland',250:'France',
+  276:'Germany',288:'Ghana',300:'Greece',320:'Guatemala',340:'Honduras',
+  348:'Hungary',356:'India',360:'Indonesia',364:'Iran',368:'Iraq',
+  372:'Ireland',376:'Israel',380:'Italy',392:'Japan',400:'Jordan',
+  398:'Kazakhstan',404:'Kenya',408:'North Korea',410:'South Korea',
+  414:'Kuwait',418:'Laos',422:'Lebanon',440:'Lithuania',442:'Luxembourg',
+  484:'Mexico',496:'Mongolia',504:'Morocco',516:'Namibia',524:'Nepal',
+  528:'Netherlands',554:'New Zealand',566:'Nigeria',578:'Norway',
+  586:'Pakistan',604:'Peru',608:'Philippines',616:'Poland',620:'Portugal',
+  634:'Qatar',642:'Romania',643:'Russia',682:'Saudi Arabia',686:'Senegal',
+  703:'Slovakia',705:'Slovenia',706:'Somalia',710:'South Africa',
+  724:'Spain',729:'Sudan',752:'Sweden',756:'Switzerland',760:'Syria',
+  764:'Thailand',788:'Tunisia',792:'Turkey',800:'Uganda',804:'Ukraine',
+  784:'United Arab Emirates',826:'United Kingdom',840:'United States',
+  858:'Uruguay',862:'Venezuela',704:'Vietnam',887:'Yemen',894:'Zambia',
+  716:'Zimbabwe',70:'Bosnia and Herzegovina',807:'North Macedonia',
+  499:'Montenegro',688:'Serbia',520:'Nauru',426:'Lesotho',748:'Eswatini',
+  430:'Liberia',454:'Malawi',508:'Mozambique',646:'Rwanda',108:'Burundi',
+  174:'Comoros',262:'Djibouti',232:'Eritrea',
+};
+
+// Ray-casting point-in-polygon (works in lng/lat space)
+function pointInRing(lng: number, lat: number, ring: number[][]): boolean {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i], [xj, yj] = ring[j];
+    if ((yi > lat) !== (yj > lat) && lng < (xj - xi) * (lat - yi) / (yj - yi) + xi)
+      inside = !inside;
+  }
+  return inside;
+}
+
+function getCountryAtLatLng(lat: number, lng: number, features: any[]): string {
+  for (const feat of features) {
+    const geom = feat.geometry;
+    if (!geom) continue;
+    const polys: number[][][][] = geom.type === 'Polygon'
+      ? [geom.coordinates] : geom.type === 'MultiPolygon' ? geom.coordinates : [];
+    for (const poly of polys) {
+      if (!pointInRing(lng, lat, poly[0])) continue;
+      let inHole = false;
+      for (let r = 1; r < poly.length; r++) {
+        if (pointInRing(lng, lat, poly[r])) { inHole = true; break; }
+      }
+      if (!inHole) return ISO_COUNTRIES[feat.id as number] ?? '';
+    }
+  }
+  return '';
+}
+
+// Project lng/lat to canvas pixel coordinates
+function px(lng: number, W: number) { return (lng + 180) / 360 * W; }
+function py(lat: number, H: number) { return (90 - lat)  / 180 * H; }
+
+// Split a polygon ring at the antimeridian so it renders correctly in
+// equirectangular projection. Returns 1 or 2 shifted copies of the ring.
+function splitRingAtMeridian(ring: number[][]): number[][][] {
+  let crosses = false;
+  for (let i = 1; i < ring.length; i++) {
+    if (Math.abs(ring[i][0] - ring[i - 1][0]) > 170) { crosses = true; break; }
+  }
+  if (!crosses) return [ring];
+  // Right copy: shift negative longitudes to [0, 360]
+  const right = ring.map(([lng, lat]) => [lng < 0 ? lng + 360 : lng, lat]);
+  // Left copy: shift positive longitudes to [-360, 0]
+  const left  = ring.map(([lng, lat]) => [lng > 0 ? lng - 360 : lng, lat]);
+  return [right, left];
+}
+
+// Trace a ring onto the canvas path (one pass per antimeridian-split copy)
+function traceRing(ctx: CanvasRenderingContext2D, ring: number[][], W: number, H: number) {
+  for (const version of splitRingAtMeridian(ring)) {
+    let first = true;
+    for (const [lng, lat] of version) {
+      const x = px(lng, W), y = py(lat, H);
+      if (first) { ctx.moveTo(x, y); first = false; }
+      else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+  }
+}
+
+// Draw MultiLineString coordinates with antimeridian break
+function drawGeoLines(ctx: CanvasRenderingContext2D, coords: number[][][], W: number, H: number) {
+  for (const line of coords) {
+    if (line.length < 2) continue;
+    ctx.beginPath();
+    let prevLng = line[0][0];
+    ctx.moveTo(px(line[0][0], W), py(line[0][1], H));
+    for (let i = 1; i < line.length; i++) {
+      const [lng, lat] = line[i];
+      if (Math.abs(lng - prevLng) > 170) {
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(px(lng, W), py(lat, H));
+      } else {
+        ctx.lineTo(px(lng, W), py(lat, H));
+      }
+      prevLng = lng;
+    }
+    ctx.stroke();
+  }
+}
+
+function createGlowTexture(): THREE.CanvasTexture {
+  const size = 64;
+  const c = document.createElement('canvas');
+  c.width = size; c.height = size;
+  const ctx = c.getContext('2d')!;
+  const half = size / 2;
+  // Tight core so the halo doesn't spill past the globe silhouette
+  const g = ctx.createRadialGradient(half, half, 0, half, half, half);
+  g.addColorStop(0,    'rgba(255,255,255,1)');
+  g.addColorStop(0.10, 'rgba(220,235,255,0.9)');
+  g.addColorStop(0.28, 'rgba(140,190,255,0.3)');
+  g.addColorStop(0.55, 'rgba(60,130,255,0.06)');
+  g.addColorStop(1,    'rgba(0,0,0,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  return new THREE.CanvasTexture(c);
+}
+
+function buildEarthTexture(world: Topology, renderer: THREE.WebGLRenderer): THREE.CanvasTexture {
+  const W = 4096, H = 2048;
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
   const ctx = c.getContext('2d')!;
 
-  // Ocean fill
+  // Ocean base
   ctx.fillStyle = OCEAN_COLOR;
   ctx.fillRect(0, 0, W, H);
 
-  // Land fill — world.objects.land may be a GeometryCollection, so
-  // topojson.feature returns a FeatureCollection; iterate over features
-  const landResult = topojson.feature(world, (world.objects as any).land) as any;
-  const landFeatures: any[] = landResult.type === 'FeatureCollection'
-    ? landResult.features
-    : [landResult];
-
+  // ── Land fill using individual countries (avoids antimeridian winding bugs) ─
+  const countriesResult = topojson.feature(world, (world.objects as any).countries) as any;
   ctx.fillStyle = LAND_COLOR;
-  for (const feat of landFeatures) {
-    const geom = feat.geometry ?? feat;
+  for (const feat of countriesResult.features) {
+    const geom = feat.geometry;
     if (!geom) continue;
-    const allPolys: number[][][][] = geom.type === 'Polygon'
+    const polys: number[][][][] = geom.type === 'Polygon'
       ? [geom.coordinates]
-      : geom.type === 'MultiPolygon'
-        ? geom.coordinates
-        : [];
-    for (const poly of allPolys) {
-      ctx.beginPath();
-      for (const ring of poly) {
+      : geom.type === 'MultiPolygon' ? geom.coordinates : [];
+    for (const poly of polys) {
+      // Draw each outer ring version separately to avoid antimeridian fill bleed
+      const outerVersions = splitRingAtMeridian(poly[0]);
+      for (const outerVer of outerVersions) {
+        ctx.beginPath();
         let first = true;
-        for (const [lng, lat] of ring) {
-          const x = (lng + 180) / 360 * W;
-          const y = (90 - lat) / 180 * H;
+        for (const [lng, lat] of outerVer) {
+          const x = px(lng, W), y = py(lat, H);
           if (first) { ctx.moveTo(x, y); first = false; }
           else ctx.lineTo(x, y);
         }
         ctx.closePath();
+        // Inner rings (holes) — no antimeridian split needed for holes
+        for (let r = 1; r < poly.length; r++) {
+          traceRing(ctx, poly[r], W, H);
+        }
+        ctx.fill('evenodd');
       }
-      ctx.fill('evenodd');
     }
   }
 
-  // Graticule grid (subtle lat/lng lines for orientation)
-  ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+  // ── Country borders ───────────────────────────────────────────────────────
+  const borders = topojson.mesh(world, (world.objects as any).countries, (a: any, b: any) => a !== b);
+  ctx.strokeStyle = 'rgba(42, 92, 170, 0.4)';
+  ctx.lineWidth = 1.0;
+  drawGeoLines(ctx, borders.coordinates as number[][][], W, H);
+
+  // ── Coastlines (glow + sharp) ─────────────────────────────────────────────
+  const coast = topojson.mesh(world, (world.objects as any).land);
+  // Outer glow pass
+  ctx.strokeStyle = 'rgba(74, 158, 255, 0.06)';
+  ctx.lineWidth = 3;
+  drawGeoLines(ctx, coast.coordinates as number[][][], W, H);
+  // Sharp pass
+  ctx.strokeStyle = 'rgba(90, 170, 255, 0.55)';
+  ctx.lineWidth = 1.2;
+  drawGeoLines(ctx, coast.coordinates as number[][][], W, H);
+
+  // ── Graticule grid ────────────────────────────────────────────────────────
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
   ctx.lineWidth = 1;
   for (let lat = -60; lat <= 60; lat += 30) {
-    const y = (90 - lat) / 180 * H;
+    const y = py(lat, H);
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
   }
   for (let lng = -150; lng <= 180; lng += 30) {
-    const x = (lng + 180) / 360 * W;
+    const x = px(lng, W);
     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
   }
 
-  return new THREE.CanvasTexture(c);
+  // ── City lights on texture (warm glow for major cities) ──────────────────
+  for (const city of WORLD_CITIES) {
+    if (city.tier > 1) continue;
+    const cx = px(city.lng, W);
+    const cy = py(city.lat, H);
+    const r = 10;
+    const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+    cg.addColorStop(0, 'rgba(255,225,160,0.2)');
+    cg.addColorStop(0.4, 'rgba(255,180,80,0.05)');
+    cg.addColorStop(1, 'rgba(255,150,50,0)');
+    ctx.fillStyle = cg;
+    ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+  }
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  tex.minFilter  = THREE.LinearMipmapLinearFilter;
+  tex.magFilter  = THREE.LinearFilter;
+  tex.generateMipmaps = true;
+  return tex;
 }
 
 interface UseGlobeOptions {
-  canvasRef: React.RefObject<HTMLCanvasElement>;
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;  // ← добавь | null
   pins: GlobePin[];
   theme: 'night' | 'day' | 'nature';
   filterTechnique: string;
   onPinClick: (pin: GlobePin | null) => void;
-  onGlobeClick: (lat: number, lng: number) => void;
+  onGlobeClick: (lat: number, lng: number, country: string) => void;
 }
 
 export function useGlobe({
@@ -129,11 +293,14 @@ export function useGlobe({
   theme,
   filterTechnique,
   onPinClick,
+  onGlobeClick,
 }: UseGlobeOptions) {
   const [hoveredPin,  setHoveredPin]  = useState<GlobePin | null>(null);
   const [hoveredCity, setHoveredCity] = useState<CityData | null>(null);
   const [addPinMode,  setAddPinMode]  = useState(false);
   const [hoveredPos,  setHoveredPos]  = useState<{ x: number; y: number } | null>(null);
+  const [cityLabels, setCityLabels] = useState<{ name: string; x: number; y: number; tier: number }[]>([]);
+  const labelFrameRef = useRef(0);
 
   // Scene refs
   const sceneRef        = useRef<THREE.Scene | null>(null);
@@ -142,10 +309,12 @@ export function useGlobe({
   const globeGroupRef   = useRef<THREE.Group | null>(null);
   const globeMeshRef    = useRef<THREE.Mesh | null>(null);
   const wireMeshRef     = useRef<THREE.LineSegments | null>(null);
-  const pinMeshesRef    = useRef<THREE.Mesh[]>([]);
-  const borderLinesRef  = useRef<THREE.Line[]>([]);
-  const cityMeshesRef   = useRef<THREE.Mesh[]>([]);
-  const rafRef          = useRef<number>(0);
+  const pinMeshesRef      = useRef<THREE.Mesh[]>([]);
+  const pinGroupsRef      = useRef<THREE.Group[]>([]);
+  const cityMeshesRef     = useRef<THREE.Mesh[]>([]);
+  const rafRef            = useRef<number>(0);
+  const glowTexRef        = useRef<THREE.CanvasTexture | null>(null);
+  const countryFeaturesRef = useRef<any[]>([]);
 
   // Interaction refs
   const isDraggingRef      = useRef(false);
@@ -154,18 +323,23 @@ export function useGlobe({
   const lastInteractionRef = useRef(0);
   const addPinModeRef      = useRef(false);
   const onPinClickRef      = useRef(onPinClick);
+  const onGlobeClickRef    = useRef(onGlobeClick);
 
   // Hover refs declared at hook body level (not inside useEffect)
   const hoveredPinRef  = useRef<GlobePin | null>(null);
   const hoveredCityRef = useRef<CityData | null>(null);
 
-  useEffect(() => { onPinClickRef.current = onPinClick; }, [onPinClick]);
+  useEffect(() => { onPinClickRef.current   = onPinClick;   }, [onPinClick]);
+  useEffect(() => { onGlobeClickRef.current = onGlobeClick; }, [onGlobeClick]);
   useEffect(() => { addPinModeRef.current = addPinMode; }, [addPinMode]);
 
   // ── Init ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    // After the guard TypeScript narrows canvas, but not inside closures.
+    // The cast lets nested functions use it without null-check complaints.
+    const cv = canvas as HTMLCanvasElement;
 
     const parent = canvas.parentElement ?? canvas;
     const w0 = parent.clientWidth  || 800;
@@ -208,14 +382,60 @@ export function useGlobe({
     wireMeshRef.current = wireLines;
 
     // Lights
-    const ambient  = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambient  = new THREE.AmbientLight(0xffffff, 0.45);
     scene.add(ambient);
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    const dirLight = new THREE.DirectionalLight(0xFFF8EE, 0.85);
     dirLight.position.set(5, 3, 5);
     scene.add(dirLight);
-    const rimLight = new THREE.DirectionalLight(0x4A9EFF, 0.3);
+    const rimLight = new THREE.DirectionalLight(0x4A9EFF, 0.35);
     rimLight.position.set(-5, -2, -5);
     scene.add(rimLight);
+    const bottomFill = new THREE.DirectionalLight(0x1A3366, 0.25);
+    bottomFill.position.set(0, -5, 2);
+    scene.add(bottomFill);
+
+    // ── Atmosphere glow (BackSide — only the rim halo is visible) ──────────
+    const atmosGeo = new THREE.SphereGeometry(2.3, 64, 64);
+    const atmosMat = new THREE.ShaderMaterial({
+      vertexShader: `
+        varying vec3 vNormal;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vNormal;
+        void main() {
+          float d = dot(vNormal, vec3(0.0, 0.0, 1.0));
+          float intensity = pow(max(0.0, 0.6 - d), 4.0) * 0.35;
+          gl_FragColor = vec4(0.3, 0.6, 1.0, 1.0) * intensity;
+        }
+      `,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      side: THREE.BackSide,
+      depthWrite: false,
+    });
+    globeGroup.add(new THREE.Mesh(atmosGeo, atmosMat));
+
+    // ── Starfield ────────────────────────────────────────────────────────────
+    const starCount = 2000;
+    const starPositions = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+      const r = 25 + Math.random() * 75;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      starPositions[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
+      starPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      starPositions[i * 3 + 2] = r * Math.cos(phi);
+    }
+    const starGeo = new THREE.BufferGeometry();
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    const starMat = new THREE.PointsMaterial({
+      color: 0xFFFFFF, size: 0.12, transparent: true, opacity: 0.7, sizeAttenuation: true,
+    });
+    scene.add(new THREE.Points(starGeo, starMat));
 
     // Entry animation
     globeGroup.scale.setScalar(0);
@@ -241,53 +461,46 @@ export function useGlobe({
     // ── Async: earth texture + borders + cities ──────────────────────────────
     let cancelled = false;
 
-    function addGeoLines(coords: number[][][], color: number, opacity: number, radius: number) {
-      const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity });
-      for (const line of coords) {
-        if (line.length < 2) continue;
-        const pts = line.map(([lng, lat]) => latLngToVector3(lat, lng, radius));
-        const geo = new THREE.BufferGeometry().setFromPoints(pts);
-        const l   = new THREE.Line(geo, mat);
-        globeGroup.add(l);
-        borderLinesRef.current.push(l);
-      }
-    }
-
     (async () => {
       try {
         const world = worldAtlasData as unknown as Topology;
         if (cancelled) return;
 
-        // Earth texture (ocean + land)
-        const texture = buildEarthTexture(world);
+        // Earth texture (ocean + land + coastlines + borders — all on texture)
+        const texture = buildEarthTexture(world, renderer);
         const mat = globeMeshRef.current!.material as THREE.MeshPhongMaterial;
         mat.map   = texture;
         mat.color.setHex(0xFFFFFF);
-        mat.emissive.setHex(0x000000);
-        mat.emissiveIntensity = 0;
-        mat.shininess = 20;
+        mat.emissive.setHex(0x030810);
+        mat.emissiveIntensity = 0.15;
+        mat.shininess = 25;
         mat.needsUpdate = true;
 
-        // Coastlines
-        const coast = topojson.mesh(world, (world.objects as any).land);
-        addGeoLines(coast.coordinates as number[][][], 0x4A9EFF, 0.8, 2.025);
-
-        // Country borders
-        const borders = topojson.mesh(world, (world.objects as any).countries, (a: any, b: any) => a !== b);
-        addGeoLines(borders.coordinates as number[][][], 0x2A5CAA, 0.45, 2.022);
+        // Store decoded country features for click → country name lookup
+        const countriesGeo = topojson.feature(world, (world.objects as any).countries) as any;
+        countryFeaturesRef.current = countriesGeo.type === 'FeatureCollection'
+          ? countriesGeo.features
+          : [countriesGeo];
 
         if (cancelled) return;
 
-        // City dots
+        // Solid city dot markers — opaque SphereGeometry so depth test
+        // fully blocks them behind the globe (no transparency bleed artifacts).
+        glowTexRef.current = createGlowTexture(); // still used for pin halos
         for (const city of WORLD_CITIES) {
-          const r     = city.tier === 1 ? 0.018 : 0.012;
-          const color = city.tier === 1 ? 0xE8E8FF : 0xA0A8C0;
-          const geo   = new THREE.SphereGeometry(r, 6, 6);
-          const mat   = new THREE.MeshBasicMaterial({ color });
-          const mesh  = new THREE.Mesh(geo, mat);
+          const r   = city.tier === 1 ? 0.025 : city.tier === 2 ? 0.017 : 0.012;
+          const hex = city.tier === 1 ? 0xDDE8FF : city.tier === 2 ? 0xAABBDD : 0x8899BB;
+          const col = new THREE.Color(hex);
+          const mat = new THREE.MeshPhongMaterial({
+            color:             col,
+            emissive:          col,
+            emissiveIntensity: city.tier === 1 ? 1.0 : city.tier === 2 ? 0.7 : 0.5,
+            shininess:         20,
+          });
+          const mesh = new THREE.Mesh(new THREE.SphereGeometry(r, 6, 6), mat);
           mesh.position.copy(latLngToVector3(city.lat, city.lng, 2.03));
           mesh.userData = { __cityData: city };
-          mesh.visible  = false; // shown based on zoom
+          mesh.visible  = false;
           globeGroup.add(mesh);
           cityMeshesRef.current.push(mesh);
         }
@@ -301,7 +514,7 @@ export function useGlobe({
     raycaster.params.Points = { threshold: 0.05 };
 
     function getNDC(cx: number, cy: number): THREE.Vector2 {
-      const rect = canvas.getBoundingClientRect();
+      const rect = cv.getBoundingClientRect();
       return new THREE.Vector2(
         ((cx - rect.left) / rect.width)  * 2 - 1,
         -((cy - rect.top) / rect.height) * 2 + 1
@@ -317,15 +530,17 @@ export function useGlobe({
       if (pinHits.length > 0) {
         const pin = pinHits[0].object.userData as GlobePin;
         if (hoveredPinRef.current?._id !== pin._id) {
-          pinMeshesRef.current.forEach(m => m.scale.setScalar(1));
-          (pinHits[0].object as THREE.Mesh).scale.setScalar(2.5);
+          // Scale the whole group for hover, not just the head mesh
+          pinGroupsRef.current.forEach(g => g.scale.setScalar(1));
+          const hitGroup = pinHits[0].object.parent as THREE.Group;
+          if (hitGroup) hitGroup.scale.setScalar(1.6);
           setHoveredPin(pin);
           hoveredPinRef.current = pin;
           setHoveredCity(null);
           hoveredCityRef.current = null;
         }
         setHoveredPos({ x: cx, y: cy });
-        canvas.style.cursor = 'pointer';
+        cv.style.cursor = 'pointer';
         return;
       }
 
@@ -341,28 +556,40 @@ export function useGlobe({
           hoveredPinRef.current = null;
         }
         setHoveredPos({ x: cx, y: cy });
-        canvas.style.cursor = 'pointer';
+        cv.style.cursor = 'pointer';
         return;
       }
 
       // Nothing hovered
       if (hoveredPinRef.current !== null || hoveredCityRef.current !== null) {
-        pinMeshesRef.current.forEach(m => m.scale.setScalar(1));
+        pinGroupsRef.current.forEach(g => g.scale.setScalar(1));
         setHoveredPin(null);
         hoveredPinRef.current = null;
         setHoveredCity(null);
         hoveredCityRef.current = null;
         setHoveredPos(null);
       }
-      canvas.style.cursor = addPinModeRef.current ? 'crosshair' : 'grab';
+      cv.style.cursor = addPinModeRef.current ? 'crosshair' : 'grab';
     }
 
     function handleClick(cx: number, cy: number) {
       const ndc = getNDC(cx, cy);
       raycaster.setFromCamera(ndc, camera);
+
+      // Check pins first
       const pinHits = raycaster.intersectObjects(pinMeshesRef.current);
       if (pinHits.length > 0) {
         onPinClickRef.current(pinHits[0].object.userData as GlobePin);
+        return;
+      }
+
+      // Click on globe surface → detect lat/lng + country name
+      const globeHits = raycaster.intersectObject(globeMeshRef.current!);
+      if (globeHits.length > 0) {
+        const local = globeGroup.worldToLocal(globeHits[0].point.clone());
+        const { lat, lng } = vector3ToLatLng(local);
+        const country = getCountryAtLatLng(lat, lng, countryFeaturesRef.current);
+        onGlobeClickRef.current(lat, lng, country);
       }
     }
 
@@ -377,8 +604,9 @@ export function useGlobe({
       const dy = e.clientY - lastMouseRef.current.y;
       lastMouseRef.current = { x: e.clientX, y: e.clientY };
       velocityRef.current  = { x: dx, y: dy };
-      globeGroup.rotation.y += dx * 0.005;
-      globeGroup.rotation.x += dy * 0.005;
+      const dragSens = 0.005 * Math.pow(camera.position.z / 5, 2);
+      globeGroup.rotation.y += dx * dragSens;
+      globeGroup.rotation.x += dy * dragSens;
       globeGroup.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, globeGroup.rotation.x));
       lastInteractionRef.current = Date.now();
     }
@@ -418,8 +646,9 @@ export function useGlobe({
         const dy = e.touches[0].clientY - lastMouseRef.current.y;
         lastMouseRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         velocityRef.current  = { x: dx, y: dy };
-        globeGroup.rotation.y += dx * 0.005;
-        globeGroup.rotation.x += dy * 0.005;
+        const touchSens = 0.005 * Math.pow(camera.position.z / 5, 2);
+        globeGroup.rotation.y += dx * touchSens;
+        globeGroup.rotation.x += dy * touchSens;
         globeGroup.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, globeGroup.rotation.x));
         lastInteractionRef.current = Date.now();
       } else if (e.touches.length === 2) {
@@ -431,6 +660,9 @@ export function useGlobe({
     }
     function onTouchEnd() { isDraggingRef.current = false; lastInteractionRef.current = Date.now(); }
     function onWheel(e: WheelEvent) {
+      const ndc = getNDC(e.clientX, e.clientY);
+      raycaster.setFromCamera(ndc, camera);
+      if (!globeMeshRef.current || raycaster.intersectObject(globeMeshRef.current).length === 0) return;
       e.preventDefault();
       camera.position.z = Math.max(2.3, Math.min(8, camera.position.z + e.deltaY * 0.005));
       lastInteractionRef.current = Date.now();
@@ -461,17 +693,54 @@ export function useGlobe({
         velocityRef.current.y *= 0.92;
       }
 
-      // Auto-rotate when idle
-      if (idle > 3000 && !isDraggingRef.current) globeGroup.rotation.y += 0.001;
+      // Auto-rotate when idle for 30 s (not 3 s — give user time to aim)
+      if (idle > 30000 && !isDraggingRef.current) globeGroup.rotation.y += 0.001;
 
-      // City visibility based on zoom
+      // Hide wireframe at deep zoom (would visibly float above surface)
+      if (wireMeshRef.current) wireMeshRef.current.visible = z > 3.5;
+
+      // City visibility + back-face culling + pulse glow animation
+      const dotScale = z / 5;
+      const _wp = new THREE.Vector3();
+      const time = performance.now() * 0.001;
       cityMeshesRef.current.forEach((mesh, i) => {
         const tier = WORLD_CITIES[i].tier;
-        mesh.visible = (tier === 1 && z < 6) || (tier === 2 && z < 4.8) || (tier === 3 && z < 3.5);
-        // Scale up city dots when deeply zoomed
-        const s = z < 3 ? 2.5 : z < 4 ? 1.5 : 1;
-        if (mesh.visible) mesh.scale.setScalar(s);
+        const zoomVis = (tier === 1 && z < 6) || (tier === 2 && z < 4.8) || (tier === 3 && z < 3.5);
+        if (!zoomVis) { mesh.visible = false; return; }
+        mesh.getWorldPosition(_wp);
+        // Correct sphere-visibility formula: dot(P, C) > |P|²
+        // (= surface normal faces toward camera, accounting for silhouette plane)
+        const isFront = _wp.dot(camera.position) > _wp.lengthSq();
+        mesh.visible = isFront;
+        if (isFront) {
+          const pulse = 1 + 0.18 * Math.sin(time * 1.8 + i * 0.5);
+          mesh.scale.setScalar(dotScale * pulse);
+        }
       });
+
+      // City labels: project to screen when zoomed in closely
+      labelFrameRef.current++;
+      if (labelFrameRef.current % 4 === 0) {
+        if (z < 3.5 && globeGroupRef.current) {
+          const rect = cv.getBoundingClientRect();
+          const newLabels: { name: string; x: number; y: number; tier: number }[] = [];
+          for (const mesh of cityMeshesRef.current) {
+            if (!mesh.visible) continue;
+            const city = mesh.userData.__cityData as CityData;
+            if (city.tier > 2) continue;
+            const worldPos = mesh.position.clone();
+            globeGroupRef.current.localToWorld(worldPos);
+            const projected = worldPos.clone().project(camera);
+            if (projected.z > 1) continue; // behind camera
+            const sx = (projected.x + 1) / 2 * rect.width;
+            const sy = (-projected.y + 1) / 2 * rect.height;
+            newLabels.push({ name: city.name, x: sx, y: sy, tier: city.tier });
+          }
+          setCityLabels(newLabels);
+        } else {
+          setCityLabels(prev => prev.length === 0 ? prev : []);
+        }
+      }
 
       renderer.render(scene, camera);
     }
@@ -489,9 +758,7 @@ export function useGlobe({
       canvas.removeEventListener('touchmove',  onTouchMove);
       canvas.removeEventListener('touchend',   onTouchEnd);
       canvas.removeEventListener('wheel',      onWheel);
-      borderLinesRef.current.forEach(l => { l.geometry.dispose(); (l.material as THREE.Material).dispose(); });
-      borderLinesRef.current = [];
-      cityMeshesRef.current.forEach(m => { m.geometry.dispose(); (m.material as THREE.Material).dispose(); });
+      cityMeshesRef.current.forEach(m => { if (m instanceof THREE.Mesh) m.geometry.dispose(); (m.material as THREE.Material).dispose(); });
       cityMeshesRef.current = [];
       renderer.dispose();
     };
@@ -502,37 +769,83 @@ export function useGlobe({
   useEffect(() => {
     const globeGroup = globeGroupRef.current;
     if (!globeGroup) return;
-    pinMeshesRef.current.forEach(m => {
-      globeGroup.remove(m);
-      m.geometry.dispose();
-      (m.material as THREE.Material).dispose();
+
+    // Remove old pin groups from scene and dispose geometry/materials
+    pinGroupsRef.current.forEach(g => {
+      globeGroup.remove(g);
+      g.traverse(child => {
+        if (child instanceof THREE.Mesh) {
+          child.geometry.dispose();
+          (child.material as THREE.Material).dispose();
+        }
+      });
     });
+    pinGroupsRef.current = [];
     pinMeshesRef.current = [];
+
     const filtered = filterTechnique && filterTechnique !== 'all'
       ? pins.filter(p => p.technique === filterTechnique)
       : pins;
+
+    // Shared geometry for all pins (reused, not disposed per-pin)
+    const headGeo   = new THREE.SphereGeometry(0.016, 8, 8);
+    const needleGeo = new THREE.ConeGeometry(0.005, 0.044, 6);
+
     for (const pin of filtered.slice(0, 500)) {
-      const color = new THREE.Color(PIN_COLORS[pin.technique] ?? PIN_COLORS.other);
-      const geo   = new THREE.SphereGeometry(0.018, 8, 8);
-      const mat   = new THREE.MeshBasicMaterial({ color });
-      const mesh  = new THREE.Mesh(geo, mat);
-      mesh.position.copy(latLngToVector3(pin.lat, pin.lng, 2.05));
-      mesh.userData = pin;
-      globeGroup.add(mesh);
-      pinMeshesRef.current.push(mesh);
+      const hex   = PIN_COLORS[pin.technique] ?? PIN_COLORS.other;
+      const color = new THREE.Color(hex);
+
+      // Head (raycasting target + visual ball)
+      const headMat  = new THREE.MeshPhongMaterial({ color, emissive: color, emissiveIntensity: 0.25, shininess: 40 });
+      const headMesh = new THREE.Mesh(headGeo, headMat);
+      headMesh.position.set(0, 0.058, 0);   // sits above the tip
+      headMesh.userData = pin;
+
+      // Needle (thin cone, tip pointing toward globe surface = -Y in group space)
+      const needleMat  = new THREE.MeshPhongMaterial({ color: color.clone().multiplyScalar(0.6) });
+      const needleMesh = new THREE.Mesh(needleGeo, needleMat);
+      needleMesh.rotation.x = Math.PI;      // flip so tip faces -Y (into globe)
+      needleMesh.position.set(0, 0.022, 0); // centre of needle; tip at Y≈0 (surface)
+
+      // Glow halo behind pin head
+      if (glowTexRef.current) {
+        const glowMat = new THREE.SpriteMaterial({
+          map: glowTexRef.current,
+          color: color.clone(),
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+          opacity: 0.45,
+        });
+        const glowSprite = new THREE.Sprite(glowMat);
+        glowSprite.scale.setScalar(0.1);
+        glowSprite.position.set(0, 0.058, 0);
+        headMesh.add(glowSprite);
+      }
+
+      // Group: place base at radius 2.0 (exactly on sphere surface), orient outward
+      const group = new THREE.Group();
+      group.add(headMesh, needleMesh);
+
+      const surfacePos = latLngToVector3(pin.lat, pin.lng, 2.00);
+      group.position.copy(surfacePos);
+      group.quaternion.setFromUnitVectors(
+        new THREE.Vector3(0, 1, 0),
+        surfacePos.clone().normalize()
+      );
+
+      globeGroup.add(group);
+      pinGroupsRef.current.push(group);
+      pinMeshesRef.current.push(headMesh); // raycasting uses head sphere only
     }
   }, [pins, filterTechnique]);
 
-  // ── Update theme ───────────────────────────────────────────────────────────
+  // ── Update theme (wireframe only — borders are on texture) ─────────────────
   useEffect(() => {
     const wireMesh = wireMeshRef.current;
     if (!wireMesh) return;
     const tc = GLOBE_THEMES[theme] ?? GLOBE_THEMES.night;
     (wireMesh.material as THREE.LineBasicMaterial).color.setHex(tc.wire);
-    const lines = borderLinesRef.current;
-    const mid   = Math.floor(lines.length / 2);
-    lines.slice(0, mid).forEach(l => (l.material as THREE.LineBasicMaterial).color.setHex(tc.coast));
-    lines.slice(mid).forEach(l  => (l.material as THREE.LineBasicMaterial).color.setHex(tc.border));
   }, [theme]);
 
   const setAddPinModeCallback = useCallback((v: boolean) => {
@@ -541,5 +854,10 @@ export function useGlobe({
     if (canvasRef.current) canvasRef.current.style.cursor = v ? 'crosshair' : 'grab';
   }, [canvasRef]);
 
-  return { hoveredPin, hoveredCity, addPinMode, setAddPinMode: setAddPinModeCallback, hoveredPos };
+  return { hoveredPin, hoveredCity, addPinMode, setAddPinMode: setAddPinModeCallback, hoveredPos, cityLabels };
 }
+
+
+
+
+

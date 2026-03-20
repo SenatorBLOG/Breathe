@@ -11,6 +11,7 @@ const GlobePinSchema = new mongoose.Schema({
   note:        { type: String, maxlength: 300, default: '' },
   technique:   { type: String, enum: ['box', '4-7-8', 'wim-hof', 'coherent', 'belly', 'alternate', 'other'], default: 'other' },
   sessionLink: { type: String, default: '' },
+  photoUrl:    { type: String, default: '', maxlength: 1500000 },
   likeCount:   { type: Number, default: 0 },
   createdAt:   { type: Date, default: Date.now },
 });
