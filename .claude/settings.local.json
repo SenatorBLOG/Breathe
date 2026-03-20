@@ -3,7 +3,18 @@
     "allow": [
       "Bash(npm install:*)",
       "Bash(node -e \":*)",
-      "Bash(node -e \"require\\(''./routes/globe''\\); console.log\\(''OK''\\);\")"
+      "Bash(node -e \"require\\(''./routes/globe''\\); console.log\\(''OK''\\);\")",
+      "Bash(node -e \"require\\(''''./routes/globe''''\\); require\\(''''./server''''\\); console.log\\(''''BOTH OK''''\\);\")",
+      "Bash(curl -s \"https://breathe-production-6cce.up.railway.app/api/globe\")",
+      "Bash(node -e \"require\\(''''./server''''\\); console.log\\(''''OK''''\\);\")",
+      "Bash(curl -s \"https://breathe-production-6cce.up.railway.app/api/globe/stats\")",
+      "Bash(npm list:*)",
+      "Bash(node -e \"const d = require\\(''./node_modules/world-atlas/countries-110m.json''\\); console.log\\(''keys:'', Object.keys\\(d\\)\\); console.log\\(''objects:'', Object.keys\\(d.objects\\)\\);\")",
+      "WebFetch(domain:radio.garden)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vite:*)",
+      "Bash(xargs grep:*)",
+      "Bash(node_modules/.bin/tsc --noEmit)"
     ]
   }
 }

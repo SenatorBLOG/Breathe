@@ -86,7 +86,7 @@ export default function NavBar() {
           <div className="hidden md:flex items-center gap-6">
             <NavLink to="/home-page">{t("nav.home")}</NavLink>
             <NavLink to="/breathing">{t("nav.meditate")}</NavLink>
-            <NavLink to="/globe">🌍 {t("nav.globe", "Globe")}</NavLink>
+            <NavLink to="/globe">{t("nav.globe", "Globe")}</NavLink>
             <NavLink to="/music-library">{t("nav.sounds")}</NavLink>
             <NavLink to="/community">{t("nav.community")}</NavLink>
             {isAuthenticated ? (

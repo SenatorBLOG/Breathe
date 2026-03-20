@@ -101,6 +101,7 @@ const postValidation = [
   body('title').optional().isString().trim().escape().isLength({ max: 80 }),
   body('note').optional().isString().trim().escape().isLength({ max: 300 }),
   body('sessionLink').optional().isString().trim().isLength({ max: 500 }),
+  body('photoUrl').optional().isString().isLength({ max: 1500000 }),
   body('technique').optional().isIn(['box', '4-7-8', 'wim-hof', 'coherent', 'belly', 'alternate', 'other']),
 ];
 
@@ -111,7 +112,7 @@ router.post('/', auth, postValidation, async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { lat, lng, city, country, title, note, technique, sessionLink } = req.body;
+    const { lat, lng, city, country, title, note, technique, sessionLink, photoUrl } = req.body;
 
     // Derive username from user document — fallback to email prefix
     let username = 'Anonymous';
@@ -136,6 +137,7 @@ router.post('/', auth, postValidation, async (req, res) => {
       note:        note        || '',
       technique:   technique   || 'other',
       sessionLink: sessionLink || '',
+      photoUrl:    photoUrl    || '',
     });
 
     res.status(201).json(pin);

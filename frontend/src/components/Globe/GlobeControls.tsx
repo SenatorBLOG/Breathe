@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import type { GlobePin } from './useGlobe';
@@ -44,6 +44,7 @@ interface GlobeControlsProps {
   onClose:         () => void;
   isAuthenticated: boolean;
   currentUserId?:  string;
+  pickedLatLng?:   { lat: number; lng: number; country: string } | null;
 }
 
 interface AddPinFormData {
@@ -55,6 +56,7 @@ interface AddPinFormData {
   note:        string;
   technique:   string;
   sessionLink: string;
+  photoUrl:    string;
 }
 
 const DEFAULT_FORM: Omit<AddPinFormData, 'lat' | 'lng'> = {
@@ -64,7 +66,31 @@ const DEFAULT_FORM: Omit<AddPinFormData, 'lat' | 'lng'> = {
   note:        '',
   technique:   'other',
   sessionLink: '',
+  photoUrl:    '',
 };
+
+function compressImage(file: File, maxPx = 800, quality = 0.72): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxPx / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width  = w;
+        canvas.height = h;
+        canvas.getContext('2d')!.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = ev.target!.result as string;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 export default function GlobeControls({
   selectedPin,
@@ -79,11 +105,25 @@ export default function GlobeControls({
   onClose,
   isAuthenticated,
   currentUserId,
+  pickedLatLng,
 }: GlobeControlsProps) {
   const ts = useThemeStyles();
   const [form, setForm] = useState<typeof DEFAULT_FORM>(DEFAULT_FORM);
   const [latInput, setLatInput] = useState('');
   const [lngInput, setLngInput] = useState('');
+  const [photoLoading, setPhotoLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Pre-fill coordinates + country when user clicks on the globe
+  useEffect(() => {
+    if (pickedLatLng) {
+      setLatInput(pickedLatLng.lat.toFixed(4));
+      setLngInput(pickedLatLng.lng.toFixed(4));
+      if (pickedLatLng.country) {
+        setForm(prev => ({ ...prev, country: pickedLatLng.country }));
+      }
+    }
+  }, [pickedLatLng]);
 
   function handleFormChange(field: keyof typeof DEFAULT_FORM, value: string) {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -99,6 +139,7 @@ export default function GlobeControls({
     setForm(DEFAULT_FORM);
     setLatInput('');
     setLngInput('');
+    if (fileInputRef.current) fileInputRef.current.value = '';
   }
 
   const sectionStyle: React.CSSProperties = {
@@ -342,6 +383,86 @@ export default function GlobeControls({
                 />
               </div>
 
+              {/* Photo upload */}
+              <div style={{ marginBottom: 8 }}>
+                <label style={labelStyle}>Photo (optional)</label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={async e => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setPhotoLoading(true);
+                    try {
+                      const dataUrl = await compressImage(file);
+                      setForm(prev => ({ ...prev, photoUrl: dataUrl }));
+                    } catch {
+                      // ignore
+                    } finally {
+                      setPhotoLoading(false);
+                    }
+                  }}
+                />
+                {form.photoUrl ? (
+                  <div style={{ position: 'relative' }}>
+                    <img
+                      src={form.photoUrl}
+                      alt="preview"
+                      style={{
+                        width:        '100%',
+                        maxHeight:    140,
+                        objectFit:    'cover',
+                        borderRadius: 7,
+                        border:       `1px solid ${ts.border}`,
+                        display:      'block',
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setForm(prev => ({ ...prev, photoUrl: '' }));
+                        if (fileInputRef.current) fileInputRef.current.value = '';
+                      }}
+                      style={{
+                        position:     'absolute',
+                        top:          4,
+                        right:        4,
+                        background:   'rgba(0,0,0,0.55)',
+                        border:       'none',
+                        borderRadius: '50%',
+                        width:        22,
+                        height:       22,
+                        color:        '#fff',
+                        fontSize:     13,
+                        cursor:       'pointer',
+                        lineHeight:   '22px',
+                        textAlign:    'center',
+                        padding:      0,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={photoLoading}
+                    style={{
+                      ...inputStyle,
+                      cursor:     'pointer',
+                      textAlign:  'center',
+                      color:      ts.textMuted,
+                      background: ts.cardBgHover,
+                    }}
+                  >
+                    {photoLoading ? 'Processing…' : '+ Upload photo'}
+                  </button>
+                )}
+              </div>
+
               <button type="submit" style={btnPrimary}>
                 📍 Drop pin
               </button>
@@ -384,6 +505,23 @@ export default function GlobeControls({
               ×
             </button>
           </div>
+
+          {/* Photo */}
+          {selectedPin.photoUrl && (
+            <img
+              src={selectedPin.photoUrl}
+              alt={selectedPin.title}
+              onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              style={{
+                width:        '100%',
+                maxHeight:    140,
+                objectFit:    'cover',
+                borderRadius: 8,
+                marginBottom: 8,
+                border:       `1px solid ${ts.border}`,
+              }}
+            />
+          )}
 
           {/* Title */}
           <div

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import { useState, useEffect, useCallback, useContext, type CSSProperties } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { useThemeStyles } from '../hooks/useThemeStyles';
@@ -30,6 +30,7 @@ export default function GlobePage() {
   const [addPinMode,      setAddPinMode]      = useState(false);
   const [sidebarOpen,     setSidebarOpen]     = useState(false);
   const [loading,         setLoading]         = useState(true);
+  const [pickedLatLng,    setPickedLatLng]    = useState<{ lat: number; lng: number; country: string } | null>(null);
 
   // ── Data fetch ───────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -65,7 +66,11 @@ export default function GlobePage() {
     if (pin) setSidebarOpen(true);
   }, []);
 
-  const handleGlobeClick = useCallback(() => {}, []);
+  const handleGlobeClick = useCallback((lat: number, lng: number, country: string) => {
+    setPickedLatLng({ lat, lng, country });
+    setAddPinMode(true);
+    setSidebarOpen(true);
+  }, []);
 
   const handleLike = useCallback(async (id: string) => {
     try {
@@ -95,12 +100,13 @@ export default function GlobePage() {
 
   const handleAddPin = useCallback(async (data: {
     lat: number; lng: number; city: string; country: string;
-    title: string; note: string; technique: string; sessionLink: string;
+    title: string; note: string; technique: string; sessionLink: string; photoUrl: string;
   }) => {
     try {
       const res = await api.post<GlobePin>('/globe', data);
       setPins(prev => [res.data, ...prev]);
       setAddPinMode(false);
+      setPickedLatLng(null);
       setStats(prev => prev ? { ...prev, totalPins: prev.totalPins + 1 } : prev);
       toast.success('Your meditation spot has been pinned!');
     } catch (err: unknown) {
@@ -113,6 +119,7 @@ export default function GlobePage() {
   const handleToggleAddPin = useCallback(() => {
     const next = !addPinMode;
     setAddPinMode(next);
+    if (!next) setPickedLatLng(null);
     if (next) setSidebarOpen(true);
   }, [addPinMode]);
 
@@ -135,22 +142,76 @@ export default function GlobePage() {
       onClose={handleClosePin}
       isAuthenticated={isAuthenticated}
       currentUserId={user?._id ?? user?.id}
+      pickedLatLng={pickedLatLng}
     />
   );
 
   return (
+    <div style={{ color: ts.textPrimary }}>
+      <ThemeBackground />
+    {/* ── Globe viewport: exactly one screen height ──────────────────────── */}
     <div
       style={{
-        height:      '100vh',
-        display:     'flex',
+        height:        '100vh',
+        display:       'flex',
         flexDirection: 'column',
-        color:       ts.textPrimary,
-        position:    'relative',
-        overflow:    'hidden',
+        position:      'relative',
+        overflow:      'hidden',
       }}
     >
-      <ThemeBackground />
       <NavBar />
+
+      {/* ── Globe page header ──────────────────────────────────────────────── */}
+      <div
+        style={{
+          padding:        '0 28px',
+          height:         68,
+          display:        'flex',
+          alignItems:     'center',
+          justifyContent: 'space-between',
+          flexShrink:     0,
+          background:     'rgba(6,18,42,0.72)',
+          backdropFilter: 'blur(14px)',
+          borderBottom:   `1px solid ${ts.border}`,
+          zIndex:         5,
+          position:       'relative',
+        }}
+      >
+        {/* Left: title + subtitle */}
+        <div>
+          <div style={{
+            fontSize:      18,
+            fontWeight:    800,
+            color:         ts.textPrimary,
+            letterSpacing: '-0.01em',
+            lineHeight:    1.1,
+          }}>
+            🌍 Global Meditation Map
+          </div>
+          <div style={{ fontSize: 12, color: ts.textMuted, marginTop: 3 }}>
+            Explore where the world finds its calm
+          </div>
+        </div>
+
+        {/* Right: live stats */}
+        {stats && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 19, fontWeight: 800, color: ts.textPrimary, lineHeight: 1 }}>
+                {stats.totalPins.toLocaleString()}
+              </div>
+              <div style={{ fontSize: 10, color: ts.textMuted, marginTop: 2 }}>spots pinned</div>
+            </div>
+            <div style={{ width: 1, height: 30, background: ts.border }} />
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 19, fontWeight: 800, color: ts.textPrimary, lineHeight: 1 }}>
+                {stats.countries}
+              </div>
+              <div style={{ fontSize: 10, color: ts.textMuted, marginTop: 2 }}>countries</div>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* ── Main content ───────────────────────────────────────────────────── */}
       <main
@@ -286,7 +347,191 @@ export default function GlobePage() {
         )}
       </main>
 
-      <Footer />
+    </div>{/* end globe 100vh section */}
+
+    {/* ── Below fold: content ────────────────────────────────────────── */}
+    <div style={{ position: 'relative', zIndex: 1 }}>
+
+      {/* Hero strip */}
+      <div style={{
+        padding: '80px 24px 60px',
+        textAlign: 'center',
+        background: ts.cardBg,
+        borderBottom: `1px solid ${ts.border}`,
+      }}>
+        <div style={{ fontSize: 42, marginBottom: 12 }}>🌍</div>
+        <h1 style={{ fontSize: 32, fontWeight: 800, color: ts.textPrimary, margin: '0 0 12px' }}>
+          Breathe Together, Anywhere
+        </h1>
+        <p style={{ fontSize: 16, color: ts.textSecondary, maxWidth: 520, margin: '0 auto 28px', lineHeight: 1.6 }}>
+          Meditators from around the world are dropping pins on their favourite spots.
+          Find your calm, share it, and discover new places to breathe.
+        </p>
+        {/* Stats pills */}
+        {stats && (
+          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 32 }}>
+            {[
+              { label: 'Spots pinned', value: stats.totalPins.toLocaleString() },
+              { label: 'Countries', value: stats.countries },
+              { label: 'Top city', value: stats.topCities[0]?._id ?? '—' },
+            ].map(s => (
+              <div key={s.label} style={{
+                background: ts.cardBgHover,
+                border: `1px solid ${ts.border}`,
+                borderRadius: 12,
+                padding: '10px 20px',
+                minWidth: 100,
+              }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: ts.textPrimary }}>{s.value}</div>
+                <div style={{ fontSize: 11, color: ts.textMuted, marginTop: 2 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+        {!isAuthenticated && (
+          <a
+            href="/login"
+            style={{
+              display: 'inline-block',
+              background: ts.accent,
+              color: '#fff',
+              borderRadius: 10,
+              padding: '12px 28px',
+              fontSize: 15,
+              fontWeight: 700,
+              textDecoration: 'none',
+            }}
+          >
+            Sign in to drop your pin →
+          </a>
+        )}
+      </div>
+
+      {/* Recent spots wall */}
+      <div style={{ padding: '48px 24px 64px', maxWidth: 1100, margin: '0 auto' }}>
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: ts.textPrimary, marginBottom: 24 }}>
+          Recent meditation spots
+        </h2>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+          gap: 16,
+        }}>
+          {pins.slice(0, 12).map(pin => {
+            const TECHNIQUE_COLORS: Record<string, string> = {
+              'box': '#3A82F7', '4-7-8': '#7AC4FF', 'wim-hof': '#FF9A5C',
+              'coherent': '#4AE8A0', 'belly': '#FFD97D', 'alternate': '#C084FC', 'other': '#94A3B8',
+            };
+            const TECHNIQUE_LABELS: Record<string, string> = {
+              'box': 'Box', '4-7-8': '4-7-8', 'wim-hof': 'Wim Hof',
+              'coherent': 'Coherent', 'belly': 'Belly', 'alternate': 'Alternate', 'other': 'Other',
+            };
+            const color = TECHNIQUE_COLORS[pin.technique] ?? '#94A3B8';
+            return (
+              <div
+                key={pin._id}
+                onClick={() => { handlePinClick(pin); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                style={{
+                  background: ts.cardBg,
+                  border: `1px solid ${ts.border}`,
+                  borderRadius: 14,
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  transition: 'transform 0.15s, box-shadow 0.15s',
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)';
+                  (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)';
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLDivElement).style.transform = '';
+                  (e.currentTarget as HTMLDivElement).style.boxShadow = '';
+                }}
+              >
+                {pin.photoUrl ? (
+                  <img
+                    src={pin.photoUrl}
+                    alt={pin.title}
+                    style={{ width: '100%', height: 140, objectFit: 'cover', display: 'block' }}
+                  />
+                ) : (
+                  <div style={{
+                    width: '100%', height: 140,
+                    background: `linear-gradient(135deg, ${color}22, ${color}11)`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 36,
+                  }}>
+                    🧘
+                  </div>
+                )}
+                <div style={{ padding: '12px 14px' }}>
+                  <div style={{ fontSize: 11, color: ts.textMuted, marginBottom: 4 }}>
+                    📍 {[pin.city, pin.country].filter(Boolean).join(', ') || 'Unknown location'}
+                  </div>
+                  <div style={{
+                    fontSize: 14, fontWeight: 700, color: ts.textPrimary,
+                    marginBottom: 8, overflow: 'hidden', display: '-webkit-box',
+                    WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+                  } as CSSProperties}>
+                    {pin.title}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{
+                      fontSize: 10, color, background: `${color}22`,
+                      border: `1px solid ${color}44`, borderRadius: 20, padding: '2px 8px',
+                    }}>
+                      {TECHNIQUE_LABELS[pin.technique] ?? 'Other'}
+                    </span>
+                    <span style={{ fontSize: 11, color: ts.textMuted }}>
+                      ❤️ {pin.likeCount}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 11, color: ts.textMuted, marginTop: 6 }}>
+                    by {pin.username}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        {pins.length === 0 && !loading && (
+          <div style={{ textAlign: 'center', color: ts.textMuted, fontSize: 14, padding: '40px 0' }}>
+            No spots yet — be the first to add yours!
+          </div>
+        )}
+      </div>
+
+      {/* How it works */}
+      <div style={{
+        background: ts.cardBg,
+        borderTop: `1px solid ${ts.border}`,
+        padding: '48px 24px',
+      }}>
+        <div style={{ maxWidth: 860, margin: '0 auto' }}>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: ts.textPrimary, textAlign: 'center', marginBottom: 36 }}>
+            How it works
+          </h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 24 }}>
+            {[
+              { icon: '🌐', title: 'Spin the globe', desc: 'Explore meditation spots pinned by people from every corner of the world.' },
+              { icon: '📍', title: 'Drop your pin', desc: 'Click anywhere on the globe to mark where you found your calm. Add a photo.' },
+              { icon: '🤝', title: 'Connect', desc: 'Like spots, discover new techniques, and be part of a global breathing community.' },
+            ].map(s => (
+              <div key={s.title} style={{ textAlign: 'center', padding: '0 12px' }}>
+                <div style={{ fontSize: 36, marginBottom: 12 }}>{s.icon}</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: ts.textPrimary, marginBottom: 8 }}>{s.title}</div>
+                <div style={{ fontSize: 13, color: ts.textSecondary, lineHeight: 1.6 }}>{s.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
     </div>
+
+    {/* ── Footer: below the fold, revealed on scroll ──────────────────────── */}
+    <Footer />
+
+    </div>/* end outer wrapper */
   );
 }

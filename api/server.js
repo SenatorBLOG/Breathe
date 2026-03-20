@@ -35,7 +35,7 @@ app.use(cors({
 
 app.use(helmet());
 app.disable("x-powered-by");
-app.use(express.json());
+app.use(express.json({ limit: '2mb' }));
 
 // ── Auth rate limit — 10 attempts / 15 min ───────────────────────
 const authLimiter = rateLimit({
