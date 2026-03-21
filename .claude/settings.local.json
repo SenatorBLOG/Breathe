@@ -14,7 +14,15 @@
       "Bash(npx tsc:*)",
       "Bash(npx vite:*)",
       "Bash(xargs grep:*)",
-      "Bash(node_modules/.bin/tsc --noEmit)"
+      "Bash(node_modules/.bin/tsc --noEmit)",
+      "Bash(npm run:*)",
+      "Bash(node --check server.js)",
+      "Bash(node --check routes/auth.js)",
+      "Bash(node --check routes/sessions.js)",
+      "Bash(node --check routes/unsubscribe.js)",
+      "Bash(node --check models/User.js)",
+      "Bash(node seeds/communityPosts.js)",
+      "WebFetch(domain:breathe-production-6cce.up.railway.app)"
     ]
   }
 }
