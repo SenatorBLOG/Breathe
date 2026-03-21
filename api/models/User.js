@@ -27,6 +27,26 @@ const userSchema = new mongoose.Schema(
       default: 'password'
     },
     googleId: { type: String, unique: true, sparse: true },
+
+    // Profile
+    nickname: { type: String, trim: true, maxlength: 30 },
+    avatar:   { type: String }, // user-uploaded photo (base64 or URL)
+    bodyProfile: {
+      heightCm: { type: Number, min: 50,  max: 300 },
+      weightKg: { type: Number, min: 20,  max: 500 },
+      age:      { type: Number, min: 1,   max: 120 },
+      gender:   { type: String, enum: ['male', 'female', 'other', 'prefer_not'] },
+      goal:     { type: String, enum: ['sleep', 'stress', 'focus', 'energy', 'general'] },
+    },
+
+    // Email retention
+    lastSessionAt:     { type: Date },
+    reminderEmailSent: { type: Date, default: null },
+    unsubscribedAt:    { type: Date },
+    emailPreferences: {
+      reminder: { type: Boolean, default: true },
+      weekly:   { type: Boolean, default: true },
+    },
   },
   { timestamps: true }
 );

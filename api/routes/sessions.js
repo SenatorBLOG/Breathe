@@ -2,6 +2,7 @@
 const express  = require('express');
 const router   = express.Router();
 const Session  = require('../models/Session');
+const User     = require('../models/User');
 const authenticate = require('../middleware/auth');
 
 // ─── Helper — works with both old (req.userId) and new (req.user._id) middleware
@@ -45,6 +46,13 @@ router.post('/', authenticate, async (req, res) => {
 
     await session.save();
     console.log('✅ Saved session:', session._id, 'for user:', userId);
+
+    // Update lastSessionAt and reset reminder flag (fire-and-forget)
+    User.updateOne(
+      { _id: userId },
+      { $set: { lastSessionAt: new Date(), reminderEmailSent: null } }
+    ).catch(err => console.error('Failed to update lastSessionAt:', err.message));
+
     res.status(201).json(session);
   } catch (err) {
     console.error('❌ Failed to save session:', err.message);

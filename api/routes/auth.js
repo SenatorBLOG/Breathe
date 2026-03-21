@@ -3,8 +3,10 @@ const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
+const authenticate = require('../middleware/auth');
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const { sendWelcome } = require('../services/emailService');
 
 // ─── POST /api/auth/register ──────────────────────────────────────────────────
 router.post('/register', [
@@ -40,6 +42,11 @@ router.post('/register', [
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '7d' });
     res.status(201).json({ message: 'User registered', token, user: { id: user._id, email: user.email, name: user.name } });
+
+    // Send welcome email — fire-and-forget, never fails registration
+    sendWelcome(user.email, user.name).catch(err =>
+      console.error('Welcome email failed:', err.message)
+    );
   } catch (err) {
     console.error('Register error:', err.message);
     res.status(500).json({ error: 'Registration failed' });
@@ -108,6 +115,39 @@ router.post('/google', async (req, res) => {
   } catch (err) {
     console.error('Google auth error:', err.message);
     res.status(401).json({ error: 'Authentication failed' });
+  }
+});
+
+// ─── GET /api/auth/me ─────────────────────────────────────────────────────────
+router.get('/me', authenticate, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password').lean();
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    console.error('GET /me error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch profile' });
+  }
+});
+
+// ─── PATCH /api/auth/me ───────────────────────────────────────────────────────
+router.patch('/me', authenticate, async (req, res) => {
+  try {
+    const { nickname, avatar, bodyProfile } = req.body;
+    const updates = {};
+    if (nickname   !== undefined) updates.nickname    = String(nickname).trim().slice(0, 30);
+    if (avatar     !== undefined) updates.avatar      = avatar;
+    if (bodyProfile !== undefined) updates.bodyProfile = bodyProfile;
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: updates },
+      { new: true, select: '-password', runValidators: true }
+    ).lean();
+    res.json(user);
+  } catch (err) {
+    console.error('PATCH /me error:', err.message);
+    res.status(500).json({ error: 'Failed to update profile' });
   }
 });
 

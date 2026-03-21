@@ -1,4 +1,15 @@
 User-agent: *
 Allow: /
 
+# Private / auth-only pages — no SEO value
+Disallow: /profile
+Disallow: /statistics
+Disallow: /sessions
+Disallow: /new-session
+Disallow: /onboarding
+Disallow: /data-consent
+
+# API — handled by backend
+Disallow: /api/
+
 Sitemap: https://breatheonline.app/sitemap.xml

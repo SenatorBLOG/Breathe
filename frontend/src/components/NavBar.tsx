@@ -40,7 +40,7 @@ export default function NavBar() {
   const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => (
     <Link to={to} onClick={() => setIsMenuOpen(false)}
       className="relative text-sm tracking-wide transition-colors duration-200 group"
-      style={{ color: isActive(to) ? ts.accentLight : ts.textMuted }}>
+      style={{ color: isActive(to) ? ts.accentLight : ts.textSecondary }}>
       {children}
       <span className="absolute -bottom-0.5 left-0 h-px transition-all duration-300"
         style={{
@@ -122,10 +122,13 @@ export default function NavBar() {
                 <button onClick={() => navigate('/profile')}
                   className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                  <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] text-white font-medium flex-shrink-0"
-                    style={{ background: ts.btnGradient }}>
-                    {user?.name ? user.name[0].toUpperCase() : 'U'}
-                  </div>
+                  {(user?.avatar || user?.picture)
+                    ? <img src={user.avatar || user.picture} alt="" className="w-5 h-5 rounded-full object-cover flex-shrink-0" />
+                    : <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] text-white font-medium flex-shrink-0"
+                        style={{ background: ts.btnGradient }}>
+                        {user?.email?.[0]?.toUpperCase() ?? 'U'}
+                      </div>
+                  }
                   <span className="text-xs" style={{ color: ts.textSecondary }}>
                     {user?.name ?? t('nav.profile')}
                   </span>
@@ -201,7 +204,7 @@ export default function NavBar() {
                 <Link key={to} to={to} onClick={() => setIsMenuOpen(false)}
                   className="py-2.5 text-sm transition-colors"
                   style={{
-                    color: isActive(to) ? ts.accentLight : ts.textMuted,
+                    color: isActive(to) ? ts.accentLight : ts.textSecondary,
                     borderBottom: `1px solid ${ts.border}40`,
                   }}>
                   {label}
@@ -225,8 +228,15 @@ export default function NavBar() {
                 ) : (
                   <>
                     <button onClick={() => { navigate('/profile'); setIsMenuOpen(false); }}
-                      className="py-2.5 text-sm rounded-xl transition-colors"
+                      className="py-2.5 text-sm rounded-xl transition-colors flex items-center justify-center gap-2"
                       style={{ color: ts.textSecondary, border: `1px solid ${ts.border}` }}>
+                      {(user?.avatar || user?.picture)
+                        ? <img src={user.avatar || user.picture} alt="" className="w-5 h-5 rounded-full object-cover flex-shrink-0" />
+                        : <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] text-white font-medium flex-shrink-0"
+                            style={{ background: ts.btnGradient }}>
+                            {user?.email?.[0]?.toUpperCase() ?? 'U'}
+                          </div>
+                      }
                       {user?.name ?? t('nav.profile')}
                     </button>
                     <button onClick={() => { logout(); navigate('/breathing'); setIsMenuOpen(false); }}
