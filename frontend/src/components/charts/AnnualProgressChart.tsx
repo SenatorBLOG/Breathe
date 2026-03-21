@@ -188,7 +188,7 @@ const AnnualProgressChart = () => {
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: ts.textDim, fontSize: 9, fontFamily: 'Montserrat' }}
+              tick={{ fill: ts.textMuted, fontSize: 11, fontFamily: 'Montserrat' }}
               dy={6}
               interval={view === '12 months' ? 1 : 0}
             />
@@ -198,7 +198,7 @@ const AnnualProgressChart = () => {
               axisLine={false}
               tickLine={false}
               domain={[0, yBarMax]}
-              tick={{ fill: ts.textDim, fontSize: 9, fontFamily: 'Montserrat' }}
+              tick={{ fill: ts.textMuted, fontSize: 11, fontFamily: 'Montserrat' }}
               tickFormatter={v => v === 0 ? '' : `${v}m`}
               width={36}
             />
@@ -209,7 +209,7 @@ const AnnualProgressChart = () => {
               axisLine={false}
               tickLine={false}
               domain={[0, yLineMax]}
-              tick={{ fill: ts.textDim, fontSize: 9, fontFamily: 'Montserrat' }}
+              tick={{ fill: ts.textMuted, fontSize: 11, fontFamily: 'Montserrat' }}
               tickFormatter={v => v === 0 ? '' : `${v}`}
               width={22}
             />

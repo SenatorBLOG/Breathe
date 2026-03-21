@@ -188,7 +188,7 @@ const ActivityChart = () => {
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 9, fill: ts.textSecondary, fontWeight: 500 }}
+              tick={{ fontSize: 11, fill: ts.textSecondary, fontWeight: 500 }}
               dy={8}
             />
             <YAxis
@@ -196,7 +196,7 @@ const ActivityChart = () => {
               tickLine={false}
               domain={[0, maxValue]}
               ticks={[0, step, step * 2, step * 3, step * 4]}
-              tick={{ fontSize: 9, fill: ts.textSecondary, fontWeight: 500 }}
+              tick={{ fontSize: 11, fill: ts.textSecondary, fontWeight: 500 }}
             />
             <Tooltip 
               content={<CustomTooltip />} 

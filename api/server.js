@@ -1,10 +1,15 @@
-const express = require("express");
+const express  = require("express");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const cors = require("cors");
-const helmet = require("helmet");
+const dotenv   = require("dotenv");
+const cors     = require("cors");
+const helmet   = require("helmet");
 const rateLimit = require("express-rate-limit");
+const cron     = require("node-cron");
 dotenv.config();
+
+const { sendReminder, sendWeekly } = require("./services/emailService");
+const User    = require("./models/User");
+const Session = require("./models/Session");
 
 const app = express();
 app.set("trust proxy", 1);
@@ -96,6 +101,72 @@ app.use('/api/coach', require('./routes/coach'));
 app.use('/api/newsletter', require('./routes/newsletter'));
 app.use('/api/integrations', require('./routes/integrations'));
 app.use('/api/globe',        require('./routes/globe'));
+app.use('/api/unsubscribe',  require('./routes/unsubscribe'));
+
+// ── Cron: streak reminder — runs every hour ───────────────────────
+cron.schedule('0 * * * *', async () => {
+  try {
+    const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000); // 48 hrs ago
+    const users  = await User.find({
+      lastSessionAt:            { $lt: cutoff },
+      reminderEmailSent:        null,
+      'emailPreferences.reminder': true,
+      unsubscribedAt:           { $exists: false },
+      email:                    { $exists: true },
+    }).select('email name lastSessionAt').lean();
+
+    for (const u of users) {
+      const daysSince = Math.floor((Date.now() - new Date(u.lastSessionAt)) / 86400000);
+      try {
+        await sendReminder(u.email, u.name, daysSince);
+        await User.updateOne({ _id: u._id }, { $set: { reminderEmailSent: new Date() } });
+        console.log(`📧 Reminder sent → ${u.email}`);
+      } catch (err) {
+        console.error(`Reminder failed for ${u.email}:`, err.message);
+      }
+    }
+  } catch (err) {
+    console.error('Reminder cron error:', err.message);
+  }
+});
+
+// ── Cron: weekly summary — every Sunday at 9am UTC ────────────────
+cron.schedule('0 9 * * 0', async () => {
+  try {
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const users   = await User.find({
+      'emailPreferences.weekly': true,
+      unsubscribedAt:            { $exists: false },
+      email:                     { $exists: true },
+    }).select('email name').lean();
+
+    for (const u of users) {
+      try {
+        const sessions = await Session.find({
+          userId:      u._id,
+          sessionDate: { $gte: weekAgo },
+        }).lean();
+
+        const sessionCount  = sessions.length;
+        const totalMinutes  = sessions.reduce((s, x) => s + (x.sessionLength || 0), 0);
+        const moodValues    = sessions.map(x => x.moodAfter).filter(v => v != null);
+        const avgMood       = moodValues.length ? moodValues.reduce((a, b) => a + b, 0) / moodValues.length : null;
+        const techCount     = {};
+        sessions.forEach(x => { if (x.technique) techCount[x.technique] = (techCount[x.technique] || 0) + 1; });
+        const topTechnique  = Object.keys(techCount).sort((a, b) => techCount[b] - techCount[a])[0] ?? null;
+
+        await sendWeekly(u.email, u.name, { sessionCount, totalMinutes, avgMood, topTechnique });
+        console.log(`📧 Weekly sent → ${u.email}`);
+      } catch (err) {
+        console.error(`Weekly failed for ${u.email}:`, err.message);
+      }
+      // 200ms delay between sends to avoid rate limits
+      await new Promise(r => setTimeout(r, 200));
+    }
+  } catch (err) {
+    console.error('Weekly cron error:', err.message);
+  }
+});
 
 // Healthcheck
 app.get("/api/ping", (req, res) => {

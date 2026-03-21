@@ -541,8 +541,8 @@ function SidebarStat({ value, label }: { value: string; label: string }) {
   const ts = useThemeStyles();
   return (
     <div className="flex items-center justify-between py-2 border-b last:border-0" style={{ borderColor: ts.border }}>
-      <span className="text-[10px]" style={{ color: ts.textMuted }}>{label}</span>
-      <span className="text-xs font-medium tabular-nums" style={{ color: ts.textSecondary }}>{value}</span>
+      <span className="text-xs" style={{ color: ts.textMuted }}>{label}</span>
+      <span className="text-sm font-semibold tabular-nums" style={{ color: ts.textSecondary }}>{value}</span>
     </div>
   );
 }
@@ -592,6 +592,15 @@ export default function CommunityPage() {
 
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <style>{`
+        @keyframes commIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .comm-in {
+          animation: commIn 0.3s ease forwards;
+        }
+      `}</style>
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
@@ -697,16 +706,16 @@ export default function CommunityPage() {
               <div className="rounded-2xl p-4 border" style={{ borderColor: ts.border, backgroundColor: ts.cardBg }}>
                 <div className="flex items-center gap-2 mb-3">
                   <Flame size={13} style={{ color: ts.accent }} />
-                  <p className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>About</p>
+                  <p className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: ts.textSecondary }}>About</p>
                 </div>
-                <p className="text-[10px] leading-relaxed" style={{ color: ts.textMuted }}>
+                <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
                   A space for meditators to share experiences, ask questions, and celebrate progress. Be kind. Be real.
                 </p>
               </div>
 
               {/* Stats */}
               <div className="rounded-2xl p-4 border" style={{ borderColor: ts.border, backgroundColor: ts.cardBg }}>
-                <p className="text-[10px] uppercase tracking-widest mb-2" style={{ color: ts.textMuted }}>Community</p>
+                <p className="text-[10px] uppercase tracking-widest mb-2 font-semibold" style={{ color: ts.textSecondary }}>Community</p>
                 <SidebarStat value={String(posts.length)} label="Posts loaded" />
                 <SidebarStat value={String(posts.reduce((s, p) => s + p.likeCount, 0))} label="Total likes" />
                 <SidebarStat value={String(posts.reduce((s, p) => s + p.commentCount, 0))} label="Total comments" />
@@ -714,11 +723,11 @@ export default function CommunityPage() {
 
               {/* Rules */}
               <div className="rounded-2xl p-4 border" style={{ borderColor: ts.border, backgroundColor: ts.cardBg }}>
-                <p className="text-[10px] uppercase tracking-widest mb-3" style={{ color: ts.textMuted }}>{t('community.rules')}</p>
+                <p className="text-[10px] uppercase tracking-widest mb-3 font-semibold" style={{ color: ts.textSecondary }}>{t('community.rules')}</p>
                 {([t('community.rule1'), t('community.rule2'), t('community.rule3'), t('community.rule4')]).map((r, i) => (
                   <div key={i} className="flex items-center gap-2 py-1.5 border-b last:border-0" style={{ borderColor: ts.border }}>
-                    <span className="text-[9px] font-mono" style={{ color: ts.textDim }}>{i + 1}</span>
-                    <span className="text-[10px]" style={{ color: ts.textMuted }}>{r}</span>
+                    <span className="text-xs font-bold" style={{ color: ts.accentLight }}>{i + 1}</span>
+                    <span className="text-xs" style={{ color: ts.textMuted }}>{r}</span>
                   </div>
                 ))}
               </div>
@@ -726,8 +735,8 @@ export default function CommunityPage() {
               {/* CTA for logged-out */}
               {!isLoggedIn && (
                 <div className="rounded-2xl p-4 border flex flex-col gap-3" style={{ borderColor: ts.borderHover, backgroundColor: ts.cardBg }}>
-                  <p className="text-xs font-medium" style={{ color: ts.textSecondary }}>Join Breathe</p>
-                  <p className="text-[10px] leading-relaxed" style={{ color: ts.textMuted }}>
+                  <p className="text-sm font-semibold" style={{ color: ts.textPrimary }}>Join Breathe</p>
+                  <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
                     Create an account to post, comment, and track your meditation journey.
                   </p>
                   <Link to="/register" className="w-full py-2 rounded-xl text-[10px] text-white text-center font-medium transition-all"

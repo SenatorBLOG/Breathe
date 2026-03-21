@@ -1,5 +1,12 @@
 // App.tsx
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
 import HomePage from './pages/HomePage.tsx';
 import BreathingPage from './pages/BreathingPage';
 import LoginPage from './pages/LoginPage';
@@ -18,9 +25,15 @@ import ProfilePage from './pages/ProfilePage';
 import DataConsentPage from './pages/DataConsentPage';
 import OnboardingPage from './pages/OnboardingPage';
 import GlobePage from './pages/GlobePage';
+import SleepApneaPage from './pages/sleep/SleepApneaPage';
+import WhySleepPage from './pages/sleep/WhySleepPage';
+import BreathworkSleepPage from './pages/sleep/BreathworkSleepPage';
+import SlowBreathingPage from './pages/science/SlowBreathingPage';
+import MorningRitualPage from './pages/techniques/MorningRitualPage';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import AICoachButton from './components/AICoach/AICoachButton';
+import ScrollToTopButton from './components/ScrollToTopButton';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 import './index.css';
@@ -37,6 +50,7 @@ export default function App() {
       <AuthProvider>
         <MusicProvider>
           <div className="min-h-screen">
+            <ScrollToTop />
             <Routes>
               <Route path="/"             element={<Navigate to="/home-page" replace />} />
               <Route path="/home-page"    element={<HomePage />} />
@@ -62,9 +76,15 @@ export default function App() {
               <Route path="/music-library" element={<MusicLibrary />} />
               <Route path="/onboarding"   element={<OnboardingPage />} />
               <Route path="/globe"         element={<GlobePage />} />
+              <Route path="/sleep/what-is-sleep-apnea"        element={<SleepApneaPage />} />
+              <Route path="/sleep/why-sleep-is-important"    element={<WhySleepPage />} />
+              <Route path="/sleep/breathwork-for-deep-sleep" element={<BreathworkSleepPage />} />
+              <Route path="/science/slow-breathing"          element={<SlowBreathingPage />} />
+              <Route path="/breathing/morning-ritual"        element={<MorningRitualPage />} />
               <Route path="*"              element={<HomePage />} />
             </Routes>
             <AICoachButton variant="floating" />
+            <ScrollToTopButton />
             <GlobalAudioPlayer />
           </div>
         </MusicProvider>

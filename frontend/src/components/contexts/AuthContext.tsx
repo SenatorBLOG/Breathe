@@ -8,6 +8,7 @@ type AuthCtx = {
   user: any | null;
   login: (token: string, user?: any) => void;
   logout: () => void;
+  updateUser: (updates: any) => void;
 };
 
 export const AuthContext = createContext<AuthCtx>({
@@ -16,6 +17,7 @@ export const AuthContext = createContext<AuthCtx>({
   user: null,
   login: () => {},
   logout: () => {},
+  updateUser: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -37,6 +39,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(userPayload ?? null);
   };
 
+  const updateUser = (updates: any) => {
+    setUser((prev: any) => {
+      const updated = { ...prev, ...updates };
+      localStorage.setItem('user', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -51,7 +61,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       token,
       user,
       login,
-      logout
+      logout,
+      updateUser,
     }}>
       {children}
     </AuthContext.Provider>

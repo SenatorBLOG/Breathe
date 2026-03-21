@@ -99,7 +99,7 @@ function InsightCard({ icon, title, desc }: { icon: string; title: string; desc:
       <span className="text-xl flex-shrink-0">{icon}</span>
       <div>
         <p className="text-xs font-medium mb-1" style={{ color: ts.textPrimary }}>{title}</p>
-        <p className="text-[10px] leading-relaxed" style={{ color: ts.textDim }}>{desc}</p>
+        <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
       </div>
     </div>
   );

@@ -144,7 +144,7 @@ const MonthlyActivityChart = () => {
                 <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: `${ts.border}66` }}>
                   <div className="h-full rounded-full" style={{ width: `${pct}%`, background: d.color }} />
                 </div>
-                <span className="text-[10px] tabular-nums flex-shrink-0 w-14 text-right" style={{ color: ts.textDim }}>
+                <span className="text-[10px] tabular-nums flex-shrink-0 w-14 text-right" style={{ color: ts.textMuted }}>
                   {d.value}× · {pct}%
                 </span>
               </div>

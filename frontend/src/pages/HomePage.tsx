@@ -247,9 +247,9 @@ export default function HomePage() {
                   {t('home.exploreMindfulness')}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <ContentCard icon="🌊" tag="Guide" title={t('home.contentCards.sleepTitle')} desc={t('home.contentCards.sleepDesc')} href="/faq" />
-                  <ContentCard icon="⚡" tag="Science" title={t('home.contentCards.scienceTitle')} desc={t('home.contentCards.scienceDesc')} href="/faq" />
-                  <ContentCard icon="🧘" tag="Practice" title={t('home.contentCards.morningTitle')} desc={t('home.contentCards.morningDesc')} href="/breathing" />
+                  <ContentCard icon="🌊" tag="Guide" title={t('home.contentCards.sleepTitle')} desc={t('home.contentCards.sleepDesc')} href="/sleep/breathwork-for-deep-sleep" />
+                  <ContentCard icon="⚡" tag="Science" title={t('home.contentCards.scienceTitle')} desc={t('home.contentCards.scienceDesc')} href="/science/slow-breathing" />
+                  <ContentCard icon="🧘" tag="Practice" title={t('home.contentCards.morningTitle')} desc={t('home.contentCards.morningDesc')} href="/breathing/morning-ritual" />
                   <ContentCard icon="📊" tag="Track" title={t('home.contentCards.progressTitle')} desc={t('home.contentCards.progressDesc')} href="/sessions" />
                   <ContentCard icon="🌍" tag="Community" title={t('home.contentCards.communityTitle')} desc={t('home.contentCards.communityDesc')} href="/community" />
                 </div>
@@ -279,6 +279,27 @@ export default function HomePage() {
                 >
                   🌬 &nbsp;Begin Session
                 </Link>
+              </div>
+
+              {/* Sleep guides */}
+              <div className="rounded-2xl p-5 flex flex-col gap-3"
+                style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}>
+                <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+                  Sleep guides
+                </p>
+                {[
+                  { label: 'Why Sleep is So Important',  href: '/sleep/why-sleep-is-important',    icon: '💤' },
+                  { label: 'What is Sleep Apnea?',       href: '/sleep/what-is-sleep-apnea',        icon: '😮‍💨' },
+                  { label: 'Breathwork for Deep Sleep',  href: '/sleep/breathwork-for-deep-sleep',  icon: '🌊' },
+                  { label: 'Why Slow Breathing Calms You', href: '/science/slow-breathing',         icon: '⚡' },
+                ].map(({ label, href, icon }) => (
+                  <Link key={href} to={href}
+                    className="flex items-center gap-2 text-xs transition-all hover:opacity-80"
+                    style={{ color: ts.accent }}>
+                    <span>{icon}</span>
+                    <span>{label} →</span>
+                  </Link>
+                ))}
               </div>
 
               <AdSlot label="Ad · 300×600 half-page" tall />
