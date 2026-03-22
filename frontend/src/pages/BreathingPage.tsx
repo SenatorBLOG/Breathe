@@ -255,6 +255,28 @@ export default function BreathingPage() {
     return () => { if (iv) clearInterval(iv); };
   }, [isActive]);
 
+  const TECHNIQUE_LABELS: Record<string, string> = {
+    'box-breathing':  'Box Breathing',
+    '4-7-8':          '4-7-8 Breathing',
+    'wim-hof':        'Wim Hof Method',
+    'coherent':       'Coherent Breathing',
+    'belly':          'Belly Breathing',
+    'morning-ritual': 'Morning Ritual',
+  };
+
+  const triggerNLPAnalysis = async (sessionId: string) => {
+    try {
+      const { data } = await api.post(`/nlp/analyze/${sessionId}`);
+      if (data?.nlp?.suggestedTechnique) {
+        const label = TECHNIQUE_LABELS[data.nlp.suggestedTechnique] ?? data.nlp.suggestedTechnique;
+        toast.info(`Based on your notes: try ${label}`, {
+          description: data.nlp.oneLineSummary ?? undefined,
+          duration: 8000,
+        });
+      }
+    } catch { /* silent — NLP is non-critical */ }
+  };
+
   const saveSession = async (payload: any) => {
     if (!localStorage.getItem('token')) {
       toast('Session not saved', {
@@ -268,9 +290,12 @@ export default function BreathingPage() {
       const cid = payload?.clientId;
       if (cid && savedClientIdsRef.current.has(cid)) return;
       if (cid) savedClientIdsRef.current.add(cid);
-      await api.post("/sessions", payload);
+      const { data } = await api.post("/sessions", payload);
       toast.success(t("breathing.session") + " saved");
       setCycles(0); setCurrentDuration(0); fetchStats();
+      if (payload.notes?.trim() && data?._id) {
+        triggerNLPAnalysis(data._id); // fire-and-forget
+      }
     } catch {
       const cid = payload?.clientId;
       if (cid) savedClientIdsRef.current.delete(cid);

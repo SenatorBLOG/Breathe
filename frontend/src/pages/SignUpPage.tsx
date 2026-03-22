@@ -1,6 +1,6 @@
 // src/pages/SignUpPage.tsx
 import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../components/contexts/AuthContext';
 import { useGoogleLogin } from '@react-oauth/google';
 import NavBar from '../components/NavBar';
@@ -17,6 +17,10 @@ export default function SignUpPage() {
   const ts = useThemeStyles();
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
+
+  const [searchParams] = useSearchParams();
+  const ref   = searchParams.get('ref');
+  const score = searchParams.get('score');
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -65,6 +69,8 @@ export default function SignUpPage() {
       const res = await api.post('/auth/register', { name, email, password });
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('userId', res.data.user?._id ?? '');
+      if (ref)   localStorage.setItem('breathe_quiz_result', ref);
+      if (score) localStorage.setItem('breathe_stress_score', score);
       toast.success('Account created! Welcome to Breathe 🌊');
       navigate('/onboarding');
     } catch (err: any) {
@@ -161,6 +167,23 @@ export default function SignUpPage() {
                 <div className="h-px bg-gradient-to-r from-transparent via-[#4A9EFF]/40 to-transparent" />
 
                 <div className="p-7 sm:p-9 flex flex-col gap-6">
+
+                  {/* Quiz/calc result banner */}
+                  {ref && (
+                    <div className="px-4 py-3 rounded-xl text-center"
+                      style={{ background: ts.cardBgHover, border: `1px solid ${ts.borderHover}` }}>
+                      <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>
+                        {ref === 'stress'      && '😰 Your Stress Breather result is saved'}
+                        {ref === 'shallow'     && '🌀 Your Shallow Breather result is saved'}
+                        {ref === 'natural'     && '🌊 Your Natural Breather result is saved'}
+                        {ref === 'stress-calc' && `📊 Your stress score (${score}/100) is saved`}
+                      </p>
+                      <p className="text-[10px] mt-0.5" style={{ color: ts.textMuted }}>
+                        Create your account to unlock your 7-day plan
+                      </p>
+                    </div>
+                  )}
+
                   {/* Header */}
                   <div>
                     <h2 className="text-xl font-medium tracking-wide" style={{ color: ts.textPrimary }}>
