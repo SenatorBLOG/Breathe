@@ -17,12 +17,23 @@ import {
 import { useHealthData } from '../hooks/useHealthData';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine,
+} from 'recharts';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Session {
   _id: string; sessionDate: string; moodBefore: number; moodAfter: number;
   focusLevel: number; stressLevel: number; calmnessScore: number;
   sessionLength: number; cycles: number;
+}
+
+interface NLPInsights {
+  totalAnalyzed: number;
+  avgScore: number | null;
+  topThemes: { theme: string; count: number }[];
+  sentimentDist: { positive: number; neutral: number; negative: number };
+  timeline: { date: string; score: number; sentiment: string; oneLineSummary: string }[];
 }
 
 // ─── Ad slot ──────────────────────────────────────────────────────────────────
@@ -110,10 +121,12 @@ export default function StatsPage() {
   const { t } = useTranslation();
   const ts = useThemeStyles();
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [nlp, setNlp] = useState<NLPInsights | null>(null);
   const { data: health } = useHealthData();
 
   useEffect(() => {
     api.get('/sessions').then(r => setSessions(r.data)).catch(() => {});
+    api.get('/nlp/insights').then(r => setNlp(r.data)).catch(() => {});
   }, []);
 
   // Derived numbers
@@ -356,6 +369,101 @@ export default function StatsPage() {
               {insights.map((ins, i) => ins && <InsightCard key={i} {...ins} />)}
             </div>
           </div>
+
+          {/* Emotional Intelligence section */}
+          {nlp && nlp.totalAnalyzed > 0 && (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Brain size={12} style={{ color: ts.accent }} />
+                  <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+                    Emotional Intelligence
+                  </p>
+                </div>
+                <Link to="/journal" className="text-xs hover:underline flex items-center gap-1" style={{ color: ts.accent }}>
+                  View journal <ArrowRight size={11} />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Score timeline chart */}
+                {nlp.timeline.length > 1 && (
+                  <ChartCard title="Emotional score" sub="Sentiment across your recent sessions (−1 negative → +1 positive)">
+                    <ResponsiveContainer width="100%" height={140}>
+                      <LineChart data={nlp.timeline.map(t => ({
+                        date: new Date(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                        score: t.score,
+                      }))}>
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: ts.textMuted }} axisLine={false} tickLine={false} />
+                        <YAxis domain={[-1, 1]} tick={{ fontSize: 10, fill: ts.textMuted }} axisLine={false} tickLine={false} width={28} />
+                        <ReferenceLine y={0} stroke={ts.border} strokeDasharray="3 3" />
+                        <Tooltip
+                          contentStyle={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}`, borderRadius: 12, fontSize: 11 }}
+                          labelStyle={{ color: ts.textSecondary }}
+                          itemStyle={{ color: ts.accent }}
+                          formatter={(v: number) => [v.toFixed(2), 'Score']}
+                        />
+                        <Line
+                          type="monotone" dataKey="score"
+                          stroke={ts.accent} strokeWidth={2} dot={false}
+                          activeDot={{ r: 4, fill: ts.accent }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </ChartCard>
+                )}
+
+                {/* Top themes + sentiment dist */}
+                <div
+                  className="flex flex-col gap-3 rounded-2xl p-5"
+                  style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}
+                >
+                  <div>
+                    <h3 className="text-sm font-medium" style={{ color: ts.textPrimary }}>Recurring themes</h3>
+                    <p className="text-[10px] mt-0.5" style={{ color: ts.textMuted }}>
+                      Based on {nlp.totalAnalyzed} analyzed sessions
+                    </p>
+                  </div>
+
+                  {nlp.topThemes.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {nlp.topThemes.map(({ theme, count }) => (
+                        <span
+                          key={theme}
+                          className="text-xs px-2.5 py-1 rounded-full capitalize"
+                          style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}
+                        >
+                          {theme} · {count}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider mb-1.5" style={{ color: ts.textMuted }}>
+                      Sentiment split
+                    </p>
+                    <div className="flex h-2 rounded-full overflow-hidden gap-0.5">
+                      {nlp.sentimentDist.positive > 0 && (
+                        <div style={{ flex: nlp.sentimentDist.positive, background: ts.accent }} className="rounded-full" />
+                      )}
+                      {nlp.sentimentDist.neutral > 0 && (
+                        <div style={{ flex: nlp.sentimentDist.neutral, background: '#7AAEC8' }} className="rounded-full" />
+                      )}
+                      {nlp.sentimentDist.negative > 0 && (
+                        <div style={{ flex: nlp.sentimentDist.negative, background: '#FF8A8A' }} className="rounded-full" />
+                      )}
+                    </div>
+                    <div className="flex gap-3 mt-1.5">
+                      <span className="text-[10px]" style={{ color: ts.accent }}>● Positive {nlp.sentimentDist.positive}</span>
+                      <span className="text-[10px]" style={{ color: '#7AAEC8' }}>● Neutral {nlp.sentimentDist.neutral}</span>
+                      <span className="text-[10px]" style={{ color: '#FF8A8A' }}>● Difficult {nlp.sentimentDist.negative}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Bottom ad + CTA row */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

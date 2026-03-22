@@ -8,13 +8,23 @@ import { toast } from "sonner";
 import {
   Trash2, Plus, Wind, Timer, Flame, TrendingUp,
   ChevronDown, ChevronUp, Search, SlidersHorizontal,
-  Brain, Sparkles, X, Calendar,
+  Brain, Sparkles, X, Calendar, BookOpen, ArrowRight,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useThemeStyles } from "../hooks/useThemeStyles";
 import ThemeBackground from "../components/ThemeBackground";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
+interface NLPData {
+  sentiment: 'positive' | 'neutral' | 'negative';
+  score: number;
+  themes: string[];
+  intensity: number;
+  suggestedTechnique: string;
+  oneLineSummary: string;
+  analyzedAt: string;
+}
+
 interface Session {
   _id: string;
   sessionDate: string;
@@ -30,6 +40,7 @@ interface Session {
   sessionLength: number;
   cycles: number;
   notes?: string;
+  nlp?: NLPData;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -41,6 +52,130 @@ function fmtTime(iso: string) {
 }
 function moodEmoji(v: number) {
   if (v <= 2) return "😞"; if (v <= 4) return "😐"; if (v <= 6) return "🙂"; if (v <= 8) return "😊"; return "🌟";
+}
+
+const TECHNIQUE_LABELS: Record<string, string> = {
+  'box-breathing': 'Box Breathing', '4-7-8': '4-7-8 Breathing',
+  'wim-hof': 'Wim Hof Method', 'coherent': 'Coherent Breathing',
+  'belly': 'Belly Breathing', 'morning-ritual': 'Morning Ritual',
+};
+const TECHNIQUE_LINKS: Record<string, string> = {
+  'box-breathing': '/breathing/box-breathing', '4-7-8': '/breathing/4-7-8',
+  'wim-hof': '/breathing/wim-hof', 'coherent': '/breathing',
+  'belly': '/breathing', 'morning-ritual': '/breathing/morning-ritual',
+};
+
+function sentimentColor(s: string | undefined, accent: string) {
+  if (s === 'positive') return accent;
+  if (s === 'negative') return '#FF8A8A';
+  return '#7AAEC8';
+}
+
+function JournalEntryCard({ session }: { session: Session }) {
+  const ts = useThemeStyles();
+  const [expanded, setExpanded] = useState(false);
+  const nlp = session.nlp;
+  const date = new Date(session.sessionDate);
+
+  const emoji = nlp?.sentiment === 'positive' ? '😌' : nlp?.sentiment === 'negative' ? '😟' : '😐';
+
+  return (
+    <div className="rounded-2xl overflow-hidden transition-all"
+      style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
+      <button
+        className="w-full flex items-start gap-3 p-4 text-left hover:opacity-80 transition-opacity"
+        onClick={() => setExpanded(e => !e)}
+      >
+        <span className="text-xl flex-shrink-0 mt-0.5">{emoji}</span>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>
+              {date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+              <span className="font-normal ml-1.5" style={{ color: ts.textMuted }}>
+                {date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            </p>
+            {session.sessionLength > 0 && (
+              <span className="text-[10px] px-2 py-0.5 rounded-full flex-shrink-0"
+                style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}>
+                {session.sessionLength}m
+              </span>
+            )}
+          </div>
+          {session.notes && (
+            <p className="text-xs leading-relaxed line-clamp-2" style={{ color: ts.textSecondary }}>
+              {session.notes}
+            </p>
+          )}
+          {nlp?.oneLineSummary && !expanded && (
+            <p className="text-xs mt-1.5 italic" style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
+              {nlp.oneLineSummary}
+            </p>
+          )}
+        </div>
+        <span className="flex-shrink-0 mt-1" style={{ color: ts.textMuted }}>
+          {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+        </span>
+      </button>
+
+      {expanded && nlp && (
+        <div className="px-4 pb-4 border-t flex flex-col gap-3" style={{ borderColor: ts.border, paddingTop: 12 }}>
+          <p className="text-xs italic" style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
+            "{nlp.oneLineSummary}"
+          </p>
+          {/* Score bar */}
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] uppercase tracking-wider flex-shrink-0" style={{ color: ts.textMuted }}>Score</span>
+            <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-white/10">
+              <div className="h-full rounded-full" style={{
+                width: `${((nlp.score + 1) / 2) * 100}%`,
+                background: nlp.score > 0.2 ? ts.accent : nlp.score < -0.2 ? '#FF8A8A' : '#7AAEC8',
+              }} />
+            </div>
+            <span className="text-xs font-medium tabular-nums flex-shrink-0"
+              style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
+              {nlp.score >= 0 ? '+' : ''}{nlp.score.toFixed(2)}
+            </span>
+          </div>
+          {/* Themes */}
+          {nlp.themes.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {nlp.themes.map(t => (
+                <span key={t} className="text-[10px] px-2 py-0.5 rounded-full capitalize"
+                  style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}>{t}</span>
+              ))}
+              <span className="text-[10px] px-2 py-0.5 rounded-full"
+                style={{ backgroundColor: ts.border, color: ts.textMuted }}>intensity {nlp.intensity}/10</span>
+            </div>
+          )}
+          {/* Technique */}
+          {nlp.suggestedTechnique && (
+            <div className="flex items-center justify-between">
+              <p className="text-xs" style={{ color: ts.textMuted }}>
+                Try: <span className="font-medium" style={{ color: ts.textSecondary }}>
+                  {TECHNIQUE_LABELS[nlp.suggestedTechnique] ?? nlp.suggestedTechnique}
+                </span>
+              </p>
+              <Link to={TECHNIQUE_LINKS[nlp.suggestedTechnique] ?? '/breathing'}
+                className="flex items-center gap-1 text-xs font-medium hover:opacity-80"
+                style={{ color: ts.accent }}>
+                Try it <ArrowRight size={11} />
+              </Link>
+            </div>
+          )}
+          {/* Full notes */}
+          {session.notes && (
+            <div className="rounded-xl p-3" style={{ backgroundColor: `${ts.border}40` }}>
+              <p className="text-[10px] uppercase tracking-wider mb-1.5" style={{ color: ts.textMuted }}>Notes</p>
+              <p className="text-xs leading-relaxed whitespace-pre-wrap" style={{ color: ts.textSecondary }}>
+                {session.notes}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
 
 // ─── Ad slot ──────────────────────────────────────────────────────────────────
@@ -451,6 +586,7 @@ export default function SessionsPage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [minCycles, setMinCycles]   = useState(0);
   const [minDuration, setMinDuration] = useState(0);
+  const [activeTab, setActiveTab]   = useState<"sessions"|"journal">("sessions");
 
   useEffect(() => {
     if (!localStorage.getItem("token")) { navigate("/login"); return; }
@@ -516,6 +652,38 @@ export default function SessionsPage() {
     ? (sessions.reduce((s, x) => s + (x.moodAfter - x.moodBefore), 0) / sessions.length).toFixed(1)
     : "—";
 
+  // ── Journal data (derived from sessions) ────────────────────────────────────
+  const journalSessions = useMemo(() =>
+    [...sessions].filter(s => s.nlp?.analyzedAt).sort(
+      (a, b) => new Date(b.sessionDate).getTime() - new Date(a.sessionDate).getTime()
+    ), [sessions]);
+
+  const journalGroups = useMemo(() => {
+    const map = new Map<string, Session[]>();
+    journalSessions.forEach(s => {
+      const key = new Date(s.sessionDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(s);
+    });
+    return map;
+  }, [journalSessions]);
+
+  const journalStats = useMemo(() => {
+    if (!journalSessions.length) return null;
+    const scores = journalSessions.map(s => s.nlp!.score);
+    const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+    const sentimentDist = { positive: 0, neutral: 0, negative: 0 };
+    const themeCounts: Record<string, number> = {};
+    journalSessions.forEach(s => {
+      if (s.nlp!.sentiment) sentimentDist[s.nlp!.sentiment]++;
+      (s.nlp!.themes ?? []).forEach(t => { themeCounts[t] = (themeCounts[t] || 0) + 1; });
+    });
+    const topThemes = Object.entries(themeCounts)
+      .sort((a, b) => b[1] - a[1]).slice(0, 5)
+      .map(([theme, count]) => ({ theme, count }));
+    return { avgScore, sentimentDist, topThemes };
+  }, [journalSessions]);
+
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
       <style>{`
@@ -546,18 +714,147 @@ export default function SessionsPage() {
               <p className="text-[10px] tracking-[0.3em] uppercase mb-1" style={{ color: ts.textMuted }}>Breathe · History</p>
               <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>My Sessions</h1>
             </div>
-            <button
-              onClick={() => setShowAdd(v => !v)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium tracking-wide transition-all hover:scale-105 active:scale-95"
-              style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
-            >
-              {showAdd ? <X size={14} /> : <Plus size={14} />}
-              {showAdd ? t("sessions.cancel") : t("sessions.logSession")}
-            </button>
+            {activeTab === "sessions" && (
+              <button
+                onClick={() => setShowAdd(v => !v)}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium tracking-wide transition-all hover:scale-105 active:scale-95"
+                style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
+              >
+                {showAdd ? <X size={14} /> : <Plus size={14} />}
+                {showAdd ? t("sessions.cancel") : t("sessions.logSession")}
+              </button>
+            )}
+          </div>
+
+          {/* Tab switcher */}
+          <div className="flex gap-1 mt-4 p-1 rounded-xl w-fit" style={{ backgroundColor: `${ts.border}60` }}>
+            {(["sessions", "journal"] as const).map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className="px-5 py-1.5 rounded-lg text-xs font-medium tracking-wide transition-all capitalize"
+                style={{
+                  backgroundColor: activeTab === tab ? ts.cardBg : 'transparent',
+                  color: activeTab === tab ? ts.textPrimary : ts.textMuted,
+                  boxShadow: activeTab === tab ? `0 1px 4px rgba(0,0,0,0.2)` : 'none',
+                }}
+              >
+                {tab === "journal" ? `Journal${journalSessions.length ? ` · ${journalSessions.length}` : ""}` : "Sessions"}
+              </button>
+            ))}
           </div>
         </header>
 
-        {/* Main body */}
+        {/* ── Journal tab ─────────────────────────────────────────────────────── */}
+        {activeTab === "journal" && (
+          <div className="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 pb-20 flex flex-col gap-5 pt-4">
+            {/* Summary card */}
+            {journalStats && (
+              <div className="rounded-2xl p-5 flex flex-col gap-4"
+                style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
+                <div className="flex items-center gap-2">
+                  <Brain size={13} style={{ color: ts.accent }} />
+                  <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>Emotional overview</p>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-xl font-light tabular-nums" style={{ color: ts.textPrimary }}>{journalSessions.length}</p>
+                    <p className="text-[10px] uppercase tracking-wider mt-0.5" style={{ color: ts.textMuted }}>analyzed</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium" style={{
+                      color: journalStats.avgScore > 0.2
+                        ? ts.accent : journalStats.avgScore < -0.2 ? '#FF8A8A' : '#7AAEC8'
+                    }}>
+                      {journalStats.avgScore > 0.2 ? 'Generally positive' : journalStats.avgScore < -0.2 ? 'Challenging' : 'Balanced'}
+                    </p>
+                    <p className="text-[10px] uppercase tracking-wider mt-0.5" style={{ color: ts.textMuted }}>overall mood</p>
+                  </div>
+                  <div>
+                    <p className="text-xl font-light tabular-nums" style={{ color: ts.accent }}>{journalStats.sentimentDist.positive}</p>
+                    <p className="text-[10px] uppercase tracking-wider mt-0.5" style={{ color: ts.textMuted }}>positive</p>
+                  </div>
+                </div>
+                {journalStats.topThemes.length > 0 && (
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider mb-2" style={{ color: ts.textMuted }}>Recurring themes</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {journalStats.topThemes.map(({ theme, count }) => (
+                        <span key={theme} className="text-xs px-2.5 py-1 rounded-full capitalize"
+                          style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}>
+                          {theme} · {count}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div>
+                  <div className="flex h-2 rounded-full overflow-hidden gap-0.5">
+                    {journalStats.sentimentDist.positive > 0 && (
+                      <div style={{ flex: journalStats.sentimentDist.positive, background: ts.accent }} className="rounded-full" />
+                    )}
+                    {journalStats.sentimentDist.neutral > 0 && (
+                      <div style={{ flex: journalStats.sentimentDist.neutral, background: '#7AAEC8' }} className="rounded-full" />
+                    )}
+                    {journalStats.sentimentDist.negative > 0 && (
+                      <div style={{ flex: journalStats.sentimentDist.negative, background: '#FF8A8A' }} className="rounded-full" />
+                    )}
+                  </div>
+                  <div className="flex gap-4 mt-1.5">
+                    <span className="text-[10px]" style={{ color: ts.accent }}>● Positive {journalStats.sentimentDist.positive}</span>
+                    <span className="text-[10px]" style={{ color: '#7AAEC8' }}>● Neutral {journalStats.sentimentDist.neutral}</span>
+                    <span className="text-[10px]" style={{ color: '#FF8A8A' }}>● Difficult {journalStats.sentimentDist.negative}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Empty state */}
+            {journalSessions.length === 0 && (
+              <div className="flex flex-col items-center justify-center gap-4 py-16 rounded-2xl text-center"
+                style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
+                <BookOpen size={34} style={{ color: ts.textDim }} />
+                <div>
+                  <p className="text-sm font-medium mb-1" style={{ color: ts.textSecondary }}>Journal is empty</p>
+                  <p className="text-xs max-w-xs" style={{ color: ts.textMuted }}>
+                    Add notes to your breathing sessions. AI will analyze your emotions and suggest techniques.
+                  </p>
+                </div>
+                <Link to="/breathing"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium hover:scale-105 transition-all"
+                  style={{ background: ts.btnGradient }}>
+                  Start a session <ArrowRight size={14} />
+                </Link>
+              </div>
+            )}
+
+            {/* Grouped entries */}
+            {[...journalGroups.keys()].map(month => (
+              <div key={month} className="flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <p className="text-xs font-medium tracking-wide" style={{ color: ts.textMuted }}>{month}</p>
+                  <div className="flex-1 h-px" style={{ backgroundColor: ts.border }} />
+                  <span className="text-[10px]" style={{ color: ts.textDim }}>
+                    {journalGroups.get(month)!.length} {journalGroups.get(month)!.length === 1 ? 'entry' : 'entries'}
+                  </span>
+                </div>
+                {journalGroups.get(month)!.map(s => <JournalEntryCard key={s._id} session={s} />)}
+              </div>
+            ))}
+
+            {journalSessions.length > 0 && (
+              <div className="flex items-start gap-2 px-4 py-3 rounded-xl" style={{ backgroundColor: `${ts.accent}0A` }}>
+                <Sparkles size={12} style={{ color: ts.accent }} className="mt-0.5 flex-shrink-0" />
+                <p className="text-xs" style={{ color: ts.textMuted }}>
+                  The more you journal, the better the AI understands your emotional patterns.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Sessions tab ────────────────────────────────────────────────────── */}
+        {activeTab === "sessions" && (
         <div className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 pb-20">
           <div className="flex gap-5">
 
@@ -728,6 +1025,7 @@ export default function SessionsPage() {
             </div>
           </div>
         </div>
+        )}
 
         <Footer />
       </div>

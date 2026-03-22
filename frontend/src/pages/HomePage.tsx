@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import NewsletterWidget from '../components/NewsletterWidget';
 import SoulOrb from '../components/AICoach/SoulOrb';
+import HomeInteractive from '../components/HomeInteractive';
 
 // ─── Floating particle for hero ──────────────────────────────────────────────
 function Particle({ delay, x, size }: { delay: number; x: number; size: number }) {
@@ -229,6 +230,21 @@ export default function HomePage() {
             <TechniquePill name={t("techniques.wimhof")} time={t("techniques.wimhofDesc")} icon="🔥" />
             <TechniquePill name={t("techniques.belly")} time={t("techniques.bellyDesc")} icon="🌀" />
             <TechniquePill name={t("techniques.alternate")} time={t("techniques.alternateDesc")} icon="☯️" />
+          </div>
+        </section>
+
+        {/* INTERACTIVE QUIZ + STRESS CALCULATOR */}
+        <section className="px-4 sm:px-6 lg:px-8 py-10 max-w-6xl mx-auto w-full">
+          <div className="flex flex-col items-center gap-5">
+            <div className="text-center">
+              <h2 className="text-lg sm:text-xl font-medium tracking-wide" style={{ color: ts.textPrimary }}>
+                What kind of breather are you?
+              </h2>
+              <p className="text-xs mt-1" style={{ color: ts.textMuted }}>
+                5 questions · free · instant result
+              </p>
+            </div>
+            <HomeInteractive />
           </div>
         </section>
 
