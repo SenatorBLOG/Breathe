@@ -22,7 +22,10 @@
       "Bash(node --check routes/unsubscribe.js)",
       "Bash(node --check models/User.js)",
       "Bash(node seeds/communityPosts.js)",
-      "WebFetch(domain:breathe-production-6cce.up.railway.app)"
+      "WebFetch(domain:breathe-production-6cce.up.railway.app)",
+      "Bash(ls \"c:\\\\Users\\\\Mikhail Senatorov\\\\Documents\\\\Douglas\\\\Breathe\\\\frontend\\\\public\"\" | grep -E \"icon)",
+      "Bash(png)",
+      "Bash(jpg \")"
     ]
   }
 }
