@@ -70,8 +70,10 @@ async function connectDB() {
 
   await mongoose.connect(process.env.MONGO_URI);
   isConnected = true;
-
   console.log("MongoDB connected");
+
+  // Seed static challenge data
+  require('./models/Challenge').seedAll().catch(e => console.error('Challenge seed error:', e.message));
 }
 
 app.use(async (req, res, next) => {
@@ -98,7 +100,8 @@ app.use("/api/sessions", sessionsRouter);
 app.use("/api/stats", statsRouter);
 app.use('/api/support', require('./routes/support'));
 app.use('/api/coach', require('./routes/coach'));
-app.use('/api/nlp',   require('./routes/nlp'));
+app.use('/api/nlp',        require('./routes/nlp'));
+app.use('/api/challenges', require('./routes/challenges'));
 app.use('/api/newsletter', require('./routes/newsletter'));
 app.use('/api/integrations', require('./routes/integrations'));
 app.use('/api/globe',        require('./routes/globe'));

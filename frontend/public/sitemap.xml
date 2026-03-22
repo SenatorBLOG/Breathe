@@ -110,6 +110,14 @@
 
   <!-- ── Sleep guides ───────────────────────────────────────────────────── -->
   <url>
+    <loc>https://breatheonline.app/sleep/story</loc>
+    <lastmod>2026-03-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+
+  <url>
     <loc>https://breatheonline.app/sleep/what-is-sleep-apnea</loc>
     <lastmod>2026-03-21</lastmod>
     <changefreq>monthly</changefreq>

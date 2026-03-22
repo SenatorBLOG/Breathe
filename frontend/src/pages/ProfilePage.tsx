@@ -14,6 +14,7 @@ import AppleHealthImport from '../components/AppleHealthImport';
 import HeartRateMonitor from '../components/HeartRateMonitor';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { AuthContext } from '../components/contexts/AuthContext';
+import ChallengesSection from '../components/ChallengesSection';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const GOALS = [
@@ -438,7 +439,7 @@ export default function ProfilePage() {
   const { user, updateUser } = useContext(AuthContext);
 
   // ── Tab ─────────────────────────────────────────────────────────────────────
-  const [tab, setTab] = useState<'profile' | 'devices'>('profile');
+  const [tab, setTab] = useState<'profile' | 'devices' | 'challenges'>('profile');
 
   // ── Profile form ─────────────────────────────────────────────────────────────
   const [nickname, setNickname]    = useState('');
@@ -655,11 +656,12 @@ export default function ProfilePage() {
           {/* Tab switcher */}
           <div className="flex rounded-xl overflow-hidden" style={{ border: `1px solid ${ts.border}` }}>
             {([
-              { id: 'profile' as const, label: 'My Profile' },
-              { id: 'devices' as const, label: 'Health Devices' },
+              { id: 'profile'    as const, label: 'My Profile' },
+              { id: 'challenges' as const, label: '🏆 Challenges' },
+              { id: 'devices'    as const, label: 'Health Devices' },
             ]).map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className="flex-1 py-3 text-sm font-medium transition-all"
+                className="flex-1 py-3 text-xs sm:text-sm font-medium transition-all"
                 style={{
                   background: tab === t.id ? ts.btnGradient : 'transparent',
                   color: tab === t.id ? '#fff' : ts.textMuted,
@@ -779,9 +781,26 @@ export default function ProfilePage() {
                   </div>
                   <ChevronRight size={14} style={{ color: ts.textDim }} />
                 </Link>
+                <button
+                  onClick={() => setTab('challenges')}
+                  className="col-span-2 flex items-center justify-between p-4 rounded-2xl transition-all hover:opacity-90"
+                  style={{ background: `${ts.accent}12`, border: `1px solid ${ts.accent}30` }}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">🏆</span>
+                    <div className="text-left">
+                      <p className="text-sm font-medium" style={{ color: ts.accentLight }}>Breathing Challenges</p>
+                      <p className="text-xs mt-0.5" style={{ color: ts.textMuted }}>7 & 21-day streaks · earn badges</p>
+                    </div>
+                  </div>
+                  <ChevronRight size={14} style={{ color: ts.accent }} />
+                </button>
               </div>
             </div>
           )}
+
+          {/* ── Challenges tab ───────────────────────────────────────────────── */}
+          {tab === 'challenges' && <ChallengesSection />}
 
           {/* ── Health Devices tab ────────────────────────────────────────────── */}
           {tab === 'devices' && (

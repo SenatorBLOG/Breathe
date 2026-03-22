@@ -304,6 +304,7 @@ export default function HomePage() {
                   Sleep guides
                 </p>
                 {[
+                  { label: 'AI Sleep Story — personalized', href: '/sleep/story',                    icon: '🌙' },
                   { label: 'Why Sleep is So Important',  href: '/sleep/why-sleep-is-important',    icon: '💤' },
                   { label: 'What is Sleep Apnea?',       href: '/sleep/what-is-sleep-apnea',        icon: '😮‍💨' },
                   { label: 'Breathwork for Deep Sleep',  href: '/sleep/breathwork-for-deep-sleep',  icon: '🌊' },

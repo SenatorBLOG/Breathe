@@ -134,6 +134,66 @@ router.post('/message', optionalAuth, rateLimit, async (req, res) => {
   }
 });
 
+// ─── POST /api/coach/sleep-story ─────────────────────────────────────────────
+router.post('/sleep-story', optionalAuth, async (req, res) => {
+  try {
+    const { theme = 'a quiet forest at dusk', duration = 'medium', language = 'en' } = req.body;
+
+    const WORD_COUNTS = { short: 250, medium: 600, long: 1200 };
+    const words = WORD_COUNTS[duration] || 600;
+
+    const LANG_INSTRUCTION = {
+      en: 'Write in English.',
+      ru: 'Напиши на русском языке.',
+      es: 'Escribe en español.',
+    };
+
+    const prompt = `You are a professional sleep story writer for a meditation app.
+
+Write a calming bedtime story (~${words} words) set in: ${theme}
+
+Rules:
+- Slow, hypnotic pace — short sentences, lots of sensory description
+- No conflict, no plot twists, no excitement
+- Progressively slower and quieter as story continues
+- Heavy on texture: soft light, gentle sounds, warm air, comfortable ground
+- End with the character drifting into peaceful sleep
+- Second person ("you") — the reader is the main character
+- No chapter headings, no titles, just the story
+${LANG_INSTRUCTION[language] || LANG_INSTRUCTION.en}
+
+Begin the story immediately. No preamble.`;
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) return res.status(500).json({ error: 'AI service not configured' });
+
+    const body = {
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.9, maxOutputTokens: 2048, topP: 0.95 },
+    };
+
+    const geminiRes = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(body),
+    });
+
+    const geminiData = await geminiRes.json();
+    if (!geminiRes.ok) {
+      console.error('Gemini sleep-story error:', geminiData?.error?.message);
+      return res.status(502).json({ error: 'Story generation failed. Please try again.' });
+    }
+
+    const story = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    if (!story) return res.status(502).json({ error: 'Empty response from AI' });
+
+    res.json({ story, theme, duration });
+  } catch (err) {
+    console.error('Sleep story error:', err.message);
+    res.status(500).json({ error: 'Story generation failed' });
+  }
+});
+
 // ─── GET /api/coach/status ────────────────────────────────────────────────────
 router.get('/status', optionalAuth, async (req, res) => {
   try {
