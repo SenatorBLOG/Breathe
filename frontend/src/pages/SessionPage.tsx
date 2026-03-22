@@ -906,6 +906,22 @@ export default function SessionsPage() {
                 </p>
               </div>
 
+              {/* Challenges shortcut */}
+              <Link to="/profile"
+                className="flex flex-col gap-2 rounded-2xl border p-4 transition-all hover:opacity-90"
+                style={{ backgroundColor: `${ts.accent}0E`, borderColor: `${ts.accent}30` }}>
+                <div className="flex items-center justify-between">
+                  <span className="text-base">🏆</span>
+                  <ArrowRight size={11} style={{ color: ts.accent }} />
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold" style={{ color: ts.accentLight }}>Challenges</p>
+                  <p className="text-[9px] mt-0.5 leading-relaxed" style={{ color: ts.textMuted }}>
+                    7 & 21-day streaks to build habits and earn badges
+                  </p>
+                </div>
+              </Link>
+
               {sessions.length > 0 && (
                 <button onClick={handleDeleteAll}
                   className="flex items-center gap-1.5 text-[10px] hover:text-[#FF8A8A] transition-colors px-1"
@@ -917,6 +933,20 @@ export default function SessionsPage() {
 
             {/* Main content */}
             <div className="flex-1 min-w-0 flex flex-col gap-4 pt-4">
+
+              {/* Challenges banner — mobile only (desktop sees sidebar card) */}
+              <Link to="/profile"
+                className="lg:hidden flex items-center justify-between px-4 py-3 rounded-2xl transition-all"
+                style={{ backgroundColor: `${ts.accent}0E`, border: `1px solid ${ts.accent}30` }}>
+                <div className="flex items-center gap-2.5">
+                  <span className="text-lg">🏆</span>
+                  <div>
+                    <p className="text-xs font-semibold" style={{ color: ts.accentLight }}>Breathing Challenges</p>
+                    <p className="text-[10px]" style={{ color: ts.textMuted }}>7 & 21-day streaks · earn badges</p>
+                  </div>
+                </div>
+                <ArrowRight size={13} style={{ color: ts.accent }} />
+              </Link>
 
               {showAdd && (
                 <div className="sess-in">

@@ -28,13 +28,18 @@ import GlobePage from './pages/GlobePage';
 import SleepApneaPage from './pages/sleep/SleepApneaPage';
 import WhySleepPage from './pages/sleep/WhySleepPage';
 import BreathworkSleepPage from './pages/sleep/BreathworkSleepPage';
+import SleepStoryPage from './pages/sleep/SleepStoryPage';
 import SlowBreathingPage from './pages/science/SlowBreathingPage';
 import MorningRitualPage from './pages/techniques/MorningRitualPage';
+
 import { ThemeProvider } from './contexts/ThemeContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import AICoachButton from './components/AICoach/AICoachButton';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import PWAInstallBanner from './components/PWAInstallBanner';
+import OfflineIndicator from './components/OfflineIndicator';
+import ChallengeNudge from './components/ChallengeNudge';
 
 import './index.css';
 import { GlobalAudioPlayer } from './components/AudioPlayer/GlobalAudioPlayer';
@@ -79,13 +84,18 @@ export default function App() {
               <Route path="/sleep/what-is-sleep-apnea"        element={<SleepApneaPage />} />
               <Route path="/sleep/why-sleep-is-important"    element={<WhySleepPage />} />
               <Route path="/sleep/breathwork-for-deep-sleep" element={<BreathworkSleepPage />} />
+              <Route path="/sleep/story"                   element={<SleepStoryPage />} />
               <Route path="/science/slow-breathing"          element={<SlowBreathingPage />} />
               <Route path="/breathing/morning-ritual"        element={<MorningRitualPage />} />
+              <Route path="/challenges"                      element={<Navigate to="/profile" replace />} />
               <Route path="*"              element={<HomePage />} />
             </Routes>
             <AICoachButton variant="floating" />
             <ScrollToTopButton />
             <GlobalAudioPlayer />
+            <PWAInstallBanner />
+            <OfflineIndicator />
+            <ChallengeNudge />
           </div>
         </MusicProvider>
       </AuthProvider>

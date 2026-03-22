@@ -53,6 +53,32 @@ router.post('/', authenticate, async (req, res) => {
       { $set: { lastSessionAt: new Date(), reminderEmailSent: null } }
     ).catch(err => console.error('Failed to update lastSessionAt:', err.message));
 
+    // Auto-checkin for active challenges (fire-and-forget)
+    ;(async () => {
+      try {
+        const UserChallenge = require('../models/UserChallenge');
+        const Challenge     = require('../models/Challenge');
+        const uc = await UserChallenge.findOne({
+          userId, completedAt: null, abandoned: false,
+        }).populate('challengeId');
+        if (!uc) return;
+        const challenge = uc.challengeId;
+        if (!challenge || session.sessionLength < challenge.minMinutes) return;
+        const today = new Date().toDateString();
+        const alreadyDone = uc.completedDays.some(d => new Date(d).toDateString() === today);
+        if (alreadyDone) return;
+        uc.completedDays.push(new Date());
+        if (uc.completedDays.length >= challenge.duration) {
+          uc.completedAt = new Date();
+          uc.badge = { ...challenge.badge, earnedAt: new Date() };
+        }
+        await uc.save();
+        console.log(`✅ Auto-checkin: user ${userId} day ${uc.completedDays.length}/${challenge.duration} on "${challenge.title}"`);
+      } catch (err) {
+        console.error('Auto-checkin error:', err.message);
+      }
+    })();
+
     res.status(201).json(session);
   } catch (err) {
     console.error('❌ Failed to save session:', err.message);
