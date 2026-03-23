@@ -89,12 +89,7 @@ export default function NavBar() {
             <NavLink to="/globe">{t("nav.globe", "Globe")}</NavLink>
             <NavLink to="/music-library">{t("nav.sounds")}</NavLink>
             <NavLink to="/community">{t("nav.community")}</NavLink>
-            {isAuthenticated ? (
-              <>
-                <NavLink to="/sessions">{t("nav.sessions")}</NavLink>
-                <NavLink to="/statistics">{t("nav.progress")}</NavLink>
-              </>
-            ) : (
+            {!isAuthenticated && (
               <>
                 <NavLink to="/faq">{t("nav.learn")}</NavLink>
                 <NavLink to="/support">{t("nav.support")}</NavLink>
@@ -196,9 +191,9 @@ export default function NavBar() {
                 { to: '/globe',        label: `🌍 ${t('nav.globe', 'Globe')}` },
                 { to: '/music-library',label: t('nav.sounds') },
                 { to: '/community',    label: t('nav.community') },
-                ...(isAuthenticated
-                  ? [{ to: '/sessions', label: t('nav.sessions') }, { to: '/statistics', label: t('nav.progress') }]
-                  : [{ to: '/faq', label: t('nav.learn') }, { to: '/support', label: t('nav.support') }]
+                ...(!isAuthenticated
+                  ? [{ to: '/faq', label: t('nav.learn') }, { to: '/support', label: t('nav.support') }]
+                  : []
                 ),
               ].map(({ to, label }) => (
                 <Link key={to} to={to} onClick={() => setIsMenuOpen(false)}

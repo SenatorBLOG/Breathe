@@ -172,8 +172,8 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
           <div>
             <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>Live Heart Rate</p>
             <p
-              className="text-[9px] mt-0.5"
-              style={{ color: status === 'connected' ? '#FF6B8A' : ts.textDim }}
+              className="text-xs mt-0.5"
+              style={{ color: status === 'connected' ? '#FF6B8A' : ts.textMuted }}
             >
               {status === 'idle'         && 'Bluetooth · not connected'}
               {status === 'connecting'   && 'Connecting…'}
@@ -243,7 +243,7 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
                   style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}
                 >
                   <p className="text-[#FF6B8A] text-xs font-medium tabular-nums">{value}</p>
-                  <p className="text-[9px] uppercase tracking-wide" style={{ color: ts.textMuted }}>{label}</p>
+                  <p className="text-[10px] uppercase tracking-wide" style={{ color: ts.textMuted }}>{label}</p>
                 </div>
               ))}
             </div>

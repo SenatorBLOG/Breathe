@@ -54,11 +54,27 @@ function initials(a: Author) {
 }
 
 const CATEGORY_META: Record<string, { label: string; color: string; bg: string }> = {
-  experience:  { label: 'Experience',  color: '#4A9EFF', bg: 'rgba(74,158,255,0.1)'  },
-  question:    { label: 'Question',    color: '#7AC4FF', bg: 'rgba(122,196,255,0.1)' },
-  achievement: { label: 'Achievement', color: '#4AE8A0', bg: 'rgba(74,232,160,0.1)'  },
-  tip:         { label: 'Tip',         color: '#FFD97D', bg: 'rgba(255,217,125,0.1)' },
+  experience:  { label: 'Experience',  color: '#4A9EFF', bg: 'rgba(74,158,255,0.12)'  },
+  question:    { label: 'Question',    color: '#A78BFA', bg: 'rgba(167,139,250,0.12)' },
+  achievement: { label: 'Achievement', color: '#FF9A5C', bg: 'rgba(255,154,92,0.12)'  },
+  tip:         { label: 'Tip',         color: '#FFD97D', bg: 'rgba(255,217,125,0.12)' },
 };
+
+// ─── Tag colour palette — fixed, theme-independent ───────────────────────────
+const TAG_PALETTE = [
+  { color: '#00D4FF', bg: 'rgba(0,212,255,0.10)',    border: 'rgba(0,212,255,0.28)'    }, // neon cyan
+  { color: '#FF6B9D', bg: 'rgba(255,107,157,0.10)',  border: 'rgba(255,107,157,0.28)'  }, // pink
+  { color: '#FFD97D', bg: 'rgba(255,217,125,0.10)',  border: 'rgba(255,217,125,0.28)'  }, // amber
+  { color: '#A78BFA', bg: 'rgba(167,139,250,0.10)',  border: 'rgba(167,139,250,0.28)'  }, // violet
+  { color: '#FF9A5C', bg: 'rgba(255,154,92,0.10)',   border: 'rgba(255,154,92,0.28)'   }, // orange
+  { color: '#34D399', bg: 'rgba(52,211,153,0.10)',   border: 'rgba(52,211,153,0.28)'   }, // emerald
+  { color: '#F87171', bg: 'rgba(248,113,113,0.10)',  border: 'rgba(248,113,113,0.28)'  }, // rose
+] as const;
+
+function pickTagColor(tag: string) {
+  const idx = [...tag].reduce((n, c) => n + c.charCodeAt(0), 0) % TAG_PALETTE.length;
+  return TAG_PALETTE[idx];
+}
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 function Avatar({ author, size = 8 }: { author: Author; size?: number }) {
@@ -263,7 +279,7 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
               readOnly={!isLoggedIn}
               onClick={() => { if (!isLoggedIn) onLoginRequired(); }}
               maxLength={300}
-              className="flex-1 bg-[#060C1A]/60 border rounded-xl px-4 py-3 text-xs placeholder-[#1A2D48] outline-none focus:border-[#2A5499] transition-colors leading-relaxed"
+              className="flex-1 comm-input border rounded-xl px-4 py-3 text-xs outline-none transition-colors leading-relaxed"
               style={{
                 borderColor: ts.border,
                 color: ts.textSecondary,
@@ -290,7 +306,8 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
   const { t } = useTranslation();
   const [liked, setLiked] = useState(post.likedByMe);
   const [likeCount, setLikeCount] = useState(post.likeCount);
-  const [commentCount, setCount] = useState(post.commentCount);
+  const [commentCount] = useState(post.commentCount);
+  const [hovered, setHovered] = useState(false);
   const cat = CATEGORY_META[post.category] ?? CATEGORY_META.experience;
 
   const toggleLike = async () => {
@@ -311,10 +328,12 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
   };
 
   return (
-    <div className="flex flex-col gap-3 p-4 rounded-2xl border transition-all duration-300 hover:border-[#1E3358]/70"
+    <div className="flex flex-col gap-3 p-4 rounded-2xl border transition-all duration-300"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
         background: ts.cardBg,
-        borderColor: ts.border,
+        borderColor: hovered ? ts.borderHover : ts.border,
       }}>
 
       {/* Header */}
@@ -356,16 +375,15 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
       {/* Tags */}
       {post.tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
-          {post.tags.map(tag => (
-            <span key={tag} className="text-[9px] px-2 py-0.5 rounded-full border uppercase tracking-wide"
-              style={{
-                backgroundColor: ts.cardBg,
-                borderColor: ts.border,
-                color: ts.accent,
-              }}>
-              #{tag}
-            </span>
-          ))}
+          {post.tags.map(tag => {
+            const tc = pickTagColor(tag);
+            return (
+              <span key={tag} className="text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wide"
+                style={{ backgroundColor: tc.bg, border: `1px solid ${tc.border}`, color: tc.color }}>
+                #{tag}
+              </span>
+            );
+          })}
         </div>
       )}
 
@@ -457,9 +475,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
           <div className="flex gap-2">
             {CATEGORIES.map(c => (
               <button key={c} onClick={() => setCategory(c)}
-                className={`flex-1 flex flex-col items-center gap-1 py-2.5 rounded-xl border text-center transition-all ${
-                  category === c ? 'border-[#2A5499]/70 bg-[#0D1B33]' : 'border-[#1E3358]/35 hover:border-[#1E3358]/60'
-                }`}
+                className="flex-1 flex flex-col items-center gap-1 py-2.5 rounded-xl border text-center transition-all"
                 style={{
                   backgroundColor: category === c ? ts.cardBgHover : ts.cardBg,
                   borderColor: category === c ? ts.borderHover : ts.border,
@@ -475,7 +491,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
           {/* Text */}
           <textarea value={text} onChange={e => setText(e.target.value)} rows={4} maxLength={600}
             placeholder="Share your experience, ask a question, or post a tip…"
-            className="w-full rounded-xl px-4 py-3 text-xs placeholder-[#1A2D48] outline-none focus:border-[#2A5499] transition-colors leading-relaxed resize-none"
+            className="w-full comm-input rounded-xl px-4 py-3 text-xs outline-none transition-colors leading-relaxed resize-none"
             style={{
               backgroundColor: ts.cardBg,
               border: `1px solid ${ts.border}`,
@@ -489,7 +505,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
                 onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTag(); } }}
                 placeholder="Add tag (enter to add)"
                 maxLength={30}
-                className="flex-1 rounded-xl px-3 py-2 text-xs placeholder-[#1A2D48] outline-none focus:border-[#2A5499] transition-colors"
+                className="flex-1 comm-input rounded-xl px-3 py-2 text-xs outline-none transition-colors"
                 style={{
                   backgroundColor: ts.cardBg,
                   border: `1px solid ${ts.border}`,
@@ -506,17 +522,16 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
             </div>
             {tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
-                {tags.map(t => (
-                  <span key={t} className="flex items-center gap-1 text-[9px] px-2 py-0.5 rounded-full border uppercase tracking-wide"
-                    style={{
-                      backgroundColor: ts.cardBg,
-                      borderColor: ts.border,
-                      color: ts.accent,
-                    }}>
-                    #{t}
-                    <button onClick={() => setTags(prev => prev.filter(x => x !== t))} className="text-[#4A7AAA] hover:text-[#FF8A8A] ml-0.5">×</button>
-                  </span>
-                ))}
+                {tags.map(t => {
+                  const tc = pickTagColor(t);
+                  return (
+                    <span key={t} className="flex items-center gap-1 text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wide"
+                      style={{ backgroundColor: tc.bg, border: `1px solid ${tc.border}`, color: tc.color }}>
+                      #{t}
+                      <button onClick={() => setTags(prev => prev.filter(x => x !== t))} className="ml-0.5 transition-colors" style={{ color: tc.color }}>×</button>
+                    </span>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -600,6 +615,12 @@ export default function CommunityPage() {
         .comm-in {
           animation: commIn 0.3s ease forwards;
         }
+        .comm-input {
+          background-color: ${ts.cardBg};
+        }
+        .comm-input::placeholder {
+          color: ${ts.textDim};
+        }
       `}</style>
       <ThemeBackground />
 
@@ -643,14 +664,11 @@ export default function CommunityPage() {
               <div className="flex gap-1.5 flex-wrap">
                 {CATEGORIES_FILTER.map(c => (
                   <button key={c} onClick={() => setCategory(c)}
-                    className={`px-3 py-1.5 rounded-xl text-[10px] uppercase tracking-widest border transition-all ${
-                      category === c
-                        ? "bg-[#0D1B33] border-[#2A5499]/60 text-[#7AC4FF]"
-                        : "border-[#1E3358]/35 text-[#4A7AAA] hover:border-[#1E3358]/60"
-                    }`}
+                    className="px-3 py-1.5 rounded-xl text-[10px] uppercase tracking-widest border transition-all"
                     style={{
-                      backgroundColor: category === c ? ts.cardBgHover : ts.cardBg,
-                      borderColor: category === c ? ts.borderHover : ts.border,
+                      backgroundColor: category === c ? 'rgba(0,212,255,0.10)' : ts.cardBg,
+                      borderColor: category === c ? 'rgba(0,212,255,0.35)' : ts.border,
+                      color: category === c ? '#00D4FF' : ts.textMuted,
                     }}>
                     {t(`community.categories.${c}`, c)}
                   </button>
