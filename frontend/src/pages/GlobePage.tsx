@@ -8,6 +8,7 @@ import ThemeBackground from '../components/ThemeBackground';
 import api from '../api';
 import { toast } from 'sonner';
 import MeditationGlobe from '../components/Globe/MeditationGlobe';
+import CesiumGlobe from '../components/Globe/CesiumGlobe';
 import GlobeControls from '../components/Globe/GlobeControls';
 import type { GlobePin, GlobeStyle } from '../components/Globe/useGlobe';
 
@@ -249,20 +250,29 @@ export default function GlobePage() {
             </div>
           )}
 
-          <MeditationGlobe
-            pins={pins}
-            theme={theme}
-            style={style}
-            filterTechnique={filterTechnique}
-            addPinMode={addPinMode}
-            onPinClick={handlePinClick}
-            onGlobeClick={handleGlobeClick}
-            onAddPinModeChange={setAddPinMode}
-          />
+          {style === 'cesium' ? (
+            <CesiumGlobe
+              pins={pins}
+              filterTechnique={filterTechnique}
+              onPinClick={handlePinClick}
+              onGlobeClick={handleGlobeClick}
+            />
+          ) : (
+            <MeditationGlobe
+              pins={pins}
+              theme={theme}
+              style={style}
+              filterTechnique={filterTechnique}
+              addPinMode={addPinMode}
+              onPinClick={handlePinClick}
+              onGlobeClick={handleGlobeClick}
+              onAddPinModeChange={setAddPinMode}
+            />
+          )}
 
           {/* Style-cycle FAB — always visible */}
           <button
-            onClick={() => setStyle(s => s === 'neon' ? 'terrain' : s === 'terrain' ? 'wire' : 'neon')}
+            onClick={() => setStyle(s => s === 'neon' ? 'terrain' : s === 'terrain' ? 'wire' : s === 'wire' ? 'cesium' : 'neon')}
             title={`Map style: ${style}`}
             style={{
               position:       'absolute',
@@ -284,7 +294,7 @@ export default function GlobePage() {
             }}
             aria-label="Cycle map style"
           >
-            {style === 'neon' ? '✦' : style === 'terrain' ? '▲' : '◻'}
+            {style === 'neon' ? '✦' : style === 'terrain' ? '▲' : style === 'wire' ? '◻' : '🌐'}
           </button>
 
           {/* Mobile sidebar toggle — small, top-right of globe area */}

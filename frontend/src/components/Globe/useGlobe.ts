@@ -211,7 +211,9 @@ function createGlowTexture(): THREE.CanvasTexture {
   g.addColorStop(1,    'rgba(0,0,0,0)');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, size, size);
-  return new THREE.CanvasTexture(c);
+  const t = new THREE.CanvasTexture(c);
+  t.flipY = false; // radially symmetric — flip doesn't matter; avoids WebGL2 texImage3D warning
+  return t;
 }
 
 // Land-only fill texture: transparent where ocean, LAND_COLOR where land.
@@ -351,7 +353,7 @@ function buildLatitudeLines(group: THREE.Group, baseColor: THREE.Color): THREE.G
   return latGroup;
 }
 
-export type GlobeStyle = 'neon' | 'terrain' | 'wire';
+export type GlobeStyle = 'neon' | 'terrain' | 'wire' | 'cesium';
 
 interface UseGlobeOptions {
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
@@ -399,6 +401,7 @@ export function useGlobe({
   const latLineGroupRef   = useRef<THREE.Group | null>(null);
   const pinMeshesRef      = useRef<THREE.Mesh[]>([]);
   const pinGroupsRef      = useRef<THREE.Group[]>([]);
+  const pinRingsRef       = useRef<THREE.Mesh[]>([]);
   const cityMeshesRef     = useRef<THREE.Mesh[]>([]);
   const cityStemsRef      = useRef<THREE.Line[]>([]);
   const rafRef            = useRef<number>(0);
@@ -870,6 +873,16 @@ export function useGlobe({
         }
       });
 
+      // Pulse rings — expand and fade out from pin base
+      pinRingsRef.current.forEach((ring, i) => {
+        const period  = 2.4;
+        const phase   = ((time / period + i * 0.37) % 1);
+        const scale   = 0.6 + phase * 1.4;          // 0.6 → 2.0
+        const opacity = 0.55 * (1 - phase);          // 0.55 → 0
+        ring.scale.setScalar(scale);
+        (ring.material as THREE.MeshBasicMaterial).opacity = opacity;
+      });
+
       // City labels: project to screen when zoomed in closely
       labelFrameRef.current++;
       if (labelFrameRef.current % 4 === 0) {
@@ -924,7 +937,7 @@ export function useGlobe({
     const globeGroup = globeGroupRef.current;
     if (!globeGroup) return;
 
-    // Remove old pin groups from scene and dispose geometry/materials
+    // Remove old pin groups + rings from scene and dispose
     pinGroupsRef.current.forEach(g => {
       globeGroup.remove(g);
       g.traverse(child => {
@@ -936,50 +949,69 @@ export function useGlobe({
     });
     pinGroupsRef.current = [];
     pinMeshesRef.current = [];
+    pinRingsRef.current  = [];
 
     const filtered = filterTechnique && filterTechnique !== 'all'
       ? pins.filter(p => p.technique === filterTechnique)
       : pins;
 
-    // Shared geometry for all pins (reused, not disposed per-pin)
-    const headGeo   = new THREE.SphereGeometry(0.016, 8, 8);
-    const needleGeo = new THREE.ConeGeometry(0.005, 0.044, 6);
+    // Shared geometry for all pins
+    const headGeo   = new THREE.SphereGeometry(0.020, 16, 16);
+    const needleGeo = new THREE.ConeGeometry(0.006, 0.050, 8);
+    const ringGeo   = new THREE.RingGeometry(0.012, 0.032, 24);
 
     for (const pin of filtered.slice(0, 500)) {
       const hex   = PIN_COLORS[pin.technique] ?? PIN_COLORS.other;
       const color = new THREE.Color(hex);
 
-      // Head (raycasting target + visual ball)
-      const headMat  = new THREE.MeshPhongMaterial({ color, emissive: color, emissiveIntensity: 0.25, shininess: 40 });
+      // Head — smooth, bright, with a small white inner core for "jewel" look
+      const headMat  = new THREE.MeshPhongMaterial({
+        color, emissive: color, emissiveIntensity: 0.55, shininess: 80,
+      });
       const headMesh = new THREE.Mesh(headGeo, headMat);
-      headMesh.position.set(0, 0.058, 0);   // sits above the tip
+      headMesh.position.set(0, 0.062, 0);
       headMesh.userData = pin;
 
-      // Needle (thin cone, tip pointing toward globe surface = -Y in group space)
-      const needleMat  = new THREE.MeshPhongMaterial({ color: color.clone().multiplyScalar(0.6) });
-      const needleMesh = new THREE.Mesh(needleGeo, needleMat);
-      needleMesh.rotation.x = Math.PI;      // flip so tip faces -Y (into globe)
-      needleMesh.position.set(0, 0.022, 0); // centre of needle; tip at Y≈0 (surface)
+      // Bright white core inside the head
+      const coreMat  = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, transparent: true, opacity: 0.55 });
+      const coreMesh = new THREE.Mesh(new THREE.SphereGeometry(0.008, 8, 8), coreMat);
+      coreMesh.position.set(0, 0.062, 0);
 
-      // Glow halo behind pin head
+      // Needle — 8-sided for smoothness
+      const needleMat  = new THREE.MeshPhongMaterial({
+        color: color.clone().multiplyScalar(0.55), shininess: 30,
+      });
+      const needleMesh = new THREE.Mesh(needleGeo, needleMat);
+      needleMesh.rotation.x = Math.PI;
+      needleMesh.position.set(0, 0.025, 0);
+
+      // Glow halo
       if (glowTexRef.current) {
         const glowMat = new THREE.SpriteMaterial({
-          map: glowTexRef.current,
-          color: color.clone(),
-          transparent: true,
-          blending: THREE.AdditiveBlending,
-          depthWrite: false,
-          opacity: 0.45,
+          map: glowTexRef.current, color: color.clone(),
+          transparent: true, blending: THREE.AdditiveBlending,
+          depthWrite: false, opacity: 0.70,
         });
         const glowSprite = new THREE.Sprite(glowMat);
-        glowSprite.scale.setScalar(0.1);
-        glowSprite.position.set(0, 0.058, 0);
+        glowSprite.scale.setScalar(0.14);
+        glowSprite.position.set(0, 0.062, 0);
         headMesh.add(glowSprite);
       }
 
-      // Group: place base at radius 2.0 (exactly on sphere surface), orient outward
+      // Pulse ring — lies flat on the surface, animated in loop
+      const ringMat = new THREE.MeshBasicMaterial({
+        color, transparent: true, opacity: 0.55,
+        side: THREE.DoubleSide, depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = -Math.PI / 2; // face outward (+Y = outward in group space)
+      ringMesh.position.set(0, 0.001, 0);
+      pinRingsRef.current.push(ringMesh);
+
+      // Group: oriented radially outward
       const group = new THREE.Group();
-      group.add(headMesh, needleMesh);
+      group.add(headMesh, coreMesh, needleMesh, ringMesh);
 
       const surfacePos = latLngToVector3(pin.lat, pin.lng, 2.00);
       group.position.copy(surfacePos);
@@ -990,7 +1022,7 @@ export function useGlobe({
 
       globeGroup.add(group);
       pinGroupsRef.current.push(group);
-      pinMeshesRef.current.push(headMesh); // raycasting uses head sphere only
+      pinMeshesRef.current.push(headMesh);
     }
   }, [pins, filterTechnique]);
 
