@@ -92,6 +92,120 @@ router.get('/stats', async (req, res) => {
   }
 });
 
+// ── POST /globe/resolve-place — parse map URL via Google APIs ─────────────────
+const resolveLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  message: { error: 'Too many requests. Slow down.' },
+});
+
+router.post('/resolve-place', resolveLimiter, async (req, res) => {
+  const { url } = req.body;
+  if (!url || typeof url !== 'string') return res.status(400).json({ error: 'URL required' });
+
+  const KEY = process.env.GOOGLE_MAPS_API_KEY;
+  if (!KEY) return res.status(500).json({ error: 'Maps API not configured' });
+
+  try {
+    // 1. Resolve short links (goo.gl / maps.app.goo.gl)
+    let resolved = url.trim();
+    if (/goo\.gl|maps\.app\.goo\.gl/.test(resolved)) {
+      const r = await fetch(resolved, { method: 'HEAD', redirect: 'follow' });
+      resolved = r.url;
+    }
+
+    // 2. Extract signals from URL
+    const coordsM  = resolved.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    const nameM    = resolved.match(/maps\/place\/([^/@?&#]+)/);
+    const placeIdM = resolved.match(/!1s(ChIJ[^!&]+)/);
+
+    const lat     = coordsM  ? parseFloat(coordsM[1])  : null;
+    const lng     = coordsM  ? parseFloat(coordsM[2])  : null;
+    const rawName = nameM    ? decodeURIComponent(nameM[1].replace(/\+/g, ' ')) : null;
+    const placeId = placeIdM ? decodeURIComponent(placeIdM[1]) : null;
+
+    const getAddrComp = (comps, type, key = 'long_name') =>
+      comps?.find(c => c.types?.includes(type))?.[key] ?? '';
+
+    const fetchPhoto = async (photoName) => {
+      try {
+        const r = await fetch(`https://places.googleapis.com/v1/${photoName}/media?maxWidthPx=800&key=${KEY}`);
+        if (!r.ok) return null;
+        const buf = await r.arrayBuffer();
+        const ct  = r.headers.get('content-type') || 'image/jpeg';
+        return `data:${ct};base64,${Buffer.from(buf).toString('base64')}`;
+      } catch { return null; }
+    };
+
+    let result = null;
+
+    // A) Place ID → Places API Details (most accurate)
+    if (placeId) {
+      const fields = 'id,displayName,formattedAddress,location,photos,addressComponents';
+      const r = await fetch(`https://places.googleapis.com/v1/places/${placeId}?fields=${fields}&key=${KEY}`);
+      const d = await r.json();
+      if (d.location) {
+        const photoUrl = d.photos?.[0] ? await fetchPhoto(d.photos[0].name) : null;
+        result = {
+          lat:      d.location.latitude,
+          lng:      d.location.longitude,
+          name:     d.displayName?.text ?? rawName ?? '',
+          address:  d.formattedAddress ?? '',
+          city:     d.addressComponents?.find(c => c.types?.includes('locality'))?.longText ?? '',
+          country:  d.addressComponents?.find(c => c.types?.includes('country'))?.longText ?? '',
+          photoUrl,
+        };
+      }
+    }
+
+    // B) Coordinates → Reverse Geocoding
+    if (!result && lat !== null && lng !== null) {
+      const r = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${KEY}`);
+      const d = await r.json();
+      const top = d.results?.[0];
+      if (top) {
+        result = {
+          lat, lng,
+          name:    rawName || getAddrComp(top.address_components, 'point_of_interest') || getAddrComp(top.address_components, 'establishment') || getAddrComp(top.address_components, 'locality'),
+          address: top.formatted_address ?? '',
+          city:    getAddrComp(top.address_components, 'locality') || getAddrComp(top.address_components, 'administrative_area_level_2'),
+          country: getAddrComp(top.address_components, 'country'),
+          photoUrl: null,
+        };
+      }
+    }
+
+    // C) Name only → Text Search
+    if (!result && rawName) {
+      const r = await fetch('https://places.googleapis.com/v1/places:searchText', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Goog-Api-Key': KEY, 'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.location,places.photos,places.addressComponents' },
+        body:    JSON.stringify({ textQuery: rawName }),
+      });
+      const d = await r.json();
+      const p = d.places?.[0];
+      if (p) {
+        const photoUrl = p.photos?.[0] ? await fetchPhoto(p.photos[0].name) : null;
+        result = {
+          lat:      p.location.latitude,
+          lng:      p.location.longitude,
+          name:     p.displayName?.text ?? rawName,
+          address:  p.formattedAddress ?? '',
+          city:     p.addressComponents?.find(c => c.types?.includes('locality'))?.longText ?? '',
+          country:  p.addressComponents?.find(c => c.types?.includes('country'))?.longText ?? '',
+          photoUrl,
+        };
+      }
+    }
+
+    if (!result) return res.status(400).json({ error: "Couldn't extract location from this URL" });
+    res.json(result);
+  } catch (err) {
+    console.error('resolve-place error:', err);
+    res.status(502).json({ error: 'Failed to resolve location' });
+  }
+});
+
 // ── POST /globe/pins ──────────────────────────────────────────────────────────
 const postValidation = [
   body('lat').isFloat({ min: -90, max: 90 }).withMessage('lat must be between -90 and 90'),

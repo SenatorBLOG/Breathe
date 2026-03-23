@@ -29,6 +29,7 @@ import BreathworkSleepPage from './pages/sleep/BreathworkSleepPage';
 import SleepStoryPage from './pages/sleep/SleepStoryPage';
 import SlowBreathingPage from './pages/science/SlowBreathingPage';
 import MorningRitualPage from './pages/techniques/MorningRitualPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 
 import { ThemeProvider } from './contexts/ThemeContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -80,6 +81,7 @@ export default function App() {
               <Route path="/sleep/story"                   element={<SleepStoryPage />} />
               <Route path="/science/slow-breathing"          element={<SlowBreathingPage />} />
               <Route path="/breathing/morning-ritual"        element={<MorningRitualPage />} />
+              <Route path="/privacy"                         element={<PrivacyPolicyPage />} />
               <Route path="/challenges"                      element={<Navigate to="/profile" replace />} />
               <Route path="*"              element={<HomePage />} />
             </Routes>

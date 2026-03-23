@@ -105,7 +105,7 @@ export default function Footer() {
             {[
               { to: "/faq",     label: t("footer.faq") },
               { to: "/support", label: t("footer.contact") },
-              { to: "/support", label: t("footer.privacy") },
+              { to: "/privacy", label: t("footer.privacy") },
             ].map(({ to, label }) => (
               <Link
                 key={label}

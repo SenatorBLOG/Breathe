@@ -316,9 +316,9 @@ export default function SignUpPage() {
                       </div>
                       <span className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
                         {t("auth.termsAgree")}{' '}
-                        <span style={{ color: ts.accent }}>{t("auth.terms")}</span>{' '}
+                        <Link to="/support" style={{ color: ts.accent }}>{t("auth.terms")}</Link>{' '}
                         and{' '}
-                        <span style={{ color: ts.accent }}>{t("auth.privacy")}</span>
+                        <Link to="/privacy" style={{ color: ts.accent }}>{t("auth.privacy")}</Link>
                       </span>
                     </label>
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import type { GlobePin } from './useGlobe';
+import { resolveMapUrl, type ResolvedPlace } from '../../utils/resolveMapUrl';
 
 const TECHNIQUE_OPTIONS = [
   { value: 'all',       label: 'All' },
@@ -114,6 +115,12 @@ export default function GlobeControls({
   const [photoLoading, setPhotoLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Map URL import
+  const [mapUrl,       setMapUrl]       = useState('');
+  const [urlLoading,   setUrlLoading]   = useState(false);
+  const [urlError,     setUrlError]     = useState('');
+  const [urlPreview,   setUrlPreview]   = useState<ResolvedPlace | null>(null);
+
   // Pre-fill coordinates + country when user clicks on the globe
   useEffect(() => {
     if (pickedLatLng) {
@@ -139,7 +146,35 @@ export default function GlobeControls({
     setForm(DEFAULT_FORM);
     setLatInput('');
     setLngInput('');
+    setMapUrl('');
+    setUrlPreview(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
+  }
+
+  async function handleResolveUrl() {
+    if (!mapUrl.trim()) return;
+    setUrlLoading(true);
+    setUrlError('');
+    setUrlPreview(null);
+    try {
+      const place = await resolveMapUrl(mapUrl.trim());
+      setUrlPreview(place);
+      setLatInput(place.lat.toFixed(6));
+      setLngInput(place.lng.toFixed(6));
+      setForm(prev => ({
+        ...prev,
+        title:    place.name   || prev.title,
+        city:     place.city   || prev.city,
+        country:  place.country || prev.country,
+        photoUrl: place.photoUrl || prev.photoUrl,
+      }));
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error
+        ?? 'Could not extract location from this URL';
+      setUrlError(msg);
+    } finally {
+      setUrlLoading(false);
+    }
   }
 
   const sectionStyle: React.CSSProperties = {
@@ -279,6 +314,105 @@ export default function GlobeControls({
         {isAuthenticated && addPinMode && (
           <div>
             <form onSubmit={handleSubmit}>
+
+              {/* ── Map URL import ─────────────────────────────────────────── */}
+              <div style={{ marginBottom: 12 }}>
+                <label style={labelStyle}>🔗 Import from Google Maps (optional)</label>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <input
+                    value={mapUrl}
+                    onChange={e => { setMapUrl(e.target.value); setUrlError(''); setUrlPreview(null); }}
+                    onPaste={e => {
+                      const pasted = e.clipboardData.getData('text');
+                      if (pasted.includes('maps')) {
+                        setMapUrl(pasted);
+                        setUrlError('');
+                        setUrlPreview(null);
+                        setTimeout(() => {
+                          resolveMapUrl(pasted.trim()).then(place => {
+                            setUrlPreview(place);
+                            setLatInput(place.lat.toFixed(6));
+                            setLngInput(place.lng.toFixed(6));
+                            setForm(prev => ({
+                              ...prev,
+                              title:    place.name    || prev.title,
+                              city:     place.city    || prev.city,
+                              country:  place.country || prev.country,
+                              photoUrl: place.photoUrl || prev.photoUrl,
+                            }));
+                          }).catch(err => {
+                            const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error ?? 'Could not extract location';
+                            setUrlError(msg);
+                          }).finally(() => setUrlLoading(false));
+                          setUrlLoading(true);
+                        }, 0);
+                      }
+                    }}
+                    placeholder="Paste Google Maps link…"
+                    style={{ ...inputStyle, flex: 1, fontSize: 11 }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleResolveUrl}
+                    disabled={urlLoading || !mapUrl.trim()}
+                    style={{
+                      flexShrink:   0,
+                      padding:      '0 10px',
+                      borderRadius: 8,
+                      border:       `1px solid ${ts.borderHover}`,
+                      background:   ts.cardBgHover,
+                      color:        ts.textSecondary,
+                      fontSize:     11,
+                      cursor:       urlLoading ? 'wait' : 'pointer',
+                      opacity:      urlLoading || !mapUrl.trim() ? 0.5 : 1,
+                      whiteSpace:   'nowrap',
+                    }}
+                  >
+                    {urlLoading ? '…' : 'Go'}
+                  </button>
+                </div>
+
+                {/* Error */}
+                {urlError && (
+                  <p style={{ fontSize: 10, color: '#F87171', marginTop: 4 }}>{urlError}</p>
+                )}
+
+                {/* Preview card */}
+                {urlPreview && (
+                  <div style={{
+                    marginTop:    8,
+                    borderRadius: 10,
+                    border:       `1px solid ${ts.borderHover}`,
+                    overflow:     'hidden',
+                    background:   ts.cardBgHover,
+                  }}>
+                    {urlPreview.photoUrl && (
+                      <img
+                        src={urlPreview.photoUrl}
+                        alt={urlPreview.name}
+                        style={{ width: '100%', height: 90, objectFit: 'cover', display: 'block' }}
+                      />
+                    )}
+                    <div style={{ padding: '8px 10px' }}>
+                      <p style={{ fontSize: 12, fontWeight: 600, color: ts.textPrimary, margin: 0 }}>
+                        {urlPreview.name}
+                      </p>
+                      {urlPreview.address && (
+                        <p style={{ fontSize: 10, color: ts.textMuted, margin: '2px 0 0' }}>
+                          {urlPreview.address}
+                        </p>
+                      )}
+                      <p style={{ fontSize: 10, color: ts.textSecondary, margin: '3px 0 0' }}>
+                        ✓ Fields pre-filled below
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* ── Divider ───────────────────────────────────────────────── */}
+              <div style={{ height: 1, background: ts.border, marginBottom: 10 }} />
+
               {/* Lat / Lng editable inputs */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
                 <div>
