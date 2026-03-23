@@ -117,7 +117,7 @@ function InsightCard({ icon, title, desc }: { icon: string; title: string; desc:
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
-export default function StatsPage() {
+export function StatsSection() {
   const { t } = useTranslation();
   const ts = useThemeStyles();
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -171,11 +171,7 @@ export default function StatsPage() {
   ];
 
   return (
-    <div className="relative flex flex-col min-h-screen font-montserrat">
-      <ThemeBackground />
-
-      <div className="relative z-10 flex flex-col min-h-screen">
-        <NavBar />
+    <>
 
         <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-4">
           <AdSlot label="Ad · 728×90 leaderboard" className="h-12 sm:h-14" />
@@ -498,6 +494,17 @@ export default function StatsPage() {
 
         </main>
 
+    </>
+  );
+}
+
+export default function StatsPage() {
+  return (
+    <div className="relative flex flex-col min-h-screen font-montserrat">
+      <ThemeBackground />
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <NavBar />
+        <StatsSection />
         <Footer />
       </div>
     </div>

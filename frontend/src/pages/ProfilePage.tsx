@@ -15,6 +15,8 @@ import HeartRateMonitor from '../components/HeartRateMonitor';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { AuthContext } from '../components/contexts/AuthContext';
 import ChallengesSection from '../components/ChallengesSection';
+import { SessionsSection } from './SessionPage';
+import { StatsSection } from './StatsPage';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const GOALS = [
@@ -155,7 +157,7 @@ function SleepBars({ days }: { days: SleepDay[] }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex justify-between" style={{ fontSize: 9, color: ts.textDim }}>
+      <div className="flex justify-between text-[10px]" style={{ color: ts.textMuted }}>
         <span>{shown.length} night{shown.length !== 1 ? 's' : ''} recorded</span>
         <span>{fmt(shown[0].date)} – {fmt(shown[shown.length - 1].date)}</span>
       </div>
@@ -167,14 +169,14 @@ function SleepBars({ days }: { days: SleepDay[] }) {
           borderTop: '1px dashed rgba(255,255,255,0.15)',
           zIndex: 0,
         }}>
-          <span style={{ position: 'absolute', right: 0, top: -10, fontSize: 8, color: ts.textDim }}>8h goal</span>
+          <span style={{ position: 'absolute', right: 0, top: -12, fontSize: 10, color: ts.textMuted }}>8h goal</span>
         </div>
         <div className="flex items-end gap-1 absolute bottom-4 left-0 right-0" style={{ height: 72 }}>
           {shown.map((d, i) => {
             const pct = (d.duration / max) * 100;
             return (
               <div key={i} className="flex-1 flex flex-col items-center" style={{ gap: 2 }}>
-                <span style={{ fontSize: 7, color: ts.textMuted, whiteSpace: 'nowrap' }}>{fmtDur(d.duration)}</span>
+                <span style={{ fontSize: 10, color: ts.textSecondary, whiteSpace: 'nowrap' }}>{fmtDur(d.duration)}</span>
                 <div style={{
                   width: '100%', height: `${pct}%`, minHeight: 3,
                   background: barColor(d), borderRadius: '2px 2px 0 0', flexShrink: 0,
@@ -185,7 +187,7 @@ function SleepBars({ days }: { days: SleepDay[] }) {
         </div>
         <div className="flex gap-1 absolute bottom-0 left-0 right-0">
           {shown.map((d, i) => (
-            <div key={i} className="flex-1 text-center" style={{ fontSize: 7, color: ts.textDim }}>
+            <div key={i} className="flex-1 text-center" style={{ fontSize: 10, color: ts.textMuted }}>
               {fmt(d.date)}
             </div>
           ))}
@@ -197,8 +199,8 @@ function SleepBars({ days }: { days: SleepDay[] }) {
           { color: '#FFD97D',  label: 'Fair  ≥6h' },
           { color: '#FF8A8A',  label: 'Poor  <6h' },
         ].map(({ color, label }) => (
-          <div key={label} className="flex items-center gap-1" style={{ fontSize: 8, color: ts.textDim }}>
-            <div style={{ width: 7, height: 7, borderRadius: 2, background: color, flexShrink: 0 }} />
+          <div key={label} className="flex items-center gap-1.5 text-[10px]" style={{ color: ts.textSecondary }}>
+            <div style={{ width: 8, height: 8, borderRadius: 2, background: color, flexShrink: 0 }} />
             {label}
           </div>
         ))}
@@ -225,8 +227,8 @@ function HRVLine({ days }: { days: HRVDay[] }) {
             r="2.5" fill={ts.accent} opacity="0.8" />
         ))}
       </svg>
-      <div className="flex justify-between text-xs mt-0.5" style={{ color: ts.textDim }}>
-        {vals.map((d, i) => <span key={i}>{fmt(d.date).split(' ')[1]}</span>)}
+      <div className="flex justify-between text-[10px] mt-1" style={{ color: ts.textMuted }}>
+        {vals.map((d, i) => <span key={i}>{fmt(d.date)}</span>)}
       </div>
     </div>
   );
@@ -348,7 +350,7 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
               {hr.restingRate && (
                 <p className="text-xs" style={{ color: ts.textSecondary }}>
                   Resting: <strong>{hr.restingRate} bpm</strong>
-                  <span style={{ color: ts.textDim, marginLeft: 6, fontSize: 9 }}>
+                  <span className="text-xs ml-1.5" style={{ color: ts.textMuted }}>
                     {hr.restingRate < 60 ? 'Excellent' : hr.restingRate < 70 ? 'Good' : hr.restingRate < 80 ? 'Average' : 'High'}
                   </span>
                 </p>
@@ -439,7 +441,7 @@ export default function ProfilePage() {
   const { user, updateUser } = useContext(AuthContext);
 
   // ── Tab ─────────────────────────────────────────────────────────────────────
-  const [tab, setTab] = useState<'profile' | 'devices' | 'challenges'>('profile');
+  const [tab, setTab] = useState<'profile' | 'devices' | 'challenges' | 'sessions' | 'progress'>('profile');
 
   // ── Profile form ─────────────────────────────────────────────────────────────
   const [nickname, setNickname]    = useState('');
@@ -654,17 +656,21 @@ export default function ProfilePage() {
           </div>
 
           {/* Tab switcher */}
-          <div className="flex rounded-xl overflow-hidden" style={{ border: `1px solid ${ts.border}` }}>
+          <div className="flex flex-wrap rounded-xl overflow-hidden" style={{ border: `1px solid ${ts.border}` }}>
             {([
-              { id: 'profile'    as const, label: 'My Profile' },
-              { id: 'challenges' as const, label: '🏆 Challenges' },
-              { id: 'devices'    as const, label: 'Health Devices' },
+              { id: 'profile'    as const, label: 'Profile' },
+              { id: 'sessions'   as const, label: 'Sessions' },
+              { id: 'progress'   as const, label: 'Progress' },
+              { id: 'challenges' as const, label: 'Challenges' },
+              { id: 'devices'    as const, label: 'Devices' },
             ]).map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className="flex-1 py-3 text-xs sm:text-sm font-medium transition-all"
+                className="flex-1 py-3 text-xs font-medium transition-all"
                 style={{
-                  background: tab === t.id ? ts.btnGradient : 'transparent',
-                  color: tab === t.id ? '#fff' : ts.textMuted,
+                  background: tab === t.id ? ts.btnGradient : ts.cardBg,
+                  color: tab === t.id ? '#fff' : ts.textSecondary,
+                  minWidth: '20%',
+                  borderRight: `1px solid ${ts.border}`,
                 }}>
                 {t.label}
               </button>
@@ -798,6 +804,12 @@ export default function ProfilePage() {
               </div>
             </div>
           )}
+
+          {/* ── Sessions tab ─────────────────────────────────────────────────── */}
+          {tab === 'sessions' && <SessionsSection />}
+
+          {/* ── Progress tab ─────────────────────────────────────────────────── */}
+          {tab === 'progress' && <StatsSection />}
 
           {/* ── Challenges tab ───────────────────────────────────────────────── */}
           {tab === 'challenges' && <ChallengesSection />}

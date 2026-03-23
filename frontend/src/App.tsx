@@ -11,8 +11,6 @@ import HomePage from './pages/HomePage.tsx';
 import BreathingPage from './pages/BreathingPage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
-import StatsPage from './pages/StatsPage';
-import SessionsPage from './pages/SessionPage';
 import NewSessionPage from './pages/NewSessionPage';
 import CommunityPage from './pages/CommunityPage';
 import FAQPage from './pages/FaqPage';
@@ -36,7 +34,6 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import AICoachButton from './components/AICoach/AICoachButton';
 import ScrollToTopButton from './components/ScrollToTopButton';
-import { ProtectedRoute } from './components/ProtectedRoute';
 import PWAInstallBanner from './components/PWAInstallBanner';
 import OfflineIndicator from './components/OfflineIndicator';
 import ChallengeNudge from './components/ChallengeNudge';
@@ -60,13 +57,9 @@ export default function App() {
               <Route path="/"             element={<Navigate to="/home-page" replace />} />
               <Route path="/home-page"    element={<HomePage />} />
               <Route path="/breathing"    element={<BreathingPage />} />
-              <Route path="/sessions"     element={<SessionsPage />} />
+              <Route path="/sessions"     element={<Navigate to="/profile" replace />} />
               <Route path="/sessions/new" element={<NewSessionPage />} />
-              <Route path="/statistics"   element={
-                <ProtectedRoute>
-                  <StatsPage />
-                </ProtectedRoute>
-              } />
+              <Route path="/statistics"   element={<Navigate to="/profile" replace />} />
               <Route path="/faq"           element={<FAQPage />} />
               <Route path="/community"     element={<CommunityPage />} />
               <Route path="/login"         element={<LoginPage />} />

@@ -147,7 +147,7 @@ export default function AppleHealthImport({ onImported }: Props) {
           <div>
             <p style={{ color: ts.textPrimary }} className="text-sm font-semibold">Apple Health</p>
             <p className="text-[10px] mt-0.5" style={{ color: step === 'done' ? ts.accent : ts.textSecondary }}>
-              {step === 'done' ? `Синхронизировано · ${summary?.sleepDays} дн.` : 'Импорт через export.xml'}
+              {step === 'done' ? `Synced · ${summary?.sleepDays} days` : 'Import via export.xml'}
             </p>
           </div>
         </div>
@@ -164,9 +164,9 @@ export default function AppleHealthImport({ onImported }: Props) {
         <div className="flex flex-col gap-3 animate-in fade-in slide-in-from-bottom-2">
           <div className="grid grid-cols-3 gap-2">
             {[
-              { val: `${Math.floor(summary.avgSleep/60)}h ${summary.avgSleep%60}m`, label: 'Сон', color: ts.accent },
+              { val: `${Math.floor(summary.avgSleep/60)}h ${summary.avgSleep%60}m`, label: 'Sleep', color: ts.accent },
               { val: `${summary.avgHRV}ms`, label: 'HRV', color: ts.accentLight, hide: !summary.avgHRV },
-              { val: summary.avgHeartRate, label: 'Пульс', color: ts.accent, hide: !summary.avgHeartRate }
+              { val: summary.avgHeartRate, label: 'Heart rate', color: ts.accent, hide: !summary.avgHeartRate }
             ].map((item, i) => !item.hide && (
               <div key={i} className="flex flex-col gap-0.5 p-3 rounded-xl border"
                 style={{ background: `${ts.cardBg}80`, borderColor: ts.border }}>
@@ -179,7 +179,7 @@ export default function AppleHealthImport({ onImported }: Props) {
             style={{ background: `${ts.accent}10`, borderColor: `${ts.accent}20` }}>
             <CheckCircle size={14} style={{ color: ts.accent }} className="flex-shrink-0" />
             <p style={{ color: ts.accent }} className="text-[11px] font-medium">
-              Данные добавлены. ИИ-тренер обновил ваши рекомендации.
+              Data imported. Your AI coach has updated your recommendations.
             </p>
           </div>
         </div>
@@ -201,14 +201,14 @@ export default function AppleHealthImport({ onImported }: Props) {
             <>
               <div className="w-6 h-6 border-2 rounded-full animate-spin" 
                 style={{ borderColor: `${ts.accent}30`, borderTopColor: ts.accent }} />
-              <p style={{ color: ts.textSecondary }} className="text-xs">Обработка файла...</p>
+              <p style={{ color: ts.textSecondary }} className="text-xs">Processing file…</p>
             </>
           ) : (
             <>
               <Upload size={20} style={{ color: ts.textSecondary }} />
               <div className="text-center">
-                <p style={{ color: ts.textPrimary }} className="text-xs font-medium">Перетащите export.xml</p>
-                <p style={{ color: ts.textSecondary }} className="text-[10px] mt-1">или нажмите для выбора</p>
+                <p style={{ color: ts.textPrimary }} className="text-xs font-medium">Drop export.xml here</p>
+                <p style={{ color: ts.textSecondary }} className="text-[10px] mt-1">or click to browse</p>
               </div>
             </>
           )}
@@ -226,7 +226,7 @@ export default function AppleHealthImport({ onImported }: Props) {
           <button onClick={() => { setStep('idle'); setError(''); }}
             className="mt-2 text-[10px] font-medium uppercase tracking-wider hover:opacity-80"
             style={{ color: ts.accent }}>
-            Попробовать снова
+            Try again
           </button>
         </div>
       )}
@@ -237,14 +237,14 @@ export default function AppleHealthImport({ onImported }: Props) {
           <summary className="text-[10px] cursor-pointer list-none flex items-center gap-1"
             style={{ color: ts.textSecondary }}>
             <ChevronRight size={10} className="group-open:rotate-90 transition-transform" />
-            Как сделать экспорт из Apple Health?
+            How to export from Apple Health?
           </summary>
           <div className="mt-3 flex flex-col gap-2 pl-2">
             {[
-              'Откройте "Здоровье" на iPhone',
-              'Нажмите на иконку профиля (справа сверху)',
-              'Прокрутите вниз до "Экспортировать все данные"',
-              'После экспорта найдите export.xml внутри архива',
+              'Open the Health app on your iPhone',
+              'Tap your profile icon (top right)',
+              'Scroll down to "Export All Health Data"',
+              'After export, find export.xml inside the archive',
             ].map((s, i) => (
               <div key={i} className="flex items-start gap-2">
                 <span style={{ color: ts.accent }} className="text-[9px] font-mono mt-0.5">{i+1}.</span>

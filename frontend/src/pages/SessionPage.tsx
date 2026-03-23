@@ -573,7 +573,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 type SortKey = "date" | "duration" | "cycles" | "mood";
 
-export default function SessionsPage() {
+export function SessionsSection() {
   const { t } = useTranslation();
   const ts = useThemeStyles();
   const navigate = useNavigate();
@@ -685,7 +685,7 @@ export default function SessionsPage() {
   }, [journalSessions]);
 
   return (
-    <div className="relative flex flex-col min-h-screen font-montserrat">
+    <>
       <style>{`
         @keyframes sessFadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
         .sess-in { animation: sessFadeUp 0.5s ease forwards; }
@@ -696,11 +696,6 @@ export default function SessionsPage() {
         }
         input[type=range]::-webkit-slider-runnable-track { height:4px; border-radius:4px; }
       `}</style>
-
-      <ThemeBackground />
-
-      <div className="relative z-10 flex flex-col min-h-screen">
-        <NavBar />
 
         {/* Top ad */}
         <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-4">
@@ -1057,6 +1052,17 @@ export default function SessionsPage() {
         </div>
         )}
 
+    </>
+  );
+}
+
+export default function SessionsPage() {
+  return (
+    <div className="relative flex flex-col min-h-screen font-montserrat">
+      <ThemeBackground />
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <NavBar />
+        <SessionsSection />
         <Footer />
       </div>
     </div>
