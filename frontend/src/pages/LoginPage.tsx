@@ -1,6 +1,6 @@
 // src/pages/LoginPage.tsx
 import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
@@ -17,6 +17,8 @@ export default function LoginPage() {
   const ts = useThemeStyles();
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
+  const [searchParams] = useSearchParams();
+  const ref = searchParams.get('ref');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,6 +26,22 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const RESULT_TO_PRESET: Record<string, { inhale: number; hold: number; exhale: number; pause: number; name: string }> = {
+    'stress':      { inhale: 4, hold: 7, exhale: 8, pause: 1, name: '4-7-8 Breathing' },
+    'shallow':     { inhale: 4, hold: 0, exhale: 6, pause: 2, name: 'Belly Breathing' },
+    'natural':     { inhale: 5, hold: 0, exhale: 5, pause: 1, name: 'Coherent Breathing' },
+    'stress-calc': { inhale: 4, hold: 4, exhale: 4, pause: 4, name: 'Box Breathing' },
+  };
+
+  const redirectAfterAuth = () => {
+    if (ref && RESULT_TO_PRESET[ref]) {
+      const preset = RESULT_TO_PRESET[ref];
+      navigate('/breathing', { state: { coachPreset: preset, coachPresetName: preset.name } });
+    } else {
+      navigate('/home-page');
+    }
+  };
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -33,7 +51,7 @@ export default function LoginPage() {
         login(res.data.token, res.data.user);
         localStorage.setItem('userId', res.data.user?._id ?? '');
         toast.success('Welcome to Breathe');
-        navigate('/home-page');
+        redirectAfterAuth();
       } catch {
         toast.error('Google login failed');
       } finally {
@@ -52,7 +70,7 @@ export default function LoginPage() {
       login(res.data.token, res.data.user);
       localStorage.setItem('userId', res.data.user?._id ?? '');
       toast.success(t("auth.welcomeBack"), { description: t("auth.sessionsWaiting") });
-      navigate('/home-page');
+      redirectAfterAuth();
     } catch (err: any) {
       const msg = err.response?.data?.error || 'Invalid email or password';
       setError(msg);

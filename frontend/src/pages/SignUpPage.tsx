@@ -30,6 +30,23 @@ export default function SignUpPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const RESULT_TO_PRESET: Record<string, { inhale: number; hold: number; exhale: number; pause: number; name: string }> = {
+    'stress':      { inhale: 4, hold: 7, exhale: 8, pause: 1,  name: '4-7-8 Breathing' },
+    'shallow':     { inhale: 4, hold: 0, exhale: 6, pause: 2,  name: 'Belly Breathing' },
+    'natural':     { inhale: 5, hold: 0, exhale: 5, pause: 1,  name: 'Coherent Breathing' },
+    'stress-calc': { inhale: 4, hold: 4, exhale: 4, pause: 4,  name: 'Box Breathing' },
+  };
+
+  const redirectAfterAuth = () => {
+    if (ref && RESULT_TO_PRESET[ref]) {
+      const preset = RESULT_TO_PRESET[ref];
+      navigate('/breathing', { state: { coachPreset: preset, coachPresetName: preset.name } });
+    } else {
+      const onboarded = localStorage.getItem('breathe_onboarded');
+      navigate(onboarded ? '/home-page' : '/onboarding');
+    }
+  };
+
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       setLoading(true);
@@ -38,7 +55,7 @@ export default function SignUpPage() {
         login(res.data.token, res.data.user);
         localStorage.setItem('userId', res.data.user?._id ?? '');
         toast.success('Signed up with Google! Welcome to Breathe');
-        navigate('/home-page');
+        redirectAfterAuth();
       } catch (err: any) {
         const msg = err.response?.data?.error || 'Google sign up failed';
         setError(msg);
@@ -72,6 +89,7 @@ export default function SignUpPage() {
       if (ref)   localStorage.setItem('breathe_quiz_result', ref);
       if (score) localStorage.setItem('breathe_stress_score', score);
       toast.success('Account created! Welcome to Breathe 🌊');
+      // New users always go through onboarding first
       navigate('/onboarding');
     } catch (err: any) {
       const msg = err.response?.data?.error || 'Failed to create account';

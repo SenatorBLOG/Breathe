@@ -99,12 +99,29 @@ function AdSlot({ label = 'Advertisement', tall = false }: { label?: string; tal
   );
 }
 
+// ─── Technique presets ────────────────────────────────────────────────────────
+interface PhaseDurations { inhale: number; hold: number; exhale: number; pause: number; }
+
+const TECHNIQUE_PRESETS: Record<string, PhaseDurations> = {
+  box:       { inhale: 4, hold: 4, exhale: 4, pause: 4 },
+  sleep478:  { inhale: 4, hold: 7, exhale: 8, pause: 1 },
+  coherent:  { inhale: 5, hold: 0, exhale: 5, pause: 1 },
+  wimhof:    { inhale: 2, hold: 1, exhale: 2, pause: 1 },
+  belly:     { inhale: 4, hold: 0, exhale: 6, pause: 2 },
+  alternate: { inhale: 4, hold: 4, exhale: 4, pause: 2 },
+};
+
 // ─── Technique pill ──────────────────────────────────────────────────────────
-function TechniquePill({ name, time, icon }: { name: string; time: string; icon: string }) {
+function TechniquePill({ name, time, icon, presetKey, presetName }: {
+  name: string; time: string; icon: string;
+  presetKey: string; presetName: string;
+}) {
   const ts = useThemeStyles();
+  const preset = TECHNIQUE_PRESETS[presetKey];
   return (
     <Link
       to="/breathing"
+      state={preset ? { coachPreset: preset, coachPresetName: presetName } : undefined}
       className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group"
       style={{
         backgroundColor: ts.cardBg,
@@ -224,12 +241,12 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            <TechniquePill name={t("techniques.box")} time={t("techniques.boxDesc")} icon="⬜" />
-            <TechniquePill name={t("techniques.sleep478")} time={t("techniques.sleep478Desc")} icon="🌙" />
-            <TechniquePill name={t("techniques.coherent")} time={t("techniques.coherentDesc")} icon="💙" />
-            <TechniquePill name={t("techniques.wimhof")} time={t("techniques.wimhofDesc")} icon="🔥" />
-            <TechniquePill name={t("techniques.belly")} time={t("techniques.bellyDesc")} icon="🌀" />
-            <TechniquePill name={t("techniques.alternate")} time={t("techniques.alternateDesc")} icon="☯️" />
+            <TechniquePill name={t("techniques.box")}       time={t("techniques.boxDesc")}       icon="⬜" presetKey="box"       presetName="Box Breathing" />
+            <TechniquePill name={t("techniques.sleep478")}  time={t("techniques.sleep478Desc")}  icon="🌙" presetKey="sleep478"  presetName="4-7-8 Breathing" />
+            <TechniquePill name={t("techniques.coherent")}  time={t("techniques.coherentDesc")}  icon="💙" presetKey="coherent"  presetName="Coherent Breathing" />
+            <TechniquePill name={t("techniques.wimhof")}    time={t("techniques.wimhofDesc")}    icon="🔥" presetKey="wimhof"    presetName="Wim Hof Method" />
+            <TechniquePill name={t("techniques.belly")}     time={t("techniques.bellyDesc")}     icon="🌀" presetKey="belly"     presetName="Belly Breathing" />
+            <TechniquePill name={t("techniques.alternate")} time={t("techniques.alternateDesc")} icon="☯️" presetKey="alternate" presetName="Alternate Nostril" />
           </div>
         </section>
 

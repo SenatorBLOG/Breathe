@@ -25,7 +25,12 @@
       "WebFetch(domain:breathe-production-6cce.up.railway.app)",
       "Bash(ls \"c:\\\\Users\\\\Mikhail Senatorov\\\\Documents\\\\Douglas\\\\Breathe\\\\frontend\\\\public\"\" | grep -E \"icon)",
       "Bash(png)",
-      "Bash(jpg \")"
+      "Bash(jpg \")",
+      "WebSearch",
+      "WebFetch(domain:github.blog)",
+      "WebFetch(domain:shud.in)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:discourse.threejs.org)"
     ]
   }
 }

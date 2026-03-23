@@ -9,7 +9,7 @@ import api from '../api';
 import { toast } from 'sonner';
 import MeditationGlobe from '../components/Globe/MeditationGlobe';
 import GlobeControls from '../components/Globe/GlobeControls';
-import type { GlobePin } from '../components/Globe/useGlobe';
+import type { GlobePin, GlobeStyle } from '../components/Globe/useGlobe';
 
 interface GlobeStats {
   totalPins:          number;
@@ -23,6 +23,7 @@ export default function GlobePage() {
   const { theme }           = useTheme();
   const { isAuthenticated, user } = useContext(AuthContext);
 
+  const [style,           setStyle]           = useState<GlobeStyle>('neon');
   const [pins,            setPins]            = useState<GlobePin[]>([]);
   const [stats,           setStats]           = useState<GlobeStats | null>(null);
   const [selectedPin,     setSelectedPin]     = useState<GlobePin | null>(null);
@@ -251,6 +252,7 @@ export default function GlobePage() {
           <MeditationGlobe
             pins={pins}
             theme={theme}
+            style={style}
             filterTechnique={filterTechnique}
             addPinMode={addPinMode}
             onPinClick={handlePinClick}
@@ -258,27 +260,54 @@ export default function GlobePage() {
             onAddPinModeChange={setAddPinMode}
           />
 
-          {/* Mobile: floating sidebar toggle */}
+          {/* Style-cycle FAB — always visible */}
           <button
-            onClick={() => setSidebarOpen(v => !v)}
+            onClick={() => setStyle(s => s === 'neon' ? 'terrain' : s === 'terrain' ? 'wire' : 'neon')}
+            title={`Map style: ${style}`}
             style={{
-              position:     'absolute',
-              bottom:       20,
-              right:        20,
-              zIndex:       20,
-              background:   ts.accent,
-              border:       'none',
-              borderRadius: '50%',
-              width:        48,
-              height:       48,
-              fontSize:     20,
-              cursor:       'pointer',
-              boxShadow:    '0 4px 16px rgba(0,0,0,0.4)',
-              display:      'flex',
-              alignItems:   'center',
+              position:       'absolute',
+              bottom:         20,
+              right:          20,
+              zIndex:         20,
+              background:     ts.cardBg,
+              border:         `1px solid ${ts.borderHover}`,
+              borderRadius:   '50%',
+              width:          48,
+              height:         48,
+              fontSize:       20,
+              cursor:         'pointer',
+              boxShadow:      '0 4px 20px rgba(0,0,0,0.5)',
+              backdropFilter: 'blur(10px)',
+              display:        'flex',
+              alignItems:     'center',
               justifyContent: 'center',
             }}
+            aria-label="Cycle map style"
+          >
+            {style === 'neon' ? '✦' : style === 'terrain' ? '▲' : '◻'}
+          </button>
+
+          {/* Mobile sidebar toggle — small, top-right of globe area */}
+          <button
+            onClick={() => setSidebarOpen(v => !v)}
             className="lg:hidden"
+            style={{
+              position:       'absolute',
+              top:            12,
+              right:          12,
+              zIndex:         20,
+              background:     ts.cardBg,
+              border:         `1px solid ${ts.border}`,
+              borderRadius:   '50%',
+              width:          36,
+              height:         36,
+              fontSize:       16,
+              cursor:         'pointer',
+              backdropFilter: 'blur(10px)',
+              display:        'flex',
+              alignItems:     'center',
+              justifyContent: 'center',
+            }}
             aria-label="Toggle sidebar"
           >
             🗺️

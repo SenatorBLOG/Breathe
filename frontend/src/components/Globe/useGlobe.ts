@@ -32,14 +32,17 @@ const PIN_COLORS: Record<string, string> = {
 };
 
 const GLOBE_THEMES = {
-  night:  { wire: 0x1E3358, coast: 0x4A9EFF, border: 0x2A5CAA },
-  day:    { wire: 0xB0C8E8, coast: 0x1A6FBF, border: 0x2A5FAF },
-  nature: { wire: 0x1A4028, coast: 0x4AE8A0, border: 0x1A7A4A },
+  night:  { wire: 0x1E3358, coast: 0x4A9EFF, border: 0x2A7AFF },
+  day:    { wire: 0xB0C8E8, coast: 0x1A6FBF, border: 0xD4920A },
+  nature: { wire: 0x0E2A1A, coast: 0x4AE8A0, border: 0x22DD66 },
 };
 
-// Ocean and land colors (fixed, dark, contrasting blue vs green)
-const OCEAN_COLOR = '#06122A';
-const LAND_COLOR  = '#0E2414';
+// Per-theme ocean + land fill colors
+const GLOBE_FILLS = {
+  night:  { ocean: '#0C1E38', land: '#243D68' }, // mid-navy ocean, dusty-blue land
+  day:    { ocean: '#1E5C8A', land: '#A07848' }, // ocean blue, warm sand land
+  nature: { ocean: '#0A1E12', land: '#1E4A2C' }, // deep teal ocean, muted forest land
+};
 
 export function latLngToVector3(lat: number, lng: number, radius = 2.05): THREE.Vector3 {
   const phi   = (90 - lat)  * (Math.PI / 180);
@@ -115,6 +118,51 @@ function getCountryAtLatLng(lat: number, lng: number, features: any[]): string {
   return '';
 }
 
+// Same as getCountryAtLatLng but returns the feature object for highlight rendering
+function getFeatureAtLatLng(lat: number, lng: number, features: any[]): any | null {
+  for (const feat of features) {
+    const geom = feat.geometry;
+    if (!geom) continue;
+    const polys: number[][][][] = geom.type === 'Polygon'
+      ? [geom.coordinates] : geom.type === 'MultiPolygon' ? geom.coordinates : [];
+    for (const poly of polys) {
+      if (!pointInRing(lng, lat, poly[0])) continue;
+      let inHole = false;
+      for (let r = 1; r < poly.length; r++) {
+        if (pointInRing(lng, lat, poly[r])) { inHole = true; break; }
+      }
+      if (!inHole) return feat;
+    }
+  }
+  return null;
+}
+
+// Draw a single country fill into an existing canvas context (for hover highlight)
+function drawCountryHighlight(
+  ctx: CanvasRenderingContext2D, W: number, H: number,
+  feat: any, fillColor: string
+) {
+  ctx.clearRect(0, 0, W, H);
+  if (!feat) return;
+  ctx.fillStyle = fillColor;
+  const geom = feat.geometry;
+  const polys: number[][][][] = geom.type === 'Polygon'
+    ? [geom.coordinates] : geom.type === 'MultiPolygon' ? geom.coordinates : [];
+  for (const poly of polys) {
+    for (const outerVer of splitRingAtMeridian(poly[0])) {
+      ctx.beginPath();
+      let first = true;
+      for (const [lng, lat] of outerVer) {
+        const x = px(lng, W), y = py(lat, H);
+        if (first) { ctx.moveTo(x, y); first = false; } else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      for (let r = 1; r < poly.length; r++) traceRing(ctx, poly[r], W, H);
+      ctx.fill('evenodd');
+    }
+  }
+}
+
 // Project lng/lat to canvas pixel coordinates
 function px(lng: number, W: number) { return (lng + 180) / 360 * W; }
 function py(lat: number, H: number) { return (90 - lat)  / 180 * H; }
@@ -147,27 +195,6 @@ function traceRing(ctx: CanvasRenderingContext2D, ring: number[][], W: number, H
   }
 }
 
-// Draw MultiLineString coordinates with antimeridian break
-function drawGeoLines(ctx: CanvasRenderingContext2D, coords: number[][][], W: number, H: number) {
-  for (const line of coords) {
-    if (line.length < 2) continue;
-    ctx.beginPath();
-    let prevLng = line[0][0];
-    ctx.moveTo(px(line[0][0], W), py(line[0][1], H));
-    for (let i = 1; i < line.length; i++) {
-      const [lng, lat] = line[i];
-      if (Math.abs(lng - prevLng) > 170) {
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(px(lng, W), py(lat, H));
-      } else {
-        ctx.lineTo(px(lng, W), py(lat, H));
-      }
-      prevLng = lng;
-    }
-    ctx.stroke();
-  }
-}
 
 function createGlowTexture(): THREE.CanvasTexture {
   const size = 64;
@@ -187,19 +214,20 @@ function createGlowTexture(): THREE.CanvasTexture {
   return new THREE.CanvasTexture(c);
 }
 
-function buildEarthTexture(world: Topology, renderer: THREE.WebGLRenderer): THREE.CanvasTexture {
-  const W = 4096, H = 2048;
+// Land-only fill texture: transparent where ocean, LAND_COLOR where land.
+// The sphere base provides the ocean color; this transparent overlay adds land.
+function buildLandTexture(world: Topology): THREE.CanvasTexture {
+  const W = 2048, H = 1024;
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
   const ctx = c.getContext('2d')!;
 
-  // Ocean base
-  ctx.fillStyle = OCEAN_COLOR;
-  ctx.fillRect(0, 0, W, H);
+  // Fully transparent background — ocean pixels stay invisible
+  ctx.clearRect(0, 0, W, H);
 
-  // ── Land fill using individual countries (avoids antimeridian winding bugs) ─
+  // Land fill (solid, opaque) — alpha=1 makes these pixels visible on the land mesh
   const countriesResult = topojson.feature(world, (world.objects as any).countries) as any;
-  ctx.fillStyle = LAND_COLOR;
+  ctx.fillStyle = '#FFFFFF'; // white mask — tinted at render time by material.color
   for (const feat of countriesResult.features) {
     const geom = feat.geometry;
     if (!geom) continue;
@@ -207,7 +235,6 @@ function buildEarthTexture(world: Topology, renderer: THREE.WebGLRenderer): THRE
       ? [geom.coordinates]
       : geom.type === 'MultiPolygon' ? geom.coordinates : [];
     for (const poly of polys) {
-      // Draw each outer ring version separately to avoid antimeridian fill bleed
       const outerVersions = splitRingAtMeridian(poly[0]);
       for (const outerVer of outerVersions) {
         ctx.beginPath();
@@ -218,7 +245,6 @@ function buildEarthTexture(world: Topology, renderer: THREE.WebGLRenderer): THRE
           else ctx.lineTo(x, y);
         }
         ctx.closePath();
-        // Inner rings (holes) — no antimeridian split needed for holes
         for (let r = 1; r < poly.length; r++) {
           traceRing(ctx, poly[r], W, H);
         }
@@ -227,61 +253,111 @@ function buildEarthTexture(world: Topology, renderer: THREE.WebGLRenderer): THRE
     }
   }
 
-  // ── Country borders ───────────────────────────────────────────────────────
-  const borders = topojson.mesh(world, (world.objects as any).countries, (a: any, b: any) => a !== b);
-  ctx.strokeStyle = 'rgba(42, 92, 170, 0.4)';
-  ctx.lineWidth = 1.0;
-  drawGeoLines(ctx, borders.coordinates as number[][][], W, H);
-
-  // ── Coastlines (glow + sharp) ─────────────────────────────────────────────
-  const coast = topojson.mesh(world, (world.objects as any).land);
-  // Outer glow pass
-  ctx.strokeStyle = 'rgba(74, 158, 255, 0.06)';
-  ctx.lineWidth = 3;
-  drawGeoLines(ctx, coast.coordinates as number[][][], W, H);
-  // Sharp pass
-  ctx.strokeStyle = 'rgba(90, 170, 255, 0.55)';
-  ctx.lineWidth = 1.2;
-  drawGeoLines(ctx, coast.coordinates as number[][][], W, H);
-
-  // ── Graticule grid ────────────────────────────────────────────────────────
-  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-  ctx.lineWidth = 1;
-  for (let lat = -60; lat <= 60; lat += 30) {
-    const y = py(lat, H);
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
-  }
-  for (let lng = -150; lng <= 180; lng += 30) {
-    const x = px(lng, W);
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
-  }
-
-  // ── City lights on texture (warm glow for major cities) ──────────────────
-  for (const city of WORLD_CITIES) {
-    if (city.tier > 1) continue;
-    const cx = px(city.lng, W);
-    const cy = py(city.lat, H);
-    const r = 10;
-    const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-    cg.addColorStop(0, 'rgba(255,225,160,0.2)');
-    cg.addColorStop(0.4, 'rgba(255,180,80,0.05)');
-    cg.addColorStop(1, 'rgba(255,150,50,0)');
-    ctx.fillStyle = cg;
-    ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
-  }
-
   const tex = new THREE.CanvasTexture(c);
-  tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-  tex.minFilter  = THREE.LinearMipmapLinearFilter;
-  tex.magFilter  = THREE.LinearFilter;
-  tex.generateMipmaps = true;
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
   return tex;
 }
 
+// ── 3-D country border lines from topojson MultiLineString ────────────────────
+function buildCountryBorderLines(
+  group: THREE.Group,
+  world: Topology,
+  themeColor: number
+): { borderMat: THREE.LineBasicMaterial; borderGroup: THREE.Group } {
+  const borderGroup = new THREE.Group();
+  const borderMat   = new THREE.LineBasicMaterial({
+    color:       themeColor,
+    transparent: true,
+    opacity:     0.75,
+    depthWrite:  false,
+  });
+
+  const borders = topojson.mesh(world, (world.objects as any).countries, (a: any, b: any) => a !== b) as any;
+  for (const line of borders.coordinates as number[][][]) {
+    let segment: THREE.Vector3[] = [];
+    let prevLng = line[0]?.[0] ?? 0;
+    for (const [lng, lat] of line) {
+      if (Math.abs(lng - prevLng) > 170) {
+        if (segment.length >= 2) {
+          borderGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(segment), borderMat));
+        }
+        segment = [];
+      }
+      segment.push(latLngToVector3(lat, lng, 2.003));
+      prevLng = lng;
+    }
+    if (segment.length >= 2) {
+      borderGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(segment), borderMat));
+    }
+  }
+  group.add(borderGroup);
+  return { borderMat, borderGroup };
+}
+
+// ── 3-D coastline lines from topojson land boundary ──────────────────────────
+function buildCoastlineLines(
+  group: THREE.Group,
+  world: Topology,
+  themeColor: number
+): { coastMat: THREE.LineBasicMaterial; coastGroup: THREE.Group } {
+  const coastGroup = new THREE.Group();
+  const coastMat   = new THREE.LineBasicMaterial({
+    color:       themeColor,
+    transparent: true,
+    opacity:     0.90,
+    depthWrite:  false,
+  });
+
+  const coast = topojson.mesh(world, (world.objects as any).land) as any;
+  for (const line of coast.coordinates as number[][][]) {
+    let segment: THREE.Vector3[] = [];
+    let prevLng = line[0]?.[0] ?? 0;
+    for (const [lng, lat] of line) {
+      if (Math.abs(lng - prevLng) > 170) {
+        if (segment.length >= 2) {
+          coastGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(segment), coastMat));
+        }
+        segment = [];
+      }
+      segment.push(latLngToVector3(lat, lng, 2.002));
+      prevLng = lng;
+    }
+    if (segment.length >= 2) {
+      coastGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(segment), coastMat));
+    }
+  }
+  group.add(coastGroup);
+  return { coastMat, coastGroup };
+}
+
+// ── Equator, tropics, polar circles ──────────────────────────────────────────
+function buildLatitudeLines(group: THREE.Group, baseColor: THREE.Color): THREE.Group {
+  const latGroup = new THREE.Group();
+  const LATS = [
+    { lat: 0,     opacity: 0.55 }, // equator
+    { lat: 23.5,  opacity: 0.25 }, // tropic of cancer
+    { lat: -23.5, opacity: 0.25 }, // tropic of capricorn
+    { lat: 66.5,  opacity: 0.15 }, // arctic circle
+    { lat: -66.5, opacity: 0.15 }, // antarctic circle
+  ];
+  for (const { lat, opacity } of LATS) {
+    const mat    = new THREE.LineBasicMaterial({ color: baseColor, transparent: true, opacity, depthWrite: false });
+    const points: THREE.Vector3[] = [];
+    for (let lng = -180; lng <= 182; lng += 2) points.push(latLngToVector3(lat, lng, 2.002));
+    latGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), mat));
+  }
+  group.add(latGroup);
+  return latGroup;
+}
+
+export type GlobeStyle = 'neon' | 'terrain' | 'wire';
+
 interface UseGlobeOptions {
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;  // ← добавь | null
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
   pins: GlobePin[];
   theme: 'night' | 'day' | 'nature';
+  style: GlobeStyle;
   filterTechnique: string;
   onPinClick: (pin: GlobePin | null) => void;
   onGlobeClick: (lat: number, lng: number, country: string) => void;
@@ -291,6 +367,7 @@ export function useGlobe({
   canvasRef,
   pins,
   theme,
+  style,
   filterTechnique,
   onPinClick,
   onGlobeClick,
@@ -306,12 +383,24 @@ export function useGlobe({
   const sceneRef        = useRef<THREE.Scene | null>(null);
   const cameraRef       = useRef<THREE.PerspectiveCamera | null>(null);
   const rendererRef     = useRef<THREE.WebGLRenderer | null>(null);
-  const globeGroupRef   = useRef<THREE.Group | null>(null);
-  const globeMeshRef    = useRef<THREE.Mesh | null>(null);
-  const wireMeshRef     = useRef<THREE.LineSegments | null>(null);
+  const globeGroupRef     = useRef<THREE.Group | null>(null);
+  const globeMeshRef      = useRef<THREE.Mesh | null>(null);
+  const landMaterialRef   = useRef<THREE.MeshBasicMaterial | null>(null);
+  const landMeshRef       = useRef<THREE.Mesh | null>(null);
+  const terrainTexRef       = useRef<THREE.Texture | null>(null);
+  const hlCanvasRef         = useRef<HTMLCanvasElement | null>(null);
+  const hlCtxRef            = useRef<CanvasRenderingContext2D | null>(null);
+  const hlTexRef            = useRef<THREE.CanvasTexture | null>(null);
+  const hoveredCountryIdRef = useRef<number | null>(null);
+  const borderGroupRef      = useRef<THREE.Group | null>(null);
+  const borderMaterialRef = useRef<THREE.LineBasicMaterial | null>(null);
+  const coastGroupRef     = useRef<THREE.Group | null>(null);
+  const coastMaterialRef  = useRef<THREE.LineBasicMaterial | null>(null);
+  const latLineGroupRef   = useRef<THREE.Group | null>(null);
   const pinMeshesRef      = useRef<THREE.Mesh[]>([]);
   const pinGroupsRef      = useRef<THREE.Group[]>([]);
   const cityMeshesRef     = useRef<THREE.Mesh[]>([]);
+  const cityStemsRef      = useRef<THREE.Line[]>([]);
   const rafRef            = useRef<number>(0);
   const glowTexRef        = useRef<THREE.CanvasTexture | null>(null);
   const countryFeaturesRef = useRef<any[]>([]);
@@ -364,22 +453,17 @@ export function useGlobe({
 
     // Globe sphere — starts with solid color, texture applied async
     const sphereGeo = new THREE.SphereGeometry(2, 64, 64);
+    const gf0 = GLOBE_FILLS[theme] ?? GLOBE_FILLS.night;
     const sphereMat = new THREE.MeshPhongMaterial({
-      color:     0x06122A,
-      emissive:  0x010508,
-      emissiveIntensity: 0.4,
-      shininess: 25,
+      color:     new THREE.Color(gf0.ocean),
+      emissive:  new THREE.Color(gf0.ocean).multiplyScalar(0.4),
+      emissiveIntensity: 0.5,
+      shininess: 30,
     });
     const globeMesh = new THREE.Mesh(sphereGeo, sphereMat);
     globeGroup.add(globeMesh);
     globeMeshRef.current = globeMesh;
 
-    // Wireframe
-    const wireGeo   = new THREE.WireframeGeometry(new THREE.SphereGeometry(2.01, 24, 24));
-    const wireMat   = new THREE.LineBasicMaterial({ color: 0x1E3358, transparent: true, opacity: 0.08 });
-    const wireLines = new THREE.LineSegments(wireGeo, wireMat);
-    globeGroup.add(wireLines);
-    wireMeshRef.current = wireLines;
 
     // Lights
     const ambient  = new THREE.AmbientLight(0xffffff, 0.45);
@@ -466,15 +550,45 @@ export function useGlobe({
         const world = worldAtlasData as unknown as Topology;
         if (cancelled) return;
 
-        // Earth texture (ocean + land + coastlines + borders — all on texture)
-        const texture = buildEarthTexture(world, renderer);
-        const mat = globeMeshRef.current!.material as THREE.MeshPhongMaterial;
-        mat.map   = texture;
-        mat.color.setHex(0xFFFFFF);
-        mat.emissive.setHex(0x030810);
-        mat.emissiveIntensity = 0.15;
-        mat.shininess = 25;
-        mat.needsUpdate = true;
+        // Land fill overlay — transparent where ocean, LAND_COLOR where land.
+        // Sits just outside the ocean sphere so land areas are colored separately.
+        const gf      = GLOBE_FILLS[theme] ?? GLOBE_FILLS.night;
+        const landTex = buildLandTexture(world);
+        const landMat = new THREE.MeshBasicMaterial({
+          map:         landTex,
+          color:       new THREE.Color(gf.land),
+          transparent: true,
+          depthWrite:  false,
+        });
+        landMaterialRef.current = landMat;
+        const landMesh = new THREE.Mesh(new THREE.SphereGeometry(2.001, 64, 64), landMat);
+        landMeshRef.current = landMesh;
+        globeGroup.add(landMesh);
+
+        // Highlight sphere — transparent canvas updated on country hover
+        const hlCanvas = document.createElement('canvas');
+        hlCanvas.width = 2048; hlCanvas.height = 1024;
+        hlCanvasRef.current = hlCanvas;
+        hlCtxRef.current    = hlCanvas.getContext('2d')!;
+        const hlTex = new THREE.CanvasTexture(hlCanvas);
+        hlTex.minFilter = THREE.LinearFilter;
+        hlTex.magFilter = THREE.LinearFilter;
+        hlTexRef.current = hlTex;
+        const hlMat  = new THREE.MeshBasicMaterial({ map: hlTex, transparent: true, depthWrite: false });
+        const hlMesh = new THREE.Mesh(new THREE.SphereGeometry(2.004, 64, 64), hlMat);
+        globeGroup.add(hlMesh);
+
+        // 3-D country border lines + latitude reference lines
+        const tc = GLOBE_THEMES[theme] ?? GLOBE_THEMES.night;
+        const { borderMat, borderGroup } = buildCountryBorderLines(globeGroup, world, tc.border);
+        borderGroupRef.current    = borderGroup;
+        borderMaterialRef.current = borderMat;
+
+        const { coastMat, coastGroup } = buildCoastlineLines(globeGroup, world, tc.coast);
+        coastGroupRef.current    = coastGroup;
+        coastMaterialRef.current = coastMat;
+
+        latLineGroupRef.current   = buildLatitudeLines(globeGroup, borderMat.color);
 
         // Store decoded country features for click → country name lookup
         const countriesGeo = topojson.feature(world, (world.objects as any).countries) as any;
@@ -484,25 +598,40 @@ export function useGlobe({
 
         if (cancelled) return;
 
-        // Solid city dot markers — opaque SphereGeometry so depth test
-        // fully blocks them behind the globe (no transparency bleed artifacts).
+        // City dot markers + surface stems
         glowTexRef.current = createGlowTexture(); // still used for pin halos
         for (const city of WORLD_CITIES) {
-          const r   = city.tier === 1 ? 0.025 : city.tier === 2 ? 0.017 : 0.012;
-          const hex = city.tier === 1 ? 0xDDE8FF : city.tier === 2 ? 0xAABBDD : 0x8899BB;
+          const r   = city.tier === 1 ? 0.022 : city.tier === 2 ? 0.015 : 0.010;
+          const hex = city.tier === 1 ? 0xFFEDD5 : city.tier === 2 ? 0xFDD9A0 : 0xE8C070;
           const col = new THREE.Color(hex);
           const mat = new THREE.MeshPhongMaterial({
             color:             col,
             emissive:          col,
-            emissiveIntensity: city.tier === 1 ? 1.0 : city.tier === 2 ? 0.7 : 0.5,
-            shininess:         20,
+            emissiveIntensity: city.tier === 1 ? 1.2 : city.tier === 2 ? 0.9 : 0.6,
+            shininess:         40,
           });
           const mesh = new THREE.Mesh(new THREE.SphereGeometry(r, 6, 6), mat);
-          mesh.position.copy(latLngToVector3(city.lat, city.lng, 2.03));
+          mesh.position.copy(latLngToVector3(city.lat, city.lng, 2.025));
           mesh.userData = { __cityData: city };
           mesh.visible  = false;
           globeGroup.add(mesh);
           cityMeshesRef.current.push(mesh);
+
+          // Thin stem from globe surface to dot
+          const stemMat = new THREE.LineBasicMaterial({
+            color: col, transparent: true,
+            opacity: city.tier === 1 ? 0.65 : 0.45, depthWrite: false,
+          });
+          const stem = new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints([
+              latLngToVector3(city.lat, city.lng, 2.001),
+              latLngToVector3(city.lat, city.lng, 2.024),
+            ]),
+            stemMat,
+          );
+          stem.visible = false;
+          globeGroup.add(stem);
+          cityStemsRef.current.push(stem);
         }
       } catch (e) {
         console.warn('Globe assets failed to load', e);
@@ -558,6 +687,26 @@ export function useGlobe({
         setHoveredPos({ x: cx, y: cy });
         cv.style.cursor = 'pointer';
         return;
+      }
+
+      // Check globe surface for country hover highlight
+      if (globeMeshRef.current) {
+        const surfaceHits = raycaster.intersectObject(globeMeshRef.current);
+        if (surfaceHits.length > 0) {
+          const local = globeGroup.worldToLocal(surfaceHits[0].point.clone());
+          const { lat, lng } = vector3ToLatLng(local);
+          const feat   = getFeatureAtLatLng(lat, lng, countryFeaturesRef.current);
+          const featId = (feat?.id ?? null) as number | null;
+          if (featId !== hoveredCountryIdRef.current) {
+            hoveredCountryIdRef.current = featId;
+            const ctx = hlCtxRef.current; const tex = hlTexRef.current;
+            if (ctx && tex) { drawCountryHighlight(ctx, 2048, 1024, feat, 'rgba(255,255,255,0.14)'); tex.needsUpdate = true; }
+          }
+        } else if (hoveredCountryIdRef.current !== null) {
+          hoveredCountryIdRef.current = null;
+          const ctx = hlCtxRef.current; const tex = hlTexRef.current;
+          if (ctx && tex) { ctx.clearRect(0, 0, 2048, 1024); tex.needsUpdate = true; }
+        }
       }
 
       // Nothing hovered
@@ -623,6 +772,9 @@ export function useGlobe({
       setHoveredPin(null);
       setHoveredCity(null);
       setHoveredPos(null);
+      hoveredCountryIdRef.current = null;
+      const ctx = hlCtxRef.current; const tex = hlTexRef.current;
+      if (ctx && tex) { ctx.clearRect(0, 0, 2048, 1024); tex.needsUpdate = true; }
     }
 
     let lastTouchDist = 0;
@@ -696,9 +848,6 @@ export function useGlobe({
       // Auto-rotate when idle for 30 s (not 3 s — give user time to aim)
       if (idle > 30000 && !isDraggingRef.current) globeGroup.rotation.y += 0.001;
 
-      // Hide wireframe at deep zoom (would visibly float above surface)
-      if (wireMeshRef.current) wireMeshRef.current.visible = z > 3.5;
-
       // City visibility + back-face culling + pulse glow animation
       const dotScale = z / 5;
       const _wp = new THREE.Vector3();
@@ -706,12 +855,15 @@ export function useGlobe({
       cityMeshesRef.current.forEach((mesh, i) => {
         const tier = WORLD_CITIES[i].tier;
         const zoomVis = (tier === 1 && z < 6) || (tier === 2 && z < 4.8) || (tier === 3 && z < 3.5);
-        if (!zoomVis) { mesh.visible = false; return; }
+        if (!zoomVis) {
+          mesh.visible = false;
+          if (cityStemsRef.current[i]) cityStemsRef.current[i].visible = false;
+          return;
+        }
         mesh.getWorldPosition(_wp);
-        // Correct sphere-visibility formula: dot(P, C) > |P|²
-        // (= surface normal faces toward camera, accounting for silhouette plane)
         const isFront = _wp.dot(camera.position) > _wp.lengthSq();
         mesh.visible = isFront;
+        if (cityStemsRef.current[i]) cityStemsRef.current[i].visible = isFront;
         if (isFront) {
           const pulse = 1 + 0.18 * Math.sin(time * 1.8 + i * 0.5);
           mesh.scale.setScalar(dotScale * pulse);
@@ -760,6 +912,8 @@ export function useGlobe({
       canvas.removeEventListener('wheel',      onWheel);
       cityMeshesRef.current.forEach(m => { if (m instanceof THREE.Mesh) m.geometry.dispose(); (m.material as THREE.Material).dispose(); });
       cityMeshesRef.current = [];
+      cityStemsRef.current.forEach(l => { l.geometry.dispose(); (l.material as THREE.Material).dispose(); });
+      cityStemsRef.current = [];
       renderer.dispose();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -840,13 +994,81 @@ export function useGlobe({
     }
   }, [pins, filterTechnique]);
 
-  // ── Update theme (wireframe only — borders are on texture) ─────────────────
+  // ── Update theme + style ──────────────────────────────────────────────────
   useEffect(() => {
-    const wireMesh = wireMeshRef.current;
-    if (!wireMesh) return;
+    const borderMat = borderMaterialRef.current;
+    if (!borderMat) return;
     const tc = GLOBE_THEMES[theme] ?? GLOBE_THEMES.night;
-    (wireMesh.material as THREE.LineBasicMaterial).color.setHex(tc.wire);
-  }, [theme]);
+    const gf = GLOBE_FILLS[theme]  ?? GLOBE_FILLS.night;
+    const sph = globeMeshRef.current?.material as THREE.MeshPhongMaterial | undefined;
+    const lm  = landMeshRef.current;
+
+    // Line colors always follow theme
+    borderMat.color.setHex(tc.border);
+    coastMaterialRef.current?.color.setHex(tc.coast);
+    latLineGroupRef.current?.children.forEach(c => {
+      ((c as THREE.Line).material as THREE.LineBasicMaterial).color.setHex(tc.border);
+    });
+
+    if (style === 'terrain') {
+      if (lm) lm.visible = false;
+      borderMat.opacity = 0.30;
+      if (coastMaterialRef.current) coastMaterialRef.current.opacity = 0.40;
+
+      const applyTex = (tex: THREE.Texture) => {
+        if (!sph) return;
+        sph.map = tex;
+        sph.color.setHex(0xffffff);
+        sph.emissive.setHex(0x000000);
+        sph.emissiveIntensity = 0;
+        sph.needsUpdate = true;
+      };
+      if (terrainTexRef.current) {
+        applyTex(terrainTexRef.current);
+      } else {
+        new THREE.TextureLoader().load(
+          '/textures/earth-relief.jpg',
+          (tex) => { terrainTexRef.current = tex; applyTex(tex); },
+          undefined,
+          () => { if (sph) { sph.color.set(gf.ocean); sph.needsUpdate = true; } }
+        );
+      }
+
+    } else if (style === 'wire') {
+      if (lm) lm.visible = false;
+      if (sph) {
+        sph.map = null;
+        sph.color.set('#08061A');   // deep indigo — clearly ≠ neon's dark navy
+        sph.emissive.set('#08061A');
+        sph.emissiveIntensity = 0.4;
+        sph.needsUpdate = true;
+      }
+      // Ice-white lines — blueprint / star-chart look
+      const wireCol = 0xCCDDFF;
+      borderMat.color.setHex(wireCol);
+      borderMat.opacity = 0.85;
+      if (coastMaterialRef.current) {
+        coastMaterialRef.current.color.setHex(wireCol);
+        coastMaterialRef.current.opacity = 0.95;
+      }
+      latLineGroupRef.current?.children.forEach(c => {
+        ((c as THREE.Line).material as THREE.LineBasicMaterial).color.setHex(wireCol);
+      });
+
+    } else { // 'neon'
+      if (lm) lm.visible = true;
+      if (sph) {
+        sph.map = null;
+        sph.color.set(gf.ocean);
+        sph.emissive.set(gf.ocean).multiplyScalar(0.4);
+        sph.emissiveIntensity = 0.5;
+        sph.needsUpdate = true;
+      }
+      landMaterialRef.current?.color.set(gf.land);
+      borderMat.opacity = 0.75;
+      if (coastMaterialRef.current) coastMaterialRef.current.opacity = 0.90;
+    }
+  }, [theme, style]);
 
   const setAddPinModeCallback = useCallback((v: boolean) => {
     setAddPinMode(v);

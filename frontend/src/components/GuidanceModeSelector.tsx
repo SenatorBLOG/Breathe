@@ -1,10 +1,11 @@
 import React from 'react';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useTranslation } from 'react-i18next';
-import type { GuidanceMode } from '../hooks/useBreathingGuidance';
+// Legacy multi-mode selector — kept for reference, not currently rendered
+type LegacyGuidanceMode = 'visual' | 'sound' | 'vibration' | 'voice';
 
 const MODES: {
-  key: GuidanceMode;
+  key: LegacyGuidanceMode;
   icon: string;
   labelKey: string;
   supported: () => boolean;
@@ -36,15 +37,15 @@ const MODES: {
 ];
 
 interface Props {
-  selected: GuidanceMode[];
-  onChange: (modes: GuidanceMode[]) => void;
+  selected: LegacyGuidanceMode[];
+  onChange: (modes: LegacyGuidanceMode[]) => void;
 }
 
 export default function GuidanceModeSelector({ selected, onChange }: Props) {
   const ts = useThemeStyles();
   const { t } = useTranslation();
 
-  const toggle = (mode: GuidanceMode) => {
+  const toggle = (mode: LegacyGuidanceMode) => {
     if (mode === 'visual' && selected.length === 1 && selected[0] === 'visual') return;
     onChange(
       selected.includes(mode)

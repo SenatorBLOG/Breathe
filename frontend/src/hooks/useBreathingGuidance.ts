@@ -1,102 +1,81 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 
-export type GuidanceMode = 'visual' | 'sound' | 'vibration' | 'voice';
+export type GuidanceMode = 'silent' | 'vibration' | 'voice';
+export type VoiceGender  = 'female' | 'male';
 
-interface UseBreathingGuidanceOptions {
-  modes: GuidanceMode[];
-  enabled: boolean;
-  language?: string;
+const PHASE_TEXT: Record<string, Record<string, string>> = {
+  en: { inhale: 'Breathe in', hold: 'Hold',     exhale: 'Breathe out', pause: 'Rest'     },
+  ru: { inhale: 'Вдох',      hold: 'Задержка', exhale: 'Выдох',       pause: 'Отдых'    },
+  es: { inhale: 'Inhala',    hold: 'Mantén',   exhale: 'Exhala',      pause: 'Descansa' },
+};
+
+const VIBRATION_PATTERNS: Record<string, number[]> = {
+  inhale: [80, 40, 80, 40, 80],
+  hold:   [300],
+  exhale: [120, 40, 80, 40, 50],
+  pause:  [60],
+};
+
+const LANG_MAP: Record<string, string> = { en: 'en-US', ru: 'ru-RU', es: 'es-ES' };
+
+const FEMALE_KW = /female|woman|samantha|karen|moira|fiona|victoria|zira|helena|paulina|milena|irina/i;
+const MALE_KW   = /male|man|daniel|david|jorge|diego|thomas|alex|fred|yuri/i;
+
+interface Options {
+  mode:        GuidanceMode;
+  voiceGender: VoiceGender;
+  language:    string;
+  enabled:     boolean;
 }
 
-export function useBreathingGuidance({ modes, enabled, language = 'en' }: UseBreathingGuidanceOptions) {
-  const audioCtxRef = useRef<AudioContext | null>(null);
+export function useBreathingGuidance({ mode, voiceGender, language, enabled }: Options) {
 
-  const getAudioCtx = useCallback(() => {
-    if (!audioCtxRef.current) {
-      audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+  const guidePhase = useCallback((phase: 'inhale' | 'hold' | 'exhale' | 'pause') => {
+    if (!enabled || mode === 'silent') return;
+
+    if (mode === 'vibration') {
+      if ('vibrate' in navigator) navigator.vibrate(VIBRATION_PATTERNS[phase] ?? [100]);
+      return;
     }
-    return audioCtxRef.current;
-  }, []);
 
-  const playTone = useCallback((freq: number, duration: number, volume = 0.25) => {
-    if (!modes.includes('sound') || !enabled) return;
-    try {
-      const ctx = getAudioCtx();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
-      gain.gain.setValueAtTime(volume, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + duration);
-    } catch {}
-  }, [modes, enabled, getAudioCtx]);
-
-  const vibrate = useCallback((pattern: number | number[]) => {
-    if (!modes.includes('vibration') || !enabled) return;
-    if ('vibrate' in navigator) {
-      navigator.vibrate(pattern);
-    }
-  }, [modes, enabled]);
-
-  const speak = useCallback((text: string) => {
-    if (!modes.includes('voice') || !enabled) return;
-    if ('speechSynthesis' in window) {
+    if (mode === 'voice') {
+      if (!('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
-      const msg = new SpeechSynthesisUtterance(text);
-      msg.rate = 0.75;
-      msg.pitch = 0.9;
-      msg.volume = 0.8;
-      msg.lang = language === 'ru' ? 'ru-RU' : language === 'es' ? 'es-ES' : 'en-US';
-      window.speechSynthesis.speak(msg);
+
+      const lang     = language.slice(0, 2);
+      const text     = PHASE_TEXT[lang]?.[phase] ?? PHASE_TEXT.en[phase];
+      const langCode = LANG_MAP[lang] ?? 'en-US';
+
+      const msg    = new SpeechSynthesisUtterance(text);
+      msg.lang     = langCode;
+      msg.rate     = 0.75;
+      msg.pitch    = voiceGender === 'female' ? 1.1 : 0.8;
+      msg.volume   = 0.9;
+
+      const doSpeak = () => {
+        const voices     = window.speechSynthesis.getVoices();
+        const langVoices = voices.filter(v => v.lang.startsWith(lang));
+        const voice = langVoices.find(v =>
+          voiceGender === 'female' ? FEMALE_KW.test(v.name) : MALE_KW.test(v.name)
+        ) ?? (voiceGender === 'female' ? langVoices[0] : langVoices[1]) ?? langVoices[0];
+        if (voice) msg.voice = voice;
+        window.speechSynthesis.speak(msg);
+      };
+
+      if (window.speechSynthesis.getVoices().length > 0) {
+        doSpeak();
+      } else {
+        window.speechSynthesis.onvoiceschanged = doSpeak;
+      }
     }
-  }, [modes, enabled, language]);
-
-  const guidePhase = useCallback((phase: 'inhale' | 'hold' | 'exhale' | 'pause', t: (key: string) => string) => {
-    if (!enabled) return;
-
-    const PHASE_CONFIG = {
-      inhale: {
-        freq: 528,
-        duration: 1.5,
-        vibration: [80, 40, 80, 40, 80],
-        voiceKey: 'breathing.phaseLabels.inhale',
-      },
-      hold: {
-        freq: 396,
-        duration: 0.8,
-        vibration: [200],
-        voiceKey: 'breathing.phaseLabels.hold',
-      },
-      exhale: {
-        freq: 285,
-        duration: 1.5,
-        vibration: [100, 40, 70, 40, 40],
-        voiceKey: 'breathing.phaseLabels.exhale',
-      },
-      pause: {
-        freq: 174,
-        duration: 0.5,
-        vibration: [50],
-        voiceKey: 'breathing.phaseLabels.rest',
-      },
-    };
-
-    const cfg = PHASE_CONFIG[phase];
-    playTone(cfg.freq, cfg.duration);
-    vibrate(cfg.vibration);
-    speak(t(cfg.voiceKey));
-  }, [enabled, playTone, vibrate, speak]);
+  }, [mode, voiceGender, language, enabled]);
 
   useEffect(() => {
     return () => {
-      window.speechSynthesis?.cancel();
-      navigator.vibrate?.(0);
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      if ('vibrate' in navigator) navigator.vibrate(0);
     };
   }, []);
 
-  return { guidePhase, playTone, vibrate, speak };
+  return { guidePhase };
 }

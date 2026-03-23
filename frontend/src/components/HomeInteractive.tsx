@@ -1,7 +1,8 @@
 // src/components/HomeInteractive.tsx
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import { AuthContext } from './contexts/AuthContext';
 import { Lock } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -103,6 +104,7 @@ function BlurredPlan({ lines, ts }: { lines: string[]; ts: ReturnType<typeof use
 
 // ─── Quiz ─────────────────────────────────────────────────────────────────────
 function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
+  const { isAuthenticated } = useContext(AuthContext);
   const [answers, setAnswers]       = useState<(Tag | null)[]>(Array(5).fill(null));
   const [step, setStep]             = useState(0);
   const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
@@ -141,20 +143,41 @@ function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
           <p className="text-xs mt-1 max-w-xs leading-relaxed" style={{ color: ts.textMuted }}>{result.desc}</p>
         </div>
 
-        <BlurredPlan lines={plan} ts={ts} />
+        {isAuthenticated ? (
+          <div className="w-full flex flex-col gap-2 p-4 rounded-xl"
+            style={{ background: ts.cardBgHover, border: `1px solid ${ts.borderHover}` }}>
+            <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>Your 7-day plan:</p>
+            {plan.map(day => (
+              <div key={day} className="flex items-start gap-2">
+                <span style={{ color: result.color }}>→</span>
+                <span className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{day}</span>
+              </div>
+            ))}
+            <Link to={result.techniqueLink}
+              className="flex items-center justify-center py-2.5 rounded-xl text-white text-xs font-medium mt-2 transition-all hover:scale-[1.02]"
+              style={{ background: ts.btnGradient }}>
+              Start {result.technique} →
+            </Link>
+          </div>
+        ) : (
+          <BlurredPlan lines={plan} ts={ts} />
+        )}
 
-        <Link
-          to={`/signup?ref=${resultType}`}
-          className="w-full py-3 rounded-xl text-sm font-medium tracking-wide text-white text-center transition-all hover:scale-[1.02] active:scale-[0.98]"
-          style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
-        >
-          Unlock my plan — free →
-        </Link>
-
-        <p className="text-[10px]" style={{ color: ts.textDim }}>No credit card · 30 seconds</p>
+        {!isAuthenticated && (
+          <>
+            <Link
+              to={`/signup?ref=${resultType}`}
+              className="w-full py-3 rounded-xl text-sm font-medium tracking-wide text-white text-center transition-all hover:scale-[1.02] active:scale-[0.98]"
+              style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
+            >
+              Unlock my plan — free →
+            </Link>
+            <p className="text-[10px]" style={{ color: ts.textDim }}>No credit card · 30 seconds</p>
+          </>
+        )}
 
         <Link to={result.techniqueLink} className="text-xs hover:underline" style={{ color: ts.accent }}>
-          Or try {result.technique} without account →
+          {isAuthenticated ? `Open ${result.technique} →` : `Or try ${result.technique} without account →`}
         </Link>
 
         <button onClick={handleReset} className="text-[10px] hover:underline mt-1" style={{ color: ts.textDim }}>
@@ -214,8 +237,33 @@ function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
   );
 }
 
+// ─── Stress breakdown helper ──────────────────────────────────────────────────
+function getBreakdown(score: number): string[] {
+  if (score < 30) return [
+    'Sleep is your biggest lever right now',
+    'Morning breathing routine would reduce cortisol spike',
+    'Evening wind-down with 4-7-8 recommended',
+  ];
+  if (score < 50) return [
+    'Focus is slightly scattered — try box breathing before work',
+    'Sleep quality can be improved with 4-7-8 before bed',
+    'Consistent morning practice would stabilize energy',
+  ];
+  if (score < 75) return [
+    'Your baseline is healthy — coherent breathing to optimize HRV',
+    'Morning ritual would amplify your natural energy',
+    'Track sessions to see trends over time',
+  ];
+  return [
+    'Excellent baseline — Wim Hof to push performance further',
+    'Your HRV is likely high — connect wearable to confirm',
+    'Focus on maintaining consistency',
+  ];
+}
+
 // ─── Stress calculator ────────────────────────────────────────────────────────
 function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
+  const { isAuthenticated } = useContext(AuthContext);
   const [sleep,   setSleep]   = useState(5);
   const [anxiety, setAnxiety] = useState(5);
   const [focus,   setFocus]   = useState(5);
@@ -250,6 +298,9 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
     { label: 'Energy',        value: energy,  set: setEnergy,  color: '#FFD97D',      invert: false },
   ];
 
+  const breakdown = getBreakdown(score);
+  const planHref  = score < 50 ? '/breathing/4-7-8' : score < 75 ? '/breathing' : '/breathing';
+
   if (showResult) {
     return (
       <div className="flex flex-col items-center gap-4">
@@ -263,20 +314,38 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
             style={{ width: `${score}%`, background: scoreColor }} />
         </div>
 
-        <BlurredPlan
-          lines={planLines.map(l => `→ ${l}`).map(l => l.replace('→ → ', '→ '))}
-          ts={ts}
-        />
+        {isAuthenticated ? (
+          <div className="w-full flex flex-col gap-2 p-4 rounded-xl"
+            style={{ background: ts.cardBgHover, border: `1px solid ${ts.borderHover}` }}>
+            <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>What's driving your score:</p>
+            {breakdown.map(item => (
+              <div key={item} className="flex items-start gap-2">
+                <span style={{ color: scoreColor }}>→</span>
+                <span className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{item}</span>
+              </div>
+            ))}
+            <Link to={planHref}
+              className="flex items-center justify-center py-2.5 rounded-xl text-white text-xs font-medium mt-2 transition-all hover:scale-[1.02]"
+              style={{ background: ts.btnGradient }}>
+              Start your plan →
+            </Link>
+          </div>
+        ) : (
+          <BlurredPlan lines={planLines} ts={ts} />
+        )}
 
-        <Link
-          to={`/signup?ref=stress-calc&score=${score}`}
-          className="w-full py-3 rounded-xl text-sm font-medium tracking-wide text-white text-center transition-all hover:scale-[1.02] active:scale-[0.98]"
-          style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
-        >
-          Get my breathing plan →
-        </Link>
-
-        <p className="text-[10px]" style={{ color: ts.textDim }}>Free · No card · 30 seconds</p>
+        {!isAuthenticated && (
+          <>
+            <Link
+              to={`/signup?ref=stress-calc&score=${score}`}
+              className="w-full py-3 rounded-xl text-sm font-medium tracking-wide text-white text-center transition-all hover:scale-[1.02] active:scale-[0.98]"
+              style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
+            >
+              Get my breathing plan →
+            </Link>
+            <p className="text-[10px]" style={{ color: ts.textDim }}>Free · No card · 30 seconds</p>
+          </>
+        )}
 
         <button onClick={() => setShowResult(false)} className="text-[10px] hover:underline" style={{ color: ts.textDim }}>
           Adjust scores
