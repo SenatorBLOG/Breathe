@@ -1,10 +1,10 @@
 import React, { useCallback, useMemo, useState, useRef, useEffect } from 'react';
 import NavBar from '../components/NavBar';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
-import { useBreathingGuidance, type GuidanceMode } from '../hooks/useBreathingGuidance';
-import GuidanceModeSelector from '../components/GuidanceModeSelector';
+import { useBreathingGuidance } from '../hooks/useBreathingGuidance';
+import GuidancePicker, { type GuidanceMode, type VoiceGender } from '../components/GuidancePicker';
 import { useHealthData } from '../hooks/useHealthData';
 import { calcCalmScore, type SessionBiometrics } from '../utils/calmScore';
 import CalmScoreResult from '../components/CalmScoreResult';
@@ -161,10 +161,18 @@ export default function BreathingPage() {
   const { t, i18n } = useTranslation();
   const ts = useThemeStyles();
   const [isActive, setIsActive] = useState(false);
-  const [guidanceModes, setGuidanceModes] = useState<GuidanceMode[]>(() => {
-    const saved = localStorage.getItem('breathe_guidance_modes');
-    return saved ? JSON.parse(saved) : ['visual'];
-  });
+  const [guidanceMode, setGuidanceMode] = useState<GuidanceMode>(
+    () => (localStorage.getItem('breathe_guidance_mode') as GuidanceMode) || 'silent'
+  );
+  const [voiceGender, setVoiceGender] = useState<VoiceGender>(
+    () => (localStorage.getItem('breathe_voice_gender') as VoiceGender) || 'female'
+  );
+  const handleGuidanceChange = (mode: GuidanceMode, gender: VoiceGender) => {
+    setGuidanceMode(mode);
+    setVoiceGender(gender);
+    localStorage.setItem('breathe_guidance_mode', mode);
+    localStorage.setItem('breathe_voice_gender', gender);
+  };
   const location = useLocation();
   const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>(() => {
     const state = location.state as { coachPreset?: PhaseDurations } | null;
@@ -196,22 +204,19 @@ export default function BreathingPage() {
     "/videos/med-04.mp4","/videos/med-05.mp4","/videos/med-06.mp4","/videos/med-07.mp4",
   ];
 
-  useEffect(() => {
-    localStorage.setItem('breathe_guidance_modes', JSON.stringify(guidanceModes));
-  }, [guidanceModes]);
-
   const { guidePhase } = useBreathingGuidance({
-    modes: guidanceModes,
-    enabled: isActive,
-    language: i18n.language,
+    mode:        guidanceMode,
+    voiceGender: voiceGender,
+    enabled:     isActive,
+    language:    i18n.language,
   });
 
   const handlePhaseChange = useCallback((p: Phase) => {
     setPhase(p);
     if (p && isActive) {
-      guidePhase(p as 'inhale' | 'hold' | 'exhale' | 'pause', t);
+      guidePhase(p as 'inhale' | 'hold' | 'exhale' | 'pause');
     }
-  }, [guidePhase, isActive, t]);
+  }, [guidePhase, isActive]);
   const desiredPlaySeconds = useMemo(() => {
     const t = phaseDurations.inhale + phaseDurations.hold + phaseDurations.exhale + phaseDurations.pause;
     return t / 2;
@@ -398,6 +403,12 @@ export default function BreathingPage() {
           )}
         </button>
 
+        <GuidancePicker
+          mode={guidanceMode}
+          voiceGender={voiceGender}
+          onChange={handleGuidanceChange}
+        />
+
         <div className="flex flex-col items-center gap-2">
           <HeartRateMonitor variant="compact" />
           <div className="flex gap-3">
@@ -444,17 +455,73 @@ export default function BreathingPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
-            {[
-              { icon: "🌊", title: t('breathing.infoCards.box'),   desc: t('breathing.infoCards.boxDesc')   },
-              { icon: "🌙", title: t('breathing.infoCards.sleep'),  desc: t('breathing.infoCards.sleepDesc') },
-              { icon: "⚡", title: t('breathing.infoCards.energy'), desc: t('breathing.infoCards.energyDesc') },
-            ].map(({ icon, title, desc }) => (
-              <div key={title} className="flex flex-col gap-2 p-4 rounded-2xl" style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <span className="text-xl">{icon}</span>
-                <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>{title}</p>
-                <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
-              </div>
-            ))}
+            {([
+              {
+                icon: '🌊', title: 'Box Breathing', tag: 'Focus & Calm',
+                pattern: { inhale: 4, hold: 4, exhale: 4, pause: 4 },
+                desc: 'Equal phases retrain your nervous system for stress resilience. Trusted by Navy SEALs and elite athletes.',
+                href: '/breathing/box-breathing',
+              },
+              {
+                icon: '🌙', title: '4-7-8 for Sleep', tag: 'Deep Sleep',
+                pattern: { inhale: 4, hold: 7, exhale: 8, pause: 1 },
+                desc: 'Long hold + slow exhale activates your parasympathetic system. One of the most effective natural sleep aids.',
+                href: '/breathing/4-7-8',
+              },
+              {
+                icon: '⚡', title: 'Energizing', tag: 'Boost Energy',
+                pattern: { inhale: 6, hold: 0, exhale: 2, pause: 1 },
+                desc: 'Short sharp cycles flood your body with oxygen and sharpen alertness in under two minutes.',
+                href: '/breathing/wim-hof',
+              },
+            ] as const).map(({ icon, title, tag, pattern, desc, href }) => {
+              const nums = [pattern.inhale, pattern.hold, pattern.exhale, pattern.pause];
+              const labels = ['Inhale', 'Hold', 'Exhale', 'Pause'];
+              return (
+                <div
+                  key={title}
+                  className="flex flex-col gap-3 p-4 rounded-2xl"
+                  style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-2xl">{icon}</span>
+                    <span
+                      className="text-[9px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full whitespace-nowrap"
+                      style={{ background: ts.borderHover, color: ts.textSecondary }}
+                    >{tag}</span>
+                  </div>
+
+                  <p className="text-sm font-semibold" style={{ color: ts.textPrimary }}>{title}</p>
+
+                  <div className="flex items-center gap-1">
+                    {labels.map((label, idx) => (
+                      <React.Fragment key={label}>
+                        <div className="flex flex-col items-center min-w-0">
+                          <span className="text-sm font-bold leading-tight" style={{ color: ts.textSecondary }}>{nums[idx]}</span>
+                          <span className="text-[8px] leading-tight" style={{ color: ts.textDim }}>{label}</span>
+                        </div>
+                        {idx < 3 && <span className="mx-0.5" style={{ color: ts.textDim, fontSize: 10 }}>·</span>}
+                      </React.Fragment>
+                    ))}
+                  </div>
+
+                  <p className="text-xs leading-relaxed flex-1" style={{ color: ts.textMuted }}>{desc}</p>
+
+                  <div className="flex items-center gap-3 pt-1">
+                    <button
+                      onClick={() => { setPhaseDurations(pattern); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                      className="flex-1 py-1.5 rounded-xl text-xs font-semibold transition-all hover:opacity-90 active:scale-95"
+                      style={{ background: ts.btnGradient, color: '#fff' }}
+                    >Apply</button>
+                    <Link
+                      to={href}
+                      className="text-xs font-medium hover:opacity-80 transition-opacity whitespace-nowrap"
+                      style={{ color: ts.textSecondary }}
+                    >Read guide →</Link>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

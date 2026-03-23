@@ -29,10 +29,10 @@ const STYLES: Record<Theme, ThemeStyles> = {
   night: {
     btnGradient:   'linear-gradient(135deg,#1A5FCC,#3A82F7)',
     btnShadow:     '0 0 24px rgba(58,130,247,0.4)',
-    textPrimary:   '#DDF0FF',
-    textSecondary: '#A8CCEE',
-    textMuted:     '#7AAEC8',
-    textDim:       '#4E7090',
+    textPrimary:   '#EEF5FF',   // near-white — h1, names, card titles
+    textSecondary: '#7AC4FF',   // bright blue — secondary headings, active elements
+    textMuted:     '#5A8FBB',   // descriptions, dates, labels
+    textDim:       '#2A4060',   // placeholders, inactive
     cardBg:        'rgba(11,22,40,0.85)',
     cardBgHover:   'rgba(13,27,51,0.90)',
     pageBg:        '#010814',
@@ -61,18 +61,18 @@ const STYLES: Record<Theme, ThemeStyles> = {
   nature: {
     btnGradient:   'linear-gradient(135deg,#1A7A40,#2ECC71)',
     btnShadow:     '0 0 24px rgba(46,204,113,0.4)',
-    textPrimary:   '#D8F5E8',
-    textSecondary: '#8ED8A8',
-    textMuted:     '#62B07C',
-    textDim:       '#428058',
-    cardBg:        'rgba(10,28,14,0.85)',
-    cardBgHover:   'rgba(12,34,16,0.92)',
+    textPrimary:   '#E8FFF0',   // near-white with green tint — h1, names, titles
+    textSecondary: '#4AE8A0',   // bright mint — secondary headings, active elements
+    textMuted:     '#5BA870',   // descriptions, dates, labels
+    textDim:       '#3A6848',   // placeholders, inactive
+    cardBg:        'rgba(10,28,14,0.88)',
+    cardBgHover:   'rgba(14,36,18,0.94)',
     pageBg:        '#0A1A0E',
-    border:        'rgba(40,100,55,0.5)',
-    borderHover:   'rgba(60,140,80,0.7)',
+    border:        'rgba(46,120,65,0.55)',
+    borderHover:   'rgba(70,160,90,0.75)',
     accent:        '#1A7A40',
     accentLight:   '#2ECC71',
-    navBg:         'rgba(8,20,10,0.97)',
+    navBg:         'rgba(6,18,8,0.97)',
   },
 };
 
