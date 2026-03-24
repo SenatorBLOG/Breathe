@@ -44,7 +44,7 @@ import { GlobalAudioPlayer } from './components/AudioPlayer/GlobalAudioPlayer';
 import { MusicLibrary } from './components/AudioPlayer/MusicLibrary';
 import { MusicProvider } from './components/contexts/MusicContext';
 import { AuthProvider } from './components/contexts/AuthContext';
-
+import { SpeedInsights } from "@vercel/speed-insights/next"
 export default function App() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''}>
