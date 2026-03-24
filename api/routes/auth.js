@@ -4,9 +4,13 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const authenticate = require('../middleware/auth');
+const { OAuth2Client } = require('google-auth-library');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const { sendWelcome } = require('../services/emailService');
+
+const GOOGLE_CLIENT_ID = '617412317511-19s97rms2r9t3ihl041h7k128a7pqd98.apps.googleusercontent.com';
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 // ─── POST /api/auth/register ──────────────────────────────────────────────────
 router.post('/register', [
@@ -85,18 +89,30 @@ router.post('/login', [
 
 // ─── POST /api/auth/google ────────────────────────────────────────────────────
 router.post('/google', async (req, res) => {
-  const { access_token } = req.body;
-
-  if (!access_token) {
-    return res.status(400).json({ error: 'No Google access token provided' });
-  }
+  const { idToken, access_token } = req.body;
 
   try {
-    const userInfoRes = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`);
-    if (!userInfoRes.ok) {
-      return res.status(401).json({ error: 'Invalid Google access token' });
+    let payload;
+
+    if (idToken) {
+      // Android / native — verify signed ID token
+      const ticket = await googleClient.verifyIdToken({
+        idToken,
+        audience: GOOGLE_CLIENT_ID,
+      });
+      payload = ticket.getPayload();
+    } else if (access_token) {
+      // Web — exchange access token for user info
+      const userInfoRes = await fetch(
+        `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
+      );
+      if (!userInfoRes.ok) {
+        return res.status(401).json({ error: 'Invalid Google access token' });
+      }
+      payload = await userInfoRes.json();
+    } else {
+      return res.status(400).json({ error: 'No token provided' });
     }
-    const payload = await userInfoRes.json();
 
     if (!payload.email) {
       return res.status(400).json({ error: 'Google account has no email' });
