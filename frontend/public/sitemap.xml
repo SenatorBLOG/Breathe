@@ -141,9 +141,17 @@
   <!-- ── Science ────────────────────────────────────────────────────────── -->
   <url>
     <loc>https://breatheonline.app/science/slow-breathing</loc>
-    <lastmod>2026-03-21</lastmod>
+    <lastmod>2026-03-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
+  </url>
+
+  <!-- ── Legal ──────────────────────────────────────────────────────────── -->
+  <url>
+    <loc>https://breatheonline.app/privacy</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
   </url>
 
 </urlset>
