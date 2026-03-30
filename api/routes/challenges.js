@@ -97,8 +97,13 @@ Return JSON only: { "slug": "...", "reason": "one sentence why" }`;
     const geminiData = await geminiRes.json();
     const raw = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
     let jsonStr = raw.trim();
+    // Strip markdown fences — Gemini sometimes omits the closing ```
     const fence = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (fence) jsonStr = fence[1].trim();
+    if (fence) {
+      jsonStr = fence[1].trim();
+    } else if (jsonStr.startsWith('```')) {
+      jsonStr = jsonStr.replace(/^```(?:json)?\s*\n?/, '').replace(/```\s*$/, '').trim();
+    }
 
     const parsed = JSON.parse(jsonStr);
     const slug = parsed.slug ?? 'box-7';
