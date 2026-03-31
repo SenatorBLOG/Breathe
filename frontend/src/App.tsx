@@ -1,12 +1,14 @@
 // App.tsx
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
   return null;
 }
+
 import HomePage from './pages/HomePage.tsx';
 import BreathingPage from './pages/BreathingPage';
 import LoginPage from './pages/LoginPage';
@@ -44,7 +46,69 @@ import { GlobalAudioPlayer } from './components/AudioPlayer/GlobalAudioPlayer';
 import { MusicLibrary } from './components/AudioPlayer/MusicLibrary';
 import { MusicProvider } from './components/contexts/MusicContext';
 import { AuthProvider } from './components/contexts/AuthContext';
-import { SpeedInsights } from "@vercel/speed-insights/next"
+
+// ─── Page transition wrapper ─────────────────────────────────────────────────
+const pageVariants = {
+  initial:  { opacity: 0, y: 10 },
+  animate:  { opacity: 1, y: 0,  transition: { duration: 0.22, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] } },
+  exit:     { opacity: 0, y: -6, transition: { duration: 0.16, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] } },
+};
+
+function PageWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      style={{ willChange: 'opacity, transform' }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// ─── Animated routes — needs location key for AnimatePresence ────────────────
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <Routes location={location} key={location.pathname}>
+        <Route path="/"             element={<Navigate to="/home-page" replace />} />
+        <Route path="/home-page"    element={<PageWrapper><HomePage /></PageWrapper>} />
+        <Route path="/breathing"    element={<PageWrapper><BreathingPage /></PageWrapper>} />
+        <Route path="/sessions"     element={<Navigate to="/profile" replace />} />
+        <Route path="/sessions/new" element={<PageWrapper><NewSessionPage /></PageWrapper>} />
+        <Route path="/statistics"   element={<Navigate to="/profile" replace />} />
+        <Route path="/faq"           element={<PageWrapper><FAQPage /></PageWrapper>} />
+        <Route path="/community"     element={<PageWrapper><CommunityPage /></PageWrapper>} />
+        <Route path="/login"         element={<PageWrapper><LoginPage /></PageWrapper>} />
+        <Route path="/signup"        element={<PageWrapper><SignUpPage /></PageWrapper>} />
+        <Route path="/support"      element={<PageWrapper><SupportPage /></PageWrapper>} />
+        <Route path="/breathing/box-breathing" element={<PageWrapper><BoxBreathingPage /></PageWrapper>} />
+        <Route path="/breathing/4-7-8"         element={<PageWrapper><Breathing478Page /></PageWrapper>} />
+        <Route path="/breathing/wim-hof"        element={<PageWrapper><WimHofPage /></PageWrapper>} />
+        <Route path="/breathing/anxiety"        element={<PageWrapper><BreathingAnxietyPage /></PageWrapper>} />
+        <Route path="/profile"               element={<PageWrapper><ProfilePage /></PageWrapper>} />
+        <Route path="/data-consent"           element={<PageWrapper><DataConsentPage /></PageWrapper>} />
+        <Route path="/music-library" element={<PageWrapper><MusicLibrary /></PageWrapper>} />
+        <Route path="/onboarding"   element={<PageWrapper><OnboardingPage /></PageWrapper>} />
+        <Route path="/globe"         element={<PageWrapper><GlobePage /></PageWrapper>} />
+        <Route path="/sleep/what-is-sleep-apnea"        element={<PageWrapper><SleepApneaPage /></PageWrapper>} />
+        <Route path="/sleep/why-sleep-is-important"    element={<PageWrapper><WhySleepPage /></PageWrapper>} />
+        <Route path="/sleep/breathwork-for-deep-sleep" element={<PageWrapper><BreathworkSleepPage /></PageWrapper>} />
+        <Route path="/sleep/story"                   element={<PageWrapper><SleepStoryPage /></PageWrapper>} />
+        <Route path="/science/slow-breathing"          element={<PageWrapper><SlowBreathingPage /></PageWrapper>} />
+        <Route path="/breathing/morning-ritual"        element={<PageWrapper><MorningRitualPage /></PageWrapper>} />
+        <Route path="/privacy"                         element={<PageWrapper><PrivacyPolicyPage /></PageWrapper>} />
+        <Route path="/challenges"                      element={<Navigate to="/profile" replace />} />
+        <Route path="*"              element={<PageWrapper><HomePage /></PageWrapper>} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
 export default function App() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''}>
@@ -54,37 +118,7 @@ export default function App() {
         <MusicProvider>
           <div className="min-h-screen">
             <ScrollToTop />
-            <Routes>
-              <Route path="/"             element={<Navigate to="/home-page" replace />} />
-              <Route path="/home-page"    element={<HomePage />} />
-              <Route path="/breathing"    element={<BreathingPage />} />
-              <Route path="/sessions"     element={<Navigate to="/profile" replace />} />
-              <Route path="/sessions/new" element={<NewSessionPage />} />
-              <Route path="/statistics"   element={<Navigate to="/profile" replace />} />
-              <Route path="/faq"           element={<FAQPage />} />
-              <Route path="/community"     element={<CommunityPage />} />
-              <Route path="/login"         element={<LoginPage />} />
-              <Route path="/signup"        element={<SignUpPage />} />
-              <Route path="/support"      element={<SupportPage />} />
-              <Route path="/breathing/box-breathing" element={<BoxBreathingPage />} />
-              <Route path="/breathing/4-7-8"         element={<Breathing478Page />} />
-              <Route path="/breathing/wim-hof"        element={<WimHofPage />} />
-              <Route path="/breathing/anxiety"        element={<BreathingAnxietyPage />} />
-              <Route path="/profile"               element={<ProfilePage />} />
-              <Route path="/data-consent"           element={<DataConsentPage />} />
-              <Route path="/music-library" element={<MusicLibrary />} />
-              <Route path="/onboarding"   element={<OnboardingPage />} />
-              <Route path="/globe"         element={<GlobePage />} />
-              <Route path="/sleep/what-is-sleep-apnea"        element={<SleepApneaPage />} />
-              <Route path="/sleep/why-sleep-is-important"    element={<WhySleepPage />} />
-              <Route path="/sleep/breathwork-for-deep-sleep" element={<BreathworkSleepPage />} />
-              <Route path="/sleep/story"                   element={<SleepStoryPage />} />
-              <Route path="/science/slow-breathing"          element={<SlowBreathingPage />} />
-              <Route path="/breathing/morning-ritual"        element={<MorningRitualPage />} />
-              <Route path="/privacy"                         element={<PrivacyPolicyPage />} />
-              <Route path="/challenges"                      element={<Navigate to="/profile" replace />} />
-              <Route path="*"              element={<HomePage />} />
-            </Routes>
+            <AnimatedRoutes />
             <AICoachButton variant="floating" />
             <ScrollToTopButton />
             <GlobalAudioPlayer />

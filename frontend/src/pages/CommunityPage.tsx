@@ -1,5 +1,6 @@
 // src/pages/CommunityPage.tsx
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import { PostSkeleton, ListSkeleton } from '../components/ui/Skeleton';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Author { _id: string; username?: string; name?: string; }
@@ -481,11 +483,18 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete, 
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <button onClick={toggleLike}
-            className={`flex items-center gap-1.5 text-xs transition-all ${liked ? 'text-[#FF8A8A]' : ''}`} style={{ color: ts.textMuted }}>
-            <Heart size={14} fill={liked ? 'currentColor' : 'none'} />
+          <motion.button onClick={toggleLike}
+            whileTap={{ scale: 0.82 }}
+            whileHover={{ scale: 1.08 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+            className={`flex items-center gap-1.5 text-xs ${liked ? 'text-[#FF8A8A]' : ''}`} style={{ color: ts.textMuted }}>
+            <motion.span
+              animate={liked ? { scale: [1, 1.35, 1] } : { scale: 1 }}
+              transition={{ duration: 0.3 }}>
+              <Heart size={14} fill={liked ? 'currentColor' : 'none'} />
+            </motion.span>
             {likeCount > 0 && <span className="tabular-nums">{likeCount}</span>}
-          </button>
+          </motion.button>
         </div>
 
         {/* Comments */}
@@ -774,11 +783,7 @@ export default function CommunityPage() {
 
               {/* Posts */}
               {loading && page === 1 ? (
-                <div className="flex flex-col gap-3">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="h-32 rounded-2xl animate-pulse" style={{ backgroundColor: ts.cardBg }} />
-                  ))}
-                </div>
+                <ListSkeleton count={4} Item={PostSkeleton} />
               ) : posts.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 py-20 text-center">
                   <span className="text-4xl opacity-30">🌊</span>

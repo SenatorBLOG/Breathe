@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
@@ -9,6 +9,50 @@ import { useThemeStyles } from '../hooks/useThemeStyles';
 import NewsletterWidget from '../components/NewsletterWidget';
 import SoulOrb from '../components/AICoach/SoulOrb';
 import HomeInteractive from '../components/HomeInteractive';
+import { useScrollReveal } from '../hooks/useScrollReveal';
+
+// ─── Animated number counter ─────────────────────────────────────────────────
+function AnimatedNumber({ target, suffix = '' }: { target: number; suffix?: string }) {
+  const [current, setCurrent] = useState(0);
+  const [ref, visible] = useScrollReveal(0.3);
+
+  useEffect(() => {
+    if (!visible) return;
+    let start = 0;
+    const duration = 1200;
+    const step = 16;
+    const increment = target / (duration / step);
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= target) { setCurrent(target); clearInterval(timer); }
+      else setCurrent(Math.floor(start));
+    }, step);
+    return () => clearInterval(timer);
+  }, [visible, target]);
+
+  return (
+    <span ref={ref as React.RefObject<HTMLSpanElement>} className="tabular-nums">
+      {current.toLocaleString()}{suffix}
+    </span>
+  );
+}
+
+// ─── Reveal section wrapper ───────────────────────────────────────────────────
+function RevealSection({ children, className = '', delay = 0, direction = 'up' }: {
+  children: React.ReactNode; className?: string; delay?: number; direction?: 'up' | 'left' | 'right';
+}) {
+  const [ref, visible] = useScrollReveal();
+  const cls = direction === 'left' ? 'reveal-left' : direction === 'right' ? 'reveal-right' : 'reveal';
+  return (
+    <section
+      ref={ref as React.RefObject<HTMLElement>}
+      className={`${cls} ${visible ? 'visible' : ''} ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </section>
+  );
+}
 
 // ─── Floating particle for hero ──────────────────────────────────────────────
 function Particle({ delay, x, size }: { delay: number; x: number; size: number }) {
@@ -214,18 +258,28 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="anim-fade-up anim-delay-4 flex items-center gap-8 sm:gap-12 mt-2 border-t border-b py-4 px-8" 
+          <div className="anim-fade-up anim-delay-4 flex items-center gap-8 sm:gap-12 mt-2 border-t border-b py-4 px-8"
                style={{ borderColor: ts.border }}>
-            <StatCard value="50K+" label={t("hero.stats.sessions")} />
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-2xl sm:text-3xl font-semibold" style={{ color: ts.textSecondary }}>
+                <AnimatedNumber target={50000} suffix="+" />
+              </span>
+              <span className="text-[10px] sm:text-xs tracking-widest uppercase" style={{ color: ts.textMuted }}>{t("hero.stats.sessions")}</span>
+            </div>
             <div className="w-px h-8" style={{ backgroundColor: ts.border }} />
-            <StatCard value="12" label={t("hero.stats.techniques")} />
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-2xl sm:text-3xl font-semibold" style={{ color: ts.textSecondary }}>
+                <AnimatedNumber target={12} />
+              </span>
+              <span className="text-[10px] sm:text-xs tracking-widest uppercase" style={{ color: ts.textMuted }}>{t("hero.stats.techniques")}</span>
+            </div>
             <div className="w-px h-8" style={{ backgroundColor: ts.border }} />
             <StatCard value="4.9★" label={t("hero.stats.rating")} />
           </div>
         </section>
 
         {/* QUICK-START TECHNIQUES */}
-        <section className="px-4 sm:px-6 lg:px-8 py-10 max-w-6xl mx-auto w-full">
+        <RevealSection className="px-4 sm:px-6 lg:px-8 py-10 max-w-6xl mx-auto w-full">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h2 className="text-lg sm:text-xl font-medium" style={{ color: ts.textPrimary }}>
@@ -240,7 +294,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 reveal-stagger">
             <TechniquePill name={t("techniques.box")}       time={t("techniques.boxDesc")}       icon="⬜" presetKey="box"       presetName="Box Breathing" />
             <TechniquePill name={t("techniques.sleep478")}  time={t("techniques.sleep478Desc")}  icon="🌙" presetKey="sleep478"  presetName="4-7-8 Breathing" />
             <TechniquePill name={t("techniques.coherent")}  time={t("techniques.coherentDesc")}  icon="💙" presetKey="coherent"  presetName="Coherent Breathing" />
@@ -248,10 +302,10 @@ export default function HomePage() {
             <TechniquePill name={t("techniques.belly")}     time={t("techniques.bellyDesc")}     icon="🌀" presetKey="belly"     presetName="Belly Breathing" />
             <TechniquePill name={t("techniques.alternate")} time={t("techniques.alternateDesc")} icon="☯️" presetKey="alternate" presetName="Alternate Nostril" />
           </div>
-        </section>
+        </RevealSection>
 
         {/* INTERACTIVE QUIZ + STRESS CALCULATOR */}
-        <section className="px-4 sm:px-6 lg:px-8 py-10 max-w-6xl mx-auto w-full">
+        <RevealSection className="px-4 sm:px-6 lg:px-8 py-10 max-w-6xl mx-auto w-full" delay={100}>
           <div className="flex flex-col items-center gap-5">
             <div className="text-center">
               <h2 className="text-lg sm:text-xl font-medium tracking-wide" style={{ color: ts.textPrimary }}>
@@ -263,7 +317,7 @@ export default function HomePage() {
             </div>
             <HomeInteractive />
           </div>
-        </section>
+        </RevealSection>
 
         {/* AD SLOT */}
         <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full pb-8">
@@ -271,7 +325,7 @@ export default function HomePage() {
         </div>
 
         {/* MAIN CONTENT GRID */}
-        <section className="px-4 sm:px-6 lg:px-8 py-4 max-w-6xl mx-auto w-full">
+        <RevealSection className="px-4 sm:px-6 lg:px-8 py-4 max-w-6xl mx-auto w-full" delay={80}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left column */}
             <div className="lg:col-span-2 flex flex-col gap-6">
@@ -279,7 +333,7 @@ export default function HomePage() {
                 <h2 className="text-lg sm:text-xl font-medium mb-4 tracking-wide" style={{ color: ts.textPrimary }}>
                   {t('home.exploreMindfulness')}
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 reveal-stagger">
                   <ContentCard icon="🌊" tag="Guide" title={t('home.contentCards.sleepTitle')} desc={t('home.contentCards.sleepDesc')} href="/sleep/breathwork-for-deep-sleep" />
                   <ContentCard icon="⚡" tag="Science" title={t('home.contentCards.scienceTitle')} desc={t('home.contentCards.scienceDesc')} href="/science/slow-breathing" />
                   <ContentCard icon="🧘" tag="Practice" title={t('home.contentCards.morningTitle')} desc={t('home.contentCards.morningDesc')} href="/breathing/morning-ritual" />
@@ -298,7 +352,7 @@ export default function HomePage() {
 
             {/* Right sidebar */}
             <div className="flex flex-col gap-5">
-              <div className="rounded-2xl p-6 flex flex-col items-center text-center gap-4" 
+              <div className="rounded-2xl p-6 flex flex-col items-center text-center gap-4"
                    style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}>
                 <img src="/icons/Lotus_png.png" alt="Lotus" className="w-20 h-20 object-contain opacity-90" />
                 <div>
@@ -322,10 +376,10 @@ export default function HomePage() {
                 </p>
                 {[
                   { label: 'AI Sleep Story — personalized', href: '/sleep/story',                    icon: '🌙' },
-                  { label: 'Why Sleep is So Important',  href: '/sleep/why-sleep-is-important',    icon: '💤' },
-                  { label: 'What is Sleep Apnea?',       href: '/sleep/what-is-sleep-apnea',        icon: '😮‍💨' },
-                  { label: 'Breathwork for Deep Sleep',  href: '/sleep/breathwork-for-deep-sleep',  icon: '🌊' },
-                  { label: 'Why Slow Breathing Calms You', href: '/science/slow-breathing',         icon: '⚡' },
+                  { label: 'Why Sleep is So Important',     href: '/sleep/why-sleep-is-important',   icon: '💤' },
+                  { label: 'What is Sleep Apnea?',          href: '/sleep/what-is-sleep-apnea',      icon: '😮‍💨' },
+                  { label: 'Breathwork for Deep Sleep',     href: '/sleep/breathwork-for-deep-sleep', icon: '🌊' },
+                  { label: 'Why Slow Breathing Calms You',  href: '/science/slow-breathing',         icon: '⚡' },
                 ].map(({ label, href, icon }) => (
                   <Link key={href} to={href}
                     className="flex items-center gap-2 text-xs transition-all hover:opacity-80"
@@ -339,7 +393,7 @@ export default function HomePage() {
               <AdSlot label="Ad · 300×600 half-page" tall />
             </div>
           </div>
-        </section>
+        </RevealSection>
 
         <Footer />
       </div>
