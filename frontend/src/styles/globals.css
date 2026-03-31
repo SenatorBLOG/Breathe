@@ -2,7 +2,82 @@
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+.animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
 
-.animate-fadeIn {
-  animation: fadeIn 0.4s ease-out forwards;
+/* ── Hero entrance animations ─────────────────────────────────────────────── */
+@keyframes anim-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+.anim-fade-up {
+  opacity: 0;
+  animation: anim-fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.anim-delay-1 { animation-delay: 0.05s; }
+.anim-delay-2 { animation-delay: 0.15s; }
+.anim-delay-3 { animation-delay: 0.28s; }
+.anim-delay-4 { animation-delay: 0.42s; }
+.anim-delay-5 { animation-delay: 0.56s; }
+
+/* ── Shimmer text (hero h1) ───────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.55) 0%,
+    rgba(255,255,255,1)    30%,
+    rgba(255,255,255,0.55) 60%,
+    rgba(255,255,255,0.35) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+/* ── Float up particles ───────────────────────────────────────────────────── */
+@keyframes floatUp {
+  0%   { transform: translateY(0)   scale(1);    opacity: 0.6; }
+  50%  { transform: translateY(-60px) scale(1.1); opacity: 0.3; }
+  100% { transform: translateY(-120px) scale(0.8); opacity: 0; }
+}
+
+/* ── Scroll reveal ────────────────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+.reveal-right {
+  opacity: 0;
+  transform: translateX(28px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+/* Stagger delays for grid children */
+.reveal-stagger > *:nth-child(1) { transition-delay: 0.00s; }
+.reveal-stagger > *:nth-child(2) { transition-delay: 0.07s; }
+.reveal-stagger > *:nth-child(3) { transition-delay: 0.14s; }
+.reveal-stagger > *:nth-child(4) { transition-delay: 0.21s; }
+.reveal-stagger > *:nth-child(5) { transition-delay: 0.28s; }
+.reveal-stagger > *:nth-child(6) { transition-delay: 0.35s; }
+.reveal-stagger > *:nth-child(n+7) { transition-delay: 0.40s; }
+

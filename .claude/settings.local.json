@@ -30,7 +30,9 @@
       "WebFetch(domain:github.blog)",
       "WebFetch(domain:shud.in)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:discourse.threejs.org)"
+      "WebFetch(domain:discourse.threejs.org)",
+      "Bash(\"c:\\\\Users\\\\Mikhail Senatorov\\\\Documents\\\\Douglas\\\\Breathe\\\\frontend\\\\src\\\\components\\\\ui\\\\Skeleton.tsx\")",
+      "Bash(\"c:\\\\Users\\\\Mikhail Senatorov\\\\Documents\\\\Douglas\\\\Breathe\\\\frontend\\\\src\\\\hooks\\\\useScrollReveal.ts\")"
     ]
   }
 }
