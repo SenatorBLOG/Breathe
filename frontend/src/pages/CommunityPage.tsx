@@ -7,8 +7,9 @@ import Footer from '../components/Footer';
 import api from '../api';
 import { toast } from 'sonner';
 import {
-  Heart, MessageCircle, Flag, Trash2, Send,
+  Heart, MessageCircle, Trash2, Send,
   Plus, X, ChevronDown, Users, Flame, Sparkles,
+  MoreVertical, Flag, UserX,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
@@ -90,6 +91,31 @@ function Avatar({ author, size = 8 }: { author: Author; size?: number }) {
       }}
     >
       {initials(author)}
+    </div>
+  );
+}
+
+// ─── Confirm dialog ───────────────────────────────────────────────────────────
+function ConfirmDialog({ title, body, confirmLabel, danger, onConfirm, onCancel }: {
+  title: string; body: string; confirmLabel: string; danger?: boolean;
+  onConfirm: () => void; onCancel: () => void;
+}) {
+  const ts = useThemeStyles();
+  return (
+    <div className="fixed inset-0 z-[80] flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)' }}
+      onClick={e => { if (e.target === e.currentTarget) onCancel(); }}>
+      <div className="w-full max-w-xs rounded-2xl p-6 flex flex-col gap-4"
+        style={{ background: ts.cardBg, border: `1px solid ${ts.border}`, boxShadow: ts.btnShadow }}>
+        <p className="text-sm font-medium" style={{ color: ts.textSecondary }}>{title}</p>
+        <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{body}</p>
+        <div className="flex gap-2 justify-end">
+          <button onClick={onCancel} className="px-4 py-2 rounded-xl text-xs transition-colors"
+            style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}>Cancel</button>
+          <button onClick={onConfirm} className="px-4 py-2 rounded-xl text-xs font-medium text-white transition-all hover:opacity-90"
+            style={{ background: danger ? '#EF4444' : ts.btnGradient }}>{confirmLabel}</button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -298,9 +324,9 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
 }
 
 // ─── Post card ────────────────────────────────────────────────────────────────
-function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }: {
+function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete, onBlock }: {
   post: Post; isLoggedIn: boolean; currentUserId?: string;
-  onLoginRequired: () => void; onDelete: (id: string) => void;
+  onLoginRequired: () => void; onDelete: (id: string) => void; onBlock: (authorId: string) => void;
 }) {
   const ts = useThemeStyles();
   const { t } = useTranslation();
@@ -308,7 +334,21 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [commentCount] = useState(post.commentCount);
   const [hovered, setHovered] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [dialog, setDialog] = useState<'report' | 'block' | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const cat = CATEGORY_META[post.category] ?? CATEGORY_META.experience;
+  const isOwn = currentUserId === post.author._id;
+
+  // Close menu on outside click
+  useEffect(() => {
+    if (!menuOpen) return;
+    function handler(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    }
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [menuOpen]);
 
   const toggleLike = async () => {
     if (!isLoggedIn) { onLoginRequired(); return; }
@@ -319,91 +359,144 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete }
     } catch {}
   };
 
-  const report = async () => {
-    if (!isLoggedIn) { onLoginRequired(); return; }
+  const confirmReport = async () => {
+    setDialog(null);
     try {
       await api.post(`/posts/${post._id}/report`);
-      toast.success('Post reported');
-    } catch {}
+      toast.success('Report submitted. Thank you.');
+    } catch { toast.error('Could not submit report. Try again.'); }
+  };
+
+  const confirmBlock = async () => {
+    setDialog(null);
+    try {
+      await api.post(`/users/${post.author._id}/block`);
+      onBlock(post.author._id);
+      toast.success(`${post.author.name || 'User'} blocked.`);
+    } catch { toast.error('Could not block user. Try again.'); }
   };
 
   return (
-    <div className="flex flex-col gap-3 p-4 rounded-2xl border transition-all duration-300"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        background: ts.cardBg,
-        borderColor: hovered ? ts.borderHover : ts.border,
-      }}>
-
-      {/* Header */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2.5">
-          <Avatar author={post.author} />
-          <div>
-            <p className="text-xs font-medium leading-none" style={{ color: ts.textSecondary }}>
-              {post.author.name || post.author.username}
-            </p>
-            <p className="text-[9px] mt-0.5" style={{ color: ts.textDim }}>
-              {timeAgo(post.createdAt)}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wide"
-            style={{ color: cat.color, background: cat.bg }}>
-            {t(`community.categories.${post.category}`, cat.label)}
-          </span>
-          {currentUserId === post.author._id ? (
-            <button onClick={() => onDelete(post._id)}
-              className="transition-colors p-1" style={{ color: ts.textMuted }}>
-              <Trash2 size={12} />
-            </button>
-          ) : (
-            <button onClick={report} className="transition-colors p-1" style={{ color: ts.textMuted }}>
-              <Flag size={11} />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Text */}
-      <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
-        {post.text}
-      </p>
-
-      {/* Tags */}
-      {post.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {post.tags.map(tag => {
-            const tc = pickTagColor(tag);
-            return (
-              <span key={tag} className="text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wide"
-                style={{ backgroundColor: tc.bg, border: `1px solid ${tc.border}`, color: tc.color }}>
-                #{tag}
-              </span>
-            );
-          })}
-        </div>
+    <>
+      {dialog === 'report' && (
+        <ConfirmDialog
+          title="Report this post?"
+          body="We'll review it and take action if it violates our community guidelines."
+          confirmLabel="Submit report"
+          onConfirm={confirmReport}
+          onCancel={() => setDialog(null)}
+        />
+      )}
+      {dialog === 'block' && (
+        <ConfirmDialog
+          title={`Block ${post.author.name || 'this user'}?`}
+          body="You won't see their posts or content anymore. You can unblock anytime."
+          confirmLabel="Block"
+          danger
+          onConfirm={confirmBlock}
+          onCancel={() => setDialog(null)}
+        />
       )}
 
-      {/* Actions */}
-      <div className="flex items-center gap-4">
-        <button onClick={toggleLike}
-          className={`flex items-center gap-1.5 text-xs transition-all ${liked ? 'text-[#FF8A8A]' : ''}`} style={{ color: ts.textMuted }}>
-          <Heart size={14} fill={liked ? 'currentColor' : 'none'} />
-          {likeCount > 0 && <span className="tabular-nums">{likeCount}</span>}
-        </button>
-      </div>
+      <div className="flex flex-col gap-3 p-4 rounded-2xl border transition-all duration-300"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          background: ts.cardBg,
+          borderColor: hovered ? ts.borderHover : ts.border,
+        }}>
 
-      {/* Comments */}
-      <CommentSection
-        postId={post._id}
-        commentCount={commentCount}
-        isLoggedIn={isLoggedIn}
-        onLoginRequired={onLoginRequired}
-      />
-    </div>
+        {/* Header */}
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <Avatar author={post.author} />
+            <div>
+              <p className="text-xs font-medium leading-none" style={{ color: ts.textSecondary }}>
+                {post.author.name || post.author.username}
+              </p>
+              <p className="text-[9px] mt-0.5" style={{ color: ts.textDim }}>
+                {timeAgo(post.createdAt)}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wide"
+              style={{ color: cat.color, background: cat.bg }}>
+              {t(`community.categories.${post.category}`, cat.label)}
+            </span>
+
+            {isOwn ? (
+              <button onClick={() => onDelete(post._id)}
+                className="transition-colors p-1" style={{ color: ts.textMuted }}>
+                <Trash2 size={12} />
+              </button>
+            ) : (
+              <div className="relative" ref={menuRef}>
+                <button onClick={() => setMenuOpen(v => !v)}
+                  className="transition-colors p-1 rounded-lg hover:opacity-70" style={{ color: ts.textMuted }}>
+                  <MoreVertical size={14} />
+                </button>
+                {menuOpen && (
+                  <div className="absolute right-0 top-6 z-50 w-40 rounded-xl overflow-hidden shadow-xl"
+                    style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}>
+                    <button
+                      onClick={() => { setMenuOpen(false); if (!isLoggedIn) { onLoginRequired(); return; } setDialog('report'); }}
+                      className="flex items-center gap-2.5 w-full px-3 py-2.5 text-xs text-left transition-colors hover:opacity-70"
+                      style={{ color: ts.textSecondary }}>
+                      <Flag size={12} /> Report post
+                    </button>
+                    <button
+                      onClick={() => { setMenuOpen(false); if (!isLoggedIn) { onLoginRequired(); return; } setDialog('block'); }}
+                      className="flex items-center gap-2.5 w-full px-3 py-2.5 text-xs text-left transition-colors hover:opacity-70"
+                      style={{ color: '#EF4444' }}>
+                      <UserX size={12} /> Block user
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Text */}
+        <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+          {post.text}
+        </p>
+
+        {/* Tags */}
+        {post.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {post.tags.map(tag => {
+              const tc = pickTagColor(tag);
+              return (
+                <span key={tag} className="text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wide"
+                  style={{ backgroundColor: tc.bg, border: `1px solid ${tc.border}`, color: tc.color }}>
+                  #{tag}
+                </span>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Actions */}
+        <div className="flex items-center gap-4">
+          <button onClick={toggleLike}
+            className={`flex items-center gap-1.5 text-xs transition-all ${liked ? 'text-[#FF8A8A]' : ''}`} style={{ color: ts.textMuted }}>
+            <Heart size={14} fill={liked ? 'currentColor' : 'none'} />
+            {likeCount > 0 && <span className="tabular-nums">{likeCount}</span>}
+          </button>
+        </div>
+
+        {/* Comments */}
+        <CommentSection
+          postId={post._id}
+          commentCount={commentCount}
+          isLoggedIn={isLoggedIn}
+          onLoginRequired={onLoginRequired}
+        />
+      </div>
+    </>
   );
 }
 
@@ -605,6 +698,10 @@ export default function CommunityPage() {
     } catch { toast.error('Failed to delete'); }
   };
 
+  const onBlock = (authorId: string) => {
+    setPosts(prev => prev.filter(p => p.author._id !== authorId));
+  };
+
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
       <style>{`
@@ -697,7 +794,7 @@ export default function CommunityPage() {
                   {posts.map((post, i) => (
                     <div key={post._id} className="comm-in" style={{ animationDelay: `${Math.min(i, 5) * 0.05}s`, opacity: 0 }}>
                       <PostCard post={post} isLoggedIn={isLoggedIn} currentUserId={currentUserId}
-                        onLoginRequired={() => setShowLogin(true)} onDelete={onDelete} />
+                        onLoginRequired={() => setShowLogin(true)} onDelete={onDelete} onBlock={onBlock} />
                     </div>
                   ))}
 
