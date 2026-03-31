@@ -19,7 +19,7 @@ const allowedOrigins = [
   "https://breatheonline.app",
   "https://www.breatheonline.app",
   "https://breathe-two-plum.vercel.app",
-  "https://breathe-api-amut.onrender.com",
+  "https://breathe-api-amut.onrender.com/api/",
   "http://localhost:3000",
   "https://localhost:3000",
   "http://localhost:5173",
