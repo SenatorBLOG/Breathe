@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE || 'https://breathe-production-6cce.up.railway.app/api',
+  baseURL: import.meta.env.VITE_API_BASE || 'https://breathe-api-amut.onrender.com/api',
   timeout: 10000,
 });
 
