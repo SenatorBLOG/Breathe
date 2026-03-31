@@ -32,7 +32,8 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:discourse.threejs.org)",
       "Bash(\"c:\\\\Users\\\\Mikhail Senatorov\\\\Documents\\\\Douglas\\\\Breathe\\\\frontend\\\\src\\\\components\\\\ui\\\\Skeleton.tsx\")",
-      "Bash(\"c:\\\\Users\\\\Mikhail Senatorov\\\\Documents\\\\Douglas\\\\Breathe\\\\frontend\\\\src\\\\hooks\\\\useScrollReveal.ts\")"
+      "Bash(\"c:\\\\Users\\\\Mikhail Senatorov\\\\Documents\\\\Douglas\\\\Breathe\\\\frontend\\\\src\\\\hooks\\\\useScrollReveal.ts\")",
+      "Bash(del \"c:\\\\Users\\\\Mikhail Senatorov\\\\Documents\\\\Douglas\\\\Breathe\\\\frontend\\\\src\\\\components\\\\ui\\\\Skeleton.tsx\")"
     ]
   }
 }
