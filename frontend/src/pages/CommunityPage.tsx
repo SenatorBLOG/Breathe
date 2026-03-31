@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
-import { PostSkeleton, ListSkeleton } from '../components/ui/Skeleton';
+import { PostSkeleton, ListSkeleton } from '../components/ui/skeleton';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Author { _id: string; username?: string; name?: string; }
