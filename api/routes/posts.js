@@ -203,6 +203,22 @@ router.post('/:id/comments', auth, async (req, res) => {
   }
 });
 
+// ─── POST /api/posts/:id/report ──────────────────────────────────────────────
+router.post('/:id/report', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ error: 'Post not found' });
+    const reason = String(req.body.reason || '').trim().slice(0, 500);
+    post.reports = post.reports || [];
+    post.reports.push({ userId: uid(req), reason, createdAt: new Date() });
+    await post.save();
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('POST report error:', err.message);
+    res.status(500).json({ error: 'Failed to submit report' });
+  }
+});
+
 // ─── DELETE /api/posts/:postId/comments/:commentId ───────────────────────────
 router.delete('/:postId/comments/:commentId', auth, async (req, res) => {
   try {

@@ -106,6 +106,7 @@ app.use('/api/newsletter', require('./routes/newsletter'));
 app.use('/api/integrations', require('./routes/integrations'));
 app.use('/api/globe',        require('./routes/globe'));
 app.use('/api/unsubscribe',  require('./routes/unsubscribe'));
+app.use('/api/users',        require('./routes/users'));
 
 // ── Cron: streak reminder — runs every hour ───────────────────────
 cron.schedule('0 * * * *', async () => {

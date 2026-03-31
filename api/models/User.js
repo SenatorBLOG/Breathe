@@ -39,6 +39,9 @@ const userSchema = new mongoose.Schema(
       goal:     { type: String, enum: ['sleep', 'stress', 'focus', 'energy', 'general'] },
     },
 
+    // Blocked users
+    blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+
     // Email retention
     lastSessionAt:     { type: Date },
     reminderEmailSent: { type: Date, default: null },

@@ -297,4 +297,20 @@ router.post('/:id/like', likeLimiter, optionalAuth, async (req, res) => {
   }
 });
 
+// ── POST /globe/:id/report ────────────────────────────────────────────────────
+router.post('/:id/report', auth, async (req, res) => {
+  try {
+    const pin = await GlobePin.findById(req.params.id);
+    if (!pin) return res.status(404).json({ error: 'Pin not found.' });
+    const reason = String(req.body.reason || '').trim().slice(0, 500);
+    pin.reports = pin.reports || [];
+    pin.reports.push({ userId: req.user._id, reason, createdAt: new Date() });
+    await pin.save();
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('POST /globe/:id/report error:', err.message);
+    res.status(500).json({ error: 'Failed to submit report.' });
+  }
+});
+
 module.exports = router;
