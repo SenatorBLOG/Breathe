@@ -1,5 +1,5 @@
 // src/pages/CommunityPage.tsx
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
@@ -14,7 +14,53 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
-import { PostSkeleton, ListSkeleton } from '../components/ui/skeleton';
+
+// ─── Skeleton components ──────────────────────────────────────────────────────
+function SkeletonBlock({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) {
+  const ts = useThemeStyles();
+  return <div className={`rounded-xl animate-pulse ${className}`} style={{ backgroundColor: ts.cardBg, ...style }} />;
+}
+
+function PostSkeleton() {
+  const ts = useThemeStyles();
+  return (
+    <div className="flex flex-col gap-3 p-4 rounded-2xl border" style={{ background: ts.cardBg, borderColor: ts.border }}>
+      <div className="flex items-center gap-2.5">
+        <SkeletonBlock className="w-8 h-8 rounded-full flex-shrink-0" style={{ opacity: 0.6 }} />
+        <div className="flex flex-col gap-1.5 flex-1">
+          <SkeletonBlock className="h-2.5 w-24 rounded-full" style={{ opacity: 0.5 }} />
+          <SkeletonBlock className="h-2 w-14 rounded-full" style={{ opacity: 0.3 }} />
+        </div>
+        <SkeletonBlock className="h-4 w-16 rounded-full" style={{ opacity: 0.25 }} />
+      </div>
+      <div className="flex flex-col gap-2 pt-1">
+        <SkeletonBlock className="h-2.5 w-full rounded-full" style={{ opacity: 0.35 }} />
+        <SkeletonBlock className="h-2.5 w-5/6 rounded-full" style={{ opacity: 0.25 }} />
+        <SkeletonBlock className="h-2.5 w-2/3 rounded-full" style={{ opacity: 0.18 }} />
+      </div>
+      <div className="flex gap-1.5 pt-0.5">
+        <SkeletonBlock className="h-4 w-12 rounded-full" style={{ opacity: 0.2 }} />
+        <SkeletonBlock className="h-4 w-16 rounded-full" style={{ opacity: 0.15 }} />
+      </div>
+      <div className="flex gap-4 pt-1 border-t" style={{ borderColor: ts.border }}>
+        <SkeletonBlock className="h-3 w-8 rounded-full" style={{ opacity: 0.2 }} />
+        <SkeletonBlock className="h-3 w-16 rounded-full" style={{ opacity: 0.15 }} />
+      </div>
+    </div>
+  );
+}
+
+function ListSkeleton({ count = 4 }: { count?: number }) {
+  return (
+    <div className="flex flex-col gap-3">
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} style={{ opacity: Math.max(1 - i * 0.18, 0.3) }}>
+          <PostSkeleton />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Author { _id: string; username?: string; name?: string; }
@@ -783,7 +829,7 @@ export default function CommunityPage() {
 
               {/* Posts */}
               {loading && page === 1 ? (
-                <ListSkeleton count={4} Item={PostSkeleton} />
+                <ListSkeleton count={4} />
               ) : posts.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 py-20 text-center">
                   <span className="text-4xl opacity-30">🌊</span>
