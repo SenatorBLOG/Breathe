@@ -46,8 +46,8 @@ function MoodPicker({ value, onChange }: { value: number; onChange: (v: number) 
               borderColor: selected ? ts.borderHover : ts.border,
               backgroundColor: selected ? ts.cardBgHover : ts.cardBg,
             }}>
-            <span className={`transition-all duration-200 ${selected ? "text-2xl" : "text-xl opacity-60"}`}>{m.emoji}</span>
-            <span className="text-[9px] tracking-wide uppercase" style={{ color: selected ? ts.textSecondary : ts.textDim }}>{m.label}</span>
+            <span className={`transition-all duration-200 ${selected ? "text-2xl" : "t-heading opacity-60"}`}>{m.emoji}</span>
+            <span className="t-label" style={{ color: selected ? ts.textSecondary : ts.textDim }}>{m.label}</span>
           </button>
         );
       })}
@@ -68,7 +68,7 @@ function BeforeAfterSlider({ before, after, onBefore, onAfter }: {
         const color = i === 0 ? ts.textDim : ts.accent;
         return (
           <div key={label} className="flex items-center gap-3">
-            <span className="text-[10px] uppercase tracking-widest w-12 flex-shrink-0" style={{ color: ts.textMuted }}>{label}</span>
+            <span className="t-label w-12 flex-shrink-0" style={{ color: ts.textMuted }}>{label}</span>
             <input type="range" min={1} max={10} step={1} value={val}
               onChange={e => set(Number(e.target.value))}
               className="flex-1 appearance-none h-1.5 rounded-full cursor-pointer"
@@ -76,7 +76,7 @@ function BeforeAfterSlider({ before, after, onBefore, onAfter }: {
                 background: `linear-gradient(to right, ${color} ${(val-1)/9*100}%, ${ts.border} ${(val-1)/9*100}%)`,
                 accentColor: color,
               }} />
-            <span className="text-xs tabular-nums w-5 text-right" style={{ color: ts.textSecondary }}>{val}</span>
+            <span className="t-caption tabular-nums w-5 text-right" style={{ color: ts.textSecondary }}>{val}</span>
           </div>
         );
       })}
@@ -101,8 +101,8 @@ function TagGrid({ selected, onToggle }: { selected: string[]; onToggle: (t: str
           <button key={t.key} type="button" onClick={() => onToggle(t.key)}
             className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-center transition-all duration-200"
             style={{ borderColor: on ? ts.borderHover : ts.border, backgroundColor: on ? ts.cardBgHover : ts.cardBg }}>
-            <span className={`text-base transition-all ${on ? "" : "opacity-50"}`}>{t.icon}</span>
-            <span className="text-[9px] uppercase tracking-wide" style={{ color: on ? ts.textSecondary : ts.textDim }}>{t.label}</span>
+            <span className={`t-body transition-all ${on ? "" : "opacity-50"}`}>{t.icon}</span>
+            <span className="t-label" style={{ color: on ? ts.textSecondary : ts.textDim }}>{t.label}</span>
           </button>
         );
       })}
@@ -123,8 +123,8 @@ function NoisePicker({ value, onChange }: { value: string; onChange: (v: string)
         <button key={o.value} type="button" onClick={() => onChange(o.value)}
           className="flex-1 flex flex-col items-center gap-1 py-2 rounded-xl border text-center transition-all duration-200"
           style={{ borderColor: value === o.value ? ts.borderHover : ts.border, backgroundColor: value === o.value ? ts.cardBgHover : ts.cardBg }}>
-          <span className={`text-base ${value === o.value ? "" : "opacity-50"}`}>{o.icon}</span>
-          <span className="text-[9px] uppercase tracking-wide" style={{ color: value === o.value ? ts.textSecondary : ts.textDim }}>{o.value}</span>
+          <span className={`t-body ${value === o.value ? "" : "opacity-50"}`}>{o.icon}</span>
+          <span className="t-label" style={{ color: value === o.value ? ts.textSecondary : ts.textDim }}>{o.value}</span>
         </button>
       ))}
     </div>
@@ -144,7 +144,7 @@ function DotSlider({ value, max = 10, onChange, color: colorProp }: {
           className={`rounded-full transition-all duration-150 ${i <= value ? "w-3 h-3" : "w-2.5 h-2.5 opacity-25"}`}
           style={{ backgroundColor: i <= value ? color : ts.border, flexShrink: 0 }} />
       ))}
-      <span className="text-xs tabular-nums ml-1" style={{ color: ts.textDim }}>{value}</span>
+      <span className="t-caption tabular-nums ml-1" style={{ color: ts.textDim }}>{value}</span>
     </div>
   );
 }
@@ -206,8 +206,8 @@ export function SessionFeedbackModal({ open, onClose, initialData, onSubmit }: P
                 <Brain size={14} className="text-white" />
               </div>
               <div>
-                <p className="text-sm font-medium leading-none" style={{ color: ts.textPrimary }}>Session complete</p>
-                <p className="text-[10px] mt-0.5" style={{ color: ts.textDim }}>Your data trains your personal AI coach</p>
+                <p className="t-body font-medium leading-none" style={{ color: ts.textPrimary }}>Session complete</p>
+                <p className="t-caption mt-0.5" style={{ color: ts.textDim }}>Your data trains your personal AI coach</p>
               </div>
             </div>
             <button onClick={onClose} className="transition-colors p-1" style={{ color: ts.textMuted }}><X size={16} /></button>
@@ -226,15 +226,15 @@ export function SessionFeedbackModal({ open, onClose, initialData, onSubmit }: P
             {step === 0 && (
               <div className="flex flex-col gap-5">
                 <div>
-                  <p className="text-[10px] tracking-[0.25em] uppercase mb-1" style={{ color: ts.textDim }}>Step 1 of 4</p>
-                  <h2 className="text-base font-medium" style={{ color: ts.textPrimary }}>How did your mood shift?</h2>
-                  <p className="text-xs mt-1" style={{ color: ts.textMuted }}>Slide before & after to track your progress</p>
+                  <p className="t-label mb-1" style={{ color: ts.textDim }}>Step 1 of 4</p>
+                  <h2 className="t-body font-medium" style={{ color: ts.textPrimary }}>How did your mood shift?</h2>
+                  <p className="t-caption mt-1" style={{ color: ts.textMuted }}>Slide before & after to track your progress</p>
                 </div>
                 <BeforeAfterSlider before={form.moodBefore} after={form.moodAfter}
                   onBefore={v => set("moodBefore", v)} onAfter={v => set("moodAfter", v)} />
                 <div className="flex items-center justify-center gap-2">
                   <div className="flex-1 h-px" style={{ backgroundColor: ts.border }} />
-                  <span className="text-xs font-medium px-3 py-1 rounded-full" style={{
+                  <span className="t-caption font-medium px-3 py-1 rounded-full" style={{
                     color: form.moodAfter >= form.moodBefore ? ts.accent : '#FF8A8A',
                     backgroundColor: form.moodAfter >= form.moodBefore ? `${ts.accent}10` : 'rgba(255,138,138,0.1)',
                     border: `1px solid ${form.moodAfter >= form.moodBefore ? `${ts.accent}25` : 'rgba(255,138,138,0.25)'}`,
@@ -250,9 +250,9 @@ export function SessionFeedbackModal({ open, onClose, initialData, onSubmit }: P
             {step === 1 && (
               <div className="flex flex-col gap-5">
                 <div>
-                  <p className="text-[10px] tracking-[0.25em] uppercase mb-1" style={{ color: ts.textDim }}>Step 2 of 4</p>
-                  <h2 className="text-base font-medium" style={{ color: ts.textPrimary }}>How do you feel right now?</h2>
-                  <p className="text-xs mt-1" style={{ color: ts.textMuted }}>Pick all that apply</p>
+                  <p className="t-label mb-1" style={{ color: ts.textDim }}>Step 2 of 4</p>
+                  <h2 className="t-body font-medium" style={{ color: ts.textPrimary }}>How do you feel right now?</h2>
+                  <p className="t-caption mt-1" style={{ color: ts.textMuted }}>Pick all that apply</p>
                 </div>
                 <TagGrid selected={feelings} onToggle={toggleFeeling} />
               </div>
@@ -261,9 +261,9 @@ export function SessionFeedbackModal({ open, onClose, initialData, onSubmit }: P
             {step === 2 && (
               <div className="flex flex-col gap-5">
                 <div>
-                  <p className="text-[10px] tracking-[0.25em] uppercase mb-1" style={{ color: ts.textDim }}>Step 3 of 4</p>
-                  <h2 className="text-base font-medium" style={{ color: ts.textPrimary }}>Session quality</h2>
-                  <p className="text-xs mt-1" style={{ color: ts.textMuted }}>Quick ratings help your AI coach personalise your sessions</p>
+                  <p className="t-label mb-1" style={{ color: ts.textDim }}>Step 3 of 4</p>
+                  <h2 className="t-body font-medium" style={{ color: ts.textPrimary }}>Session quality</h2>
+                  <p className="t-caption mt-1" style={{ color: ts.textMuted }}>Quick ratings help your AI coach personalise your sessions</p>
                 </div>
                 <div className="flex flex-col gap-4">
                   {[
@@ -273,16 +273,16 @@ export function SessionFeedbackModal({ open, onClose, initialData, onSubmit }: P
                     { label: "Stress level",  key: "stressLevel" as const,    color: '#FF8A8A' },
                   ].map(({ label, key, color }) => (
                     <div key={key} className="flex flex-col gap-1.5">
-                      <span className="text-xs" style={{ color: ts.textMuted }}>{label}</span>
+                      <span className="t-caption" style={{ color: ts.textMuted }}>{label}</span>
                       <DotSlider value={form[key] as number} onChange={v => set(key, v)} color={color} />
                     </div>
                   ))}
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-xs" style={{ color: ts.textMuted }}>Distractions</span>
+                    <span className="t-caption" style={{ color: ts.textMuted }}>Distractions</span>
                     <DotSlider value={form.distractionCount} max={10} onChange={v => set("distractionCount", v)} color={ts.accentLight} />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-xs" style={{ color: ts.textMuted }}>Noise level</span>
+                    <span className="t-caption" style={{ color: ts.textMuted }}>Noise level</span>
                     <NoisePicker value={form.noiseLevel} onChange={v => set("noiseLevel", v)} />
                   </div>
                 </div>
@@ -292,30 +292,30 @@ export function SessionFeedbackModal({ open, onClose, initialData, onSubmit }: P
             {step === 3 && (
               <div className="flex flex-col gap-5">
                 <div>
-                  <p className="text-[10px] tracking-[0.25em] uppercase mb-1" style={{ color: ts.textDim }}>Step 4 of 4</p>
-                  <h2 className="text-base font-medium" style={{ color: ts.textPrimary }}>
-                    Any thoughts? <span className="font-normal text-sm" style={{ color: ts.textDim }}>(optional)</span>
+                  <p className="t-label mb-1" style={{ color: ts.textDim }}>Step 4 of 4</p>
+                  <h2 className="t-body font-medium" style={{ color: ts.textPrimary }}>
+                    Any thoughts? <span className="font-normal t-body" style={{ color: ts.textDim }}>(optional)</span>
                   </h2>
                 </div>
                 <div className="flex items-start gap-2.5 p-3 rounded-xl"
                   style={{ backgroundColor: `${ts.cardBgHover}`, border: `1px solid ${ts.border}` }}>
                   <Sparkles size={13} className="flex-shrink-0 mt-0.5" style={{ color: ts.accent }} />
-                  <p className="text-[10px] leading-relaxed" style={{ color: ts.textMuted }}>
+                  <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                     Your feedback trains your personal AI breathing coach.
                   </p>
                 </div>
                 <textarea value={form.notes} onChange={e => set("notes", e.target.value)}
                   placeholder="How did this session feel? Any observations…" rows={4}
-                  className="w-full rounded-xl px-4 py-3 text-xs outline-none resize-none leading-relaxed transition-colors"
+                  className="w-full rounded-xl px-4 py-3 t-caption outline-none resize-none leading-relaxed transition-colors"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}`, color: ts.textSecondary }} />
                 <div className="flex flex-wrap gap-2">
                   {feelings.map(f => (
-                    <span key={f} className="text-[9px] px-2 py-1 rounded-full uppercase tracking-wide"
+                    <span key={f} className="t-label px-2 py-1 rounded-full"
                       style={{ backgroundColor: ts.cardBgHover, border: `1px solid ${ts.borderHover}`, color: ts.accent }}>
                       {f}
                     </span>
                   ))}
-                  <span className="text-[9px] px-2 py-1 rounded-full uppercase tracking-wide"
+                  <span className="t-label px-2 py-1 rounded-full"
                     style={{ backgroundColor: ts.cardBgHover, border: `1px solid ${ts.border}`, color: ts.textDim }}>
                     mood {form.moodBefore}→{form.moodAfter}
                   </span>
@@ -328,26 +328,26 @@ export function SessionFeedbackModal({ open, onClose, initialData, onSubmit }: P
           <div className="px-6 pb-6 flex items-center gap-3">
             {step > 0 && (
               <button type="button" onClick={() => setStep(s => s - 1)}
-                className="px-4 py-2.5 rounded-xl text-xs transition-all"
+                className="px-4 py-2.5 rounded-xl t-caption transition-all"
                 style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}>
                 Back
               </button>
             )}
             {step === 0 && (
-              <button type="button" onClick={onClose} className="text-xs transition-colors" style={{ color: ts.textDim }}>
+              <button type="button" onClick={onClose} className="t-caption transition-colors" style={{ color: ts.textDim }}>
                 Skip
               </button>
             )}
             <div className="flex-1" />
             {step < TOTAL_STEPS - 1 ? (
               <button type="button" onClick={() => setStep(s => s + 1)}
-                className="px-6 py-2.5 rounded-xl text-xs text-white font-medium tracking-wide transition-all hover:scale-105 active:scale-95"
+                className="px-6 py-2.5 rounded-xl t-caption text-white font-medium tracking-wide transition-all hover:scale-105 active:scale-95"
                 style={{ background: ts.btnGradient }}>
                 Continue →
               </button>
             ) : (
               <button type="button" onClick={handleSubmit}
-                className="px-6 py-2.5 rounded-xl text-xs text-white font-medium tracking-wide transition-all hover:scale-105 active:scale-95"
+                className="px-6 py-2.5 rounded-xl t-caption text-white font-medium tracking-wide transition-all hover:scale-105 active:scale-95"
                 style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
                 Save & close ✓
               </button>

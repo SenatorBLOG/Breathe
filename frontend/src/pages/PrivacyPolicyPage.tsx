@@ -29,9 +29,9 @@ function PolicySection({ icon, title, content }: Section) {
         >
           {icon}
         </div>
-        <h2 className="text-base font-semibold" style={{ color: ts.textPrimary }}>{title}</h2>
+        <h2 className="t-body font-semibold" style={{ color: ts.textPrimary }}>{title}</h2>
       </div>
-      <div className="text-sm leading-relaxed flex flex-col gap-3" style={{ color: ts.textMuted }}>
+      <div className="t-body leading-relaxed flex flex-col gap-3" style={{ color: ts.textMuted }}>
         {content}
       </div>
     </div>
@@ -195,10 +195,10 @@ export default function PrivacyPolicyPage() {
             <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: ts.textPrimary }}>
               Privacy Policy
             </h1>
-            <p className="text-sm" style={{ color: ts.textMuted }}>
+            <p className="t-body" style={{ color: ts.textMuted }}>
               Last updated: {LAST_UPDATED}
             </p>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               Breathe is built on a simple principle: your health data belongs to you. This policy explains exactly what we collect, why, and how you can control it.
             </p>
           </div>
@@ -212,7 +212,7 @@ export default function PrivacyPolicyPage() {
 
           {/* Footer note */}
           <div
-            className="rounded-2xl p-5 text-sm"
+            className="rounded-2xl p-5 t-body"
             style={{ backgroundColor: `${ts.accent}0F`, border: `1px solid ${ts.accent}28`, color: ts.textMuted }}
           >
             <p>

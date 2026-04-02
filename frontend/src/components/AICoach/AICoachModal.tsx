@@ -62,7 +62,7 @@ const CoachBubble = ({ message, isLatest, onTry }: { message: Message; isLatest:
         <Sparkles size={14} className="text-white" />
       </div>
       <div className="flex flex-col gap-2 max-w-[85%]">
-        <div className="px-4 py-3 rounded-2xl rounded-bl-none text-sm leading-relaxed border shadow-sm"
+        <div className="px-4 py-3 rounded-2xl rounded-bl-none t-body leading-relaxed border shadow-sm"
              style={{ background: ts.cardBg, borderColor: ts.border, color: ts.textPrimary }}>
           {displayed}
           {isLatest && displayed.length < message.text.length && (
@@ -72,7 +72,7 @@ const CoachBubble = ({ message, isLatest, onTry }: { message: Message; isLatest:
         {message.technique && displayed.length === message.text.length && (
           <button 
             onClick={() => onTry(message.technique!)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white self-start transition-all hover:scale-105 active:scale-95 shadow-lg"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl t-caption font-bold text-white self-start transition-all hover:scale-105 active:scale-95 shadow-lg"
             style={{ background: ts.accent }}
           >
             ✦ Попробовать {message.technique.label} <ChevronRight size={12} />
@@ -139,7 +139,7 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
       <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: ts.border }}>
         <div className="flex items-center gap-3">
           <div className="w-2.5 h-2.5 rounded-full bg-[#4AE8A0] animate-pulse shadow-[0_0_8px_#4AE8A0]" />
-          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: ts.textDim }}>AI Coach</span>
+          <span className="t-caption font-bold uppercase tracking-widest" style={{ color: ts.textDim }}>AI Coach</span>
         </div>
         <div className="flex gap-2">
           <button onClick={() => setMessages([{ id: 'w', role: 'coach', text: t('coach.welcome'), done: true }])} 
@@ -157,7 +157,7 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
         {messages.map((msg, i) => (
           msg.role === 'user' ? (
             <div key={msg.id} className="flex justify-end mb-4 animate-in slide-in-from-right-2">
-              <div className="px-4 py-3 rounded-2xl rounded-br-none text-sm font-medium border"
+              <div className="px-4 py-3 rounded-2xl rounded-br-none t-body font-medium border"
                    style={{ backgroundColor: `${ts.accent}15`, borderColor: `${ts.accent}30`, color: ts.textPrimary }}>
                 {msg.text}
               </div>
@@ -178,7 +178,7 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
         {limitData ? (
           <div className="p-3 rounded-xl border flex items-center gap-3" style={{ borderColor: '#ff4d4d30', backgroundColor: '#ff4d4d10' }}>
             <ShieldAlert className="text-[#ff4d4d]" size={18} />
-            <div className="text-[10px] leading-tight" style={{ color: ts.textPrimary }}>
+            <div className="t-label leading-tight" style={{ color: ts.textPrimary }}>
               <p className="font-bold uppercase tracking-tighter">Лимит достигнут</p>
               <p className="opacity-60">Попробуйте снова через {limitData.hoursUntilReset}ч или создайте аккаунт.</p>
             </div>
@@ -190,7 +190,7 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend(input)}
               placeholder="Спроси о медитации..."
-              className="w-full bg-transparent border-2 rounded-2xl px-4 py-3 text-sm transition-all focus:outline-none"
+              className="w-full bg-transparent border-2 rounded-2xl px-4 py-3 t-body transition-all focus:outline-none"
               style={{ borderColor: ts.border, color: ts.textPrimary }}
             />
             <button 
@@ -203,7 +203,7 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
             </button>
           </div>
         )}
-        <p className="text-[9px] text-center mt-3 opacity-30 font-bold uppercase tracking-widest" style={{ color: ts.textDim }}>
+        <p className="t-label text-center mt-3 opacity-30 font-bold uppercase tracking-widest" style={{ color: ts.textDim }}>
           Powered by Gemini AI
         </p>
       </div>

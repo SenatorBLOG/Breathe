@@ -39,24 +39,24 @@ export default function PWAInstallBanner() {
     >
       <span className="text-2xl flex-shrink-0">📱</span>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>
+        <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>
           Add Breathe to home screen
         </p>
-        <p className="text-[10px]" style={{ color: ts.textMuted }}>
+        <p className="t-label" style={{ color: ts.textMuted }}>
           Works offline · No app store needed
         </p>
       </div>
       <div className="flex gap-1.5 flex-shrink-0">
         <button
           onClick={install}
-          className="px-3 py-1.5 rounded-xl text-[10px] text-white font-medium"
+          className="px-3 py-1.5 rounded-xl t-label text-white font-medium"
           style={{ background: ts.btnGradient }}
         >
           Install
         </button>
         <button
           onClick={dismiss}
-          className="px-2 py-1.5 rounded-xl text-[10px]"
+          className="px-2 py-1.5 rounded-xl t-label"
           style={{ color: ts.textDim, border: `1px solid ${ts.border}` }}
         >
           ✕

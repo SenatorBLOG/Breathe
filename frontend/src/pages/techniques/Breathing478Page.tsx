@@ -19,7 +19,7 @@ export default function Breathing478Page() {
 
           {/* Hero */}
           <div className="flex flex-col gap-3">
-            <span className="text-[10px] tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
+            <span className="t-label tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
               style={{
                 color: ts.textMuted,
                 borderColor: ts.border,
@@ -30,7 +30,7 @@ export default function Breathing478Page() {
               4-7-8 Breathing<br />
               <span style={{ color: ts.accent }}>for Sleep & Calm</span>
             </h1>
-            <p className="text-base leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
               Developed by Dr. Andrew Weil, the 4-7-8 technique is one of the most effective natural sleep aids ever documented. Most people fall asleep within 2–3 cycles when practiced in bed.
             </p>
             <Link to="/breathing"
@@ -42,7 +42,7 @@ export default function Breathing478Page() {
 
           {/* Pattern visual */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               The Pattern
             </h2>
             {[
@@ -55,11 +55,11 @@ export default function Breathing478Page() {
                   backgroundColor: ts.cardBg,
                   border: `1px solid ${ts.border}`,
                 }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white text-sm"
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white t-body"
                   style={{ background: color }}>
                   {n}
                 </div>
-                <p className="text-sm flex-1" style={{ color: ts.textPrimary }}>
+                <p className="t-body flex-1" style={{ color: ts.textPrimary }}>
                   {label}
                 </p>
                 <span className="text-2xl font-light tabular-nums flex-shrink-0" style={{ color }}>
@@ -67,27 +67,27 @@ export default function Breathing478Page() {
                 </span>
               </div>
             ))}
-            <p className="text-xs px-1" style={{ color: ts.textMuted }}>
+            <p className="t-caption px-1" style={{ color: ts.textMuted }}>
               Do 3–4 cycles. The ratio matters more than the exact timing — as long as exhale is 2× inhale.
             </p>
           </div>
 
           {/* Science */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               The Science Behind 4-7-8
             </h2>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               The extended hold (7 seconds) allows more oxygen to enter your bloodstream than a normal breath. The long exhale (8 seconds) forces your heart rate to slow, directly activating the parasympathetic nervous system.
             </p>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               This combination mimics the body's natural relaxation response and can reduce cortisol levels measurably within 5 minutes of practice. It's essentially a manual override of your stress response.
             </p>
           </div>
 
           {/* Best For */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Best For
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -102,12 +102,12 @@ export default function Breathing478Page() {
                     backgroundColor: ts.cardBg,
                     border: `1px solid ${ts.border}`,
                   }}>
-                  <span className="text-xl flex-shrink-0">{icon}</span>
+                  <span className="t-heading flex-shrink-0">{icon}</span>
                   <div>
-                    <p className="text-xs font-medium mb-1" style={{ color: ts.textPrimary }}>
+                    <p className="t-caption font-medium mb-1" style={{ color: ts.textPrimary }}>
                       {title}
                     </p>
-                    <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+                    <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                       {desc}
                     </p>
                   </div>
@@ -123,10 +123,10 @@ export default function Breathing478Page() {
               border: `1px solid ${ts.border}`,
             }}>
             <span className="text-3xl">🌙</span>
-            <p className="text-xl font-light" style={{ color: ts.textPrimary }}>
+            <p className="t-heading font-light" style={{ color: ts.textPrimary }}>
               Ready to sleep better tonight?
             </p>
-            <p className="text-sm" style={{ color: ts.textMuted }}>
+            <p className="t-body" style={{ color: ts.textMuted }}>
               Follow the animated orb — it handles the counting so you can fully relax.
             </p>
             <Link to="/breathing"
@@ -134,14 +134,14 @@ export default function Breathing478Page() {
               style={{ background: ts.btnGradient }}>
               🌬 Try 4-7-8 — Free
             </Link>
-            <p className="text-xs" style={{ color: ts.textMuted }}>
+            <p className="t-caption" style={{ color: ts.textMuted }}>
               No account · Works on phone · 60 seconds to start
             </p>
           </div>
 
           {/* Related */}
           <div className="flex flex-col gap-3">
-            <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+            <p className="t-label tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
               Related techniques
             </p>
             <div className="flex flex-wrap gap-2">
@@ -151,7 +151,7 @@ export default function Breathing478Page() {
                 { label: 'Wim Hof Method', href: '/breathing/wim-hof' },
               ].map(({ label, href }) => (
                 <Link key={href} to={href}
-                  className="px-4 py-2 rounded-xl text-xs transition-all"
+                  className="px-4 py-2 rounded-xl t-caption transition-all"
                   style={{
                     color: ts.accent,
                     border: `1px solid ${ts.border}`,

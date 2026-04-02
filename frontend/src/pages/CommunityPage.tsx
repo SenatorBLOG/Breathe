@@ -130,7 +130,7 @@ function Avatar({ author, size = 8 }: { author: Author; size?: number }) {
   const ts = useThemeStyles();
   const px = size * 4;
   return (
-    <div className={`flex-shrink-0 rounded-full flex items-center justify-center text-[10px] font-bold`}
+    <div className={`flex-shrink-0 rounded-full flex items-center justify-center t-label font-bold`}
       style={{
         width: px,
         height: px,
@@ -155,12 +155,12 @@ function ConfirmDialog({ title, body, confirmLabel, danger, onConfirm, onCancel 
       onClick={e => { if (e.target === e.currentTarget) onCancel(); }}>
       <div className="w-full max-w-xs rounded-2xl p-6 flex flex-col gap-4"
         style={{ background: ts.cardBg, border: `1px solid ${ts.border}`, boxShadow: ts.btnShadow }}>
-        <p className="text-sm font-medium" style={{ color: ts.textSecondary }}>{title}</p>
-        <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{body}</p>
+        <p className="t-body font-medium" style={{ color: ts.textSecondary }}>{title}</p>
+        <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{body}</p>
         <div className="flex gap-2 justify-end">
-          <button onClick={onCancel} className="px-4 py-2 rounded-xl text-xs transition-colors"
+          <button onClick={onCancel} className="px-4 py-2 rounded-xl t-caption transition-colors"
             style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}>Cancel</button>
-          <button onClick={onConfirm} className="px-4 py-2 rounded-xl text-xs font-medium text-white transition-all hover:opacity-90"
+          <button onClick={onConfirm} className="px-4 py-2 rounded-xl t-caption font-medium text-white transition-all hover:opacity-90"
             style={{ background: danger ? '#EF4444' : ts.btnGradient }}>{confirmLabel}</button>
         </div>
       </div>
@@ -179,7 +179,7 @@ function AdSlot({ className = '' }: { className?: string }) {
         backgroundColor: `${ts.cardBg}40`,
       }}
     >
-      <span className="text-[9px] tracking-widest uppercase select-none" style={{ color: ts.textDim }}>
+      <span className="t-label select-none" style={{ color: ts.textDim }}>
         Advertisement
       </span>
     </div>
@@ -204,19 +204,19 @@ function LoginNudge({ onClose }: { onClose: () => void }) {
           <Users size={20} className="text-white" />
         </div>
         <div>
-          <p className="text-base font-medium mb-1" style={{ color: ts.textSecondary }}>
+          <p className="t-body font-medium mb-1" style={{ color: ts.textSecondary }}>
             Join the community
           </p>
-          <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+          <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
             You need an account to post, comment, and like. It's free and takes 30 seconds.
           </p>
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <Link to="/register" className="w-full py-2.5 rounded-xl text-sm text-white font-medium text-center transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)]"
+          <Link to="/register" className="w-full py-2.5 rounded-xl t-body text-white font-medium text-center transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)]"
             style={{ background: ts.btnGradient }}>
             Create account
           </Link>
-          <Link to="/login" className="w-full py-2.5 rounded-xl text-sm text-center transition-all"
+          <Link to="/login" className="w-full py-2.5 rounded-xl t-body text-center transition-all"
             style={{
               color: ts.textSecondary,
               border: `1px solid ${ts.border}`,
@@ -224,7 +224,7 @@ function LoginNudge({ onClose }: { onClose: () => void }) {
             Sign in
           </Link>
         </div>
-        <button onClick={onClose} className="text-[10px] transition-colors" style={{ color: ts.textMuted }}>
+        <button onClick={onClose} className="t-caption transition-colors" style={{ color: ts.textMuted }}>
           Maybe later
         </button>
       </div>
@@ -243,25 +243,25 @@ function CommentRow({ comment, postId, currentUserId, onDelete, onLike }: {
       <Avatar author={comment.author} size={6} />
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline gap-2 flex-wrap">
-          <span className="text-[10px] font-medium leading-none" style={{ color: ts.textSecondary }}>
+          <span className="t-label font-medium leading-none" style={{ color: ts.textSecondary }}>
             {comment.author.name || comment.author.username}
           </span>
-          <span className="text-[9px] mt-0.5" style={{ color: ts.textDim }}>
+          <span className="t-caption mt-0.5" style={{ color: ts.textDim }}>
             {timeAgo(comment.createdAt)}
           </span>
         </div>
-        <p className="text-xs leading-relaxed mt-0.5" style={{ color: ts.textMuted }}>
+        <p className="t-caption leading-relaxed mt-0.5" style={{ color: ts.textMuted }}>
           {comment.text}
         </p>
         <div className="flex items-center gap-3 mt-1.5">
           <button onClick={() => onLike(comment._id)}
-            className={`flex items-center gap-1.5 text-xs transition-all ${comment.likedByMe ? 'text-[#FF8A8A]' : ''}`} style={{ color: ts.textMuted }}>
+            className={`flex items-center gap-1.5 t-caption transition-all ${comment.likedByMe ? 'text-[#FF8A8A]' : ''}`} style={{ color: ts.textMuted }}>
             <Heart size={10} fill={comment.likedByMe ? 'currentColor' : 'none'} />
             {comment.likeCount > 0 && comment.likeCount}
           </button>
           {currentUserId === comment.author._id && (
             <button onClick={() => onDelete(comment._id)}
-              className="text-xs transition-colors flex items-center gap-1" style={{ color: ts.textMuted }}>
+              className="t-caption transition-colors flex items-center gap-1" style={{ color: ts.textMuted }}>
               <Trash2 size={9} /> delete
             </button>
           )}
@@ -328,7 +328,7 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
   return (
     <div className="border-t mt-3 pt-3" style={{ borderColor: ts.border }}>
       <button onClick={toggle}
-        className="flex items-center gap-1.5 text-[10px] transition-colors"
+        className="flex items-center gap-1.5 t-caption transition-colors"
         style={{ color: ts.textMuted }}>
         <MessageCircle size={12} />
         {commentCount > 0 ? `${commentCount} comment${commentCount !== 1 ? 's' : ''}` : 'Add comment'}
@@ -337,7 +337,7 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
 
       {open && (
         <div className="mt-3 flex flex-col gap-3">
-          {loading && <p className="text-[10px]" style={{ color: ts.textDim }}>Loading…</p>}
+          {loading && <p className="t-caption" style={{ color: ts.textDim }}>Loading…</p>}
           {comments.map(c => (
             <CommentRow key={c._id} comment={c} postId={postId}
               currentUserId={currentUserId} onDelete={deleteComment} onLike={likeComment} />
@@ -353,7 +353,7 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
               readOnly={!isLoggedIn}
               onClick={() => { if (!isLoggedIn) onLoginRequired(); }}
               maxLength={300}
-              className="flex-1 comm-input border rounded-xl px-4 py-3 text-xs outline-none transition-colors leading-relaxed"
+              className="flex-1 comm-input border rounded-xl px-4 py-3 t-caption outline-none transition-colors leading-relaxed"
               style={{
                 borderColor: ts.border,
                 color: ts.textSecondary,
@@ -459,17 +459,17 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete, 
           <div className="flex items-center gap-2.5">
             <Avatar author={post.author} />
             <div>
-              <p className="text-xs font-medium leading-none" style={{ color: ts.textSecondary }}>
+              <p className="t-caption font-medium leading-none" style={{ color: ts.textSecondary }}>
                 {post.author.name || post.author.username}
               </p>
-              <p className="text-[9px] mt-0.5" style={{ color: ts.textDim }}>
+              <p className="t-caption mt-0.5" style={{ color: ts.textDim }}>
                 {timeAgo(post.createdAt)}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wide"
+            <span className="t-label px-2 py-0.5 rounded-full"
               style={{ color: cat.color, background: cat.bg }}>
               {t(`community.categories.${post.category}`, cat.label)}
             </span>
@@ -490,13 +490,13 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete, 
                     style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}>
                     <button
                       onClick={() => { setMenuOpen(false); if (!isLoggedIn) { onLoginRequired(); return; } setDialog('report'); }}
-                      className="flex items-center gap-2.5 w-full px-3 py-2.5 text-xs text-left transition-colors hover:opacity-70"
+                      className="flex items-center gap-2.5 w-full px-3 py-2.5 t-caption text-left transition-colors hover:opacity-70"
                       style={{ color: ts.textSecondary }}>
                       <Flag size={12} /> Report post
                     </button>
                     <button
                       onClick={() => { setMenuOpen(false); if (!isLoggedIn) { onLoginRequired(); return; } setDialog('block'); }}
-                      className="flex items-center gap-2.5 w-full px-3 py-2.5 text-xs text-left transition-colors hover:opacity-70"
+                      className="flex items-center gap-2.5 w-full px-3 py-2.5 t-caption text-left transition-colors hover:opacity-70"
                       style={{ color: '#EF4444' }}>
                       <UserX size={12} /> Block user
                     </button>
@@ -508,7 +508,7 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete, 
         </div>
 
         {/* Text */}
-        <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+        <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
           {post.text}
         </p>
 
@@ -518,7 +518,7 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete, 
             {post.tags.map(tag => {
               const tc = pickTagColor(tag);
               return (
-                <span key={tag} className="text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wide"
+                <span key={tag} className="t-label px-2 py-0.5 rounded-full"
                   style={{ backgroundColor: tc.bg, border: `1px solid ${tc.border}`, color: tc.color }}>
                   #{tag}
                 </span>
@@ -533,7 +533,7 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete, 
             whileTap={{ scale: 0.82 }}
             whileHover={{ scale: 1.08 }}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-            className={`flex items-center gap-1.5 text-xs ${liked ? 'text-[#FF8A8A]' : ''}`} style={{ color: ts.textMuted }}>
+            className={`flex items-center gap-1.5 t-caption ${liked ? 'text-[#FF8A8A]' : ''}`} style={{ color: ts.textMuted }}>
             <motion.span
               animate={liked ? { scale: [1, 1.35, 1] } : { scale: 1 }}
               transition={{ duration: 0.3 }}>
@@ -605,10 +605,10 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
               <Sparkles size={13} className="text-white" />
             </div>
             <div>
-              <p className="text-sm font-medium leading-none" style={{ color: ts.textSecondary }}>
+              <p className="t-body font-medium leading-none" style={{ color: ts.textSecondary }}>
                 Share with the community
               </p>
-              <p className="text-[10px] mt-0.5" style={{ color: ts.textDim }}>
+              <p className="t-caption mt-0.5" style={{ color: ts.textDim }}>
                 Your experience helps others
               </p>
             </div>
@@ -628,8 +628,8 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
                   backgroundColor: category === c ? ts.cardBgHover : ts.cardBg,
                   borderColor: category === c ? ts.borderHover : ts.border,
                 }}>
-                <span className={`text-base ${category === c ? '' : 'opacity-50'}`}>{CAT_ICONS[c]}</span>
-                <span className={`text-[9px] uppercase tracking-wide ${category === c ? '' : ''}`} style={{ color: category === c ? ts.textSecondary : ts.textMuted }}>
+                <span className={`t-body ${category === c ? '' : 'opacity-50'}`}>{CAT_ICONS[c]}</span>
+                <span className={`t-label ${category === c ? '' : ''}`} style={{ color: category === c ? ts.textSecondary : ts.textMuted }}>
                   {c}
                 </span>
               </button>
@@ -639,7 +639,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
           {/* Text */}
           <textarea value={text} onChange={e => setText(e.target.value)} rows={4} maxLength={600}
             placeholder="Share your experience, ask a question, or post a tip…"
-            className="w-full comm-input rounded-xl px-4 py-3 text-xs outline-none transition-colors leading-relaxed resize-none"
+            className="w-full comm-input rounded-xl px-4 py-3 t-caption outline-none transition-colors leading-relaxed resize-none"
             style={{
               backgroundColor: ts.cardBg,
               border: `1px solid ${ts.border}`,
@@ -653,14 +653,14 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
                 onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTag(); } }}
                 placeholder="Add tag (enter to add)"
                 maxLength={30}
-                className="flex-1 comm-input rounded-xl px-3 py-2 text-xs outline-none transition-colors"
+                className="flex-1 comm-input rounded-xl px-3 py-2 t-caption outline-none transition-colors"
                 style={{
                   backgroundColor: ts.cardBg,
                   border: `1px solid ${ts.border}`,
                   color: ts.textSecondary,
                 }} />
               <button onClick={addTag}
-                className="px-3 py-2 rounded-xl text-xs transition-all"
+                className="px-3 py-2 rounded-xl t-caption transition-all"
                 style={{
                   color: ts.accent,
                   border: `1px solid ${ts.border}`,
@@ -673,7 +673,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
                 {tags.map(t => {
                   const tc = pickTagColor(t);
                   return (
-                    <span key={t} className="flex items-center gap-1 text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wide"
+                    <span key={t} className="flex items-center gap-1 t-label px-2 py-0.5 rounded-full"
                       style={{ backgroundColor: tc.bg, border: `1px solid ${tc.border}`, color: tc.color }}>
                       #{t}
                       <button onClick={() => setTags(prev => prev.filter(x => x !== t))} className="ml-0.5 transition-colors" style={{ color: tc.color }}>×</button>
@@ -686,9 +686,9 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
 
           {/* Footer */}
           <div className="flex items-center justify-between">
-            <span className="text-[9px] tabular-nums" style={{ color: ts.textDim }}>{text.length}/600</span>
+            <span className="t-caption tabular-nums" style={{ color: ts.textDim }}>{text.length}/600</span>
             <button onClick={submit} disabled={sending || !text.trim()}
-              className="px-6 py-2.5 rounded-xl text-xs text-white font-medium tracking-wide transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 disabled:opacity-40"
+              className="px-6 py-2.5 rounded-xl t-caption text-white font-medium tracking-wide transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 disabled:opacity-40"
               style={{ background: ts.btnGradient }}>
               {sending ? 'Posting…' : 'Publish ✓'}
             </button>
@@ -704,8 +704,8 @@ function SidebarStat({ value, label }: { value: string; label: string }) {
   const ts = useThemeStyles();
   return (
     <div className="flex items-center justify-between py-2 border-b last:border-0" style={{ borderColor: ts.border }}>
-      <span className="text-xs" style={{ color: ts.textMuted }}>{label}</span>
-      <span className="text-sm font-semibold tabular-nums" style={{ color: ts.textSecondary }}>{value}</span>
+      <span className="t-caption" style={{ color: ts.textMuted }}>{label}</span>
+      <span className="t-body font-semibold tabular-nums" style={{ color: ts.textSecondary }}>{value}</span>
     </div>
   );
 }
@@ -788,18 +788,18 @@ export default function CommunityPage() {
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-6 pb-2">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <p className="text-[10px] tracking-[0.3em] uppercase mb-1" style={{ color: ts.textMuted }}>
+              <p className="t-label mb-1" style={{ color: ts.textMuted }}>
                 Breathe · Community
               </p>
               <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
                 Community
               </h1>
-              <p className="text-xs mt-1" style={{ color: ts.textMuted }}>
+              <p className="t-caption mt-1" style={{ color: ts.textMuted }}>
                 {t("community.subtitle")}
               </p>
             </div>
             <button onClick={handleCreate}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium tracking-wide transition-all hover:shadow-[0_0_24px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white t-body font-medium tracking-wide transition-all hover:shadow-[0_0_24px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95"
               style={{ background: ts.btnGradient }}>
               <Plus size={14} /> Post
             </button>
@@ -816,7 +816,7 @@ export default function CommunityPage() {
               <div className="flex gap-1.5 flex-wrap">
                 {CATEGORIES_FILTER.map(c => (
                   <button key={c} onClick={() => setCategory(c)}
-                    className="px-3 py-1.5 rounded-xl text-[10px] uppercase tracking-widest border transition-all"
+                    className="px-3 py-1.5 rounded-xl t-label border transition-all"
                     style={{
                       backgroundColor: category === c ? 'rgba(0,212,255,0.10)' : ts.cardBg,
                       borderColor: category === c ? 'rgba(0,212,255,0.35)' : ts.border,
@@ -833,9 +833,9 @@ export default function CommunityPage() {
               ) : posts.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 py-20 text-center">
                   <span className="text-4xl opacity-30">🌊</span>
-                  <p className="text-sm" style={{ color: ts.textMuted }}>{t("community.noPostsYet")}</p>
+                  <p className="t-body" style={{ color: ts.textMuted }}>{t("community.noPostsYet")}</p>
                   <button onClick={handleCreate}
-                    className="px-6 py-2.5 rounded-full text-sm text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)]"
+                    className="px-6 py-2.5 rounded-full t-body text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)]"
                     style={{ background: ts.btnGradient }}>
                     Write a post →
                   </button>
@@ -851,7 +851,7 @@ export default function CommunityPage() {
 
                   {page < totalPages && (
                     <button onClick={() => setPage(p => p + 1)} disabled={loading}
-                      className="self-center px-6 py-2.5 rounded-full text-xs transition-all disabled:opacity-40 mt-2"
+                      className="self-center px-6 py-2.5 rounded-full t-caption transition-all disabled:opacity-40 mt-2"
                       style={{
                         color: ts.textSecondary,
                         border: `1px solid ${ts.border}`,
@@ -872,16 +872,16 @@ export default function CommunityPage() {
               <div className="rounded-2xl p-4 border" style={{ borderColor: ts.border, backgroundColor: ts.cardBg }}>
                 <div className="flex items-center gap-2 mb-3">
                   <Flame size={13} style={{ color: ts.accent }} />
-                  <p className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: ts.textSecondary }}>About</p>
+                  <p className="t-label uppercase tracking-widest font-semibold" style={{ color: ts.textSecondary }}>About</p>
                 </div>
-                <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+                <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                   A space for meditators to share experiences, ask questions, and celebrate progress. Be kind. Be real.
                 </p>
               </div>
 
               {/* Stats */}
               <div className="rounded-2xl p-4 border" style={{ borderColor: ts.border, backgroundColor: ts.cardBg }}>
-                <p className="text-[10px] uppercase tracking-widest mb-2 font-semibold" style={{ color: ts.textSecondary }}>Community</p>
+                <p className="t-label uppercase tracking-widest mb-2 font-semibold" style={{ color: ts.textSecondary }}>Community</p>
                 <SidebarStat value={String(posts.length)} label="Posts loaded" />
                 <SidebarStat value={String(posts.reduce((s, p) => s + p.likeCount, 0))} label="Total likes" />
                 <SidebarStat value={String(posts.reduce((s, p) => s + p.commentCount, 0))} label="Total comments" />
@@ -889,11 +889,11 @@ export default function CommunityPage() {
 
               {/* Rules */}
               <div className="rounded-2xl p-4 border" style={{ borderColor: ts.border, backgroundColor: ts.cardBg }}>
-                <p className="text-[10px] uppercase tracking-widest mb-3 font-semibold" style={{ color: ts.textSecondary }}>{t('community.rules')}</p>
+                <p className="t-label uppercase tracking-widest mb-3 font-semibold" style={{ color: ts.textSecondary }}>{t('community.rules')}</p>
                 {([t('community.rule1'), t('community.rule2'), t('community.rule3'), t('community.rule4')]).map((r, i) => (
                   <div key={i} className="flex items-center gap-2 py-1.5 border-b last:border-0" style={{ borderColor: ts.border }}>
-                    <span className="text-xs font-bold" style={{ color: ts.accentLight }}>{i + 1}</span>
-                    <span className="text-xs" style={{ color: ts.textMuted }}>{r}</span>
+                    <span className="t-caption font-bold" style={{ color: ts.accentLight }}>{i + 1}</span>
+                    <span className="t-caption" style={{ color: ts.textMuted }}>{r}</span>
                   </div>
                 ))}
               </div>
@@ -901,11 +901,11 @@ export default function CommunityPage() {
               {/* CTA for logged-out */}
               {!isLoggedIn && (
                 <div className="rounded-2xl p-4 border flex flex-col gap-3" style={{ borderColor: ts.borderHover, backgroundColor: ts.cardBg }}>
-                  <p className="text-sm font-semibold" style={{ color: ts.textPrimary }}>Join Breathe</p>
-                  <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+                  <p className="t-body font-semibold" style={{ color: ts.textPrimary }}>Join Breathe</p>
+                  <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                     Create an account to post, comment, and track your meditation journey.
                   </p>
-                  <Link to="/register" className="w-full py-2 rounded-xl text-[10px] text-white text-center font-medium transition-all"
+                  <Link to="/register" className="w-full py-2 rounded-xl t-label text-white text-center font-medium transition-all"
                     style={{ background: ts.btnGradient }}>
                     Sign up free
                   </Link>

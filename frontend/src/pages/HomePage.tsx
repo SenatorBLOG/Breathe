@@ -78,7 +78,7 @@ function StatCard({ value, label }: { value: string; label: string }) {
       <span className="text-2xl sm:text-3xl font-semibold" style={{ color: ts.textSecondary }}>
         {value}
       </span>
-      <span className="text-[10px] sm:text-xs tracking-widest uppercase" style={{ color: ts.textMuted }}>
+      <span className="t-label sm:text-xs tracking-widest uppercase" style={{ color: ts.textMuted }}>
         {label}
       </span>
     </div>
@@ -105,7 +105,7 @@ function ContentCard({
         <span className="text-2xl">{icon}</span>
         {tag && (
           <span
-            className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full"
+            className="t-label px-2 py-0.5 rounded-full"
             style={{
               color: ts.accent,
               backgroundColor: `${ts.accent}10`,
@@ -115,10 +115,10 @@ function ContentCard({
           </span>
         )}
       </div>
-      <h3 className="text-sm sm:text-base font-medium leading-snug group-hover:text-white transition-colors" style={{ color: ts.textPrimary }}>
+      <h3 className="t-body sm:text-base font-medium leading-snug group-hover:text-white transition-colors" style={{ color: ts.textPrimary }}>
         {title}
       </h3>
-      <p className="text-xs sm:text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+      <p className="t-caption sm:text-sm leading-relaxed" style={{ color: ts.textMuted }}>
         {desc}
       </p>
     </Link>
@@ -136,7 +136,7 @@ function AdSlot({ label = 'Advertisement', tall = false }: { label?: string; tal
         backgroundColor: `${ts.cardBg}40`,
       }}
     >
-      <span className="text-[10px] tracking-widest uppercase select-none" style={{ color: ts.textDim }}>
+      <span className="t-label select-none" style={{ color: ts.textDim }}>
         {label}
       </span>
     </div>
@@ -172,12 +172,12 @@ function TechniquePill({ name, time, icon, presetKey, presetName }: {
         border: `1px solid ${ts.border}`,
       }}
     >
-      <span className="text-lg">{icon}</span>
+      <span className="t-heading">{icon}</span>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-medium truncate group-hover:text-white transition-colors" style={{ color: ts.textPrimary }}>
+        <p className="t-caption font-medium truncate group-hover:text-white transition-colors" style={{ color: ts.textPrimary }}>
           {name}
         </p>
-        <p className="text-[10px]" style={{ color: ts.textMuted }}>
+        <p className="t-caption" style={{ color: ts.textMuted }}>
           {time}
         </p>
       </div>
@@ -193,10 +193,10 @@ function QuoteBlock({ text, author }: { text: string; author: string }) {
   const ts = useThemeStyles();
   return (
     <div className="relative pl-5 border-l-2" style={{ borderColor: ts.border }}>
-      <p className="text-sm italic leading-relaxed" style={{ color: ts.textMuted }}>
+      <p className="t-body italic leading-relaxed" style={{ color: ts.textMuted }}>
         "{text}"
       </p>
-      <p className="text-xs mt-2" style={{ color: ts.textDim }}>
+      <p className="t-caption mt-2" style={{ color: ts.textDim }}>
         — {author}
       </p>
     </div>
@@ -217,7 +217,7 @@ export default function HomePage() {
 
         {/* HERO */}
         <section className="flex flex-col items-center justify-center text-center px-4 pt-16 pb-12 sm:pt-24 sm:pb-16 md:pt-32 md:pb-20 gap-8">
-          <span className="anim-fade-up anim-delay-1 text-[10px] sm:text-xs tracking-[0.35em] uppercase px-4 py-1.5 rounded-full" 
+          <span className="anim-fade-up anim-delay-1 t-label sm:text-xs tracking-[0.35em] uppercase px-4 py-1.5 rounded-full" 
                 style={{ color: ts.accent, border: `1px solid ${ts.accent}20` }}>
             {t('hero.eyebrow')}
           </span>
@@ -226,7 +226,7 @@ export default function HomePage() {
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-light leading-none tracking-tight shimmer-text">
               Breathe Better
             </h1>
-            <p className="text-base sm:text-xl md:text-2xl font-light max-w-xl mx-auto leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body sm:text-xl md:text-2xl font-light max-w-xl mx-auto leading-relaxed" style={{ color: ts.textMuted }}>
               {t('hero.subtitle')}
             </p>
           </div>
@@ -238,17 +238,17 @@ export default function HomePage() {
           <div className="anim-fade-up anim-delay-3 flex flex-col sm:flex-row items-center gap-4">
             <Link
               to="/breathing"
-              className="group relative px-10 py-4 rounded-full font-medium text-white text-base tracking-wide overflow-hidden"
+              className="group relative px-10 py-4 rounded-full font-medium text-white t-body tracking-wide overflow-hidden"
               style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
             >
               <span className="relative z-10 flex items-center gap-2">
-                <span className="text-xl">🌬</span>
+                <span className="t-heading">🌬</span>
                 {t('hero.cta')}
               </span>
             </Link>
             <Link
               to="/faq"
-              className="px-8 py-4 rounded-full text-sm tracking-wide transition-all duration-200"
+              className="px-8 py-4 rounded-full t-body tracking-wide transition-all duration-200"
               style={{ 
                 color: ts.textMuted, 
                 border: `1px solid ${ts.border}` 
@@ -264,14 +264,14 @@ export default function HomePage() {
               <span className="text-2xl sm:text-3xl font-semibold" style={{ color: ts.textSecondary }}>
                 <AnimatedNumber target={50000} suffix="+" />
               </span>
-              <span className="text-[10px] sm:text-xs tracking-widest uppercase" style={{ color: ts.textMuted }}>{t("hero.stats.sessions")}</span>
+              <span className="t-label sm:text-xs tracking-widest uppercase" style={{ color: ts.textMuted }}>{t("hero.stats.sessions")}</span>
             </div>
             <div className="w-px h-8" style={{ backgroundColor: ts.border }} />
             <div className="flex flex-col items-center gap-1">
               <span className="text-2xl sm:text-3xl font-semibold" style={{ color: ts.textSecondary }}>
                 <AnimatedNumber target={12} />
               </span>
-              <span className="text-[10px] sm:text-xs tracking-widest uppercase" style={{ color: ts.textMuted }}>{t("hero.stats.techniques")}</span>
+              <span className="t-label sm:text-xs tracking-widest uppercase" style={{ color: ts.textMuted }}>{t("hero.stats.techniques")}</span>
             </div>
             <div className="w-px h-8" style={{ backgroundColor: ts.border }} />
             <StatCard value="4.9★" label={t("hero.stats.rating")} />
@@ -282,14 +282,14 @@ export default function HomePage() {
         <RevealSection className="px-4 sm:px-6 lg:px-8 py-10 max-w-6xl mx-auto w-full">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h2 className="text-lg sm:text-xl font-medium" style={{ color: ts.textPrimary }}>
+              <h2 className="t-heading sm:text-xl font-medium" style={{ color: ts.textPrimary }}>
                 {t('techniques.title')}
               </h2>
-              <p className="text-xs mt-0.5" style={{ color: ts.textMuted }}>
+              <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>
                 {t('techniques.subtitle')}
               </p>
             </div>
-            <Link to="/breathing" className="text-xs hover:underline" style={{ color: ts.accent }}>
+            <Link to="/breathing" className="t-caption hover:underline" style={{ color: ts.accent }}>
               {t('techniques.viewAll')}
             </Link>
           </div>
@@ -308,10 +308,10 @@ export default function HomePage() {
         <RevealSection className="px-4 sm:px-6 lg:px-8 py-10 max-w-6xl mx-auto w-full" delay={100}>
           <div className="flex flex-col items-center gap-5">
             <div className="text-center">
-              <h2 className="text-lg sm:text-xl font-medium tracking-wide" style={{ color: ts.textPrimary }}>
+              <h2 className="t-heading sm:text-xl font-medium tracking-wide" style={{ color: ts.textPrimary }}>
                 What kind of breather are you?
               </h2>
-              <p className="text-xs mt-1" style={{ color: ts.textMuted }}>
+              <p className="t-caption mt-1" style={{ color: ts.textMuted }}>
                 5 questions · free · instant result
               </p>
             </div>
@@ -330,7 +330,7 @@ export default function HomePage() {
             {/* Left column */}
             <div className="lg:col-span-2 flex flex-col gap-6">
               <div>
-                <h2 className="text-lg sm:text-xl font-medium mb-4 tracking-wide" style={{ color: ts.textPrimary }}>
+                <h2 className="t-heading sm:text-xl font-medium mb-4 tracking-wide" style={{ color: ts.textPrimary }}>
                   {t('home.exploreMindfulness')}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 reveal-stagger">
@@ -356,12 +356,12 @@ export default function HomePage() {
                    style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}>
                 <img src="/icons/Lotus_png.png" alt="Lotus" className="w-20 h-20 object-contain opacity-90" />
                 <div>
-                  <p className="text-base font-medium mb-1" style={{ color: ts.textSecondary }}>{t('home.readyToBegin')}</p>
-                  <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{t('home.readyDesc')}</p>
+                  <p className="t-body font-medium mb-1" style={{ color: ts.textSecondary }}>{t('home.readyToBegin')}</p>
+                  <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{t('home.readyDesc')}</p>
                 </div>
                 <Link
                   to="/breathing"
-                  className="w-full py-3 rounded-xl text-sm font-medium transition-colors text-center tracking-wide"
+                  className="w-full py-3 rounded-xl t-body font-medium transition-colors text-center tracking-wide"
                   style={{ background: ts.btnGradient }}
                 >
                   🌬 &nbsp;Begin Session
@@ -371,7 +371,7 @@ export default function HomePage() {
               {/* Sleep guides */}
               <div className="rounded-2xl p-5 flex flex-col gap-3"
                 style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+                <p className="t-label" style={{ color: ts.textMuted }}>
                   Sleep guides
                 </p>
                 {[
@@ -382,7 +382,7 @@ export default function HomePage() {
                   { label: 'Why Slow Breathing Calms You',  href: '/science/slow-breathing',         icon: '⚡' },
                 ].map(({ label, href, icon }) => (
                   <Link key={href} to={href}
-                    className="flex items-center gap-2 text-xs transition-all hover:opacity-80"
+                    className="flex items-center gap-2 t-caption transition-all hover:opacity-80"
                     style={{ color: ts.accent }}>
                     <span>{icon}</span>
                     <span>{label} →</span>

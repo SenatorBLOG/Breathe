@@ -33,7 +33,21 @@
       "WebFetch(domain:discourse.threejs.org)",
       "Bash(\"c:\\\\Users\\\\Mikhail Senatorov\\\\Documents\\\\Douglas\\\\Breathe\\\\frontend\\\\src\\\\components\\\\ui\\\\Skeleton.tsx\")",
       "Bash(\"c:\\\\Users\\\\Mikhail Senatorov\\\\Documents\\\\Douglas\\\\Breathe\\\\frontend\\\\src\\\\hooks\\\\useScrollReveal.ts\")",
-      "Bash(del \"c:\\\\Users\\\\Mikhail Senatorov\\\\Documents\\\\Douglas\\\\Breathe\\\\frontend\\\\src\\\\components\\\\ui\\\\Skeleton.tsx\")"
+      "Bash(del \"c:\\\\Users\\\\Mikhail Senatorov\\\\Documents\\\\Douglas\\\\Breathe\\\\frontend\\\\src\\\\components\\\\ui\\\\Skeleton.tsx\")",
+      "Skill(codex:rescue)",
+      "Bash(node \"C:/Users/Mikhail Senatorov/.claude/plugins/marketplaces/openai-codex/plugins/codex/scripts/codex-companion.mjs\" --help)",
+      "Bash(node:*)",
+      "Bash(codex --version)",
+      "Bash(codex --help)",
+      "Bash(codex app-server:*)",
+      "Bash(codex sandbox:*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d, indent=2\\)\\)\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); starts=[k for k in d.get\\('definitions',{}\\) if 'thread' in k.lower\\(\\) or 'sandbox' in k.lower\\(\\) or 'approval' in k.lower\\(\\)]; print\\('\\\\n'.join\\(starts\\)\\)\")",
+      "Bash(python3 -c ':*)",
+      "Bash(codex features:*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(j['id'], j.get\\('write'\\), j.get\\('status'\\), j.get\\('summary',''\\)[:80]\\) for j in d.get\\('jobs',[]\\)]\")",
+      "Bash(tasklist:*)",
+      "Bash(python3:*)"
     ]
   }
 }

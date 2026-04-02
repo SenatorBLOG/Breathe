@@ -18,7 +18,7 @@ function CustomTooltip({ active, payload, label }: any) {
   const ts = useThemeStyles();
   if (!active || !payload?.length) return null;
   return (
-    <div className="px-3 py-2 rounded-xl text-xs border backdrop-blur-md"
+    <div className="px-3 py-2 rounded-xl t-caption border backdrop-blur-md"
       style={{ 
         backgroundColor: `${ts.cardBg}F2`, // 95% opacity
         borderColor: ts.border, 
@@ -41,7 +41,7 @@ function PeriodTabs({ value, onChange }: { value: string; onChange: (v: string) 
           <button
             key={p}
             onClick={() => onChange(p)}
-            className="px-3 py-1 rounded-lg text-[10px] uppercase tracking-widest border transition-all duration-300"
+            className="px-3 py-1 rounded-lg t-label uppercase tracking-widest border transition-all duration-300"
             style={{
               backgroundColor: isActive ? `${ts.accent}15` : 'transparent',
               borderColor: isActive ? `${ts.accent}60` : `${ts.border}40`,
@@ -152,7 +152,7 @@ const ActivityChart = () => {
         <PeriodTabs value={period} onChange={setPeriod} />
         <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
           <span className="text-3xl opacity-20">📊</span>
-          <p style={{ color: ts.textSecondary }} className="text-xs italic">No activity yet</p>
+          <p style={{ color: ts.textSecondary }} className="t-caption italic">No activity yet</p>
         </div>
       </div>
     );
@@ -161,7 +161,7 @@ const ActivityChart = () => {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <p style={{ color: ts.textSecondary }} className="text-[10px] uppercase tracking-wider font-medium">
+        <p style={{ color: ts.textSecondary }} className="t-label uppercase tracking-wider font-medium">
           min / {period === 'Weekly' ? 'day' : period === 'Monthly' ? 'day' : 'month'}
         </p>
         <PeriodTabs value={period} onChange={setPeriod} />

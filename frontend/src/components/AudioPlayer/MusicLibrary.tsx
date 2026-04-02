@@ -52,7 +52,7 @@ function AdSlot({ label = "Advertisement", className = "" }: { label?: string; c
         backgroundColor: `${ts.cardBg}40`,
       }}
     >
-      <span className="text-[9px] tracking-widest uppercase select-none" style={{ color: ts.textDim }}>
+      <span className="t-label tracking-widest uppercase select-none" style={{ color: ts.textDim }}>
         {label}
       </span>
     </div>
@@ -67,7 +67,7 @@ function SideItem({
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs transition-all duration-200"
+      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl t-caption transition-all duration-200"
       style={{
         backgroundColor: active ? ts.cardBgHover : ts.cardBg,
         borderColor: active ? ts.borderHover : "transparent",
@@ -79,7 +79,7 @@ function SideItem({
       </span>
       <span className="flex-1 text-left">{label}</span>
       {count != null && (
-        <span className="text-[9px] tabular-nums" style={{ color: ts.textDim }}>{count}</span>
+        <span className="t-label tabular-nums" style={{ color: ts.textDim }}>{count}</span>
       )}
     </button>
   );
@@ -136,7 +136,7 @@ function TrackCard({
             ? <Pause size={11} style={{ color: ts.accent }} />
             : <Play size={11} style={{ color: isCurrent ? ts.accent : ts.textSecondary }} />
         ) : (
-          <span className="text-[10px] tabular-nums" style={{ color: ts.textDim }}>{index + 1}</span>
+          <span className="t-label tabular-nums" style={{ color: ts.textDim }}>{index + 1}</span>
         )}
       </div>
 
@@ -161,12 +161,12 @@ function TrackCard({
       {/* Name + artist */}
       <div className="flex-1 min-w-0">
         <p
-          className="text-xs font-medium truncate leading-snug transition-colors"
+          className="t-caption font-medium truncate leading-snug transition-colors"
           style={{ color: isCurrent ? ts.textPrimary : ts.textSecondary }}
         >
           {track.name}
         </p>
-        <p className="text-[10px] truncate" style={{ color: ts.textMuted }}>
+        <p className="t-label truncate" style={{ color: ts.textMuted }}>
           {track.artist_name}
         </p>
       </div>
@@ -176,7 +176,7 @@ function TrackCard({
         {track.tags.slice(0, 2).map((t, i) => (
           <span
             key={i}
-            className="text-[9px] px-1.5 py-0.5 rounded-full border uppercase tracking-wide"
+            className="t-label px-1.5 py-0.5 rounded-full border uppercase tracking-wide"
             style={{
               color: ts.textDim,
               backgroundColor: ts.cardBg,
@@ -189,7 +189,7 @@ function TrackCard({
       </div>
 
       {/* Duration */}
-      <span className="text-[10px] tabular-nums flex-shrink-0 w-9 text-right" style={{ color: ts.textDim }}>
+      <span className="t-label tabular-nums flex-shrink-0 w-9 text-right" style={{ color: ts.textDim }}>
         {fmtDur(track.duration)}
       </span>
     </div>
@@ -249,7 +249,7 @@ export function MusicLibrary() {
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-6 pb-3">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <p className="text-[10px] tracking-[0.3em] uppercase" style={{ color: ts.textMuted }}>Breathe · Sounds</p>
+              <p className="t-label tracking-[0.3em] uppercase" style={{ color: ts.textMuted }}>Breathe · Sounds</p>
               <h1 className="text-2xl sm:text-3xl font-light" style={{ color: ts.textPrimary }}>Music Library</h1>
             </div>
 
@@ -260,7 +260,7 @@ export function MusicLibrary() {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search tracks, artists, tags…"
-                className="w-full pl-9 pr-10 py-2.5 rounded-xl text-xs outline-none transition-colors"
+                className="w-full pl-9 pr-10 py-2.5 rounded-xl t-caption outline-none transition-colors"
                 style={{
                   backgroundColor: ts.cardBg,
                   border: `1px solid ${ts.border}`,
@@ -270,7 +270,7 @@ export function MusicLibrary() {
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 t-caption transition-colors"
                   style={{ color: ts.textMuted }}
                 >
                   ✕
@@ -288,7 +288,7 @@ export function MusicLibrary() {
             <aside className="hidden lg:flex flex-col gap-4 w-52 xl:w-56 flex-shrink-0 pt-1">
               <div className="flex flex-col gap-0.5">
                 <p
-                  className="text-[9px] tracking-[0.25em] uppercase mb-2.5 px-1"
+                  className="t-label tracking-[0.25em] uppercase mb-2.5 px-1"
                   style={{ color: ts.textDim }}
                 >
                   Genre
@@ -309,7 +309,7 @@ export function MusicLibrary() {
               <button
                 onClick={() => loadTracks(selectedGenre === "all" ? "meditation" : selectedGenre)}
                 disabled={isLoading}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs border transition-all duration-200 disabled:opacity-40"
+                className="flex items-center gap-2 px-3 py-2 rounded-xl t-caption border transition-all duration-200 disabled:opacity-40"
                 style={{ color: ts.textMuted, borderColor: ts.border }}
               >
                 <RefreshCw size={10} className={isLoading ? "animate-spin" : ""} />
@@ -327,7 +327,7 @@ export function MusicLibrary() {
                   <button
                     key={g}
                     onClick={() => handleGenre(g)}
-                    className="flex-shrink-0 px-3 py-1.5 rounded-full text-[10px] uppercase tracking-widest border transition-all duration-200"
+                    className="flex-shrink-0 px-3 py-1.5 rounded-full t-label uppercase tracking-widest border transition-all duration-200"
                     style={{
                       backgroundColor: selectedGenre === g ? ts.cardBgHover : ts.cardBg,
                       borderColor: selectedGenre === g ? ts.borderHover : ts.border,
@@ -341,7 +341,7 @@ export function MusicLibrary() {
 
               {/* Status row */}
               <div className="flex items-center justify-between">
-                <span className="text-[10px] tracking-wide" style={{ color: ts.textMuted }}>
+                <span className="t-label tracking-wide" style={{ color: ts.textMuted }}>
                   {isLoading
                     ? "Loading…"
                     : `${filteredTracks.length} track${filteredTracks.length !== 1 ? "s" : ""}${selectedGenre !== "all" ? ` · ${GENRE_LABELS[selectedGenre]}` : ""}`
@@ -350,7 +350,7 @@ export function MusicLibrary() {
                 {!isLoading && (
                   <button
                     onClick={() => loadTracks(selectedGenre === "all" ? "meditation" : selectedGenre)}
-                    className="flex items-center gap-1.5 text-[10px] transition-colors lg:hidden"
+                    className="flex items-center gap-1.5 t-label transition-colors lg:hidden"
                     style={{ color: ts.textMuted }}
                   >
                     <RefreshCw size={10} /> Refresh
@@ -374,11 +374,11 @@ export function MusicLibrary() {
                 ) : filteredTracks.length === 0 ? (
                   <div className="flex flex-col items-center gap-3 py-20">
                     <Music2 size={28} style={{ color: ts.textDim }} />
-                    <p className="text-sm" style={{ color: ts.textMuted }}>No tracks found</p>
+                    <p className="t-body" style={{ color: ts.textMuted }}>No tracks found</p>
                     {searchQuery && (
                       <button
                         onClick={() => setSearchQuery("")}
-                        className="text-xs hover:underline"
+                        className="t-caption hover:underline"
                         style={{ color: ts.accent }}
                       >
                         Clear search

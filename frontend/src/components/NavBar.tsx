@@ -39,7 +39,7 @@ export default function NavBar() {
 
   const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => (
     <Link to={to} onClick={() => setIsMenuOpen(false)}
-      className="relative text-sm tracking-wide transition-colors duration-200 group"
+      className="relative t-body tracking-wide transition-colors duration-200 group"
       style={{ color: isActive(to) ? ts.accentLight : ts.textSecondary }}>
       {children}
       <span className="absolute -bottom-0.5 left-0 h-px transition-all duration-300"
@@ -76,7 +76,7 @@ export default function NavBar() {
           <a href="/breathing" onClick={onLogoClick} className="flex items-center gap-2 flex-shrink-0 group">
             <div className="w-6 h-6 rounded-full flex-shrink-0 transition-shadow duration-300 group-hover:shadow-[0_0_16px_rgba(74,158,255,0.6)]"
               style={{ background: `radial-gradient(circle at 35% 35%, ${ts.accentLight}, ${ts.accent} 70%)`, boxShadow: `0 0 10px ${ts.accent}55` }} />
-            <span className="text-base sm:text-lg font-medium tracking-wide transition-colors"
+            <span className="t-body sm:text-lg font-medium tracking-wide transition-colors"
               style={{ color: ts.textPrimary }}>
               Breathe
             </span>
@@ -102,12 +102,12 @@ export default function NavBar() {
             {!isAuthenticated ? (
               <>
                 <Link to="/login"
-                  className="px-4 py-1.5 text-sm rounded-full transition-all duration-200"
+                  className="px-4 py-1.5 t-body rounded-full transition-all duration-200"
                   style={{ color: ts.accentLight, border: `1px solid ${ts.border}` }}>
                   {t('nav.login')}
                 </Link>
                 <Link to="/signup"
-                  className="px-4 py-1.5 text-sm text-white rounded-full transition-all duration-200 hover:scale-105"
+                  className="px-4 py-1.5 t-body text-white rounded-full transition-all duration-200 hover:scale-105"
                   style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
                   {t('nav.getStarted')}
                 </Link>
@@ -119,17 +119,17 @@ export default function NavBar() {
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   {(user?.avatar || user?.picture)
                     ? <img src={user.avatar || user.picture} alt="" className="w-5 h-5 rounded-full object-cover flex-shrink-0" />
-                    : <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] text-white font-medium flex-shrink-0"
+                    : <div className="w-5 h-5 rounded-full flex items-center justify-center t-label text-white font-medium flex-shrink-0"
                         style={{ background: ts.btnGradient }}>
                         {user?.email?.[0]?.toUpperCase() ?? 'U'}
                       </div>
                   }
-                  <span className="text-xs" style={{ color: ts.textSecondary }}>
+                  <span className="t-caption" style={{ color: ts.textSecondary }}>
                     {user?.name ?? t('nav.profile')}
                   </span>
                 </button>
                 <button onClick={() => { logout(); navigate('/breathing'); }}
-                  className="px-3 py-1.5 text-xs rounded-full transition-all duration-200"
+                  className="px-3 py-1.5 t-caption rounded-full transition-all duration-200"
                   style={{ color: '#FF8A8A', border: '1px solid rgba(255,107,107,0.2)' }}>
                   {t('nav.signOut')}
                 </button>
@@ -139,17 +139,17 @@ export default function NavBar() {
 
           {/* Theme toggle — desktop only */}
           <button onClick={toggleTheme}
-            className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-colors text-xs"
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-colors t-caption"
             style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}
             title={`Switch theme (current: ${THEME_META[theme].label})`}>
-            <span className="text-sm">{THEME_META[theme].icon}</span>
-            <span className="text-[10px] tracking-wide">{THEME_META[theme].label}</span>
+            <span className="t-body">{THEME_META[theme].icon}</span>
+            <span className="t-caption">{THEME_META[theme].label}</span>
           </button>
 
           {/* Language switcher — desktop only */}
           <div className="hidden md:flex relative">
             <button onClick={() => setLangOpen(v => !v)}
-              className="flex items-center gap-1 px-2 py-1.5 rounded-lg transition-colors text-xs"
+              className="flex items-center gap-1 px-2 py-1.5 rounded-lg transition-colors t-caption"
               style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}>
               <Globe size={12} />
               <span className="hidden sm:inline uppercase tracking-wide">{i18n.language.slice(0,2)}</span>
@@ -159,7 +159,7 @@ export default function NavBar() {
                 style={{ background: ts.cardBg, border: `1px solid ${ts.border}`, minWidth: 130, boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
                 {LANGS.map(l => (
                   <button key={l.code} onClick={() => { i18n.changeLanguage(l.code); setLangOpen(false); }}
-                    className="flex items-center gap-2 px-3 py-2 text-xs transition-colors text-left"
+                    className="flex items-center gap-2 px-3 py-2 t-caption transition-colors text-left"
                     style={{
                       color: i18n.language.startsWith(l.code) ? ts.accentLight : ts.textMuted,
                       backgroundColor: i18n.language.startsWith(l.code) ? ts.cardBgHover : 'transparent',
@@ -197,7 +197,7 @@ export default function NavBar() {
                 ),
               ].map(({ to, label }) => (
                 <Link key={to} to={to} onClick={() => setIsMenuOpen(false)}
-                  className="py-2.5 text-sm transition-colors"
+                  className="py-2.5 t-body transition-colors"
                   style={{
                     color: isActive(to) ? ts.accentLight : ts.textSecondary,
                     borderBottom: `1px solid ${ts.border}40`,
@@ -210,12 +210,12 @@ export default function NavBar() {
                 {!isAuthenticated ? (
                   <>
                     <Link to="/login" onClick={() => setIsMenuOpen(false)}
-                      className="py-2.5 text-center text-sm rounded-xl transition-colors"
+                      className="py-2.5 text-center t-body rounded-xl transition-colors"
                       style={{ color: ts.accentLight, border: `1px solid ${ts.border}` }}>
                       {t('nav.login')}
                     </Link>
                     <Link to="/signup" onClick={() => setIsMenuOpen(false)}
-                      className="py-2.5 text-center text-sm text-white rounded-xl"
+                      className="py-2.5 text-center t-body text-white rounded-xl"
                       style={{ background: ts.btnGradient }}>
                       {t('nav.getStarted')}
                     </Link>
@@ -223,11 +223,11 @@ export default function NavBar() {
                 ) : (
                   <>
                     <button onClick={() => { navigate('/profile'); setIsMenuOpen(false); }}
-                      className="py-2.5 text-sm rounded-xl transition-colors flex items-center justify-center gap-2"
+                      className="py-2.5 t-body rounded-xl transition-colors flex items-center justify-center gap-2"
                       style={{ color: ts.textSecondary, border: `1px solid ${ts.border}` }}>
                       {(user?.avatar || user?.picture)
                         ? <img src={user.avatar || user.picture} alt="" className="w-5 h-5 rounded-full object-cover flex-shrink-0" />
-                        : <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] text-white font-medium flex-shrink-0"
+                        : <div className="w-5 h-5 rounded-full flex items-center justify-center t-label text-white font-medium flex-shrink-0"
                             style={{ background: ts.btnGradient }}>
                             {user?.email?.[0]?.toUpperCase() ?? 'U'}
                           </div>
@@ -235,7 +235,7 @@ export default function NavBar() {
                       {user?.name ?? t('nav.profile')}
                     </button>
                     <button onClick={() => { logout(); navigate('/breathing'); setIsMenuOpen(false); }}
-                      className="py-2.5 text-sm rounded-xl transition-colors"
+                      className="py-2.5 t-body rounded-xl transition-colors"
                       style={{ color: '#FF8A8A', border: '1px solid rgba(255,107,107,0.2)' }}>
                       {t('nav.signOut')}
                     </button>
@@ -247,16 +247,16 @@ export default function NavBar() {
               <div className="flex items-center justify-between pt-3 mt-1 border-t"
                 style={{ borderColor: ts.border }}>
                 <button onClick={toggleTheme}
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl t-body transition-colors"
                   style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}>
                   <span>{THEME_META[theme].icon}</span>
-                  <span className="text-xs">{THEME_META[theme].label}</span>
+                  <span className="t-caption">{THEME_META[theme].label}</span>
                 </button>
                 <div className="flex gap-1">
                   {LANGS.map(l => (
                     <button key={l.code}
                       onClick={() => { i18n.changeLanguage(l.code); }}
-                      className="px-2.5 py-1.5 rounded-lg text-xs transition-colors"
+                      className="px-2.5 py-1.5 rounded-lg t-caption transition-colors"
                       style={{
                         color: i18n.language.startsWith(l.code) ? ts.accentLight : ts.textMuted,
                         background: i18n.language.startsWith(l.code) ? ts.cardBgHover : 'transparent',

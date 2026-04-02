@@ -43,10 +43,10 @@ function StatPill({ icon, label, value, dim = false }: {
     }`}>
       <span style={{ color: ts.accent }}>{icon}</span>
       <div className="flex flex-col leading-none">
-        <span className="text-sm sm:text-base font-medium tabular-nums" style={{ color: ts.textSecondary }}>
+        <span className="t-body sm:text-base font-medium tabular-nums" style={{ color: ts.textSecondary }}>
           {value}
         </span>
-        <span className="text-[9px] uppercase tracking-widest mt-0.5" style={{ color: ts.textMuted }}>
+        <span className="t-label uppercase tracking-widest mt-0.5" style={{ color: ts.textMuted }}>
           {label}
         </span>
       </div>
@@ -109,7 +109,7 @@ function DraggablePhaseBar({ phaseKey, value, onChange, isActivePhase }: {
 
   return (
     <div className="flex flex-col items-center gap-2 select-none flex-1">
-      <span className={`text-xs font-medium tabular-nums transition-colors duration-200 ${isActivePhase ? "text-white" : ""}`} style={{ color: isActivePhase ? ts.textPrimary : ts.textMuted }}>
+      <span className={`t-caption font-medium tabular-nums transition-colors duration-200 ${isActivePhase ? "text-white" : ""}`} style={{ color: isActivePhase ? ts.textPrimary : ts.textMuted }}>
         {value}s
       </span>
       <div
@@ -128,7 +128,7 @@ function DraggablePhaseBar({ phaseKey, value, onChange, isActivePhase }: {
         <div className="absolute left-1/2 -translate-x-1/2 w-7 h-1 rounded-full transition-all duration-150"
           style={{ bottom: fillH - 7, background: isActivePhase ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.12)" }} />
       </div>
-      <span className={`text-[10px] tracking-widest uppercase transition-colors duration-200 ${isActivePhase ? "" : ""}`} style={{ color: isActivePhase ? ts.textSecondary : ts.textMuted }}>
+      <span className={`t-label tracking-widest uppercase transition-colors duration-200 ${isActivePhase ? "" : ""}`} style={{ color: isActivePhase ? ts.textSecondary : ts.textMuted }}>
         {phaseLabel[phaseKey]}
       </span>
     </div>
@@ -149,10 +149,10 @@ function PresetPill({ name, pattern, onApply, current }: {
       }`}
       style={{ backgroundColor: active ? ts.cardBgHover : ts.cardBg }}
     >
-      <span className={`text-[10px] font-medium ${active ? "" : ""}`} style={{ color: active ? ts.textSecondary : ts.textMuted }}>
+      <span className={`t-label font-medium ${active ? "" : ""}`} style={{ color: active ? ts.textSecondary : ts.textMuted }}>
         {name}
       </span>
-      <span className="text-[#4A7AAA] text-[9px]">{pattern.inhale}-{pattern.hold}-{pattern.exhale}-{pattern.pause}</span>
+      <span className="text-[#4A7AAA] t-label">{pattern.inhale}-{pattern.hold}-{pattern.exhale}-{pattern.pause}</span>
     </button>
   );
 }
@@ -393,7 +393,7 @@ export default function BreathingPage() {
 
         <button
           onClick={() => setIsActive(a => !a)}
-          className="group relative flex items-center gap-2.5 px-8 py-3 rounded-full text-white text-sm font-medium tracking-wide transition-all duration-300 hover:shadow-[0_0_30px_rgba(58,130,247,0.45)] hover:scale-105 active:scale-95"
+          className="group relative flex items-center gap-2.5 px-8 py-3 rounded-full text-white t-body font-medium tracking-wide transition-all duration-300 hover:shadow-[0_0_30px_rgba(58,130,247,0.45)] hover:scale-105 active:scale-95"
           style={{ background: ts.btnGradient }}
         >
           {isActive ? (
@@ -428,11 +428,11 @@ export default function BreathingPage() {
       <section className="relative z-10 bg-[#040A14]/90 backdrop-blur-sm border-t border-[#1E3358]/30 py-14 px-4 sm:px-6">
         <div className="max-w-2xl mx-auto flex flex-col items-center gap-10">
           <div className="text-center">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA] mb-2">Breathing pattern</p>
-            <h2 className="text-[#7AC4FF] text-xl sm:text-2xl font-light tracking-wide mb-1">
+            <p className="t-label tracking-[0.3em] uppercase text-[#4A7AAA] mb-2">Breathing pattern</p>
+            <h2 className="text-[#7AC4FF] t-heading sm:text-2xl font-light tracking-wide mb-1">
               {phaseDurations.inhale}–{phaseDurations.hold}–{phaseDurations.exhale}–{phaseDurations.pause}
             </h2>
-            <p className="text-[#3D6080] text-xs">Drag bars up · down to adjust · 1–10 seconds</p>
+            <p className="text-[#3D6080] t-caption">Drag bars up · down to adjust · 1–10 seconds</p>
           </div>
 
           <div className="w-full flex items-end gap-4 sm:gap-6 px-2" style={{ height: BAR_H + 56 }}>
@@ -446,7 +446,7 @@ export default function BreathingPage() {
           <div className="w-full h-px" style={{ backgroundColor: ts.border }} />
 
           <div className="flex flex-col items-center gap-3 w-full">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A7AAA]">Quick presets</p>
+            <p className="t-label tracking-[0.3em] uppercase text-[#4A7AAA]">Quick presets</p>
             <div className="flex flex-wrap justify-center gap-2">
               {presets.map(p => (
                 <PresetPill key={p.name} name={p.name} pattern={p.pattern} onApply={setPhaseDurations} current={phaseDurations} />
@@ -486,18 +486,18 @@ export default function BreathingPage() {
                   <div className="flex items-start justify-between gap-2">
                     <span className="text-2xl">{icon}</span>
                     <span
-                      className="text-[9px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full whitespace-nowrap"
+                      className="t-label font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full whitespace-nowrap"
                       style={{ background: ts.borderHover, color: ts.textSecondary }}
                     >{tag}</span>
                   </div>
 
-                  <p className="text-sm font-semibold" style={{ color: ts.textPrimary }}>{title}</p>
+                  <p className="t-body font-semibold" style={{ color: ts.textPrimary }}>{title}</p>
 
                   <div className="flex items-center gap-1">
                     {labels.map((label, idx) => (
                       <React.Fragment key={label}>
                         <div className="flex flex-col items-center min-w-0">
-                          <span className="text-sm font-bold leading-tight" style={{ color: ts.textSecondary }}>{nums[idx]}</span>
+                          <span className="t-body font-bold leading-tight" style={{ color: ts.textSecondary }}>{nums[idx]}</span>
                           <span className="text-[8px] leading-tight" style={{ color: ts.textDim }}>{label}</span>
                         </div>
                         {idx < 3 && <span className="mx-0.5" style={{ color: ts.textDim, fontSize: 10 }}>·</span>}
@@ -505,17 +505,17 @@ export default function BreathingPage() {
                     ))}
                   </div>
 
-                  <p className="text-xs leading-relaxed flex-1" style={{ color: ts.textMuted }}>{desc}</p>
+                  <p className="t-caption leading-relaxed flex-1" style={{ color: ts.textMuted }}>{desc}</p>
 
                   <div className="flex items-center gap-3 pt-1">
                     <button
                       onClick={() => { setPhaseDurations(pattern); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                      className="flex-1 py-1.5 rounded-xl text-xs font-semibold transition-all hover:opacity-90 active:scale-95"
+                      className="flex-1 py-1.5 rounded-xl t-caption font-semibold transition-all hover:opacity-90 active:scale-95"
                       style={{ background: ts.btnGradient, color: '#fff' }}
                     >Apply</button>
                     <Link
                       to={href}
-                      className="text-xs font-medium hover:opacity-80 transition-opacity whitespace-nowrap"
+                      className="t-caption font-medium hover:opacity-80 transition-opacity whitespace-nowrap"
                       style={{ color: ts.textSecondary }}
                     >Read guide →</Link>
                   </div>

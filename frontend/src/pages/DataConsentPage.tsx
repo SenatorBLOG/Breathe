@@ -23,15 +23,15 @@ function FeatureCard({ icon, title, desc, example }: {
         {icon}
       </div>
       <div className="flex flex-col gap-1.5">
-        <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>{title}</p>
-        <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
+        <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{title}</p>
+        <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
         {example && (
           <div className="mt-1 px-3 py-1.5 rounded-xl"
             style={{
               backgroundColor: `${ts.cardBg}60`,
               border: `1px solid ${ts.border}`,
             }}>
-            <p className="text-[10px] italic" style={{ color: ts.accent }}>"{example}"</p>
+            <p className="t-label italic" style={{ color: ts.accent }}>"{example}"</p>
           </div>
         )}
       </div>
@@ -49,7 +49,7 @@ function BeforeAfterDemo() {
         backgroundColor: `${ts.cardBg}60`,
       }}>
       <div className="px-4 py-3 border-b" style={{ borderColor: ts.border }}>
-        <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+        <p className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
           Live example — 8 min Box Breathing session
         </p>
       </div>
@@ -62,14 +62,14 @@ function BeforeAfterDemo() {
           <div key={label}
             className={`flex flex-col items-center gap-3 p-5 ${i < 2 ? 'border-r' : ''}`}
             style={{ borderColor: ts.border }}>
-            <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>{label}</p>
+            <p className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>{label}</p>
             <div className="flex flex-col items-center gap-1">
               <span className="text-2xl font-light tabular-nums" style={{ color }}>{bpm}</span>
-              <span className="text-[9px]" style={{ color: ts.textMuted }}>bpm</span>
+              <span className="t-label" style={{ color: ts.textMuted }}>bpm</span>
             </div>
             <div className="flex flex-col items-center gap-0.5">
-              <span className="text-sm font-light tabular-nums" style={{ color: ts.textSecondary }}>{hrv}ms</span>
-              <span className="text-[9px]" style={{ color: ts.textMuted }}>HRV</span>
+              <span className="t-body font-light tabular-nums" style={{ color: ts.textSecondary }}>{hrv}ms</span>
+              <span className="t-label" style={{ color: ts.textMuted }}>HRV</span>
             </div>
             {calm !== null && (
               <div className="flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl"
@@ -77,8 +77,8 @@ function BeforeAfterDemo() {
                   background: `${ts.accent}10`,
                   border: `1px solid ${ts.accent}25`,
                 }}>
-                <span className="text-lg font-medium" style={{ color: ts.accent }}>+{calm}</span>
-                <span className="text-[9px]" style={{ color: ts.accent }}>Calm Score</span>
+                <span className="t-heading font-medium" style={{ color: ts.accent }}>+{calm}</span>
+                <span className="t-label" style={{ color: ts.accent }}>Calm Score</span>
               </div>
             )}
           </div>
@@ -100,7 +100,7 @@ function PrivacyPoint({ text }: { text: string }) {
         }}>
         <Check size={9} style={{ color: ts.accent }} />
       </div>
-      <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{text}</p>
+      <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{text}</p>
     </div>
   );
 }
@@ -138,7 +138,7 @@ export default function DataConsentPage() {
               <h1 className="text-2xl sm:text-3xl font-light tracking-wide mb-2" style={{ color: ts.textPrimary }}>
                 Measure your calm
               </h1>
-              <p className="text-sm leading-relaxed max-w-md" style={{ color: ts.textMuted }}>
+              <p className="t-body leading-relaxed max-w-md" style={{ color: ts.textMuted }}>
                 Connect your heart rate monitor to see exactly how meditation changes your body — in real time.
               </p>
             </div>
@@ -149,7 +149,7 @@ export default function DataConsentPage() {
 
           {/* What we measure */}
           <div className="flex flex-col gap-3">
-            <p className="text-[10px] uppercase tracking-widest px-1" style={{ color: ts.textMuted }}>
+            <p className="t-label uppercase tracking-widest px-1" style={{ color: ts.textMuted }}>
               What we track during your session
             </p>
             <FeatureCard
@@ -180,7 +180,7 @@ export default function DataConsentPage() {
 
           {/* How data flows */}
           <div className="flex flex-col gap-3">
-            <p className="text-[10px] uppercase tracking-widest px-1" style={{ color: ts.textMuted }}>
+            <p className="t-label uppercase tracking-widest px-1" style={{ color: ts.textMuted }}>
               How your data flows
             </p>
             <div className="relative flex flex-col gap-0">
@@ -192,7 +192,7 @@ export default function DataConsentPage() {
               ].map(({ icon, label, desc }, i) => (
                 <div key={label} className="flex gap-3">
                   <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base flex-shrink-0"
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center t-body flex-shrink-0"
                       style={{
                         backgroundColor: ts.cardBg,
                         border: `1px solid ${ts.border}`,
@@ -202,8 +202,8 @@ export default function DataConsentPage() {
                     {i < 3 && <div className="w-px flex-1 my-1" style={{ minHeight: 16, backgroundColor: ts.border }} />}
                   </div>
                   <div className="pb-4">
-                    <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>{label}</p>
-                    <p className="text-[10px] mt-0.5 leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
+                    <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>{label}</p>
+                    <p className="t-label mt-0.5 leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
                   </div>
                 </div>
               ))}
@@ -218,7 +218,7 @@ export default function DataConsentPage() {
             }}>
             <div className="flex items-center gap-2 mb-1">
               <Shield size={14} style={{ color: ts.accent }} />
-              <p className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+              <p className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                 Our privacy promise
               </p>
             </div>
@@ -240,13 +240,13 @@ export default function DataConsentPage() {
                   : { backgroundColor: `${ts.cardBg}60`, borderColor: ts.border }}>
                 {agreed && <Check size={11} className="text-white" />}
               </div>
-              <p className="text-xs leading-relaxed group-hover:text-white transition-colors" style={{ color: ts.textMuted }}>
+              <p className="t-caption leading-relaxed group-hover:text-white transition-colors" style={{ color: ts.textMuted }}>
                 I understand that Breathe will use my heart rate data to calculate my Calm Score and improve breathing recommendations. I can revoke this permission at any time.
               </p>
             </label>
 
             <button onClick={handleConnect} disabled={!agreed}
-              className="w-full py-4 rounded-2xl text-white font-medium text-sm tracking-wide transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.4)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-35"
+              className="w-full py-4 rounded-2xl text-white font-medium t-body tracking-wide transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.4)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-35"
               style={{
                 background: agreed ? ts.btnGradient : `${ts.cardBg}40`,
               }}>
@@ -255,7 +255,7 @@ export default function DataConsentPage() {
             </button>
 
             <Link to="/breathing"
-              className="text-center text-[10px] transition-colors"
+              className="text-center t-label transition-colors"
               style={{ color: ts.textMuted }}>
               Skip for now — use Breathe without biometrics
             </Link>

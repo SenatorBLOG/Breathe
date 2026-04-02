@@ -67,7 +67,7 @@ export default function BreathworkSleepPage() {
 
           {/* Hero */}
           <div className="flex flex-col gap-3">
-            <span className="text-[10px] tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
+            <span className="t-label tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
               style={{ color: ts.textMuted, borderColor: ts.border }}>
               Sleep Guide
             </span>
@@ -75,7 +75,7 @@ export default function BreathworkSleepPage() {
               Breathwork for<br />
               <span style={{ color: ts.accent }}>Deep Sleep</span>
             </h1>
-            <p className="text-base leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
               Your nervous system has two modes: fight-or-flight (sympathetic) and
               rest-and-digest (parasympathetic). Breathing is the only way to switch
               between them consciously.
@@ -91,9 +91,9 @@ export default function BreathworkSleepPage() {
             ].map(({ icon, value, label }) => (
               <div key={label} className="flex flex-col gap-1 p-4 rounded-2xl text-center"
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <span className="text-lg">{icon}</span>
-                <p className="text-lg font-bold" style={{ color: ts.textPrimary }}>{value}</p>
-                <p className="text-[10px] leading-tight" style={{ color: ts.textMuted }}>{label}</p>
+                <span className="t-heading">{icon}</span>
+                <p className="t-heading font-bold" style={{ color: ts.textPrimary }}>{value}</p>
+                <p className="t-label leading-tight" style={{ color: ts.textMuted }}>{label}</p>
               </div>
             ))}
           </div>
@@ -102,16 +102,16 @@ export default function BreathworkSleepPage() {
 
           {/* Section 1 — Why breathing controls sleep */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Why breathing controls sleep
             </h2>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               Breathing is the only autonomic function you can consciously control. A slow exhale
               stimulates the vagus nerve, which releases acetylcholine — your body's natural
               "slow down" signal. Heart rate drops, cortisol falls, and your body enters the
               state required for sleep onset.
             </p>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               Most people go to bed in sympathetic dominance — high cortisol, racing thoughts,
               fast shallow breathing — and wonder why they can't sleep. The problem isn't the
               bed. It's the nervous system state.
@@ -121,21 +121,21 @@ export default function BreathworkSleepPage() {
             <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col gap-2 p-4 rounded-2xl"
                 style={{ background: 'rgba(248,113,113,0.06)', border: '1px solid rgba(248,113,113,0.2)' }}>
-                <p className="text-xs font-semibold" style={{ color: '#F87171' }}>😤 Sympathetic</p>
+                <p className="t-caption font-semibold" style={{ color: '#F87171' }}>😤 Sympathetic</p>
                 {['Fast breathing', 'High cortisol', 'Racing heart', "Can't sleep"].map(s => (
-                  <p key={s} className="text-xs" style={{ color: ts.textMuted }}>{s}</p>
+                  <p key={s} className="t-caption" style={{ color: ts.textMuted }}>{s}</p>
                 ))}
               </div>
               <div className="flex flex-col gap-2 p-4 rounded-2xl"
                 style={{ background: 'rgba(74,232,160,0.06)', border: '1px solid rgba(74,232,160,0.2)' }}>
-                <p className="text-xs font-semibold" style={{ color: '#4AE8A0' }}>😴 Parasympathetic</p>
+                <p className="t-caption font-semibold" style={{ color: '#4AE8A0' }}>😴 Parasympathetic</p>
                 {['Slow breathing', 'Low cortisol', 'Slow heart rate', 'Sleep onset'].map(s => (
-                  <p key={s} className="text-xs" style={{ color: ts.textMuted }}>{s}</p>
+                  <p key={s} className="t-caption" style={{ color: ts.textMuted }}>{s}</p>
                 ))}
               </div>
             </div>
             <div className="flex justify-center">
-              <span className="text-xs" style={{ color: ts.textMuted }}>
+              <span className="t-caption" style={{ color: ts.textMuted }}>
                 ← breathwork switches you from left to right →
               </span>
             </div>
@@ -145,7 +145,7 @@ export default function BreathworkSleepPage() {
 
           {/* Section 2 — 3 techniques */}
           <div className="flex flex-col gap-5">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               The 3 best techniques for sleep
             </h2>
 
@@ -153,9 +153,9 @@ export default function BreathworkSleepPage() {
             <div className="flex flex-col gap-3 p-5 rounded-2xl"
               style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.borderHover}` }}>
               <div className="flex items-center gap-2">
-                <span className="text-xl">🌙</span>
-                <p className="text-sm font-semibold" style={{ color: ts.textPrimary }}>4-7-8 Breathing</p>
-                <span className="text-[10px] px-2 py-0.5 rounded-full ml-auto"
+                <span className="t-heading">🌙</span>
+                <p className="t-body font-semibold" style={{ color: ts.textPrimary }}>4-7-8 Breathing</p>
+                <span className="t-label px-2 py-0.5 rounded-full ml-auto"
                   style={{ background: ts.accent + '22', color: ts.accent, border: `1px solid ${ts.accent}44` }}>
                   ⭐ Most effective for sleep
                 </span>
@@ -164,22 +164,22 @@ export default function BreathworkSleepPage() {
                 {[['4s', 'Inhale', 'nose'], ['7s', 'Hold', ''], ['8s', 'Exhale', 'mouth']].map(([t, label, sub]) => (
                   <div key={label} className="py-2 rounded-xl"
                     style={{ background: ts.cardBgHover, border: `1px solid ${ts.border}` }}>
-                    <p className="text-lg font-bold" style={{ color: ts.accent }}>{t}</p>
-                    <p className="text-[10px]" style={{ color: ts.textPrimary }}>{label}</p>
-                    <p className="text-[9px]" style={{ color: ts.textMuted }}>{sub}</p>
+                    <p className="t-heading font-bold" style={{ color: ts.accent }}>{t}</p>
+                    <p className="t-label" style={{ color: ts.textPrimary }}>{label}</p>
+                    <p className="t-label" style={{ color: ts.textMuted }}>{sub}</p>
                   </div>
                 ))}
               </div>
-              <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+              <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                 The 7-second hold slightly increases CO₂, triggering a powerful parasympathetic
                 response. The 8-second exhale maximally stimulates the vagus nerve. Most people
                 feel physically heavy and warm in the limbs by cycle 3 — this is the pre-sleep state.
               </p>
-              <p className="text-xs" style={{ color: ts.textMuted }}>
+              <p className="t-caption" style={{ color: ts.textMuted }}>
                 <strong style={{ color: ts.textPrimary }}>When:</strong> In bed, lights off. 4 cycles minimum.
               </p>
               <Link to="/breathing/4-7-8"
-                className="self-start px-5 py-2 rounded-xl text-white text-xs font-medium transition-all hover:opacity-90"
+                className="self-start px-5 py-2 rounded-xl text-white t-caption font-medium transition-all hover:opacity-90"
                 style={{ background: ts.btnGradient }}>
                 Try 4-7-8 now →
               </Link>
@@ -189,9 +189,9 @@ export default function BreathworkSleepPage() {
             <div className="flex flex-col gap-3 p-5 rounded-2xl"
               style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
               <div className="flex items-center gap-2">
-                <span className="text-xl">📦</span>
-                <p className="text-sm font-semibold" style={{ color: ts.textPrimary }}>Box Breathing</p>
-                <span className="text-[10px] px-2 py-0.5 rounded-full ml-auto"
+                <span className="t-heading">📦</span>
+                <p className="t-body font-semibold" style={{ color: ts.textPrimary }}>Box Breathing</p>
+                <span className="t-label px-2 py-0.5 rounded-full ml-auto"
                   style={{ background: ts.border, color: ts.textMuted }}>
                   For anxiety-driven insomnia
                 </span>
@@ -200,21 +200,21 @@ export default function BreathworkSleepPage() {
                 {[['4s', 'Inhale'], ['4s', 'Hold'], ['4s', 'Exhale'], ['4s', 'Hold']].map(([t, label], i) => (
                   <div key={i} className="py-2 rounded-xl"
                     style={{ background: ts.cardBgHover, border: `1px solid ${ts.border}` }}>
-                    <p className="text-base font-bold" style={{ color: ts.accentLight }}>{t}</p>
-                    <p className="text-[10px]" style={{ color: ts.textPrimary }}>{label}</p>
+                    <p className="t-body font-bold" style={{ color: ts.accentLight }}>{t}</p>
+                    <p className="t-label" style={{ color: ts.textPrimary }}>{label}</p>
                   </div>
                 ))}
               </div>
-              <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+              <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                 The equal ratio neutralizes an overactive stress response. The holds train CO₂
                 tolerance, reducing the "I can't breathe" panic that many anxious sleepers feel.
                 Better for people who feel "wired but tired."
               </p>
-              <p className="text-xs" style={{ color: ts.textMuted }}>
+              <p className="t-caption" style={{ color: ts.textMuted }}>
                 <strong style={{ color: ts.textPrimary }}>When:</strong> 10–15 minutes before bed, sitting up.
               </p>
               <Link to="/breathing/box-breathing"
-                className="self-start px-5 py-2 rounded-xl text-white text-xs font-medium transition-all hover:opacity-90"
+                className="self-start px-5 py-2 rounded-xl text-white t-caption font-medium transition-all hover:opacity-90"
                 style={{ background: ts.btnGradient }}>
                 Try Box Breathing →
               </Link>
@@ -224,27 +224,27 @@ export default function BreathworkSleepPage() {
             <div className="flex flex-col gap-3 p-5 rounded-2xl"
               style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
               <div className="flex items-center gap-2">
-                <span className="text-xl">💨</span>
-                <p className="text-sm font-semibold" style={{ color: ts.textPrimary }}>Belly Breathing</p>
-                <span className="text-[10px] px-2 py-0.5 rounded-full ml-auto"
+                <span className="t-heading">💨</span>
+                <p className="t-body font-semibold" style={{ color: ts.textPrimary }}>Belly Breathing</p>
+                <span className="t-label px-2 py-0.5 rounded-full ml-auto"
                   style={{ background: ts.border, color: ts.textMuted }}>
                   Foundation technique
                 </span>
               </div>
-              <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+              <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                 Place one hand on your belly. Inhale slowly — only the belly rises, not the chest.
                 Exhale fully, belly falls. Aim for 5–6 breaths per minute.
               </p>
-              <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+              <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                 Diaphragmatic breathing maximally stimulates stretch receptors in the lower lungs,
                 connected directly to the vagus nerve via pulmonary branches. This grounds the body
                 and establishes the slow rhythm the other techniques build on.
               </p>
-              <p className="text-xs" style={{ color: ts.textMuted }}>
+              <p className="t-caption" style={{ color: ts.textMuted }}>
                 <strong style={{ color: ts.textPrimary }}>When:</strong> 5 minutes in bed, before trying the techniques above.
               </p>
               <Link to="/breathing"
-                className="self-start px-5 py-2 rounded-xl text-white text-xs font-medium transition-all hover:opacity-90"
+                className="self-start px-5 py-2 rounded-xl text-white t-caption font-medium transition-all hover:opacity-90"
                 style={{ background: ts.btnGradient }}>
                 Start breathing →
               </Link>
@@ -255,7 +255,7 @@ export default function BreathworkSleepPage() {
 
           {/* Section 3 — Bedtime routine */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Step-by-step bedtime breathwork routine
             </h2>
             {[
@@ -286,21 +286,21 @@ export default function BreathworkSleepPage() {
             ].map(({ step, title, time, desc }) => (
               <div key={step} className="flex gap-4 p-4 rounded-2xl"
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-sm font-bold text-white"
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 t-body font-bold text-white"
                   style={{ background: ts.btnGradient }}>
                   {step}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>{title}</p>
+                    <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{title}</p>
                     {time && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full"
+                      <span className="t-label px-2 py-0.5 rounded-full"
                         style={{ background: ts.border, color: ts.textMuted }}>
                         {time}
                       </span>
                     )}
                   </div>
-                  <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
+                  <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
                 </div>
               </div>
             ))}
@@ -310,13 +310,13 @@ export default function BreathworkSleepPage() {
 
           {/* Section 4 — Do / Avoid */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               What to do (and avoid) before sleep
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-3 p-4 rounded-2xl"
                 style={{ backgroundColor: ts.cardBg, border: '1px solid rgba(74,232,160,0.25)' }}>
-                <p className="text-sm font-medium" style={{ color: '#4AE8A0' }}>✓ Do before bed</p>
+                <p className="t-body font-medium" style={{ color: '#4AE8A0' }}>✓ Do before bed</p>
                 {[
                   'Breathwork (any technique above)',
                   'Body scan meditation',
@@ -325,14 +325,14 @@ export default function BreathworkSleepPage() {
                   'Cool room temperature (17–19°C)',
                 ].map(item => (
                   <div key={item} className="flex items-start gap-2">
-                    <span className="text-[10px] mt-1 flex-shrink-0" style={{ color: '#4AE8A0' }}>▸</span>
-                    <p className="text-xs" style={{ color: ts.textMuted }}>{item}</p>
+                    <span className="t-label mt-1 flex-shrink-0" style={{ color: '#4AE8A0' }}>▸</span>
+                    <p className="t-caption" style={{ color: ts.textMuted }}>{item}</p>
                   </div>
                 ))}
               </div>
               <div className="flex flex-col gap-3 p-4 rounded-2xl"
                 style={{ backgroundColor: ts.cardBg, border: '1px solid rgba(248,113,113,0.25)' }}>
-                <p className="text-sm font-medium" style={{ color: '#F87171' }}>✗ Avoid before bed</p>
+                <p className="t-body font-medium" style={{ color: '#F87171' }}>✗ Avoid before bed</p>
                 {[
                   'Screens within 30 min (blue light blocks melatonin)',
                   'Caffeine after 2pm (5–7hr half-life)',
@@ -341,8 +341,8 @@ export default function BreathworkSleepPage() {
                   'Heavy meals within 3 hours',
                 ].map(item => (
                   <div key={item} className="flex items-start gap-2">
-                    <span className="text-[10px] mt-1 flex-shrink-0" style={{ color: '#F87171' }}>▸</span>
-                    <p className="text-xs" style={{ color: ts.textMuted }}>{item}</p>
+                    <span className="t-label mt-1 flex-shrink-0" style={{ color: '#F87171' }}>▸</span>
+                    <p className="t-caption" style={{ color: ts.textMuted }}>{item}</p>
                   </div>
                 ))}
               </div>
@@ -353,14 +353,14 @@ export default function BreathworkSleepPage() {
 
           {/* Section 5 — FAQ */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Frequently asked questions
             </h2>
             {FAQS.map(({ q, a }) => (
               <div key={q} className="p-4 rounded-2xl"
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <p className="text-sm font-medium mb-2" style={{ color: ts.textPrimary }}>{q}</p>
-                <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{a}</p>
+                <p className="t-body font-medium mb-2" style={{ color: ts.textPrimary }}>{q}</p>
+                <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{a}</p>
               </div>
             ))}
           </div>
@@ -369,7 +369,7 @@ export default function BreathworkSleepPage() {
 
           {/* Section 6 — Internal links */}
           <div className="flex flex-col gap-3">
-            <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+            <p className="t-label tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
               More sleep guides
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -380,8 +380,8 @@ export default function BreathworkSleepPage() {
                 <Link key={href} to={href}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-[1.01]"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                  <span className="text-lg">{icon}</span>
-                  <p className="text-sm font-medium" style={{ color: ts.accent }}>{label} →</p>
+                  <span className="t-heading">{icon}</span>
+                  <p className="t-body font-medium" style={{ color: ts.accent }}>{label} →</p>
                 </Link>
               ))}
             </div>

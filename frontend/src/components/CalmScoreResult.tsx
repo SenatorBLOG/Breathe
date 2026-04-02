@@ -38,7 +38,7 @@ function ScoreRing({ score, size = 120, ts }: { score: number; size?: number; ts
       </svg>
       <div className="absolute flex flex-col items-center">
         <span className="text-3xl font-light tabular-nums leading-none" style={{ color: statusColor }}>{displayed}</span>
-        <span className="text-[10px] mt-0.5 uppercase tracking-widest" style={{ color: ts.textMuted }}>Calm Score</span>
+        <span className="t-label mt-0.5 uppercase tracking-widest" style={{ color: ts.textMuted }}>Calm Score</span>
       </div>
     </div>
   );
@@ -54,13 +54,13 @@ function HRBars({ before, after, ts }: { before: number; after: number; ts: any 
         { label: 'After',  value: after,  color: '#4AE8A0' },
       ].map(({ label, value, color }) => (
         <div key={label} className="flex items-center gap-3">
-          <span className="text-[10px] uppercase tracking-wide w-10 flex-shrink-0" style={{ color: ts.textMuted }}>{label}</span>
+          <span className="t-label uppercase tracking-wide w-10 flex-shrink-0" style={{ color: ts.textMuted }}>{label}</span>
           <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: ts.cardBgHover }}>
             <div className="h-full rounded-full transition-all duration-1000"
               style={{ width: `${(value / max) * 100}%`, background: color,
                 boxShadow: `0 0 8px ${color}66` }} />
           </div>
-          <span className="text-xs tabular-nums w-12 text-right flex-shrink-0" style={{ color }}>
+          <span className="t-caption tabular-nums w-12 text-right flex-shrink-0" style={{ color }}>
             {value} bpm
           </span>
         </div>
@@ -114,11 +114,11 @@ export default function CalmScoreResult({ result, technique, onClose, onSave }: 
           <div className="px-6 pt-2 pb-6 flex flex-col gap-5">
             {/* Label badge */}
             <div className="flex items-center justify-between">
-              <span className="text-xs px-3 py-1 rounded-full font-medium"
+              <span className="t-caption px-3 py-1 rounded-full font-medium"
                 style={{ color: meta.color, background: meta.bg }}>
                 {meta.text}
               </span>
-              <span className="text-[10px]" style={{ color: ts.textMuted }}>{technique}</span>
+              <span className="t-label" style={{ color: ts.textMuted }}>{technique}</span>
             </div>
 
             {/* Score ring + HR drop */}
@@ -129,26 +129,26 @@ export default function CalmScoreResult({ result, technique, onClose, onSave }: 
                   <div className="flex flex-col gap-0.5">
                     <div className="flex items-center gap-1.5">
                       <Heart size={12} className="text-[#FF6B8A]" />
-                      <span className="text-xs font-medium" style={{ color: ts.textPrimary }}>–{hrDrop} bpm</span>
+                      <span className="t-caption font-medium" style={{ color: ts.textPrimary }}>–{hrDrop} bpm</span>
                     </div>
-                    <p className="text-[10px]" style={{ color: ts.textMuted }}>heart rate drop</p>
+                    <p className="t-label" style={{ color: ts.textMuted }}>heart rate drop</p>
                   </div>
                 )}
                 {hrvGain && hrvGain > 0 && (
                   <div className="flex flex-col gap-0.5">
                     <div className="flex items-center gap-1.5">
                       <TrendingUp size={12} className="text-[#4AE8A0]" />
-                      <span className="text-xs font-medium" style={{ color: ts.textPrimary }}>+{hrvGain}ms</span>
+                      <span className="t-caption font-medium" style={{ color: ts.textPrimary }}>+{hrvGain}ms</span>
                     </div>
-                    <p className="text-[10px]" style={{ color: ts.textMuted }}>HRV improvement</p>
+                    <p className="t-label" style={{ color: ts.textMuted }}>HRV improvement</p>
                   </div>
                 )}
                 {/* Technique match */}
                 <div className="flex items-center gap-1.5">
-                  <span className="text-base" style={{ color: ts.accentLight }}>
+                  <span className="t-body" style={{ color: ts.accentLight }}>
                     {techniqueMatch === 'optimal' ? '✦' : techniqueMatch === 'good' ? '◈' : '○'}
                   </span>
-                  <span className="text-[10px] capitalize" style={{
+                  <span className="t-label capitalize" style={{
                     color: techniqueMatch === 'optimal' ? '#4AE8A0' : techniqueMatch === 'good' ? '#4A9EFF' : '#FFD97D'
                   }}>
                     {techniqueMatch} match
@@ -163,26 +163,26 @@ export default function CalmScoreResult({ result, technique, onClose, onSave }: 
             {/* Insight */}
             <div className="px-4 py-3 rounded-xl border" 
               style={{ backgroundColor: ts.cardBgHover, borderColor: `${ts.border}40` }}>
-              <p className="text-xs leading-relaxed" style={{ color: ts.textSecondary }}>{insight}</p>
+              <p className="t-caption leading-relaxed" style={{ color: ts.textSecondary }}>{insight}</p>
             </div>
 
             {/* Actions */}
             <div className="flex flex-col gap-2">
               {onSave && (
                 <button onClick={() => { onSave(); onClose(); }}
-                  className="w-full py-3 rounded-xl text-white text-sm font-medium tracking-wide transition-all hover:scale-[1.02]"
+                  className="w-full py-3 rounded-xl text-white t-body font-medium tracking-wide transition-all hover:scale-[1.02]"
                   style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
                   Save session with biometrics
                 </button>
               )}
               <div className="flex gap-2">
                 <Link to="/statistics"
-                  className="flex-1 py-2.5 rounded-xl text-xs text-center border transition-all flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 rounded-xl t-caption text-center border transition-all flex items-center justify-center gap-1.5"
                   style={{ color: ts.accentLight, borderColor: ts.border }}>
                   View trends <ChevronRight size={11} />
                 </Link>
                 <button onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl text-xs border transition-all"
+                  className="flex-1 py-2.5 rounded-xl t-caption border transition-all"
                   style={{ color: ts.textMuted, borderColor: ts.border }}>
                   Close
                 </button>

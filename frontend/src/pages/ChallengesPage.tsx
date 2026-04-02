@@ -120,7 +120,7 @@ function ChallengeCard({
       <div className="flex items-start justify-between">
         <span className="text-3xl">{challenge.icon}</span>
         <span
-          className="text-[10px] px-2 py-0.5 rounded-full"
+          className="t-label px-2 py-0.5 rounded-full"
           style={{ backgroundColor: `${DIFF_COLORS[challenge.difficulty]}18`, color: DIFF_COLORS[challenge.difficulty] }}
         >
           {diffLabel(challenge.difficulty)}
@@ -128,28 +128,28 @@ function ChallengeCard({
       </div>
 
       <div className="flex-1">
-        <p className="text-sm font-medium leading-snug" style={{ color: ts.textPrimary }}>
+        <p className="t-body font-medium leading-snug" style={{ color: ts.textPrimary }}>
           {challenge.title}
         </p>
-        <p className="text-[10px] mt-0.5" style={{ color: ts.textMuted }}>{challenge.subtitle}</p>
+        <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>{challenge.subtitle}</p>
       </div>
 
       <div className="flex flex-wrap gap-1">
         {challenge.tags.map(t => (
-          <span key={t} className="text-[9px] px-1.5 py-0.5 rounded capitalize"
+          <span key={t} className="t-label px-1.5 py-0.5 rounded capitalize"
             style={{ backgroundColor: ts.border, color: ts.textMuted }}>{t}</span>
         ))}
       </div>
 
       <div className="flex items-center justify-between mt-1">
-        <span className="text-xs" style={{ color: ts.textDim }}>{challenge.badge.emoji} {challenge.badge.label}</span>
+        <span className="t-caption" style={{ color: ts.textDim }}>{challenge.badge.emoji} {challenge.badge.label}</span>
         {alreadyJoined ? (
-          <span className="text-xs font-medium" style={{ color: ts.accent }}>In progress ✓</span>
+          <span className="t-caption font-medium" style={{ color: ts.accent }}>In progress ✓</span>
         ) : (
           <button
             onClick={() => onJoin(challenge.slug)}
             disabled={joining}
-            className="flex items-center gap-1 px-4 py-1.5 rounded-xl text-xs font-medium text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-40"
+            className="flex items-center gap-1 px-4 py-1.5 rounded-xl t-caption font-medium text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-40"
             style={{ background: ts.btnGradient }}
           >
             Start <ArrowRight size={11} />
@@ -186,12 +186,12 @@ function ActiveCard({
       <div className="flex items-start gap-3">
         <span className="text-2xl flex-shrink-0">{uc.challenge.icon}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>{uc.challenge.title}</p>
-          <p className="text-xs mt-0.5" style={{ color: ts.textMuted }}>
+          <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{uc.challenge.title}</p>
+          <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>
             Day {done} of {total} · started {fmtDate(uc.startedAt)}
           </p>
         </div>
-        <span className="text-xs font-medium tabular-nums flex-shrink-0" style={{ color: ts.accent }}>{pct}%</span>
+        <span className="t-caption font-medium tabular-nums flex-shrink-0" style={{ color: ts.accent }}>{pct}%</span>
       </div>
 
       {/* Progress bar */}
@@ -210,13 +210,13 @@ function ActiveCard({
         <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl"
           style={{ backgroundColor: `${ts.accent}12`, border: `1px solid ${ts.accent}25` }}>
           <CheckCircle2 size={14} style={{ color: ts.accent }} />
-          <p className="text-xs font-medium" style={{ color: ts.accent }}>Today's session complete!</p>
+          <p className="t-caption font-medium" style={{ color: ts.accent }}>Today's session complete!</p>
         </div>
       ) : (
         <div className="flex flex-col gap-2">
           <Link
             to={techniqueLink}
-            className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-white tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 py-2.5 rounded-xl t-body font-medium text-white tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98]"
             style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
           >
             <Zap size={13} />
@@ -225,7 +225,7 @@ function ActiveCard({
           <button
             onClick={() => onCheckin(uc._id)}
             disabled={checkingIn}
-            className="py-2 rounded-xl text-xs border transition-all hover:opacity-80 disabled:opacity-30"
+            className="py-2 rounded-xl t-caption border transition-all hover:opacity-80 disabled:opacity-30"
             style={{ borderColor: ts.border, color: ts.textMuted }}
           >
             Mark today as complete manually
@@ -236,7 +236,7 @@ function ActiveCard({
       {/* Abandon */}
       <button
         onClick={() => onAbandon(uc._id)}
-        className="flex items-center gap-1.5 text-[10px] self-end hover:text-[#FF8A8A] transition-colors"
+        className="flex items-center gap-1.5 t-label self-end hover:text-[#FF8A8A] transition-colors"
         style={{ color: ts.textDim }}
       >
         <Trash2 size={10} /> Abandon challenge
@@ -273,18 +273,18 @@ function BadgeCard({ uc }: { uc: UserChallenge }) {
       <div className="flex items-center gap-3">
         <span className="text-3xl">{uc.badge?.emoji}</span>
         <div>
-          <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>{uc.badge?.label}</p>
-          <p className="text-xs" style={{ color: ts.textMuted }}>
+          <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{uc.badge?.label}</p>
+          <p className="t-caption" style={{ color: ts.textMuted }}>
             {uc.challenge.title}
           </p>
-          <p className="text-[10px] mt-0.5" style={{ color: ts.textDim }}>
+          <p className="t-label mt-0.5" style={{ color: ts.textDim }}>
             Earned {uc.badge?.earnedAt ? fmtDate(uc.badge.earnedAt) : ''}
           </p>
         </div>
       </div>
       <button
         onClick={share}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs border transition-all hover:opacity-80"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-caption border transition-all hover:opacity-80"
         style={{ borderColor: ts.border, color: ts.textSecondary }}
       >
         <Share2 size={11} /> Share
@@ -390,13 +390,13 @@ export default function ChallengesPage() {
 
         {/* Header */}
         <header className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-10 pb-4">
-          <p className="text-[10px] tracking-[0.3em] uppercase mb-2" style={{ color: ts.textMuted }}>
+          <p className="t-label mb-2" style={{ color: ts.textMuted }}>
             Breathe · Challenges
           </p>
           <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
             Breathing Challenges
           </h1>
-          <p className="text-xs mt-1" style={{ color: ts.textMuted }}>
+          <p className="t-caption mt-1" style={{ color: ts.textMuted }}>
             7 and 21-day streaks to build lasting habits and earn badges
           </p>
 
@@ -406,7 +406,7 @@ export default function ChallengesPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className="px-4 py-1.5 rounded-lg text-xs font-medium tracking-wide transition-all"
+                className="px-4 py-1.5 rounded-lg t-caption font-medium tracking-wide transition-all"
                 style={{
                   backgroundColor: activeTab === tab.id ? ts.cardBg : 'transparent',
                   color:           activeTab === tab.id ? ts.textPrimary : ts.textMuted,
@@ -444,10 +444,10 @@ export default function ChallengesPage() {
                   <div className="flex items-center gap-3 flex-1">
                     <Sparkles size={16} style={{ color: ts.accent }} className="flex-shrink-0" />
                     <div>
-                      <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>
+                      <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>
                         AI recommends: {recommendation.challenge.icon} {recommendation.challenge.title}
                       </p>
-                      <p className="text-[10px] mt-0.5" style={{ color: ts.textMuted }}>
+                      <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>
                         {recommendation.reason}
                       </p>
                     </div>
@@ -455,7 +455,7 @@ export default function ChallengesPage() {
                   <button
                     onClick={() => handleJoin(recommendation.slug)}
                     disabled={!!joining || activeSlugs.has(recommendation.slug)}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium text-white transition-all hover:scale-105 disabled:opacity-40 flex-shrink-0"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl t-caption font-medium text-white transition-all hover:scale-105 disabled:opacity-40 flex-shrink-0"
                     style={{ background: ts.btnGradient }}
                   >
                     {activeSlugs.has(recommendation.slug) ? 'In progress ✓' : 'Start this →'}
@@ -467,7 +467,7 @@ export default function ChallengesPage() {
                 <div className="flex items-center gap-3 px-4 py-3 rounded-xl"
                   style={{ backgroundColor: `${ts.accent}0A`, border: `1px solid ${ts.accent}20` }}>
                   <Sparkles size={13} style={{ color: ts.accent }} />
-                  <p className="text-xs" style={{ color: ts.textMuted }}>
+                  <p className="t-caption" style={{ color: ts.textMuted }}>
                     <Link to="/login" className="font-medium hover:underline" style={{ color: ts.accent }}>Sign in</Link>
                     {' '}to join challenges and track your progress
                   </p>
@@ -494,9 +494,9 @@ export default function ChallengesPage() {
             <>
               {!isAuthenticated ? (
                 <div className="flex flex-col items-center gap-4 py-16 text-center">
-                  <p className="text-sm" style={{ color: ts.textSecondary }}>Sign in to track your challenges</p>
+                  <p className="t-body" style={{ color: ts.textSecondary }}>Sign in to track your challenges</p>
                   <Link to="/login"
-                    className="px-6 py-2.5 rounded-full text-white text-sm font-medium hover:scale-105 transition-all"
+                    className="px-6 py-2.5 rounded-full text-white t-body font-medium hover:scale-105 transition-all"
                     style={{ background: ts.btnGradient }}>
                     Sign in →
                   </Link>
@@ -506,11 +506,11 @@ export default function ChallengesPage() {
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   <Circle size={36} style={{ color: ts.textDim }} />
                   <div>
-                    <p className="text-sm font-medium mb-1" style={{ color: ts.textSecondary }}>No active challenges</p>
-                    <p className="text-xs" style={{ color: ts.textMuted }}>Pick one from Available to get started</p>
+                    <p className="t-body font-medium mb-1" style={{ color: ts.textSecondary }}>No active challenges</p>
+                    <p className="t-caption" style={{ color: ts.textMuted }}>Pick one from Available to get started</p>
                   </div>
                   <button onClick={() => setActiveTab('available')}
-                    className="flex items-center gap-2 px-5 py-2 rounded-full text-white text-xs font-medium hover:scale-105 transition-all"
+                    className="flex items-center gap-2 px-5 py-2 rounded-full text-white t-caption font-medium hover:scale-105 transition-all"
                     style={{ background: ts.btnGradient }}>
                     Browse challenges <ArrowRight size={12} />
                   </button>
@@ -536,9 +536,9 @@ export default function ChallengesPage() {
             <>
               {!isAuthenticated ? (
                 <div className="flex flex-col items-center gap-4 py-16 text-center">
-                  <p className="text-sm" style={{ color: ts.textSecondary }}>Sign in to see your badges</p>
+                  <p className="t-body" style={{ color: ts.textSecondary }}>Sign in to see your badges</p>
                   <Link to="/login"
-                    className="px-6 py-2.5 rounded-full text-white text-sm font-medium hover:scale-105 transition-all"
+                    className="px-6 py-2.5 rounded-full text-white t-body font-medium hover:scale-105 transition-all"
                     style={{ background: ts.btnGradient }}>
                     Sign in →
                   </Link>
@@ -548,13 +548,13 @@ export default function ChallengesPage() {
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   <span className="text-4xl">🏆</span>
                   <div>
-                    <p className="text-sm font-medium mb-1" style={{ color: ts.textSecondary }}>No badges yet</p>
-                    <p className="text-xs" style={{ color: ts.textMuted }}>Complete a challenge to earn your first badge</p>
+                    <p className="t-body font-medium mb-1" style={{ color: ts.textSecondary }}>No badges yet</p>
+                    <p className="t-caption" style={{ color: ts.textMuted }}>Complete a challenge to earn your first badge</p>
                   </div>
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
-                  <p className="text-xs font-medium" style={{ color: ts.textMuted }}>
+                  <p className="t-caption font-medium" style={{ color: ts.textMuted }}>
                     {completed.length} badge{completed.length !== 1 ? 's' : ''} earned
                   </p>
                   {completed.map(uc => <BadgeCard key={uc._id} uc={uc} />)}

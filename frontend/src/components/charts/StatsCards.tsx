@@ -55,7 +55,7 @@ function Delta({ pct }: { pct: number }) {
   const color = positive ? '#4AE8A0' : '#FF8A8A';
   return (
     <span
-      className="text-[10px] px-2 py-0.5 rounded-full border tabular-nums font-medium"
+      className="t-label px-2 py-0.5 rounded-full border tabular-nums font-medium"
       style={{
         color: color,
         borderColor: `${color}40`,
@@ -230,7 +230,7 @@ const StatsCards = () => {
             const maxA = Math.max(...bestWeekday.averages, 0.1);
             return (
               <div key={i} className="flex items-center gap-2">
-                <span className="text-[9px] w-6 flex-shrink-0 font-medium" 
+                <span className="t-label w-6 flex-shrink-0 font-medium" 
                   style={{ color: isBest ? ts.accentLight : ts.textMuted }}>
                   {WEEKDAY[i]}
                 </span>
@@ -243,7 +243,7 @@ const StatsCards = () => {
                     }}
                   />
                 </div>
-                <span className="text-[9px] w-8 text-right tabular-nums font-medium" 
+                <span className="t-label w-8 text-right tabular-nums font-medium" 
                   style={{ color: isBest ? ts.accentLight : ts.textDim }}>
                   {avg > 0 ? `${Math.round(avg)}m` : '—'}
                 </span>
@@ -266,17 +266,17 @@ const StatsCards = () => {
             { label: 'Hard', pct: moodStats.negativePct, color: '#FF8A8A', grad: '#FF8A8A' },
           ].map(({ label, pct, color, grad }) => (
             <div key={label} className="flex items-center gap-2">
-              <span className="text-[9px] w-10 flex-shrink-0 font-medium" style={{ color: ts.textMuted }}>{label}</span>
+              <span className="t-label w-10 flex-shrink-0 font-medium" style={{ color: ts.textMuted }}>{label}</span>
               <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: `${ts.border}40` }}>
                 <div className="h-full rounded-full transition-all duration-700" 
                   style={{ width: `${pct}%`, background: grad, opacity: pct > 0 ? 1 : 0 }} />
               </div>
-              <span className="text-[9px] tabular-nums font-bold w-7 text-right" style={{ color: pct > 50 ? ts.accentLight : ts.textSecondary }}>{pct}%</span>
+              <span className="t-label tabular-nums font-bold w-7 text-right" style={{ color: pct > 50 ? ts.accentLight : ts.textSecondary }}>{pct}%</span>
             </div>
           ))}
           <div className="flex justify-between pt-1.5 border-t mt-1" style={{ borderColor: `${ts.border}30` }}>
-            <span className="text-[9px]" style={{ color: ts.textDim }}>Всего записей</span>
-            <span className="text-[9px] font-bold tabular-nums" style={{ color: ts.accentLight }}>{moodStats.total}</span>
+            <span className="t-label" style={{ color: ts.textDim }}>Всего записей</span>
+            <span className="t-label font-bold tabular-nums" style={{ color: ts.accentLight }}>{moodStats.total}</span>
           </div>
         </div>
       </StatCard>

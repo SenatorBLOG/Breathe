@@ -125,14 +125,14 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
             }}
           >
             <HeartIcon bpm={current.bpm} active />
-            <span className="text-[#FF6B8A] text-sm font-medium tabular-nums">{current.bpm}</span>
-            <span className="text-[10px]" style={{ color: ts.textMuted }}>bpm</span>
+            <span className="text-[#FF6B8A] t-body font-medium tabular-nums">{current.bpm}</span>
+            <span className="t-label" style={{ color: ts.textMuted }}>bpm</span>
           </div>
         ) : (
           <button
             onClick={status === 'connected' ? disconnect : connect}
             disabled={!supported}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] transition-all hover:border-[rgba(255,107,138,0.3)] hover:text-[#FF6B8A] disabled:opacity-30"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border t-label transition-all hover:border-[rgba(255,107,138,0.3)] hover:text-[#FF6B8A] disabled:opacity-30"
             style={{ color: ts.textMuted, borderColor: ts.border }}
           >
             <HeartIcon bpm={null} active={false} />
@@ -170,9 +170,9 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
             <HeartIcon bpm={current?.bpm ?? null} active={status === 'connected'} />
           </div>
           <div>
-            <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>Live Heart Rate</p>
+            <p className="t-body font-medium" style={{ color: ts.textPrimary }}>Live Heart Rate</p>
             <p
-              className="text-xs mt-0.5"
+              className="t-caption mt-0.5"
               style={{ color: status === 'connected' ? '#FF6B8A' : ts.textMuted }}
             >
               {status === 'idle'         && 'Bluetooth · not connected'}
@@ -188,7 +188,7 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
         <button
           onClick={status === 'connected' ? disconnect : connect}
           disabled={!supported || status === 'connecting'}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium transition-all hover:scale-105 disabled:opacity-40"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl t-caption font-medium transition-all hover:scale-105 disabled:opacity-40"
           style={status === 'connected'
             ? { background: 'rgba(255,107,138,0.1)', color: '#FF6B8A', border: '1px solid rgba(255,107,138,0.3)' }
             : { background: 'linear-gradient(135deg,#8B1A3A,#CC2244)', color: '#fff' }
@@ -209,11 +209,11 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
               >
                 {current.bpm}
               </span>
-              <span className="text-sm mb-1" style={{ color: ts.textMuted }}>bpm</span>
+              <span className="t-body mb-1" style={{ color: ts.textMuted }}>bpm</span>
             </div>
             {zone && (
               <div
-                className="mb-1 px-2.5 py-1 rounded-full text-[10px] font-medium"
+                className="mb-1 px-2.5 py-1 rounded-full t-label font-medium"
                 style={{ color: ZONE_META[zone].color, background: ZONE_META[zone].bg }}
               >
                 {ZONE_META[zone].label}
@@ -242,8 +242,8 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
                   className="flex flex-col gap-0.5 p-2.5 rounded-xl text-center"
                   style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}
                 >
-                  <p className="text-[#FF6B8A] text-xs font-medium tabular-nums">{value}</p>
-                  <p className="text-[10px] uppercase tracking-wide" style={{ color: ts.textMuted }}>{label}</p>
+                  <p className="text-[#FF6B8A] t-caption font-medium tabular-nums">{value}</p>
+                  <p className="t-label uppercase tracking-wide" style={{ color: ts.textMuted }}>{label}</p>
                 </div>
               ))}
             </div>
@@ -251,7 +251,7 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
 
           {current.contactDetected === false && (
             <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#FF9A5C]/10 border border-[#FF9A5C]/20">
-              <span className="text-[#FF9A5C] text-xs">⚠️ No skin contact detected — ensure device is on your wrist</span>
+              <span className="text-[#FF9A5C] t-caption">⚠️ No skin contact detected — ensure device is on your wrist</span>
             </div>
           )}
         </>
@@ -263,7 +263,7 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
           className="flex flex-col gap-1.5 px-3 py-3 rounded-xl"
           style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}
         >
-          <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+          <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
             Web Bluetooth requires Chrome or Edge on desktop or Android.
             Safari and Firefox are not supported.
           </p>
@@ -274,7 +274,7 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
       {status === 'idle' && supported && (
         <details className="group">
           <summary
-            className="text-[10px] cursor-pointer hover:text-[#FF6B8A] transition-colors list-none flex items-center gap-1.5"
+            className="t-label cursor-pointer hover:text-[#FF6B8A] transition-colors list-none flex items-center gap-1.5"
             style={{ color: ts.textMuted }}
           >
             <span className="group-open:rotate-90 transition-transform inline-block">›</span>
@@ -287,7 +287,7 @@ export default function HeartRateMonitor({ variant = 'full', onReading }: HeartR
               '📱 Most Bluetooth LE heart rate monitors',
               '🤖 Wear OS devices with HR broadcast enabled',
             ].map(s => (
-              <p key={s} className="text-[10px] leading-relaxed" style={{ color: ts.textMuted }}>{s}</p>
+              <p key={s} className="t-label leading-relaxed" style={{ color: ts.textMuted }}>{s}</p>
             ))}
           </div>
         </details>

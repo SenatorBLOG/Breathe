@@ -18,7 +18,7 @@ export default function OfflineIndicator() {
 
   return (
     <div
-      className="fixed top-14 left-0 right-0 z-50 flex items-center justify-center py-2 text-xs font-medium"
+      className="fixed top-14 left-0 right-0 z-50 flex items-center justify-center py-2 t-caption font-medium"
       style={{ background: '#FF9A5C', color: '#010814' }}
     >
       📵 You're offline — breathing still works

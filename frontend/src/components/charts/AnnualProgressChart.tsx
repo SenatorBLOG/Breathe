@@ -31,7 +31,7 @@ function CustomTooltip({ active, payload }: any) {
   if (!active || !payload?.length) return null;
   const p: ChartPoint = payload[0].payload;
   return (
-    <div className="rounded-2xl px-4 py-3 border text-xs"
+    <div className="rounded-2xl px-4 py-3 border t-caption"
       style={{
         background: ts.navBg,
         borderColor: ts.border,
@@ -56,7 +56,7 @@ function ViewToggle({ value, onChange }: { value: string; onChange: (v: string) 
         <button
           key={v}
           onClick={() => onChange(v)}
-          className="px-3 py-1 rounded-lg text-[10px] uppercase tracking-widest border transition-all"
+          className="px-3 py-1 rounded-lg t-label uppercase tracking-widest border transition-all"
           style={{
             backgroundColor: value === v ? ts.cardBgHover : 'transparent',
             borderColor: value === v ? ts.borderHover : ts.border,
@@ -154,7 +154,7 @@ const AnnualProgressChart = () => {
         <ViewToggle value={view} onChange={setView} />
         <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
           <span className="text-3xl opacity-30">🌊</span>
-          <p className="text-xs" style={{ color: ts.textMuted }}>No data yet</p>
+          <p className="t-caption" style={{ color: ts.textMuted }}>No data yet</p>
         </div>
       </div>
     );
@@ -167,11 +167,11 @@ const AnnualProgressChart = () => {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-1 rounded-full inline-block" style={{ background: ts.accent }} />
-            <span className="text-[9px] uppercase tracking-wide" style={{ color: ts.textMuted }}>Minutes</span>
+            <span className="t-label uppercase tracking-wide" style={{ color: ts.textMuted }}>Minutes</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 inline-block" style={{ background: `linear-gradient(90deg,${ts.accentLight},#4AE8A0)`, height: 2, borderRadius: 2 }} />
-            <span className="text-[9px] uppercase tracking-wide" style={{ color: ts.textMuted }}>Sessions</span>
+            <span className="t-label uppercase tracking-wide" style={{ color: ts.textMuted }}>Sessions</span>
           </div>
         </div>
         <ViewToggle value={view} onChange={setView} />
@@ -273,10 +273,10 @@ const AnnualProgressChart = () => {
 
       {/* Sub-caption */}
       <div className="flex items-center justify-between border-t pt-2" style={{ borderColor: `${ts.border}40` }}>
-        <span className="text-[9px]" style={{ color: ts.textDim }}>
+        <span className="t-label" style={{ color: ts.textDim }}>
           {data.reduce((s, d) => s + d.sessions, 0)} sessions · {data.reduce((s, d) => s + d.totalMinutes, 0)}m total
         </span>
-        <span className="text-[9px]" style={{ color: ts.accent }}>
+        <span className="t-label" style={{ color: ts.accent }}>
           ● this {view === 'By year' ? 'year' : 'month'}
         </span>
       </div>

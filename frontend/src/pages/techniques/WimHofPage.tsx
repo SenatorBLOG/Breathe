@@ -19,7 +19,7 @@ export default function WimHofPage() {
 
           {/* Hero */}
           <div className="flex flex-col gap-3">
-            <span className="text-[10px] tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
+            <span className="t-label tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
               style={{
                 color: ts.textMuted,
                 borderColor: ts.border,
@@ -30,7 +30,7 @@ export default function WimHofPage() {
               Wim Hof Method<br />
               <span style={{ color: ts.accent }}>Breathing Technique</span>
             </h1>
-            <p className="text-base leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
               The breathing technique developed by Dutch extreme athlete Wim Hof. Scientifically validated to boost energy, reduce inflammation, and give you conscious influence over your immune system.
             </p>
             <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl w-fit"
@@ -38,8 +38,8 @@ export default function WimHofPage() {
                 backgroundColor: 'rgba(255,138,138,0.1)',
                 border: `1px solid rgba(255,138,138,0.2)`,
               }}>
-              <span className="text-xs">⚠️</span>
-              <p className="text-xs" style={{ color: '#FF8A8A' }}>
+              <span className="t-caption">⚠️</span>
+              <p className="t-caption" style={{ color: '#FF8A8A' }}>
                 Never practice near water or while driving. Lightheadedness is normal.
               </p>
             </div>
@@ -52,7 +52,7 @@ export default function WimHofPage() {
 
           {/* How It Works */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               How It Works
             </h2>
             {[
@@ -66,14 +66,14 @@ export default function WimHofPage() {
                   backgroundColor: ts.cardBg,
                   border: `1px solid ${ts.border}`,
                 }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white text-sm"
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white t-body"
                   style={{ background: color }}>
                   {n}
                 </div>
-                <p className="text-sm flex-1" style={{ color: ts.textPrimary }}>
+                <p className="t-body flex-1" style={{ color: ts.textPrimary }}>
                   {label}
                 </p>
-                <span className="text-sm font-light tabular-nums flex-shrink-0" style={{ color }}>
+                <span className="t-body font-light tabular-nums flex-shrink-0" style={{ color }}>
                   {secs}
                 </span>
               </div>
@@ -82,20 +82,20 @@ export default function WimHofPage() {
 
           {/* Science */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               What the Science Says
             </h2>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               A 2014 study in <em>PNAS</em> showed that Wim Hof practitioners could voluntarily influence their immune system — something previously thought impossible. Participants trained in the method produced significantly fewer inflammatory markers when injected with bacterial toxins.
             </p>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               The technique works by temporarily altering blood pH through controlled hyperventilation, flooding the body with adrenaline and creating an alkaline state. This is why you feel an energy surge — you're triggering your body's natural stress response in a controlled way.
             </p>
           </div>
 
           {/* Best For */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Best For
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -110,12 +110,12 @@ export default function WimHofPage() {
                     backgroundColor: ts.cardBg,
                     border: `1px solid ${ts.border}`,
                   }}>
-                  <span className="text-xl flex-shrink-0">{icon}</span>
+                  <span className="t-heading flex-shrink-0">{icon}</span>
                   <div>
-                    <p className="text-xs font-medium mb-1" style={{ color: ts.textPrimary }}>
+                    <p className="t-caption font-medium mb-1" style={{ color: ts.textPrimary }}>
                       {title}
                     </p>
-                    <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+                    <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                       {desc}
                     </p>
                   </div>
@@ -131,10 +131,10 @@ export default function WimHofPage() {
               border: `1px solid ${ts.border}`,
             }}>
             <span className="text-3xl">🔥</span>
-            <p className="text-xl font-light" style={{ color: ts.textPrimary }}>
+            <p className="t-heading font-light" style={{ color: ts.textPrimary }}>
               Ready to try it?
             </p>
-            <p className="text-sm" style={{ color: ts.textMuted }}>
+            <p className="t-body" style={{ color: ts.textMuted }}>
               Our animated orb guides your breathing rhythm. Find a comfortable seated position first.
             </p>
             <Link to="/breathing"
@@ -142,14 +142,14 @@ export default function WimHofPage() {
               style={{ background: ts.btnGradient }}>
               🔥 Start Wim Hof — Free
             </Link>
-            <p className="text-xs" style={{ color: ts.textMuted }}>
+            <p className="t-caption" style={{ color: ts.textMuted }}>
               No account · Sit or lie down · Never near water
             </p>
           </div>
 
           {/* Related */}
           <div className="flex flex-col gap-3">
-            <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+            <p className="t-label tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
               Related techniques
             </p>
             <div className="flex flex-wrap gap-2">
@@ -159,7 +159,7 @@ export default function WimHofPage() {
                 { label: 'Breathing for Anxiety', href: '/breathing/anxiety' },
               ].map(({ label, href }) => (
                 <Link key={href} to={href}
-                  className="px-4 py-2 rounded-xl text-xs transition-all"
+                  className="px-4 py-2 rounded-xl t-caption transition-all"
                   style={{
                     color: ts.accent,
                     border: `1px solid ${ts.border}`,

@@ -53,7 +53,7 @@ const StatCard = ({
       {/* Основные показатели */}
       <div className="relative z-10">
         <p 
-          className="text-xl font-bold leading-none tabular-nums tracking-tight"
+          className="t-heading font-bold leading-none tabular-nums tracking-tight"
           style={{ color: ts.textPrimary }}
         >
           {value}
@@ -66,7 +66,7 @@ const StatCard = ({
         )}
         
         <p 
-          className="mt-2 text-[9px] uppercase tracking-[0.15em] font-bold opacity-80"
+          className="mt-2 t-label uppercase tracking-[0.15em] font-bold opacity-80"
           style={{ color: ts.textDim }}
         >
           {label}

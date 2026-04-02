@@ -91,7 +91,7 @@ export default function SleepApneaPage() {
 
           {/* Hero */}
           <div className="flex flex-col gap-3">
-            <span className="text-[10px] tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
+            <span className="t-label tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
               style={{ color: ts.textMuted, borderColor: ts.border }}>
               Sleep Health
             </span>
@@ -99,14 +99,14 @@ export default function SleepApneaPage() {
               What is<br />
               <span style={{ color: ts.accent }}>Sleep Apnea?</span>
             </h1>
-            <p className="text-base leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
               Your breathing stops and starts repeatedly while you sleep.
               Over 1 billion people have it — most don't know.
             </p>
           </div>
 
           {/* Medical disclaimer */}
-          <div className="flex items-start gap-2 px-4 py-3 rounded-xl text-[11px]"
+          <div className="flex items-start gap-2 px-4 py-3 rounded-xl t-caption"
             style={{ background: 'rgba(255,200,50,0.06)', border: '1px solid rgba(255,200,50,0.2)' }}>
             <span className="flex-shrink-0">⚕️</span>
             <p style={{ color: ts.textMuted }}>
@@ -119,15 +119,15 @@ export default function SleepApneaPage() {
 
           {/* Section 1 — What is it */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               What exactly happens?
             </h2>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               Sleep apnea is a sleep disorder where breathing repeatedly stops for 10 seconds or longer
               during sleep. Your brain detects falling oxygen levels and briefly wakes you to restart breathing —
               often so briefly you have no memory of it.
             </p>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               These pauses can occur <strong style={{ color: ts.textPrimary }}>5 to 100+ times per hour</strong>.
               Left untreated, the chronic oxygen disruption stresses your heart, brain, and metabolism every
               single night.
@@ -138,7 +138,7 @@ export default function SleepApneaPage() {
 
           {/* Section 2 — 3 types */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               The 3 types of sleep apnea
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -162,8 +162,8 @@ export default function SleepApneaPage() {
                 <div key={title} className="flex flex-col gap-2 p-4 rounded-2xl"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   <span className="text-2xl">{icon}</span>
-                  <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>{title}</p>
-                  <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
+                  <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{title}</p>
+                  <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
                 </div>
               ))}
             </div>
@@ -173,15 +173,15 @@ export default function SleepApneaPage() {
 
           {/* Section 3 — Warning signs */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Warning signs to watch for
             </h2>
             <div className="flex flex-col gap-2">
               {checks.map(item => (
                 <div key={item} className="flex items-start gap-3 px-4 py-3 rounded-xl"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                  <span className="text-xs mt-0.5 flex-shrink-0" style={{ color: ts.accent }}>✓</span>
-                  <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>{item}</p>
+                  <span className="t-caption mt-0.5 flex-shrink-0" style={{ color: ts.accent }}>✓</span>
+                  <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>{item}</p>
                 </div>
               ))}
             </div>
@@ -191,12 +191,12 @@ export default function SleepApneaPage() {
 
           {/* Section 4 — Risk factors */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Risk factors
             </h2>
             <div className="flex flex-wrap gap-2">
               {risks.map(r => (
-                <span key={r} className="px-3 py-1.5 rounded-full text-xs"
+                <span key={r} className="px-3 py-1.5 rounded-full t-caption"
                   style={{ background: ts.cardBg, border: `1px solid ${ts.border}`, color: ts.textMuted }}>
                   {r}
                 </span>
@@ -208,7 +208,7 @@ export default function SleepApneaPage() {
 
           {/* Section 5 — Health risks */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Why it matters — long-term health risks
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -236,15 +236,15 @@ export default function SleepApneaPage() {
               ].map(({ icon, title, desc }) => (
                 <div key={title} className="flex gap-3 p-4 rounded-2xl"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                  <span className="text-xl flex-shrink-0">{icon}</span>
+                  <span className="t-heading flex-shrink-0">{icon}</span>
                   <div>
-                    <p className="text-sm font-medium mb-1" style={{ color: ts.textPrimary }}>{title}</p>
-                    <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
+                    <p className="t-body font-medium mb-1" style={{ color: ts.textPrimary }}>{title}</p>
+                    <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
                   </div>
                 </div>
               ))}
             </div>
-            <p className="text-[11px] px-1" style={{ color: ts.textMuted }}>
+            <p className="t-caption px-1" style={{ color: ts.textMuted }}>
               Source: NIH reports OSA prevalence of 9–38% in adults.
               Untreated OSA is independently associated with cardiovascular morbidity and mortality.
             </p>
@@ -254,17 +254,17 @@ export default function SleepApneaPage() {
 
           {/* Section 6 — Can breathing exercises help */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Can breathing exercises help?
             </h2>
 
-            <div className="px-4 py-3 rounded-xl text-xs"
+            <div className="px-4 py-3 rounded-xl t-caption"
               style={{ background: 'rgba(255,200,50,0.06)', border: '1px solid rgba(255,200,50,0.2)', color: ts.textMuted }}>
               <strong style={{ color: ts.textPrimary }}>Important:</strong> breathing exercises are NOT a cure for sleep apnea.
               If you suspect sleep apnea, see a doctor. CPAP therapy is the gold-standard treatment.
             </div>
 
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               That said, breathing practice can play a meaningful supportive role:
             </p>
 
@@ -277,13 +277,13 @@ export default function SleepApneaPage() {
               ].map(item => (
                 <div key={item} className="flex items-start gap-3 px-4 py-2.5 rounded-xl"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                  <span className="text-xs mt-0.5 flex-shrink-0" style={{ color: ts.accent }}>✓</span>
-                  <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>{item}</p>
+                  <span className="t-caption mt-0.5 flex-shrink-0" style={{ color: ts.accent }}>✓</span>
+                  <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>{item}</p>
                 </div>
               ))}
             </div>
 
-            <p className="text-xs px-1" style={{ color: ts.textMuted }}>
+            <p className="t-caption px-1" style={{ color: ts.textMuted }}>
               Research: Didgeridoo playing, oropharyngeal exercises, and controlled breathing practice
               are associated with reduced snoring and mild-to-moderate OSA severity in peer-reviewed studies.
             </p>
@@ -291,15 +291,15 @@ export default function SleepApneaPage() {
             {/* CTA card */}
             <div className="rounded-2xl p-6 flex flex-col gap-4"
               style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}>
-              <p className="text-base font-medium" style={{ color: ts.textPrimary }}>
+              <p className="t-body font-medium" style={{ color: ts.textPrimary }}>
                 🌙 Try 4-7-8 breathing for better sleep
               </p>
-              <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+              <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
                 The extended exhale (8 counts) activates your parasympathetic nervous system,
                 slowing your heart rate and helping you enter deeper, more restorative sleep.
               </p>
               <Link to="/breathing/4-7-8"
-                className="px-6 py-3 rounded-xl text-white text-sm font-medium text-center transition-all hover:opacity-90"
+                className="px-6 py-3 rounded-xl text-white t-body font-medium text-center transition-all hover:opacity-90"
                 style={{ background: ts.btnGradient }}>
                 Try 4-7-8 Breathing — Free →
               </Link>
@@ -310,14 +310,14 @@ export default function SleepApneaPage() {
 
           {/* Section 7 — FAQ */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Frequently asked questions
             </h2>
             {faqs.map(({ q, a }) => (
               <div key={q} className="p-4 rounded-2xl"
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <p className="text-sm font-medium mb-2" style={{ color: ts.textPrimary }}>{q}</p>
-                <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{a}</p>
+                <p className="t-body font-medium mb-2" style={{ color: ts.textPrimary }}>{q}</p>
+                <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{a}</p>
               </div>
             ))}
           </div>
@@ -326,7 +326,7 @@ export default function SleepApneaPage() {
 
           {/* Section 8 — Related techniques */}
           <div className="flex flex-col gap-3">
-            <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+            <p className="t-label tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
               Breathing techniques for sleep
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -353,9 +353,9 @@ export default function SleepApneaPage() {
                 <Link key={href} to={href}
                   className="flex flex-col gap-2 p-4 rounded-2xl transition-all hover:scale-[1.02]"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                  <span className="text-xl">{icon}</span>
-                  <p className="text-sm font-medium" style={{ color: ts.accent }}>{label} →</p>
-                  <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
+                  <span className="t-heading">{icon}</span>
+                  <p className="t-body font-medium" style={{ color: ts.accent }}>{label} →</p>
+                  <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
                 </Link>
               ))}
             </div>
@@ -365,12 +365,12 @@ export default function SleepApneaPage() {
           <Link to="/sleep/why-sleep-is-important"
             className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-[1.01]"
             style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-            <span className="text-xl">💤</span>
+            <span className="t-heading">💤</span>
             <div>
-              <p className="text-sm font-medium" style={{ color: ts.accent }}>
+              <p className="t-body font-medium" style={{ color: ts.accent }}>
                 Also read: Why is sleep so important? →
               </p>
-              <p className="text-xs" style={{ color: ts.textMuted }}>
+              <p className="t-caption" style={{ color: ts.textMuted }}>
                 7 science-backed reasons your body needs quality sleep
               </p>
             </div>

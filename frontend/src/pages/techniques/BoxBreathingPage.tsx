@@ -14,12 +14,12 @@ function TechCard({ icon, title, desc }: { icon: string; title: string; desc: st
         backgroundColor: ts.cardBg,
         border: `1px solid ${ts.border}`,
       }}>
-      <span className="text-xl flex-shrink-0">{icon}</span>
+      <span className="t-heading flex-shrink-0">{icon}</span>
       <div>
-        <p className="text-sm font-medium mb-1" style={{ color: ts.textPrimary }}>
+        <p className="t-body font-medium mb-1" style={{ color: ts.textPrimary }}>
           {title}
         </p>
-        <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+        <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
           {desc}
         </p>
       </div>
@@ -35,12 +35,12 @@ function Step({ n, label, secs, color }: { n: string; label: string; secs: strin
         backgroundColor: ts.cardBg,
         border: `1px solid ${ts.border}`,
       }}>
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white text-sm"
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white t-body"
         style={{ background: color }}>
         {n}
       </div>
       <div className="flex-1">
-        <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>
+        <p className="t-body font-medium" style={{ color: ts.textPrimary }}>
           {label}
         </p>
       </div>
@@ -64,7 +64,7 @@ export default function BoxBreathingPage() {
 
           {/* Hero */}
           <div className="flex flex-col gap-3">
-            <span className="text-[10px] tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
+            <span className="t-label tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
               style={{
                 color: ts.textMuted,
                 borderColor: ts.border,
@@ -75,7 +75,7 @@ export default function BoxBreathingPage() {
               Box Breathing<br />
               <span style={{ color: ts.accent }}>4-4-4-4 Technique</span>
             </h1>
-            <p className="text-base leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
               The same breathing method used by Navy SEALs and elite athletes to stay calm under extreme pressure. Four equal phases, four seconds each — simple, powerful, proven.
             </p>
             <Link to="/breathing"
@@ -87,34 +87,34 @@ export default function BoxBreathingPage() {
 
           {/* Pattern visual */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               The Pattern
             </h2>
             <Step n="1" label="Inhale through your nose" secs="4s" color="#3A82F7" />
             <Step n="2" label="Hold — lungs full" secs="4s" color="#7AC4FF" />
             <Step n="3" label="Exhale through your mouth" secs="4s" color="#1A5FCC" />
             <Step n="4" label="Hold — lungs empty" secs="4s" color="#4A9EFF" />
-            <p className="text-xs px-1" style={{ color: ts.textMuted }}>
+            <p className="t-caption px-1" style={{ color: ts.textMuted }}>
               Repeat 4–6 cycles. One full cycle takes 16 seconds.
             </p>
           </div>
 
           {/* Science */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Why It Works
             </h2>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               Box breathing works by directly influencing your autonomic nervous system. The controlled holds activate your parasympathetic response — the "rest and digest" system — which counteracts the fight-or-flight response triggered by stress.
             </p>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               Research published in <em>Frontiers in Human Neuroscience</em> shows that slow, rhythmic breathing at 4–6 cycles per minute significantly increases heart rate variability (HRV) — a key marker of stress resilience and emotional regulation.
             </p>
           </div>
 
           {/* Use cases */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Best For
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -127,7 +127,7 @@ export default function BoxBreathingPage() {
 
           {/* FAQ */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Common Questions
             </h2>
             {[
@@ -141,10 +141,10 @@ export default function BoxBreathingPage() {
                   backgroundColor: ts.cardBg,
                   border: `1px solid ${ts.border}`,
                 }}>
-                <p className="text-sm font-medium mb-2" style={{ color: ts.textPrimary }}>
+                <p className="t-body font-medium mb-2" style={{ color: ts.textPrimary }}>
                   {q}
                 </p>
-                <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+                <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                   {a}
                 </p>
               </div>
@@ -157,10 +157,10 @@ export default function BoxBreathingPage() {
               backgroundColor: ts.cardBg,
               border: `1px solid ${ts.border}`,
             }}>
-            <p className="text-xl font-light" style={{ color: ts.textPrimary }}>
+            <p className="t-heading font-light" style={{ color: ts.textPrimary }}>
               Ready to try it?
             </p>
-            <p className="text-sm" style={{ color: ts.textMuted }}>
+            <p className="t-body" style={{ color: ts.textMuted }}>
               Our animated orb guides you through each phase. No counting, no distractions.
             </p>
             <Link to="/breathing"
@@ -168,14 +168,14 @@ export default function BoxBreathingPage() {
               style={{ background: ts.btnGradient }}>
               🌬 Start Box Breathing — Free
             </Link>
-            <p className="text-xs" style={{ color: ts.textMuted }}>
+            <p className="t-caption" style={{ color: ts.textMuted }}>
               No account needed · Works in any browser
             </p>
           </div>
 
           {/* Related */}
           <div className="flex flex-col gap-3">
-            <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+            <p className="t-label tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
               Other techniques
             </p>
             <div className="flex flex-wrap gap-2">
@@ -185,7 +185,7 @@ export default function BoxBreathingPage() {
                 { label: 'Breathing for Anxiety', href: '/breathing/anxiety' },
               ].map(({ label, href }) => (
                 <Link key={href} to={href}
-                  className="px-4 py-2 rounded-xl text-xs transition-all"
+                  className="px-4 py-2 rounded-xl t-caption transition-all"
                   style={{
                     color: ts.accent,
                     border: `1px solid ${ts.border}`,

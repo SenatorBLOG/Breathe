@@ -56,7 +56,7 @@ export default function GuidanceModeSelector({ selected, onChange }: Props) {
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-[10px] uppercase tracking-[0.3em]" style={{ color: ts.textMuted }}>
+      <p className="t-label uppercase tracking-[0.3em]" style={{ color: ts.textMuted }}>
         {t('breathing.guidance.title', 'Guidance mode')}
       </p>
 
@@ -79,10 +79,10 @@ export default function GuidanceModeSelector({ selected, onChange }: Props) {
               }}
               title={!supported ? 'Not supported in this browser' : undefined}
             >
-              <span className={`text-lg transition-all ${active ? '' : 'opacity-50'}`}>
+              <span className={`t-heading transition-all ${active ? '' : 'opacity-50'}`}>
                 {mode.icon}
               </span>
-              <span className="text-[10px] font-medium uppercase tracking-wide"
+              <span className="t-label font-medium uppercase tracking-wide"
                 style={{ color: active ? ts.textSecondary : ts.textMuted }}>
                 {t(mode.labelKey)}
               </span>
@@ -97,17 +97,17 @@ export default function GuidanceModeSelector({ selected, onChange }: Props) {
       </div>
 
       {selected.includes('vibration') && (
-        <p className="text-[10px]" style={{ color: ts.textDim }}>
+        <p className="t-label" style={{ color: ts.textDim }}>
           📳 {t('breathing.guidance.vibrationHint', 'Vibration requires Android + Chrome')}
         </p>
       )}
       {selected.includes('voice') && (
-        <p className="text-[10px]" style={{ color: ts.textDim }}>
+        <p className="t-label" style={{ color: ts.textDim }}>
           🎙 {t('breathing.guidance.voiceHint', "Uses your browser's built-in speech")}
         </p>
       )}
       {(selected.includes('sound') || selected.includes('voice') || selected.includes('vibration')) && (
-        <p className="text-[10px]" style={{ color: ts.textDim }}>
+        <p className="t-label" style={{ color: ts.textDim }}>
           💡 {t('breathing.guidance.eyesClosedHint', 'You can now close your eyes — the app will guide you')}
         </p>
       )}

@@ -86,15 +86,15 @@ function BlurredPlan({ lines, ts }: { lines: string[]; ts: ReturnType<typeof use
     <div className="relative w-full rounded-2xl overflow-hidden" style={{ border: `1px solid ${ts.border}` }}>
       <div className="blur-sm pointer-events-none select-none p-4 flex flex-col gap-2"
         style={{ backgroundColor: ts.cardBg }}>
-        <p className="text-xs font-medium" style={{ color: ts.textMuted }}>Your 7-day plan:</p>
+        <p className="t-caption font-medium" style={{ color: ts.textMuted }}>Your 7-day plan:</p>
         {lines.map((line, i) => (
-          <p key={i} className="text-xs" style={{ color: ts.textSecondary }}>→ {line}</p>
+          <p key={i} className="t-caption" style={{ color: ts.textSecondary }}>→ {line}</p>
         ))}
       </div>
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5"
         style={{ backdropFilter: 'blur(2px)', backgroundColor: `${ts.cardBg}70` }}>
         <Lock size={14} style={{ color: ts.textMuted }} />
-        <p className="text-[10px] text-center px-4" style={{ color: ts.textMuted }}>
+        <p className="t-caption text-center px-4" style={{ color: ts.textMuted }}>
           Free account required to unlock
         </p>
       </div>
@@ -139,22 +139,22 @@ function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
       <div className="flex flex-col items-center gap-4">
         <div className="text-4xl">{result.emoji}</div>
         <div className="text-center">
-          <p className="text-base font-semibold" style={{ color: result.color }}>{result.title}</p>
-          <p className="text-xs mt-1 max-w-xs leading-relaxed" style={{ color: ts.textMuted }}>{result.desc}</p>
+          <p className="t-body font-semibold" style={{ color: result.color }}>{result.title}</p>
+          <p className="t-caption mt-1 max-w-xs leading-relaxed" style={{ color: ts.textMuted }}>{result.desc}</p>
         </div>
 
         {isAuthenticated ? (
           <div className="w-full flex flex-col gap-2 p-4 rounded-xl"
             style={{ background: ts.cardBgHover, border: `1px solid ${ts.borderHover}` }}>
-            <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>Your 7-day plan:</p>
+            <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>Your 7-day plan:</p>
             {plan.map(day => (
               <div key={day} className="flex items-start gap-2">
                 <span style={{ color: result.color }}>→</span>
-                <span className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{day}</span>
+                <span className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{day}</span>
               </div>
             ))}
             <Link to={result.techniqueLink}
-              className="flex items-center justify-center py-2.5 rounded-xl text-white text-xs font-medium mt-2 transition-all hover:scale-[1.02]"
+              className="flex items-center justify-center py-2.5 rounded-xl text-white t-caption font-medium mt-2 transition-all hover:scale-[1.02]"
               style={{ background: ts.btnGradient }}>
               Start {result.technique} →
             </Link>
@@ -167,20 +167,20 @@ function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
           <>
             <Link
               to={`/signup?ref=${resultType}`}
-              className="w-full py-3 rounded-xl text-sm font-medium tracking-wide text-white text-center transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full py-3 rounded-xl t-body font-medium tracking-wide text-white text-center transition-all hover:scale-[1.02] active:scale-[0.98]"
               style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
             >
               Unlock my plan — free →
             </Link>
-            <p className="text-[10px]" style={{ color: ts.textDim }}>No credit card · 30 seconds</p>
+            <p className="t-caption" style={{ color: ts.textDim }}>No credit card · 30 seconds</p>
           </>
         )}
 
-        <Link to={result.techniqueLink} className="text-xs hover:underline" style={{ color: ts.accent }}>
+        <Link to={result.techniqueLink} className="t-caption hover:underline" style={{ color: ts.accent }}>
           {isAuthenticated ? `Open ${result.technique} →` : `Or try ${result.technique} without account →`}
         </Link>
 
-        <button onClick={handleReset} className="text-[10px] hover:underline mt-1" style={{ color: ts.textDim }}>
+        <button onClick={handleReset} className="t-caption hover:underline mt-1" style={{ color: ts.textDim }}>
           Retake quiz
         </button>
       </div>
@@ -200,10 +200,10 @@ function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
       </div>
 
       <div>
-        <p className="text-[10px] tracking-wider uppercase mb-1" style={{ color: ts.textMuted }}>
+        <p className="t-label mb-1" style={{ color: ts.textMuted }}>
           Question {step + 1} of {QUESTIONS.length}
         </p>
-        <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>{q.q}</p>
+        <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{q.q}</p>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -211,7 +211,7 @@ function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
           <button
             key={i}
             onClick={() => setSelectedOpt(i)}
-            className="w-full text-left px-4 py-3 rounded-xl text-sm border transition-all duration-150"
+            className="w-full text-left px-4 py-3 rounded-xl t-body border transition-all duration-150"
             style={{
               borderColor:     selectedOpt === i ? ts.borderHover : ts.border,
               backgroundColor: selectedOpt === i ? ts.cardBgHover : 'transparent',
@@ -227,7 +227,7 @@ function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
         <button
           onClick={handleNext}
           disabled={selectedOpt === null}
-          className="px-6 py-2.5 rounded-xl text-sm font-medium text-white tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-30"
+          className="px-6 py-2.5 rounded-xl t-body font-medium text-white tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-30"
           style={{ background: ts.btnGradient }}
         >
           {step < 4 ? 'Next →' : 'See my result →'}
@@ -306,7 +306,7 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
       <div className="flex flex-col items-center gap-4">
         <div className="text-center">
           <p className="text-6xl font-light tabular-nums leading-none" style={{ color: scoreColor }}>{score}</p>
-          <p className="text-sm font-medium mt-2" style={{ color: scoreColor }}>{scoreLabel}</p>
+          <p className="t-body font-medium mt-2" style={{ color: scoreColor }}>{scoreLabel}</p>
         </div>
 
         <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: ts.border }}>
@@ -317,15 +317,15 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
         {isAuthenticated ? (
           <div className="w-full flex flex-col gap-2 p-4 rounded-xl"
             style={{ background: ts.cardBgHover, border: `1px solid ${ts.borderHover}` }}>
-            <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>What's driving your score:</p>
+            <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>What's driving your score:</p>
             {breakdown.map(item => (
               <div key={item} className="flex items-start gap-2">
                 <span style={{ color: scoreColor }}>→</span>
-                <span className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{item}</span>
+                <span className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{item}</span>
               </div>
             ))}
             <Link to={planHref}
-              className="flex items-center justify-center py-2.5 rounded-xl text-white text-xs font-medium mt-2 transition-all hover:scale-[1.02]"
+              className="flex items-center justify-center py-2.5 rounded-xl text-white t-caption font-medium mt-2 transition-all hover:scale-[1.02]"
               style={{ background: ts.btnGradient }}>
               Start your plan →
             </Link>
@@ -338,16 +338,16 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
           <>
             <Link
               to={`/signup?ref=stress-calc&score=${score}`}
-              className="w-full py-3 rounded-xl text-sm font-medium tracking-wide text-white text-center transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full py-3 rounded-xl t-body font-medium tracking-wide text-white text-center transition-all hover:scale-[1.02] active:scale-[0.98]"
               style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
             >
               Get my breathing plan →
             </Link>
-            <p className="text-[10px]" style={{ color: ts.textDim }}>Free · No card · 30 seconds</p>
+            <p className="t-caption" style={{ color: ts.textDim }}>Free · No card · 30 seconds</p>
           </>
         )}
 
-        <button onClick={() => setShowResult(false)} className="text-[10px] hover:underline" style={{ color: ts.textDim }}>
+        <button onClick={() => setShowResult(false)} className="t-caption hover:underline" style={{ color: ts.textDim }}>
           Adjust scores
         </button>
       </div>
@@ -361,8 +361,8 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
         return (
           <div key={label} className="flex flex-col gap-1">
             <div className="flex justify-between items-center">
-              <label className="text-xs" style={{ color: ts.textSecondary }}>{label}</label>
-              <span className="text-xs tabular-nums font-medium" style={{ color }}>{value}/10</span>
+              <label className="t-caption" style={{ color: ts.textSecondary }}>{label}</label>
+              <span className="t-caption tabular-nums font-medium" style={{ color }}>{value}/10</span>
             </div>
             <input
               type="range" min={1} max={10} value={value}
@@ -374,8 +374,8 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
               }}
             />
             <div className="flex justify-between">
-              <span className="text-[9px]" style={{ color: ts.textDim }}>{invert ? 'Low' : '1'}</span>
-              <span className="text-[9px]" style={{ color: ts.textDim }}>{invert ? 'High' : '10'}</span>
+              <span className="t-caption" style={{ color: ts.textDim }}>{invert ? 'Low' : '1'}</span>
+              <span className="t-caption" style={{ color: ts.textDim }}>{invert ? 'High' : '10'}</span>
             </div>
           </div>
         );
@@ -384,16 +384,16 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
       {/* Live preview */}
       <div className="flex items-center justify-between px-4 py-3 rounded-xl"
         style={{ backgroundColor: `${ts.cardBg}80`, border: `1px solid ${ts.border}` }}>
-        <p className="text-xs" style={{ color: ts.textMuted }}>Your stress score:</p>
+        <p className="t-caption" style={{ color: ts.textMuted }}>Your stress score:</p>
         <div className="flex items-center gap-2">
-          <p className="text-xl font-medium tabular-nums" style={{ color: scoreColor }}>{score}</p>
-          <p className="text-xs" style={{ color: scoreColor }}>{scoreLabel}</p>
+          <p className="t-heading font-medium tabular-nums" style={{ color: scoreColor }}>{score}</p>
+          <p className="t-caption" style={{ color: scoreColor }}>{scoreLabel}</p>
         </div>
       </div>
 
       <button
         onClick={() => setShowResult(true)}
-        className="w-full py-3 rounded-xl text-sm font-medium text-white tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98]"
+        className="w-full py-3 rounded-xl t-body font-medium text-white tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98]"
         style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
       >
         Calculate my plan →
@@ -415,7 +415,7 @@ export default function HomeInteractive() {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className="flex-1 py-2 rounded-lg text-xs font-medium tracking-wide transition-all"
+            className="flex-1 py-2 rounded-lg t-caption font-medium tracking-wide transition-all"
             style={{
               backgroundColor: tab === t ? ts.cardBg : 'transparent',
               color:           tab === t ? ts.textPrimary : ts.textMuted,

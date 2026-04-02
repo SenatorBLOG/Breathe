@@ -81,3 +81,35 @@
 .reveal-stagger > *:nth-child(6) { transition-delay: 0.35s; }
 .reveal-stagger > *:nth-child(n+7) { transition-delay: 0.40s; }
 
+/* ── Unified Typography Scale ─────────────────────────────────────────────── */
+/* Use these semantic classes instead of scattered text-xs / text-[10px] etc. */
+.t-label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+.t-caption {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.t-body {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.t-subheading {
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.t-heading {
+  font-size: 18px;
+  line-height: 1.35;
+  font-weight: 500;
+}
+.t-display {
+  font-size: clamp(2rem, 8vw, 6rem);
+  line-height: 1.05;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+

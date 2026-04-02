@@ -34,13 +34,13 @@ export const Chart3BlueContainer = ({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             {subtitle && (
-              <p className="text-[9px] uppercase tracking-[0.2em] font-bold opacity-60 mb-0.5" 
+              <p className="t-label uppercase tracking-[0.2em] font-bold opacity-60 mb-0.5" 
                  style={{ color: ts.textDim }}>
                 {subtitle}
               </p>
             )}
             {title && (
-              <h3 className="text-sm font-bold truncate" style={{ color: ts.textPrimary }}>
+              <h3 className="t-body font-bold truncate" style={{ color: ts.textPrimary }}>
                 {title}
               </h3>
             )}
@@ -60,7 +60,7 @@ export const Chart3Tooltip = ({ active, payload, label, unit = 'min' }: any) => 
   
   return (
     <div
-      className="rounded-xl px-3 py-2 text-[10px] border shadow-2xl backdrop-blur-md"
+      className="rounded-xl px-3 py-2 t-label border shadow-2xl backdrop-blur-md"
       style={{
         background: `${ts.navBg}EE`,
         borderColor: ts.border,
@@ -93,7 +93,7 @@ export const Chart3Dropdown = ({ value, onChange, options, className = '' }: any
     <div ref={ref} className={`relative ${className}`}>
       <button
         onClick={() => setOpen(v => !v)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border transition-all active:scale-95"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg t-label font-bold uppercase tracking-wider border transition-all active:scale-95"
         style={{
           background: open ? `${ts.accent}15` : 'transparent',
           borderColor: open ? ts.accent : ts.border,
@@ -123,7 +123,7 @@ export const Chart3Dropdown = ({ value, onChange, options, className = '' }: any
             <button
               key={opt}
               onClick={() => { onChange(opt); setOpen(false); }}
-              className="w-full text-left px-4 py-2.5 text-[9px] font-bold uppercase tracking-widest transition-colors border-b last:border-none"
+              className="w-full text-left px-4 py-2.5 t-label font-bold uppercase tracking-widest transition-colors border-b last:border-none"
               style={{
                 color: opt === value ? ts.accent : ts.textSecondary,
                 backgroundColor: opt === value ? `${ts.accent}10` : 'transparent',
@@ -158,7 +158,7 @@ export const Chart3MiniBar = ({
           }}
         />
       </div>
-      <span className="text-[10px] font-bold tabular-nums w-5 text-right transition-colors" 
+      <span className="t-label font-bold tabular-nums w-5 text-right transition-colors" 
             style={{ color: barColor }}>
         {value}
       </span>

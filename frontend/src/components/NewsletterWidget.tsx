@@ -42,10 +42,10 @@ export default function NewsletterWidget() {
           border: `1px solid ${ts.border}`,
         }}
       >
-        <h3 className="text-xs uppercase tracking-widest" style={{ color: ts.textDim }}>
+        <h3 className="t-caption uppercase tracking-widest" style={{ color: ts.textDim }}>
           Weekly Calm
         </h3>
-        <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+        <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
           Get one mindfulness tip delivered every Sunday.
         </p>
 
@@ -56,8 +56,8 @@ export default function NewsletterWidget() {
               border: `1px solid ${ts.accent}20`,
             }}
           >
-            <span className="text-sm">🌊</span>
-            <span className="text-xs" style={{ color: ts.accent }}>
+            <span className="t-body">🌊</span>
+            <span className="t-caption" style={{ color: ts.accent }}>
               {message}
             </span>
           </div>
@@ -70,7 +70,7 @@ export default function NewsletterWidget() {
               onKeyDown={e => e.key === 'Enter' && subscribe()}
               placeholder="your@email.com"
               disabled={status === 'loading'}
-              className="newsletter-input flex-1 min-w-0 rounded-lg px-3 py-2 text-xs outline-none transition-colors disabled:opacity-50"
+              className="newsletter-input flex-1 min-w-0 rounded-lg px-3 py-2 t-caption outline-none transition-colors disabled:opacity-50"
               style={{
                 backgroundColor: ts.cardBg,
                 border: `1px solid ${ts.border}`,
@@ -80,7 +80,7 @@ export default function NewsletterWidget() {
             <button
               onClick={subscribe}
               disabled={status === 'loading' || !email.includes('@')}
-              className="px-3 py-2 rounded-lg text-xs text-white transition-colors flex-shrink-0 disabled:opacity-40"
+              className="px-3 py-2 rounded-lg t-caption text-white transition-colors flex-shrink-0 disabled:opacity-40"
               style={{ background: ts.btnGradient }}
             >
               {status === 'loading' ? '…' : '→'}
@@ -89,7 +89,7 @@ export default function NewsletterWidget() {
         )}
 
         {status === 'error' && (
-          <p className="text-[10px]" style={{ color: '#FF8A8A' }}>
+          <p className="t-label" style={{ color: '#FF8A8A' }}>
             {message}
           </p>
         )}

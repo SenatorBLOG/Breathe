@@ -19,7 +19,7 @@ export default function BreathingAnxietyPage() {
 
           {/* Hero */}
           <div className="flex flex-col gap-3">
-            <span className="text-[10px] tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
+            <span className="t-label tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
               style={{
                 color: ts.textMuted,
                 borderColor: ts.border,
@@ -30,7 +30,7 @@ export default function BreathingAnxietyPage() {
               Breathing Exercises<br />
               <span style={{ color: ts.accent }}>for Anxiety</span>
             </h1>
-            <p className="text-base leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
               Anxiety activates your fight-or-flight response — but your breath is a direct line to your nervous system. These techniques interrupt the anxiety loop within 60–90 seconds, no medication needed.
             </p>
             <Link to="/breathing"
@@ -42,20 +42,20 @@ export default function BreathingAnxietyPage() {
 
           {/* Why Breathing Stops Anxiety */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Why Breathing Stops Anxiety
             </h2>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               When you're anxious, your breathing becomes fast and shallow — this signals danger to your brain and amplifies the anxiety response. Slow, controlled breathing does the opposite: it activates the vagus nerve, which directly tells your brain to calm down.
             </p>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               The key is making your exhale longer than your inhale. A 4-second inhale followed by a 6–8 second exhale shifts your nervous system from sympathetic (stress) to parasympathetic (calm) within 2–3 breaths.
             </p>
           </div>
 
           {/* 3 Best Techniques */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               3 Best Techniques for Anxiety
             </h2>
             {[
@@ -70,19 +70,19 @@ export default function BreathingAnxietyPage() {
                 }}>
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>
+                    <p className="t-body font-medium" style={{ color: ts.textPrimary }}>
                       {t.name}
                     </p>
-                    <p className="text-[10px] tabular-nums mt-0.5" style={{ color: t.color }}>
+                    <p className="t-label tabular-nums mt-0.5" style={{ color: t.color }}>
                       {t.pattern}
                     </p>
                   </div>
-                  <Link to={t.href} className="text-xs px-3 py-1.5 rounded-xl text-white flex-shrink-0 transition-all hover:scale-105"
+                  <Link to={t.href} className="t-caption px-3 py-1.5 rounded-xl text-white flex-shrink-0 transition-all hover:scale-105"
                     style={{ background: `linear-gradient(135deg,${t.color}66,${t.color})` }}>
                     Try →
                   </Link>
                 </div>
-                <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+                <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                   {t.desc}
                 </p>
               </div>
@@ -91,7 +91,7 @@ export default function BreathingAnxietyPage() {
 
           {/* When to Use */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               When to Use Breathing for Anxiety
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -108,12 +108,12 @@ export default function BreathingAnxietyPage() {
                     backgroundColor: ts.cardBg,
                     border: `1px solid ${ts.border}`,
                   }}>
-                  <span className="text-xl flex-shrink-0">{icon}</span>
+                  <span className="t-heading flex-shrink-0">{icon}</span>
                   <div>
-                    <p className="text-xs font-medium mb-1" style={{ color: ts.textPrimary }}>
+                    <p className="t-caption font-medium mb-1" style={{ color: ts.textPrimary }}>
                       {title}
                     </p>
-                    <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+                    <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                       {desc}
                     </p>
                   </div>
@@ -128,10 +128,10 @@ export default function BreathingAnxietyPage() {
               backgroundColor: ts.cardBg,
               border: `1px solid ${ts.border}`,
             }}>
-            <p className="text-xl font-light" style={{ color: ts.textPrimary }}>
+            <p className="t-heading font-light" style={{ color: ts.textPrimary }}>
               Try it right now
             </p>
-            <p className="text-sm max-w-sm" style={{ color: ts.textMuted }}>
+            <p className="t-body max-w-sm" style={{ color: ts.textMuted }}>
               Our AI coach will ask how you're feeling and recommend the right technique for your anxiety level.
             </p>
             <Link to="/breathing"
@@ -139,14 +139,14 @@ export default function BreathingAnxietyPage() {
               style={{ background: ts.btnGradient }}>
               🌬 Start breathing — free
             </Link>
-            <p className="text-xs" style={{ color: ts.textMuted }}>
+            <p className="t-caption" style={{ color: ts.textMuted }}>
               No account · No download · Works in 30 seconds
             </p>
           </div>
 
           {/* Related */}
           <div className="flex flex-col gap-3">
-            <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+            <p className="t-label tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
               Related techniques
             </p>
             <div className="flex flex-wrap gap-2">
@@ -156,7 +156,7 @@ export default function BreathingAnxietyPage() {
                 { label: 'Wim Hof Method', href: '/breathing/wim-hof' },
               ].map(({ label, href }) => (
                 <Link key={href} to={href}
-                  className="px-4 py-2 rounded-xl text-xs transition-all"
+                  className="px-4 py-2 rounded-xl t-caption transition-all"
                   style={{
                     color: ts.accent,
                     border: `1px solid ${ts.border}`,

@@ -94,7 +94,7 @@ function Section({ label, children }: { label: string; children: React.ReactNode
   return (
     <div className="flex flex-col gap-3 p-5 rounded-2xl"
       style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-      <p className="text-xs uppercase tracking-widest font-semibold" style={{ color: ts.textSecondary }}>{label}</p>
+      <p className="t-caption uppercase tracking-widest font-semibold" style={{ color: ts.textSecondary }}>{label}</p>
       {children}
     </div>
   );
@@ -107,7 +107,7 @@ function NumberField({ label, unit, min, max, value, onChange }: {
   const ts = useThemeStyles();
   return (
     <div>
-      <label className="text-xs uppercase tracking-widest font-semibold block mb-2" style={{ color: ts.textSecondary }}>
+      <label className="t-caption uppercase tracking-widest font-semibold block mb-2" style={{ color: ts.textSecondary }}>
         {label}
       </label>
       <div className="flex items-center gap-2 px-3 py-3 rounded-xl"
@@ -116,10 +116,10 @@ function NumberField({ label, unit, min, max, value, onChange }: {
           type="number" min={min} max={max} value={value}
           onChange={e => onChange(e.target.value)}
           placeholder="—"
-          className="flex-1 w-0 bg-transparent text-base outline-none tabular-nums"
+          className="flex-1 w-0 bg-transparent t-body outline-none tabular-nums"
           style={{ color: ts.textPrimary }}
         />
-        <span className="text-xs flex-shrink-0" style={{ color: ts.textMuted }}>{unit}</span>
+        <span className="t-caption flex-shrink-0" style={{ color: ts.textMuted }}>{unit}</span>
       </div>
     </div>
   );
@@ -130,7 +130,7 @@ function PillButton({ active, ts, onClick, children }: {
   onClick: () => void; children: React.ReactNode;
 }) {
   return (
-    <button onClick={onClick} className="px-4 py-2 rounded-full text-sm transition-all"
+    <button onClick={onClick} className="px-4 py-2 rounded-full t-body transition-all"
       style={{
         background: active ? ts.btnGradient : 'transparent',
         color:  active ? '#fff' : ts.textMuted,
@@ -157,7 +157,7 @@ function SleepBars({ days }: { days: SleepDay[] }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex justify-between text-[10px]" style={{ color: ts.textMuted }}>
+      <div className="flex justify-between t-caption" style={{ color: ts.textMuted }}>
         <span>{shown.length} night{shown.length !== 1 ? 's' : ''} recorded</span>
         <span>{fmt(shown[0].date)} – {fmt(shown[shown.length - 1].date)}</span>
       </div>
@@ -199,7 +199,7 @@ function SleepBars({ days }: { days: SleepDay[] }) {
           { color: '#FFD97D',  label: 'Fair  ≥6h' },
           { color: '#FF8A8A',  label: 'Poor  <6h' },
         ].map(({ color, label }) => (
-          <div key={label} className="flex items-center gap-1.5 text-[10px]" style={{ color: ts.textSecondary }}>
+          <div key={label} className="flex items-center gap-1.5 t-caption" style={{ color: ts.textSecondary }}>
             <div style={{ width: 8, height: 8, borderRadius: 2, background: color, flexShrink: 0 }} />
             {label}
           </div>
@@ -227,7 +227,7 @@ function HRVLine({ days }: { days: HRVDay[] }) {
             r="2.5" fill={ts.accent} opacity="0.8" />
         ))}
       </svg>
-      <div className="flex justify-between text-[10px] mt-1" style={{ color: ts.textMuted }}>
+      <div className="flex justify-between t-caption mt-1" style={{ color: ts.textMuted }}>
         {vals.map((d, i) => <span key={i}>{fmt(d.date)}</span>)}
       </div>
     </div>
@@ -242,8 +242,8 @@ function StatPill({ icon, label, value, color }: { icon: React.ReactNode; label:
       style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
       <span style={{ color }}>{icon}</span>
       <div>
-        <p className="text-sm font-semibold tabular-nums leading-none" style={{ color: ts.textSecondary }}>{value}</p>
-        <p className="text-xs mt-0.5" style={{ color: ts.textMuted }}>{label}</p>
+        <p className="t-body font-semibold tabular-nums leading-none" style={{ color: ts.textSecondary }}>{value}</p>
+        <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>{label}</p>
       </div>
     </div>
   );
@@ -276,14 +276,14 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
       }}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center t-heading flex-shrink-0"
             style={{ background: meta.bg, border: `1px solid ${meta.color}33` }}>
             {meta.icon}
           </div>
           <div>
-            <p className="text-sm font-semibold" style={{ color: ts.textPrimary }}>{meta.label}</p>
-            <p className="text-xs mt-0.5" style={{ color: ts.textMuted }}>{meta.description}</p>
-            <p className="text-xs mt-0.5" style={{ color: status?.connected ? meta.color : ts.textMuted }}>
+            <p className="t-body font-semibold" style={{ color: ts.textPrimary }}>{meta.label}</p>
+            <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>{meta.description}</p>
+            <p className="t-caption mt-0.5" style={{ color: status?.connected ? meta.color : ts.textMuted }}>
               {status?.connected
                 ? `Connected · last sync: ${status.lastSyncAt ? timeAgo(status.lastSyncAt) : 'never'}`
                 : 'Not connected'}
@@ -305,7 +305,7 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
           </div>
         ) : (
           <button onClick={onConnect}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium transition-all hover:scale-105 flex-shrink-0"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl t-caption font-medium transition-all hover:scale-105 flex-shrink-0"
             style={{ background: ts.btnGradient }}>
             Connect <ChevronRight size={11} />
           </button>
@@ -314,8 +314,8 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
 
       {!status?.connected && (
         <div className="px-3 py-2 rounded-xl" style={{ background: `${meta.color}08`, border: `1px solid ${meta.color}1A` }}>
-          <p className="text-xs uppercase tracking-widest mb-1" style={{ color: meta.color }}>Tracks</p>
-          <p className="text-xs" style={{ color: ts.textMuted }}>{meta.details}</p>
+          <p className="t-label mb-1" style={{ color: meta.color }}>Tracks</p>
+          <p className="t-caption" style={{ color: ts.textMuted }}>{meta.details}</p>
         </div>
       )}
 
@@ -329,8 +329,8 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-1.5">
               <Moon size={10} style={{ color: ts.textMuted }} />
-              <p className="text-xs uppercase tracking-widest" style={{ color: ts.textMuted }}>Sleep duration</p>
-              <span className="text-xs ml-auto" style={{ color: ts.textDim }}>source: {meta.label}</span>
+              <p className="t-label" style={{ color: ts.textMuted }}>Sleep duration</p>
+              <span className="t-caption ml-auto" style={{ color: ts.textDim }}>source: {meta.label}</span>
             </div>
             <SleepBars days={sleep} />
           </div>
@@ -338,27 +338,27 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-1.5">
                 <Activity size={10} style={{ color: ts.textMuted }} />
-                <p className="text-xs uppercase tracking-widest" style={{ color: ts.textMuted }}>HRV (RMSSD) · last {hrv.length} days</p>
-                <span className="text-xs ml-auto" style={{ color: ts.textDim }}>higher = more recovered</span>
+                <p className="t-label" style={{ color: ts.textMuted }}>HRV (RMSSD) · last {hrv.length} days</p>
+                <span className="t-caption ml-auto" style={{ color: ts.textDim }}>higher = more recovered</span>
               </div>
               <HRVLine days={status?.data?.hrv?.slice(-7) ?? []} />
             </div>
           )}
           {hr && (hr.restingRate || hr.avgRate) && (
             <div className="px-3 py-2 rounded-xl" style={{ background: 'rgba(255,138,138,0.06)', border: '1px solid rgba(255,138,138,0.15)' }}>
-              <p className="text-xs uppercase tracking-widest mb-1" style={{ color: '#FF8A8A' }}>Heart rate</p>
+              <p className="t-label mb-1" style={{ color: '#FF8A8A' }}>Heart rate</p>
               {hr.restingRate && (
-                <p className="text-xs" style={{ color: ts.textSecondary }}>
+                <p className="t-caption" style={{ color: ts.textSecondary }}>
                   Resting: <strong>{hr.restingRate} bpm</strong>
-                  <span className="text-xs ml-1.5" style={{ color: ts.textMuted }}>
+                  <span className="t-caption ml-1.5" style={{ color: ts.textMuted }}>
                     {hr.restingRate < 60 ? 'Excellent' : hr.restingRate < 70 ? 'Good' : hr.restingRate < 80 ? 'Average' : 'High'}
                   </span>
                 </p>
               )}
               {hr.avgRate && !hr.restingRate && (
-                <p className="text-xs" style={{ color: ts.textSecondary }}>Daily avg: <strong>{hr.avgRate} bpm</strong></p>
+                <p className="t-caption" style={{ color: ts.textSecondary }}>Daily avg: <strong>{hr.avgRate} bpm</strong></p>
               )}
-              <p className="text-xs mt-1" style={{ color: ts.textDim }}>from {fmt(hr.date)}</p>
+              <p className="t-caption mt-1" style={{ color: ts.textDim }}>from {fmt(hr.date)}</p>
             </div>
           )}
         </>
@@ -369,8 +369,8 @@ function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, sy
           style={{ backgroundColor: `${meta.color}08`, border: `1px dashed ${meta.color}33` }}>
           <RefreshCw size={11} style={{ color: meta.color }} />
           <div>
-            <p className="text-xs font-medium" style={{ color: ts.textSecondary }}>No data yet — tap ↻ to sync</p>
-            <p className="text-xs mt-0.5" style={{ color: ts.textDim }}>
+            <p className="t-caption font-medium" style={{ color: ts.textSecondary }}>No data yet — tap ↻ to sync</p>
+            <p className="t-caption mt-0.5" style={{ color: ts.textDim }}>
               Will pull last 7 days of {meta.dataTypes.join(', ').toLowerCase()} from {meta.label}
             </p>
           </div>
@@ -416,15 +416,15 @@ function HealthInsight({ integrations }: { integrations: IntegrationStatus[] }) 
       style={{ backgroundColor: ts.cardBg, borderColor: ts.borderHover, boxShadow: ts.btnShadow }}>
       <div className="flex items-center gap-2">
         <Zap size={12} style={{ color: ts.accent }} />
-        <p className="text-xs uppercase tracking-widest" style={{ color: ts.textMuted }}>AI Coach · Health Insight</p>
+        <p className="t-label" style={{ color: ts.textMuted }}>AI Coach · Health Insight</p>
       </div>
       <div className="flex items-start gap-3">
         <span className="text-2xl flex-shrink-0">{icon}</span>
         <div className="flex flex-col gap-1.5">
-          <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>{title}</p>
-          <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
+          <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{title}</p>
+          <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
           <Link to={techniqueHref}
-            className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-xl w-fit mt-1 transition-all hover:scale-105"
+            className="flex items-center gap-1.5 t-caption font-medium px-4 py-2 rounded-xl w-fit mt-1 transition-all hover:scale-105"
             style={{ background: ts.btnGradient }}>
             ✦ Try {technique} <ChevronRight size={11} />
           </Link>
@@ -582,7 +582,7 @@ export default function ProfilePage() {
 
           {/* Page header */}
           <div>
-            <p className="text-xs tracking-[0.3em] uppercase mb-1" style={{ color: ts.textMuted }}>
+            <p className="t-label mb-1" style={{ color: ts.textMuted }}>
               Breathe · Profile
             </p>
             <h1 className="text-2xl sm:text-3xl font-medium tracking-wide" style={{ color: ts.textPrimary }}>
@@ -619,14 +619,14 @@ export default function ProfilePage() {
 
             {/* User info */}
             <div className="flex-1 min-w-0">
-              <p className="text-lg font-semibold truncate" style={{ color: ts.textPrimary }}>
+              <p className="t-heading font-semibold truncate" style={{ color: ts.textPrimary }}>
                 {displayName}
               </p>
-              <p className="text-xs mt-0.5 truncate" style={{ color: ts.textMuted }}>
+              <p className="t-caption mt-0.5 truncate" style={{ color: ts.textMuted }}>
                 {user?.email}
               </p>
               {currentGoal && (
-                <p className="text-xs mt-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-full"
+                <p className="t-caption mt-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-full"
                   style={{ background: `${ts.accent}18`, color: ts.accentLight, border: `1px solid ${ts.accent}30` }}>
                   {currentGoal.icon} {currentGoal.label}
                 </p>
@@ -637,17 +637,17 @@ export default function ProfilePage() {
             {(body.heightCm || body.weightKg || body.age) && (
               <div className="hidden sm:flex flex-col items-end gap-1 flex-shrink-0">
                 {body.heightCm && (
-                  <p className="text-xs tabular-nums" style={{ color: ts.textSecondary }}>
+                  <p className="t-caption tabular-nums" style={{ color: ts.textSecondary }}>
                     <span style={{ color: ts.textMuted }}>Height </span>{body.heightCm} cm
                   </p>
                 )}
                 {body.weightKg && (
-                  <p className="text-xs tabular-nums" style={{ color: ts.textSecondary }}>
+                  <p className="t-caption tabular-nums" style={{ color: ts.textSecondary }}>
                     <span style={{ color: ts.textMuted }}>Weight </span>{body.weightKg} kg
                   </p>
                 )}
                 {body.age && (
-                  <p className="text-xs tabular-nums" style={{ color: ts.textSecondary }}>
+                  <p className="t-caption tabular-nums" style={{ color: ts.textSecondary }}>
                     <span style={{ color: ts.textMuted }}>Age </span>{body.age}
                   </p>
                 )}
@@ -665,7 +665,7 @@ export default function ProfilePage() {
               { id: 'devices'    as const, label: 'Devices' },
             ]).map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className="flex-1 py-3 text-xs font-medium transition-all"
+                className="flex-1 py-3 t-caption font-medium transition-all"
                 style={{
                   background: tab === t.id ? ts.btnGradient : ts.cardBg,
                   color: tab === t.id ? '#fff' : ts.textSecondary,
@@ -687,14 +687,14 @@ export default function ProfilePage() {
                   value={nickname}
                   onChange={e => setNickname(e.target.value.slice(0, 30))}
                   placeholder={user?.name || user?.email?.split('@')[0] || 'Your nickname'}
-                  className="w-full px-4 py-3 rounded-xl text-base outline-none"
+                  className="w-full px-4 py-3 rounded-xl t-body outline-none"
                   style={{
                     background: ts.cardBgHover,
                     border: `1px solid ${ts.border}`,
                     color: ts.textPrimary,
                   }}
                 />
-                <p className="text-xs" style={{ color: ts.textDim }}>
+                <p className="t-caption" style={{ color: ts.textDim }}>
                   Shown in community posts and leaderboards · max 30 chars
                 </p>
               </Section>
@@ -712,7 +712,7 @@ export default function ProfilePage() {
                   <div className="flex items-center gap-2 px-3 py-2 rounded-lg"
                     style={{ background: `${bmiColor}12`, border: `1px solid ${bmiColor}33` }}>
                     <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: bmiColor! }} />
-                    <p className="text-xs" style={{ color: ts.textSecondary }}>
+                    <p className="t-caption" style={{ color: ts.textSecondary }}>
                       BMI <strong>{bmi}</strong>
                       <span className="ml-2" style={{ color: bmiColor! }}>{bmiLabel}</span>
                     </p>
@@ -752,10 +752,10 @@ export default function ProfilePage() {
               {/* How we use this */}
               <div className="px-4 py-3 rounded-xl"
                 style={{ background: `${ts.accent}0D`, border: `1px solid ${ts.border}` }}>
-                <p className="text-xs uppercase tracking-widest font-semibold mb-2" style={{ color: ts.accentLight }}>
+                <p className="t-caption uppercase tracking-widest font-semibold mb-2" style={{ color: ts.accentLight }}>
                   How we use this
                 </p>
-                <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+                <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
                   Your age, height and weight help calibrate optimal breathing rates and session lengths.
                   Your goal determines which techniques the AI coach recommends first — and shapes your daily insight cards.
                 </p>
@@ -763,7 +763,7 @@ export default function ProfilePage() {
 
               {/* Save */}
               <button onClick={saveProfile} disabled={saving}
-                className="flex items-center justify-center gap-2 py-3.5 rounded-xl text-base font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
+                className="flex items-center justify-center gap-2 py-3.5 rounded-xl t-body font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
                 style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
                 {saving ? <RefreshCw size={14} className="animate-spin" /> : <Save size={14} />}
                 {saving ? 'Saving…' : 'Save changes'}
@@ -774,16 +774,16 @@ export default function ProfilePage() {
                 <Link to="/sessions" className="flex items-center justify-between p-4 rounded-2xl transition-all"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   <div>
-                    <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>My Sessions</p>
-                    <p className="text-xs mt-0.5" style={{ color: ts.textMuted }}>Breathing history</p>
+                    <p className="t-body font-medium" style={{ color: ts.textPrimary }}>My Sessions</p>
+                    <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>Breathing history</p>
                   </div>
                   <ChevronRight size={14} style={{ color: ts.textDim }} />
                 </Link>
                 <Link to="/statistics" className="flex items-center justify-between p-4 rounded-2xl transition-all"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   <div>
-                    <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>Progress</p>
-                    <p className="text-xs mt-0.5" style={{ color: ts.textMuted }}>Charts & insights</p>
+                    <p className="t-body font-medium" style={{ color: ts.textPrimary }}>Progress</p>
+                    <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>Charts & insights</p>
                   </div>
                   <ChevronRight size={14} style={{ color: ts.textDim }} />
                 </Link>
@@ -793,10 +793,10 @@ export default function ProfilePage() {
                   style={{ background: `${ts.accent}12`, border: `1px solid ${ts.accent}30` }}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-xl">🏆</span>
+                    <span className="t-heading">🏆</span>
                     <div className="text-left">
-                      <p className="text-sm font-medium" style={{ color: ts.accentLight }}>Breathing Challenges</p>
-                      <p className="text-xs mt-0.5" style={{ color: ts.textMuted }}>7 & 21-day streaks · earn badges</p>
+                      <p className="t-body font-medium" style={{ color: ts.accentLight }}>Breathing Challenges</p>
+                      <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>7 & 21-day streaks · earn badges</p>
                     </div>
                   </div>
                   <ChevronRight size={14} style={{ color: ts.accent }} />
@@ -818,11 +818,11 @@ export default function ProfilePage() {
           {tab === 'devices' && (
             <div className="flex flex-col gap-6">
               <div className="flex items-start justify-between gap-4">
-                <p className="text-xs" style={{ color: ts.textMuted }}>
+                <p className="t-caption" style={{ color: ts.textMuted }}>
                   Connect your wearable to get AI coaching based on your real sleep and HRV data.
                 </p>
                 <Link to="/data-consent"
-                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs"
+                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl t-caption"
                   style={{ color: ts.accent, border: `1px solid ${ts.border}` }}>
                   Why we need data →
                 </Link>
@@ -832,12 +832,12 @@ export default function ProfilePage() {
 
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                  <p className="t-label" style={{ color: ts.textMuted }}>
                     <Watch size={11} className="inline mr-1.5" /> Connected services
                   </p>
                   {integrations.length > 0 && (
                     <button onClick={sync} disabled={syncing}
-                      className="flex items-center gap-1.5 text-xs disabled:opacity-40"
+                      className="flex items-center gap-1.5 t-caption disabled:opacity-40"
                       style={{ color: ts.accent }}>
                       <RefreshCw size={10} className={syncing ? 'animate-spin' : ''} />
                       Sync all
@@ -874,7 +874,7 @@ export default function ProfilePage() {
               {/* How it works */}
               <div className="flex flex-col gap-3 p-5 rounded-2xl"
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <p className="text-xs uppercase tracking-widest" style={{ color: ts.textMuted }}>How it works</p>
+                <p className="t-label" style={{ color: ts.textMuted }}>How it works</p>
                 {[
                   { icon: '🔗', text: 'Connect your Fitbit or Google Fit account with one click' },
                   { icon: '📊', text: 'We read your sleep stages, HRV, and resting heart rate' },
@@ -882,8 +882,8 @@ export default function ProfilePage() {
                   { icon: '🌊', text: 'Tap "Try X" to start a session perfectly calibrated to your body today' },
                 ].map(({ icon, text }) => (
                   <div key={text} className="flex items-center gap-3">
-                    <span className="text-base flex-shrink-0">{icon}</span>
-                    <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{text}</p>
+                    <span className="t-body flex-shrink-0">{icon}</span>
+                    <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{text}</p>
                   </div>
                 ))}
               </div>

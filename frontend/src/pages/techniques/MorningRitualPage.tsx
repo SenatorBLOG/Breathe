@@ -89,7 +89,7 @@ export default function MorningRitualPage() {
 
           {/* Hero */}
           <div className="flex flex-col gap-3">
-            <span className="text-[10px] tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
+            <span className="t-label tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
               style={{ color: ts.textMuted, borderColor: ts.border }}>
               Morning Practice
             </span>
@@ -97,7 +97,7 @@ export default function MorningRitualPage() {
               Morning Ritual<br />
               <span style={{ color: ts.accent }}>in 3 Minutes</span>
             </h1>
-            <p className="text-base leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
               Most people reach for their phone within 30 seconds of waking.
               Their stress system is already active before they've had breakfast.
               This 3-minute sequence reverses that — every morning.
@@ -113,9 +113,9 @@ export default function MorningRitualPage() {
             ].map(({ icon, value, label }) => (
               <div key={label} className="flex flex-col gap-1 p-4 rounded-2xl text-center"
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <span className="text-lg">{icon}</span>
-                <p className="text-lg font-bold" style={{ color: ts.textPrimary }}>{value}</p>
-                <p className="text-[10px] leading-tight" style={{ color: ts.textMuted }}>{label}</p>
+                <span className="t-heading">{icon}</span>
+                <p className="t-heading font-bold" style={{ color: ts.textPrimary }}>{value}</p>
+                <p className="t-label leading-tight" style={{ color: ts.textMuted }}>{label}</p>
               </div>
             ))}
           </div>
@@ -124,13 +124,13 @@ export default function MorningRitualPage() {
 
           {/* Section 1 — Why morning breathwork works */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Why morning breathwork works
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="flex flex-col gap-3 p-4 rounded-2xl"
                 style={{ backgroundColor: ts.cardBg, border: '1px solid rgba(248,113,113,0.25)' }}>
-                <p className="text-xs font-semibold" style={{ color: '#F87171' }}>😴 What usually happens</p>
+                <p className="t-caption font-semibold" style={{ color: '#F87171' }}>😴 What usually happens</p>
                 {[
                   'Cortisol spikes naturally at 7–9am',
                   'Phone/news spikes it further instantly',
@@ -138,14 +138,14 @@ export default function MorningRitualPage() {
                   'Stress baseline set before breakfast',
                 ].map(s => (
                   <div key={s} className="flex items-start gap-2">
-                    <span className="text-[10px] mt-1 flex-shrink-0" style={{ color: '#F87171' }}>▸</span>
-                    <p className="text-xs" style={{ color: ts.textMuted }}>{s}</p>
+                    <span className="t-label mt-1 flex-shrink-0" style={{ color: '#F87171' }}>▸</span>
+                    <p className="t-caption" style={{ color: ts.textMuted }}>{s}</p>
                   </div>
                 ))}
               </div>
               <div className="flex flex-col gap-3 p-4 rounded-2xl"
                 style={{ backgroundColor: ts.cardBg, border: '1px solid rgba(74,232,160,0.25)' }}>
-                <p className="text-xs font-semibold" style={{ color: '#4AE8A0' }}>🌅 What breathing does instead</p>
+                <p className="t-caption font-semibold" style={{ color: '#4AE8A0' }}>🌅 What breathing does instead</p>
                 {[
                   'Gives cortisol spike somewhere productive',
                   'Clears sleep inertia faster than coffee',
@@ -153,8 +153,8 @@ export default function MorningRitualPage() {
                   'Takes 3 minutes — less than waiting for coffee',
                 ].map(s => (
                   <div key={s} className="flex items-start gap-2">
-                    <span className="text-[10px] mt-1 flex-shrink-0" style={{ color: '#4AE8A0' }}>▸</span>
-                    <p className="text-xs" style={{ color: ts.textMuted }}>{s}</p>
+                    <span className="t-label mt-1 flex-shrink-0" style={{ color: '#4AE8A0' }}>▸</span>
+                    <p className="t-caption" style={{ color: ts.textMuted }}>{s}</p>
                   </div>
                 ))}
               </div>
@@ -163,8 +163,8 @@ export default function MorningRitualPage() {
             {/* Key callout */}
             <div className="flex gap-3 px-4 py-4 rounded-2xl"
               style={{ background: ts.accent + '10', border: `1px solid ${ts.accent}30` }}>
-              <span className="text-lg flex-shrink-0">⏰</span>
-              <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+              <span className="t-heading flex-shrink-0">⏰</span>
+              <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                 <strong style={{ color: ts.textPrimary }}>The first 30 minutes after waking</strong> set the
                 neurological tone for your entire day. What you do in that window determines your
                 default stress level for hours.
@@ -176,10 +176,10 @@ export default function MorningRitualPage() {
 
           {/* Section 2 — Why before eating */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Why do it before eating
             </h2>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               Fasted breathwork is meaningfully more effective. Digestion competes for blood flow
               with the brain, and a full stomach physically limits diaphragm movement — reducing
               the depth and effectiveness of every breath. Cortisol (naturally high in the morning)
@@ -188,7 +188,7 @@ export default function MorningRitualPage() {
             </p>
             <div className="px-4 py-3 rounded-xl"
               style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}>
-              <p className="text-xs" style={{ color: ts.textMuted }}>
+              <p className="t-caption" style={{ color: ts.textMuted }}>
                 <strong style={{ color: ts.textPrimary }}>Practical order:</strong> breathwork → water → coffee → breakfast → phone.
                 Even doing it in bed before standing up counts.
               </p>
@@ -199,7 +199,7 @@ export default function MorningRitualPage() {
 
           {/* Section 3 — The sequence */}
           <div className="flex flex-col gap-5">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               The 3-minute sequence
             </h2>
 
@@ -207,11 +207,11 @@ export default function MorningRitualPage() {
             <div className="flex flex-col gap-3 p-5 rounded-2xl"
               style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.borderHover}` }}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-sm font-bold text-white"
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 t-body font-bold text-white"
                   style={{ background: ts.btnGradient }}>1</div>
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: ts.textPrimary }}>Physiological Sigh</p>
-                  <p className="text-[10px]" style={{ color: ts.textMuted }}>⏱ 0:00 — 60 seconds · 5 repetitions</p>
+                  <p className="t-body font-semibold" style={{ color: ts.textPrimary }}>Physiological Sigh</p>
+                  <p className="t-label" style={{ color: ts.textMuted }}>⏱ 0:00 — 60 seconds · 5 repetitions</p>
                 </div>
               </div>
 
@@ -223,15 +223,15 @@ export default function MorningRitualPage() {
                   ['4', 'Pause 1 second, then repeat'],
                 ].map(([n, desc]) => (
                   <div key={n} className="flex items-center gap-3">
-                    <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0"
+                    <span className="w-5 h-5 rounded-full flex items-center justify-center t-label font-bold flex-shrink-0"
                       style={{ background: ts.accent + '30', color: ts.accent }}>{n}</span>
-                    <p className="text-xs" style={{ color: ts.textMuted }}>{desc}</p>
+                    <p className="t-caption" style={{ color: ts.textMuted }}>{desc}</p>
                   </div>
                 ))}
               </div>
 
               {/* Visual cue */}
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl font-mono text-[10px] overflow-x-auto"
+              <div className="flex items-center gap-2 px-3 py-2 rounded-xl font-mono t-label overflow-x-auto"
                 style={{ background: ts.cardBgHover, color: ts.textMuted }}>
                 <span style={{ color: ts.accentLight }}>Inhale ▓▓▓▓▓▓▓▓░░</span>
                 <span>→</span>
@@ -240,7 +240,7 @@ export default function MorningRitualPage() {
                 <span style={{ color: ts.textDim }}>Exhale ░░░░░░░░░░</span>
               </div>
 
-              <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+              <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                 <strong style={{ color: ts.textPrimary }}>Why it works:</strong> The double inhale deflates
                 collapsed alveoli (air sacs) that accumulate during sleep. It's the fastest known way
                 to reduce physiological arousal — used by athletes before competition and surgeons
@@ -252,11 +252,11 @@ export default function MorningRitualPage() {
             <div className="flex flex-col gap-3 p-5 rounded-2xl"
               style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-sm font-bold text-white"
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 t-body font-bold text-white"
                   style={{ background: ts.btnGradient }}>2</div>
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: ts.textPrimary }}>Energizing Breath</p>
-                  <p className="text-[10px]" style={{ color: ts.textMuted }}>⏱ 1:00 — 60 seconds · 10 repetitions</p>
+                  <p className="t-body font-semibold" style={{ color: ts.textPrimary }}>Energizing Breath</p>
+                  <p className="t-label" style={{ color: ts.textMuted }}>⏱ 1:00 — 60 seconds · 10 repetitions</p>
                 </div>
               </div>
 
@@ -264,13 +264,13 @@ export default function MorningRitualPage() {
                 {[['6s', 'Inhale (nose)'], ['2s', 'Exhale (nose)']].map(([t, label]) => (
                   <div key={label} className="flex flex-col items-center py-3 rounded-xl"
                     style={{ background: ts.cardBgHover, border: `1px solid ${ts.border}` }}>
-                    <p className="text-xl font-bold" style={{ color: ts.accent }}>{t}</p>
-                    <p className="text-[10px]" style={{ color: ts.textMuted }}>{label}</p>
+                    <p className="t-heading font-bold" style={{ color: ts.accent }}>{t}</p>
+                    <p className="t-label" style={{ color: ts.textMuted }}>{label}</p>
                   </div>
                 ))}
               </div>
 
-              <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+              <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                 <strong style={{ color: ts.textPrimary }}>Why it works:</strong> A long inhale activates
                 the sympathetic system — the opposite of sleep breathing. Similar to Kapalabhati
                 pranayama. You'll feel warmer, more alert, and slightly tingly. This is the
@@ -280,8 +280,8 @@ export default function MorningRitualPage() {
               {/* Warning */}
               <div className="flex items-start gap-2 px-3 py-3 rounded-xl"
                 style={{ background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.25)' }}>
-                <span className="text-xs flex-shrink-0">⚠️</span>
-                <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+                <span className="t-caption flex-shrink-0">⚠️</span>
+                <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                   Stop if you feel dizzy. Sit before starting if prone to lightheadedness.
                   Skip if you have cardiovascular conditions.
                 </p>
@@ -292,11 +292,11 @@ export default function MorningRitualPage() {
             <div className="flex flex-col gap-3 p-5 rounded-2xl"
               style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-sm font-bold text-white"
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 t-body font-bold text-white"
                   style={{ background: ts.btnGradient }}>3</div>
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: ts.textPrimary }}>Box Breathing Balance</p>
-                  <p className="text-[10px]" style={{ color: ts.textMuted }}>⏱ 2:00 — 60 seconds · 5 cycles</p>
+                  <p className="t-body font-semibold" style={{ color: ts.textPrimary }}>Box Breathing Balance</p>
+                  <p className="t-label" style={{ color: ts.textMuted }}>⏱ 2:00 — 60 seconds · 5 cycles</p>
                 </div>
               </div>
 
@@ -304,13 +304,13 @@ export default function MorningRitualPage() {
                 {[['4s', 'Inhale'], ['4s', 'Hold'], ['4s', 'Exhale'], ['4s', 'Hold']].map(([t, label], i) => (
                   <div key={i} className="py-2 rounded-xl"
                     style={{ background: ts.cardBgHover, border: `1px solid ${ts.border}` }}>
-                    <p className="text-base font-bold" style={{ color: ts.accentLight }}>{t}</p>
-                    <p className="text-[10px]" style={{ color: ts.textPrimary }}>{label}</p>
+                    <p className="t-body font-bold" style={{ color: ts.accentLight }}>{t}</p>
+                    <p className="t-label" style={{ color: ts.textPrimary }}>{label}</p>
                   </div>
                 ))}
               </div>
 
-              <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+              <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                 <strong style={{ color: ts.textPrimary }}>Why it works:</strong> After the energizing breath,
                 your system is activated. Box breathing brings it to calm-alert — focused but not
                 anxious. This is the state top performers call "flow-ready."
@@ -320,15 +320,15 @@ export default function MorningRitualPage() {
             {/* CTA after sequence */}
             <div className="flex flex-col gap-3 p-5 rounded-2xl"
               style={{ background: ts.cardBg, border: `1px solid ${ts.borderHover}` }}>
-              <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>
+              <p className="t-body font-medium" style={{ color: ts.textPrimary }}>
                 🌬 Let the app pace you — so you can focus on breathing
               </p>
-              <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+              <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                 Set up the 3-minute morning sequence with one tap.
                 Visual circle + optional voice or sound guidance.
               </p>
               <Link to="/breathing"
-                className="self-start px-6 py-3 rounded-xl text-white text-sm font-medium transition-all hover:opacity-90"
+                className="self-start px-6 py-3 rounded-xl text-white t-body font-medium transition-all hover:opacity-90"
                 style={{ background: ts.btnGradient }}>
                 Open breathing app →
               </Link>
@@ -339,16 +339,16 @@ export default function MorningRitualPage() {
 
           {/* Section 4 — Before / After */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               What changes after 2 weeks
             </h2>
             <div className="rounded-2xl overflow-hidden" style={{ border: `1px solid ${ts.border}` }}>
               {/* Header */}
               <div className="grid grid-cols-3 px-4 py-2"
                 style={{ backgroundColor: ts.cardBgHover, borderBottom: `1px solid ${ts.border}` }}>
-                <p className="text-[10px] font-semibold" style={{ color: ts.textMuted }}></p>
-                <p className="text-[10px] font-semibold text-center" style={{ color: '#F87171' }}>Before</p>
-                <p className="text-[10px] font-semibold text-center" style={{ color: '#4AE8A0' }}>After 2 weeks</p>
+                <p className="t-label font-semibold" style={{ color: ts.textMuted }}></p>
+                <p className="t-label font-semibold text-center" style={{ color: '#F87171' }}>Before</p>
+                <p className="t-label font-semibold text-center" style={{ color: '#4AE8A0' }}>After 2 weeks</p>
               </div>
               {[
                 ['Morning',        'Groggy, reactive',          'Alert within 5 min'],
@@ -362,13 +362,13 @@ export default function MorningRitualPage() {
                     backgroundColor: i % 2 === 0 ? ts.cardBg : ts.cardBgHover,
                     borderBottom: i < 4 ? `1px solid ${ts.border}` : 'none',
                   }}>
-                  <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>{label}</p>
-                  <p className="text-xs text-center" style={{ color: ts.textMuted }}>{before}</p>
-                  <p className="text-xs text-center" style={{ color: '#4AE8A0' }}>{after}</p>
+                  <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>{label}</p>
+                  <p className="t-caption text-center" style={{ color: ts.textMuted }}>{before}</p>
+                  <p className="t-caption text-center" style={{ color: '#4AE8A0' }}>{after}</p>
                 </div>
               ))}
             </div>
-            <p className="text-[10px] px-1" style={{ color: ts.textMuted }}>
+            <p className="t-label px-1" style={{ color: ts.textMuted }}>
               Results are individual. Consistency matters more than perfection.
             </p>
           </div>
@@ -377,7 +377,7 @@ export default function MorningRitualPage() {
 
           {/* Section 5 — Variations */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Variations by goal
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -404,11 +404,11 @@ export default function MorningRitualPage() {
                 <div key={goal} className="flex flex-col gap-3 p-4 rounded-2xl"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">{icon}</span>
-                    <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>{goal}</p>
+                    <span className="t-heading">{icon}</span>
+                    <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{goal}</p>
                   </div>
-                  <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{steps}</p>
-                  <p className="text-[10px] px-2 py-1 rounded-lg w-fit"
+                  <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{steps}</p>
+                  <p className="t-label px-2 py-1 rounded-lg w-fit"
                     style={{ background: ts.border, color: ts.textMuted }}>
                     {total}
                   </p>
@@ -421,14 +421,14 @@ export default function MorningRitualPage() {
 
           {/* Section 6 — FAQ */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Frequently asked questions
             </h2>
             {FAQS.map(({ q, a }) => (
               <div key={q} className="p-4 rounded-2xl"
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <p className="text-sm font-medium mb-2" style={{ color: ts.textPrimary }}>{q}</p>
-                <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{a}</p>
+                <p className="t-body font-medium mb-2" style={{ color: ts.textPrimary }}>{q}</p>
+                <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{a}</p>
               </div>
             ))}
           </div>
@@ -437,7 +437,7 @@ export default function MorningRitualPage() {
 
           {/* Section 7 — Internal links */}
           <div className="flex flex-col gap-3">
-            <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+            <p className="t-label tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
               Related guides
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -449,8 +449,8 @@ export default function MorningRitualPage() {
                 <Link key={href} to={href}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-[1.01]"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                  <span className="text-lg">{icon}</span>
-                  <p className="text-sm font-medium" style={{ color: ts.accent }}>{label} →</p>
+                  <span className="t-heading">{icon}</span>
+                  <p className="t-body font-medium" style={{ color: ts.accent }}>{label} →</p>
                 </Link>
               ))}
             </div>

@@ -18,7 +18,7 @@ function AdSlot({ className = '' }: { className?: string }) {
         borderColor: ts.border,
         backgroundColor: `${ts.cardBg}40`,
       }}>
-      <span className="text-[9px] tracking-widest uppercase select-none" style={{ color: ts.textDim }}>
+      <span className="t-label tracking-widest uppercase select-none" style={{ color: ts.textDim }}>
         Advertisement
       </span>
     </div>
@@ -45,14 +45,14 @@ function QuickCard({ icon, title, desc, to, label }: {
         {icon}
       </div>
       <div className="flex-1">
-        <p className="text-sm font-medium group-hover:text-white transition-colors" style={{ color: ts.textPrimary }}>
+        <p className="t-body font-medium group-hover:text-white transition-colors" style={{ color: ts.textPrimary }}>
           {title}
         </p>
-        <p className="text-xs mt-0.5 leading-relaxed" style={{ color: ts.textMuted }}>
+        <p className="t-caption mt-0.5 leading-relaxed" style={{ color: ts.textMuted }}>
           {desc}
         </p>
       </div>
-      <span className="text-[10px] transition-all group-hover:underline" style={{ color: ts.accent }}>
+      <span className="t-label transition-all group-hover:underline" style={{ color: ts.accent }}>
         {label} →
       </span>
     </Link>
@@ -110,7 +110,7 @@ export default function SupportPage() {
         </div>
 
         <header className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-8 pb-6 text-center flex flex-col items-center gap-3">
-          <span className="text-[10px] tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full"
+          <span className="t-label tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full"
             style={{
               color: ts.textMuted,
               borderColor: ts.border,
@@ -120,7 +120,7 @@ export default function SupportPage() {
           <h1 className="text-2xl sm:text-4xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
             We're here to help
           </h1>
-          <p className="text-sm max-w-sm leading-relaxed" style={{ color: ts.textMuted }}>
+          <p className="t-body max-w-sm leading-relaxed" style={{ color: ts.textMuted }}>
             {t("support.subtitle")}
           </p>
         </header>
@@ -144,16 +144,16 @@ export default function SupportPage() {
                     <CheckCircle size={24} style={{ color: ts.accent }} />
                   </div>
                   <div>
-                    <p className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+                    <p className="t-heading font-medium" style={{ color: ts.textPrimary }}>
                       {t("support.success")}
                     </p>
-                    <p className="text-sm mt-1 leading-relaxed" style={{ color: ts.textMuted }}>
+                    <p className="t-body mt-1 leading-relaxed" style={{ color: ts.textMuted }}>
                       Thanks {name.split(' ')[0]}. We'll reply to <span style={{ color: ts.accent }}>{email}</span> within 24 hours.
                     </p>
                   </div>
                   <div className="flex gap-3 mt-2">
                     <button onClick={() => { setSent(false); setName(''); setEmail(''); setMessage(''); setCategory('question'); }}
-                      className="px-5 py-2 rounded-xl text-xs transition-all"
+                      className="px-5 py-2 rounded-xl t-caption transition-all"
                       style={{
                         color: ts.accent,
                         border: `1px solid ${ts.border}`,
@@ -161,7 +161,7 @@ export default function SupportPage() {
                       Send another
                     </button>
                     <Link to="/home-page"
-                      className="px-5 py-2 rounded-xl text-xs text-white font-medium transition-all hover:shadow-[0_0_16px_rgba(58,130,247,0.35)]"
+                      className="px-5 py-2 rounded-xl t-caption text-white font-medium transition-all hover:shadow-[0_0_16px_rgba(58,130,247,0.35)]"
                       style={{ background: ts.btnGradient }}>
                       Back to home
                     </Link>
@@ -178,13 +178,13 @@ export default function SupportPage() {
                   <div className="p-5 sm:p-6 flex flex-col gap-5">
                     {/* Category */}
                     <div className="flex flex-col gap-2">
-                      <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                         Topic
                       </label>
                       <div className="flex gap-2 flex-wrap">
                         {CATEGORIES.map(c => (
                           <button key={c.value} onClick={() => setCategory(c.value)}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs border transition-all ${
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-caption border transition-all ${
                               category === c.value ? "bg-[#0D1B33]" : ""
                             }`}
                             style={{
@@ -200,12 +200,12 @@ export default function SupportPage() {
                     {/* Name + Email */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                        <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                           Your name
                         </label>
                         <input value={name} onChange={e => setName(e.target.value)}
                           placeholder="Alex"
-                          className="rounded-xl px-4 py-2.5 text-sm placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
+                          className="rounded-xl px-4 py-2.5 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                           style={{
                             backgroundColor: ts.cardBg,
                             border: `1px solid ${ts.border}`,
@@ -213,12 +213,12 @@ export default function SupportPage() {
                           }} />
                       </div>
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                        <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                           Email address
                         </label>
                         <input value={email} onChange={e => setEmail(e.target.value)}
                           type="email" placeholder="you@email.com"
-                          className="rounded-xl px-4 py-2.5 text-sm placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
+                          className="rounded-xl px-4 py-2.5 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                           style={{
                             backgroundColor: ts.cardBg,
                             border: `1px solid ${ts.border}`,
@@ -229,13 +229,13 @@ export default function SupportPage() {
 
                     {/* Message */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                         Message
                       </label>
                       <textarea value={message} onChange={e => setMessage(e.target.value)}
                         rows={5} maxLength={1000}
                         placeholder="Describe your issue or question in detail…"
-                        className="rounded-xl px-4 py-3 text-sm placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors resize-none leading-relaxed"
+                        className="rounded-xl px-4 py-3 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors resize-none leading-relaxed"
                         style={{
                           backgroundColor: ts.cardBg,
                           border: `1px solid ${ts.border}`,
@@ -245,16 +245,16 @@ export default function SupportPage() {
 
                     {/* Error */}
                     {error && (
-                      <p className="text-xs px-1" style={{ color: '#FF8A8A' }}>{error}</p>
+                      <p className="t-caption px-1" style={{ color: '#FF8A8A' }}>{error}</p>
                     )}
 
                     {/* Submit */}
                     <div className="flex items-center justify-between">
-                      <span className="text-[9px] tabular-nums" style={{ color: ts.textDim }}>
+                      <span className="t-label tabular-nums" style={{ color: ts.textDim }}>
                         {message.length}/1000
                       </span>
                       <button onClick={submit} disabled={sending || !valid}
-                        className="flex items-center gap-2 px-7 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 disabled:opacity-35"
+                        className="flex items-center gap-2 px-7 py-2.5 rounded-xl t-body font-medium tracking-wide transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 disabled:opacity-35"
                         style={{ background: ts.btnGradient }}>
                         <Send size={13} />
                         {sending ? 'Sending…' : 'Send message'}

@@ -68,16 +68,16 @@ export default function ChallengeNudge() {
       <span className="text-2xl flex-shrink-0 mt-0.5">{msg.icon}</span>
 
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold leading-snug" style={{ color: ts.textPrimary }}>
+        <p className="t-caption font-semibold leading-snug" style={{ color: ts.textPrimary }}>
           {msg.text}
         </p>
-        <p className="text-[10px] mt-0.5 leading-snug" style={{ color: ts.textMuted }}>
+        <p className="t-label mt-0.5 leading-snug" style={{ color: ts.textMuted }}>
           {msg.sub}
         </p>
         <Link
           to="/profile"
           onClick={() => setVisible(false)}
-          className="inline-flex items-center gap-1 mt-2 text-[10px] font-medium px-3 py-1.5 rounded-lg text-white transition-all hover:scale-105"
+          className="inline-flex items-center gap-1 mt-2 t-label font-medium px-3 py-1.5 rounded-lg text-white transition-all hover:scale-105"
           style={{ background: ts.btnGradient }}
         >
           View challenges →
@@ -86,7 +86,7 @@ export default function ChallengeNudge() {
 
       <button
         onClick={() => setVisible(false)}
-        className="flex-shrink-0 text-xs leading-none mt-0.5 hover:opacity-80 transition-opacity"
+        className="flex-shrink-0 t-caption leading-none mt-0.5 hover:opacity-80 transition-opacity"
         style={{ color: ts.textDim }}
         aria-label="Dismiss"
       >

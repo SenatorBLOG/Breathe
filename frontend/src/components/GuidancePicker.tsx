@@ -68,7 +68,7 @@ export default function GuidancePicker({ mode, voiceGender, onChange }: Props) {
       {/* ── Pill trigger ──────────────────────────────────────────────────── */}
       <button
         onClick={() => setOpen(v => !v)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs transition-all hover:scale-105 active:scale-95"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full t-caption transition-all hover:scale-105 active:scale-95"
         style={{
           background:   open ? ts.cardBgHover : ts.cardBg,
           border:       `1px solid ${open ? ts.borderHover : ts.border}`,
@@ -94,7 +94,7 @@ export default function GuidancePicker({ mode, voiceGender, onChange }: Props) {
           <div className="h-px" style={{ background: `linear-gradient(to right, transparent, ${ts.accent}40, transparent)` }} />
 
           <div className="p-3 flex flex-col gap-1">
-            <p className="text-[9px] uppercase tracking-widest px-1 mb-1" style={{ color: ts.textDim }}>
+            <p className="t-label uppercase tracking-widest px-1 mb-1" style={{ color: ts.textDim }}>
               Guidance mode
             </p>
 
@@ -123,16 +123,16 @@ export default function GuidancePicker({ mode, voiceGender, onChange }: Props) {
                       <div className="w-1.5 h-1.5 rounded-full" style={{ background: ts.accent }} />
                     )}
                   </div>
-                  <span className="text-base">{MODE_ICONS[m]}</span>
+                  <span className="t-body">{MODE_ICONS[m]}</span>
                   <div>
-                    <p className="text-xs font-medium" style={{ color: active ? ts.textPrimary : ts.textMuted }}>
+                    <p className="t-caption font-medium" style={{ color: active ? ts.textPrimary : ts.textMuted }}>
                       {MODE_LABELS[m]}
                     </p>
                     {m === 'vibration' && !vibrationSupported && (
-                      <p className="text-[9px]" style={{ color: ts.textDim }}>Android only</p>
+                      <p className="t-label" style={{ color: ts.textDim }}>Android only</p>
                     )}
                     {m === 'voice' && !voiceSupported && (
-                      <p className="text-[9px]" style={{ color: ts.textDim }}>Not supported</p>
+                      <p className="t-label" style={{ color: ts.textDim }}>Not supported</p>
                     )}
                   </div>
                 </button>
@@ -142,7 +142,7 @@ export default function GuidancePicker({ mode, voiceGender, onChange }: Props) {
             {/* Voice gender — only when voice active */}
             {mode === 'voice' && voiceSupported && (
               <div className="mt-1 pt-2 border-t flex flex-col gap-2" style={{ borderColor: ts.border }}>
-                <p className="text-[9px] uppercase tracking-widest px-1" style={{ color: ts.textDim }}>
+                <p className="t-label uppercase tracking-widest px-1" style={{ color: ts.textDim }}>
                   Voice style
                 </p>
                 <div className="flex gap-2">
@@ -150,25 +150,25 @@ export default function GuidancePicker({ mode, voiceGender, onChange }: Props) {
                     <button
                       key={g}
                       onClick={() => { onChange(mode, g); previewVoice(g); }}
-                      className="flex-1 flex flex-col items-center gap-1 py-2 rounded-xl text-xs transition-all"
+                      className="flex-1 flex flex-col items-center gap-1 py-2 rounded-xl t-caption transition-all"
                       style={{
                         background: voiceGender === g ? ts.cardBgHover : 'transparent',
                         border:     `1px solid ${voiceGender === g ? ts.borderHover : ts.border}`,
                         color:      voiceGender === g ? ts.textSecondary : ts.textMuted,
                       }}
                     >
-                      <span className="text-base">{g === 'female' ? '👩' : '👨'}</span>
+                      <span className="t-body">{g === 'female' ? '👩' : '👨'}</span>
                       <span>{g === 'female' ? 'Female' : 'Male'}</span>
                     </button>
                   ))}
                 </div>
-                <p className="text-[9px] text-center" style={{ color: ts.textDim }}>▶ Tap to preview</p>
+                <p className="t-label text-center" style={{ color: ts.textDim }}>▶ Tap to preview</p>
               </div>
             )}
 
             <button
               onClick={() => setOpen(false)}
-              className="mt-2 w-full py-2 rounded-xl text-xs font-medium text-white"
+              className="mt-2 w-full py-2 rounded-xl t-caption font-medium text-white"
               style={{ background: ts.btnGradient }}
             >
               Done
