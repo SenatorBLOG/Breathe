@@ -109,7 +109,7 @@ export default function WhySleepPage() {
 
           {/* Hero */}
           <div className="flex flex-col gap-3">
-            <span className="text-[10px] tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
+            <span className="t-label tracking-[0.3em] uppercase border px-4 py-1.5 rounded-full w-fit"
               style={{ color: ts.textMuted, borderColor: ts.border }}>
               Sleep Science
             </span>
@@ -117,7 +117,7 @@ export default function WhySleepPage() {
               Why is Sleep<br />
               <span style={{ color: ts.accent }}>So Important?</span>
             </h1>
-            <p className="text-base leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
               You spend a third of your life asleep — and every minute matters.
               Here's what's actually happening in your body while you rest.
             </p>
@@ -132,9 +132,9 @@ export default function WhySleepPage() {
             ].map(({ icon, value, label }) => (
               <div key={label} className="flex flex-col gap-1 p-4 rounded-2xl text-center"
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <span className="text-lg">{icon}</span>
-                <p className="text-xl font-bold" style={{ color: ts.textPrimary }}>{value}</p>
-                <p className="text-[10px] leading-tight" style={{ color: ts.textMuted }}>{label}</p>
+                <span className="t-heading">{icon}</span>
+                <p className="t-heading font-bold" style={{ color: ts.textPrimary }}>{value}</p>
+                <p className="t-label leading-tight" style={{ color: ts.textMuted }}>{label}</p>
               </div>
             ))}
           </div>
@@ -143,10 +143,10 @@ export default function WhySleepPage() {
 
           {/* Section 1 — What happens when you sleep */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               What actually happens when you sleep
             </h2>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               Sleep is not passive downtime. Your brain and body are working harder during sleep
               than during many waking activities — clearing toxins, repairing tissue, and encoding
               everything you learned that day.
@@ -155,30 +155,30 @@ export default function WhySleepPage() {
             {/* Sleep cycle visual */}
             <div className="flex flex-col gap-2">
               <div className="flex rounded-xl overflow-hidden h-8">
-                <div className="flex items-center justify-center text-[9px] font-medium"
+                <div className="flex items-center justify-center t-label font-medium"
                   style={{ width: '10%', background: ts.textDim, color: ts.textPrimary }}>
                   N1
                 </div>
-                <div className="flex items-center justify-center text-[9px] font-medium"
+                <div className="flex items-center justify-center t-label font-medium"
                   style={{ width: '25%', background: ts.border, color: ts.textPrimary }}>
                   N2
                 </div>
-                <div className="flex items-center justify-center text-[9px] font-medium"
+                <div className="flex items-center justify-center t-label font-medium"
                   style={{ width: '40%', background: ts.accent, color: '#fff' }}>
                   N3 Deep
                 </div>
-                <div className="flex items-center justify-center text-[9px] font-medium"
+                <div className="flex items-center justify-center t-label font-medium"
                   style={{ width: '25%', background: ts.accentLight, color: '#fff' }}>
                   REM
                 </div>
               </div>
-              <div className="flex text-[9px]" style={{ color: ts.textMuted }}>
+              <div className="flex t-label" style={{ color: ts.textMuted }}>
                 <div style={{ width: '10%' }}>Light</div>
                 <div style={{ width: '25%' }}>Spindles</div>
                 <div style={{ width: '40%' }}>Restoration</div>
                 <div style={{ width: '25%' }}>Memory + Dreams</div>
               </div>
-              <p className="text-xs" style={{ color: ts.textMuted }}>
+              <p className="t-caption" style={{ color: ts.textMuted }}>
                 A typical sleep cycle lasts 90 minutes. You go through 4–6 cycles per night.
               </p>
             </div>
@@ -188,7 +188,7 @@ export default function WhySleepPage() {
 
           {/* Section 2 — 7 reasons accordion */}
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               7 reasons sleep is critical
             </h2>
             {REASONS.map(({ icon, title, body }, i) => {
@@ -204,11 +204,11 @@ export default function WhySleepPage() {
                   }}
                 >
                   <div className="flex items-center gap-3 px-4 py-4">
-                    <span className="text-xl flex-shrink-0">{icon}</span>
-                    <p className="text-sm font-medium flex-1" style={{ color: ts.textPrimary }}>
+                    <span className="t-heading flex-shrink-0">{icon}</span>
+                    <p className="t-body font-medium flex-1" style={{ color: ts.textPrimary }}>
                       {i + 1}. {title}
                     </p>
-                    <span className="text-xs flex-shrink-0 transition-transform"
+                    <span className="t-caption flex-shrink-0 transition-transform"
                       style={{
                         color: ts.textMuted,
                         transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -219,7 +219,7 @@ export default function WhySleepPage() {
                   </div>
                   {isOpen && (
                     <div className="px-4 pb-4">
-                      <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{body}</p>
+                      <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{body}</p>
                     </div>
                   )}
                 </button>
@@ -231,7 +231,7 @@ export default function WhySleepPage() {
 
           {/* Section 3 — How much sleep */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               How much sleep do you actually need?
             </h2>
             <div className="rounded-2xl overflow-hidden" style={{ border: `1px solid ${ts.border}` }}>
@@ -247,12 +247,12 @@ export default function WhySleepPage() {
                     backgroundColor: i % 2 === 0 ? ts.cardBg : ts.cardBgHover,
                     borderBottom: i < 4 ? `1px solid ${ts.border}` : 'none',
                   }}>
-                  <p className="text-sm" style={{ color: ts.textMuted }}>{group}</p>
-                  <p className="text-sm font-semibold" style={{ color: ts.textPrimary }}>{hours}</p>
+                  <p className="t-body" style={{ color: ts.textMuted }}>{group}</p>
+                  <p className="t-body font-semibold" style={{ color: ts.textPrimary }}>{hours}</p>
                 </div>
               ))}
             </div>
-            <p className="text-xs px-1" style={{ color: ts.textMuted }}>
+            <p className="t-caption px-1" style={{ color: ts.textMuted }}>
               Quality matters as much as quantity — 7 hours of deep, uninterrupted sleep
               is better than 9 hours of fragmented sleep.
             </p>
@@ -262,7 +262,7 @@ export default function WhySleepPage() {
 
           {/* Section 4 — Signs you're not getting enough */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Signs you're not getting enough
             </h2>
             <div className="flex flex-col gap-2">
@@ -276,8 +276,8 @@ export default function WhySleepPage() {
               ].map(item => (
                 <div key={item} className="flex items-start gap-3 px-4 py-3 rounded-xl"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                  <span className="text-xs mt-0.5 flex-shrink-0" style={{ color: '#F87171' }}>✗</span>
-                  <p className="text-sm" style={{ color: ts.textMuted }}>{item}</p>
+                  <span className="t-caption mt-0.5 flex-shrink-0" style={{ color: '#F87171' }}>✗</span>
+                  <p className="t-body" style={{ color: ts.textMuted }}>{item}</p>
                 </div>
               ))}
             </div>
@@ -287,13 +287,13 @@ export default function WhySleepPage() {
 
           {/* Section 5 — What kills sleep quality */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               What kills sleep quality
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-3 p-4 rounded-2xl"
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>Biological factors</p>
+                <p className="t-body font-medium" style={{ color: ts.textPrimary }}>Biological factors</p>
                 {[
                   'Stress and high cortisol levels',
                   'Irregular sleep schedule',
@@ -302,14 +302,14 @@ export default function WhySleepPage() {
                   'Alcohol (fragments REM sleep)',
                 ].map(item => (
                   <div key={item} className="flex items-start gap-2">
-                    <span className="text-[10px] mt-1 flex-shrink-0" style={{ color: ts.accent }}>▸</span>
-                    <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{item}</p>
+                    <span className="t-label mt-1 flex-shrink-0" style={{ color: ts.accent }}>▸</span>
+                    <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{item}</p>
                   </div>
                 ))}
               </div>
               <div className="flex flex-col gap-3 p-4 rounded-2xl"
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>Environmental factors</p>
+                <p className="t-body font-medium" style={{ color: ts.textPrimary }}>Environmental factors</p>
                 {[
                   'Room temperature above 19°C (67°F)',
                   'Noise and light pollution',
@@ -318,8 +318,8 @@ export default function WhySleepPage() {
                   'Lack of physical activity',
                 ].map(item => (
                   <div key={item} className="flex items-start gap-2">
-                    <span className="text-[10px] mt-1 flex-shrink-0" style={{ color: ts.accent }}>▸</span>
-                    <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{item}</p>
+                    <span className="t-label mt-1 flex-shrink-0" style={{ color: ts.accent }}>▸</span>
+                    <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{item}</p>
                   </div>
                 ))}
               </div>
@@ -331,10 +331,10 @@ export default function WhySleepPage() {
           {/* Section 6 — How breathing helps */}
           <div className="flex flex-col gap-5 p-6 rounded-2xl"
             style={{ background: ts.cardBg, border: `1px solid ${ts.borderHover}` }}>
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               🌙 Better breathing = better sleep
             </h2>
-            <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
               Slow, controlled breathing before bed activates your parasympathetic nervous system —
               the biological "rest and digest" mode. This lowers cortisol, drops heart rate, and
               shifts your body into the state it needs to fall and stay asleep.
@@ -364,13 +364,13 @@ export default function WhySleepPage() {
                   className="flex flex-col gap-2 p-4 rounded-xl transition-all hover:scale-[1.02]"
                   style={{ background: ts.cardBgHover, border: `1px solid ${ts.border}` }}>
                   <span className="text-2xl">{icon}</span>
-                  <p className="text-sm font-medium" style={{ color: ts.textPrimary }}>{name}</p>
-                  <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
+                  <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{name}</p>
+                  <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
                 </Link>
               ))}
             </div>
             <Link to="/breathing"
-              className="self-center px-8 py-3 rounded-full text-white text-sm font-medium transition-all hover:scale-105"
+              className="self-center px-8 py-3 rounded-full text-white t-body font-medium transition-all hover:scale-105"
               style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
               Start a free sleep session →
             </Link>
@@ -380,14 +380,14 @@ export default function WhySleepPage() {
 
           {/* Section 7 — FAQ */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            <h2 className="t-heading font-medium" style={{ color: ts.textPrimary }}>
               Frequently asked questions
             </h2>
             {FAQS.map(({ q, a }) => (
               <div key={q} className="p-4 rounded-2xl"
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <p className="text-sm font-medium mb-2" style={{ color: ts.textPrimary }}>{q}</p>
-                <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{a}</p>
+                <p className="t-body font-medium mb-2" style={{ color: ts.textPrimary }}>{q}</p>
+                <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{a}</p>
               </div>
             ))}
           </div>
@@ -396,18 +396,18 @@ export default function WhySleepPage() {
 
           {/* Related sleep guides */}
           <div className="flex flex-col gap-3">
-            <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+            <p className="t-label tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
               More sleep guides
             </p>
             <Link to="/sleep/what-is-sleep-apnea"
               className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-[1.01]"
               style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-              <span className="text-xl">😮‍💨</span>
+              <span className="t-heading">😮‍💨</span>
               <div>
-                <p className="text-sm font-medium" style={{ color: ts.accent }}>
+                <p className="t-body font-medium" style={{ color: ts.accent }}>
                   What is Sleep Apnea? →
                 </p>
-                <p className="text-xs" style={{ color: ts.textMuted }}>
+                <p className="t-caption" style={{ color: ts.textMuted }}>
                   Symptoms, types, and how breathing exercises can help
                 </p>
               </div>

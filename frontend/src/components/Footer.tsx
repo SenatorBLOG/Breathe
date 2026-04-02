@@ -40,23 +40,23 @@ export default function Footer() {
                 }}
               />
               <span
-                className="text-base font-medium tracking-wide transition-colors group-hover:opacity-100 opacity-90"
+                className="t-body font-medium tracking-wide transition-colors group-hover:opacity-100 opacity-90"
                 style={{ color: ts.textPrimary }}
               >
                 Breathe
               </span>
             </Link>
 
-            <p className="text-xs leading-relaxed max-w-[220px]" style={{ color: ts.textMuted }}>
+            <p className="t-caption leading-relaxed max-w-[220px]" style={{ color: ts.textMuted }}>
               {t("footer.tagline")}
             </p>
 
-            <span className="text-[10px] tracking-wide" style={{ color: ts.textDim }}>
+            <span className="t-caption" style={{ color: ts.textDim }}>
               © {year} · {t("footer.rights")}
             </span>
 
             {/* Theme indicator */}
-            <span className="text-[10px] mt-1" style={{ color: ts.textDim }}>
+            <span className="t-caption mt-1" style={{ color: ts.textDim }}>
               {THEME_META[theme].icon} {THEME_META[theme].label}
             </span>
           </div>
@@ -64,7 +64,7 @@ export default function Footer() {
           {/* Navigation */}
           <div className="flex flex-col gap-3">
             <span
-              className="text-[10px] tracking-[0.25em] uppercase"
+              className="t-label"
               style={{ color: ts.textMuted }}
             >
               Navigate
@@ -81,7 +81,7 @@ export default function Footer() {
               <Link
                 key={to}
                 to={to}
-                className="relative text-sm transition-colors group w-fit"
+                className="relative t-body transition-colors group w-fit"
                 style={{ color: ts.textSecondary }}
               >
                 {label}
@@ -96,7 +96,7 @@ export default function Footer() {
           {/* Support */}
           <div className="flex flex-col gap-3">
             <span
-              className="text-[10px] tracking-[0.25em] uppercase"
+              className="t-label"
               style={{ color: ts.textMuted }}
             >
               Support
@@ -110,7 +110,7 @@ export default function Footer() {
               <Link
                 key={label}
                 to={to}
-                className="relative text-sm transition-colors group w-fit"
+                className="relative t-body transition-colors group w-fit"
                 style={{ color: ts.textSecondary }}
               >
                 {label}
@@ -164,7 +164,7 @@ export default function Footer() {
                   background: `radial-gradient(circle at 35% 35%, ${ts.accentLight}, ${ts.accent} 70%)`,
                 }}
               />
-              <span className="text-sm" style={{ color: ts.textPrimary }}>Breathe</span>
+              <span className="t-body" style={{ color: ts.textPrimary }}>Breathe</span>
             </Link>
 
             <div className="flex gap-4">
@@ -187,7 +187,7 @@ export default function Footer() {
               <Link
                 key={label}
                 to={to}
-                className="text-xs transition-colors"
+                className="t-caption transition-colors"
                 style={{ color: ts.textSecondary }}
               >
                 {label}
@@ -196,7 +196,7 @@ export default function Footer() {
           </div>
 
           {/* Bottom */}
-          <span className="text-[10px]" style={{ color: ts.textDim }}>
+          <span className="t-label" style={{ color: ts.textDim }}>
             © {year} Breathe · {t("footer.rights")}
           </span>
         </div>

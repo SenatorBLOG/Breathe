@@ -222,7 +222,7 @@ export default function SleepStoryPage() {
             <h1 className="text-2xl sm:text-3xl font-semibold" style={{ color: ts.textPrimary }}>
               AI Sleep Story
             </h1>
-            <p className="text-sm" style={{ color: ts.textMuted }}>
+            <p className="t-body" style={{ color: ts.textMuted }}>
               Describe a peaceful scene — AI writes a calming story just for you
             </p>
           </div>
@@ -233,7 +233,7 @@ export default function SleepStoryPage() {
 
             {/* Scene input */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs tracking-wide uppercase" style={{ color: ts.textMuted }}>
+              <label className="t-caption tracking-wide uppercase" style={{ color: ts.textMuted }}>
                 Scene
               </label>
               <input
@@ -242,7 +242,7 @@ export default function SleepStoryPage() {
                 onChange={e => setTheme(e.target.value)}
                 placeholder="e.g. a quiet forest at dusk…"
                 maxLength={200}
-                className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
+                className="w-full rounded-xl px-4 py-3 t-body outline-none transition-all"
                 style={{
                   background: ts.pageBg,
                   border: `1px solid ${ts.border}`,
@@ -256,7 +256,7 @@ export default function SleepStoryPage() {
                   <button
                     key={p.value}
                     onClick={() => setTheme(p.value)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs transition-all"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full t-caption transition-all"
                     style={{
                       background: theme === p.value ? `${ts.accent}20` : ts.pageBg,
                       border: `1px solid ${theme === p.value ? ts.accent : ts.border}`,
@@ -273,7 +273,7 @@ export default function SleepStoryPage() {
             {/* Duration + Language row */}
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
-                <label className="text-xs tracking-wide uppercase" style={{ color: ts.textMuted }}>
+                <label className="t-caption tracking-wide uppercase" style={{ color: ts.textMuted }}>
                   Duration
                 </label>
                 <div className="flex gap-1.5">
@@ -281,7 +281,7 @@ export default function SleepStoryPage() {
                     <button
                       key={d.value}
                       onClick={() => setDuration(d.value as any)}
-                      className="flex-1 flex flex-col items-center gap-0.5 py-2 rounded-xl text-xs transition-all"
+                      className="flex-1 flex flex-col items-center gap-0.5 py-2 rounded-xl t-caption transition-all"
                       style={{
                         background: duration === d.value ? `${ts.accent}20` : ts.pageBg,
                         border: `1px solid ${duration === d.value ? ts.accent : ts.border}`,
@@ -289,14 +289,14 @@ export default function SleepStoryPage() {
                       }}
                     >
                       <span className="font-medium">{d.label}</span>
-                      <span className="text-[10px] opacity-70">{d.desc}</span>
+                      <span className="t-label opacity-70">{d.desc}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-xs tracking-wide uppercase" style={{ color: ts.textMuted }}>
+                <label className="t-caption tracking-wide uppercase" style={{ color: ts.textMuted }}>
                   Language
                 </label>
                 <div className="flex gap-1.5">
@@ -304,7 +304,7 @@ export default function SleepStoryPage() {
                     <button
                       key={l.code}
                       onClick={() => setLanguage(l.code)}
-                      className="flex-1 py-2 rounded-xl text-xs transition-all"
+                      className="flex-1 py-2 rounded-xl t-caption transition-all"
                       style={{
                         background: language === l.code ? `${ts.accent}20` : ts.pageBg,
                         border: `1px solid ${language === l.code ? ts.accent : ts.border}`,
@@ -322,7 +322,7 @@ export default function SleepStoryPage() {
             <button
               onClick={generate}
               disabled={loading}
-              className="w-full py-3.5 rounded-xl text-sm font-medium text-white transition-all disabled:opacity-60"
+              className="w-full py-3.5 rounded-xl t-body font-medium text-white transition-all disabled:opacity-60"
               style={{ background: ts.btnGradient, boxShadow: loading ? 'none' : ts.btnShadow }}
             >
               {loading ? (
@@ -336,7 +336,7 @@ export default function SleepStoryPage() {
             </button>
 
             {error && (
-              <p className="text-xs text-center" style={{ color: '#FF8A8A' }}>{error}</p>
+              <p className="t-caption text-center" style={{ color: '#FF8A8A' }}>{error}</p>
             )}
           </div>
 
@@ -395,7 +395,7 @@ export default function SleepStoryPage() {
                         <button
                           key={s}
                           onClick={() => changeSpeed(s)}
-                          className="px-2.5 py-1 rounded-lg text-xs transition-all"
+                          className="px-2.5 py-1 rounded-lg t-caption transition-all"
                           style={{
                             background: speed === s ? `${ts.accent}20` : 'transparent',
                             border: `1px solid ${speed === s ? ts.accent : ts.border}`,
@@ -412,7 +412,7 @@ export default function SleepStoryPage() {
 
               {/* Story text */}
               <div className="px-5 pb-2 max-h-72 overflow-y-auto">
-                <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: ts.textSecondary }}>
+                <p className="t-body leading-relaxed whitespace-pre-wrap" style={{ color: ts.textSecondary }}>
                   {story}
                 </p>
               </div>
@@ -422,14 +422,14 @@ export default function SleepStoryPage() {
                 style={{ borderColor: `${ts.border}60` }}>
                 <button
                   onClick={generate}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs transition-all"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl t-caption transition-all"
                   style={{ background: ts.pageBg, border: `1px solid ${ts.border}`, color: ts.textMuted }}
                 >
                   🔁 New story
                 </button>
                 <button
                   onClick={copyStory}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs transition-all"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl t-caption transition-all"
                   style={{ background: ts.pageBg, border: `1px solid ${ts.border}`, color: ts.textMuted }}
                 >
                   📋 Copy
@@ -439,7 +439,7 @@ export default function SleepStoryPage() {
           )}
 
           {/* Tip */}
-          <p className="text-xs text-center" style={{ color: ts.textDim }}>
+          <p className="t-caption text-center" style={{ color: ts.textDim }}>
             Tip: use headphones and dim your screen for the best experience
           </p>
         </main>

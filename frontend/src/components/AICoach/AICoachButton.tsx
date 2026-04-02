@@ -33,7 +33,7 @@ export default function AICoachButton({ variant = 'floating' }: AICoachButtonPro
         {!open && (
           <button 
             onClick={() => setOpen(true)}
-            className="coach-hint-btn flex items-center gap-2.5 px-6 py-2.5 rounded-full text-[11px] text-white font-bold uppercase tracking-[0.15em] transition-all hover:scale-105 active:scale-95 shadow-xl"
+            className="coach-hint-btn flex items-center gap-2.5 px-6 py-2.5 rounded-full t-caption text-white font-bold uppercase tracking-[0.15em] transition-all hover:scale-105 active:scale-95 shadow-xl"
             style={{ 
               background: `linear-gradient(135deg, ${ts.accent}, #4AE8A0)`,
               boxShadow: `0 10px 30px ${ts.accent}40`
@@ -70,7 +70,7 @@ export default function AICoachButton({ variant = 'floating' }: AICoachButtonPro
         style={{ background: ts.accent }}
       >
         <Sparkles size={20} className="sm:mr-2" />
-        <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider">AI Coach</span>
+        <span className="hidden sm:inline t-caption font-bold uppercase tracking-wider">AI Coach</span>
       </button>
 
       {open && (

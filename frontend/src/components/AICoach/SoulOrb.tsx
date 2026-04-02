@@ -196,7 +196,7 @@ export default function SoulOrb() {
                 color: ts.textPrimary
               }}
             >
-              <p className="text-[10px] uppercase tracking-widest flex gap-2">
+              <p className="t-label uppercase tracking-widest flex gap-2">
                 <span style={{ color: ts.accent }}>✦</span>
                 {hovered ? 'Talk to me' : 'Your AI coach'}
               </p>

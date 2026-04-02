@@ -101,8 +101,8 @@ export default function LoginPage() {
                     animation: 'orbPulse 4s ease-in-out infinite',
                   }} />
                 <div>
-                  <p className="text-xl font-light tracking-wide" style={{ color: ts.textPrimary }}>Breathe</p>
-                  <p className="text-xs tracking-[0.2em] uppercase mt-0.5" style={{ color: ts.textMuted }}>
+                  <p className="t-heading font-light tracking-wide" style={{ color: ts.textPrimary }}>Breathe</p>
+                  <p className="t-caption tracking-[0.2em] uppercase mt-0.5" style={{ color: ts.textMuted }}>
                     Mindful breathing app
                   </p>
                 </div>
@@ -124,14 +124,14 @@ export default function LoginPage() {
                   { icon: '🌊', text: 'Community posts to catch up on' },
                 ].map(({ icon, text }) => (
                   <div key={text} className="flex items-center gap-3">
-                    <span className="text-base">{icon}</span>
-                    <p className="text-sm" style={{ color: ts.textMuted }}>{text}</p>
+                    <span className="t-body">{icon}</span>
+                    <p className="t-body" style={{ color: ts.textMuted }}>{text}</p>
                   </div>
                 ))}
               </div>
 
               <div>
-                <p className="text-xs" style={{ color: ts.textMuted }}>
+                <p className="t-caption" style={{ color: ts.textMuted }}>
                   No account?{' '}
                   <Link to="/signup" className="hover:underline" style={{ color: ts.accent }}>
                     Create one free →
@@ -155,10 +155,10 @@ export default function LoginPage() {
                 <div className="p-7 sm:p-9 flex flex-col gap-6">
                   {/* Header */}
                   <div>
-                    <h2 className="text-xl font-medium tracking-wide" style={{ color: ts.textPrimary }}>
+                    <h2 className="t-heading font-medium tracking-wide" style={{ color: ts.textPrimary }}>
                       Sign in
                     </h2>
-                    <p className="text-xs mt-1" style={{ color: ts.textMuted }}>
+                    <p className="t-caption mt-1" style={{ color: ts.textMuted }}>
                       {t("auth.noAccount")}{' '}
                       <Link to="/signup" className="hover:underline" style={{ color: ts.accent }}>
                         {t("auth.signUp")}
@@ -169,7 +169,7 @@ export default function LoginPage() {
                   <form onSubmit={handleLogin} className="flex flex-col gap-4">
                     {/* Email */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                         Email
                       </label>
                       <input
@@ -178,7 +178,7 @@ export default function LoginPage() {
                         onChange={e => setEmail(e.target.value)}
                         required
                         placeholder="you@example.com"
-                        className="w-full rounded-xl px-4 py-3 text-sm placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
+                        className="w-full rounded-xl px-4 py-3 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                         style={{
                           backgroundColor: ts.cardBg,
                           border: `1px solid ${ts.border}`,
@@ -190,10 +190,10 @@ export default function LoginPage() {
                     {/* Password */}
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center justify-between">
-                        <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                        <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                           Password
                         </label>
-                        <Link to="/forgot-password" className="text-[9px] transition-colors" style={{ color: ts.accent }}>
+                        <Link to="/forgot-password" className="t-label transition-colors" style={{ color: ts.accent }}>
                           {t("auth.forgotPassword")}
                         </Link>
                       </div>
@@ -204,7 +204,7 @@ export default function LoginPage() {
                           onChange={e => setPassword(e.target.value)}
                           required
                           placeholder="••••••••"
-                          className="w-full rounded-xl px-4 py-3 pr-10 text-sm placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
+                          className="w-full rounded-xl px-4 py-3 pr-10 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                           style={{
                             backgroundColor: ts.cardBg,
                             border: `1px solid ${ts.border}`,
@@ -236,14 +236,14 @@ export default function LoginPage() {
                       >
                         {rememberMe && <div className="w-2 h-2 rounded-sm bg-white" />}
                       </div>
-                      <span className="text-xs" style={{ color: ts.textMuted }}>
+                      <span className="t-caption" style={{ color: ts.textMuted }}>
                         Remember me
                       </span>
                     </label>
 
                     {/* Error */}
                     {error && (
-                      <div className="px-4 py-3 rounded-xl text-xs text-center"
+                      <div className="px-4 py-3 rounded-xl t-caption text-center"
                         style={{
                           backgroundColor: 'rgba(255,138,138,0.1)',
                           border: '1px solid rgba(255,138,138,0.25)',
@@ -257,7 +257,7 @@ export default function LoginPage() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-3 rounded-xl text-sm font-medium tracking-wide transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.45)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 mt-1"
+                      className="w-full py-3 rounded-xl t-body font-medium tracking-wide transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.45)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 mt-1"
                       style={{ background: ts.btnGradient }}
                     >
                       {loading ? 'Signing in…' : t("auth.signIn") + ' →'}
@@ -267,7 +267,7 @@ export default function LoginPage() {
                   {/* Divider */}
                   <div className="flex items-center gap-3">
                     <div className="flex-1 h-px" style={{ backgroundColor: ts.border }} />
-                    <span className="text-[9px] uppercase tracking-widest" style={{ color: ts.textDim }}>
+                    <span className="t-label uppercase tracking-widest" style={{ color: ts.textDim }}>
                       or continue with
                     </span>
                     <div className="flex-1 h-px" style={{ backgroundColor: ts.border }} />
@@ -278,7 +278,7 @@ export default function LoginPage() {
                     <button
                       type="button"
                       onClick={() => googleLogin()}
-                      className="flex items-center justify-center gap-3 w-full py-3 px-5 rounded-xl border text-sm transition-all hover:opacity-90 active:scale-[0.98]"
+                      className="flex items-center justify-center gap-3 w-full py-3 px-5 rounded-xl border t-body transition-all hover:opacity-90 active:scale-[0.98]"
                       style={{ backgroundColor: ts.cardBg, borderColor: ts.border, color: ts.textSecondary }}
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">

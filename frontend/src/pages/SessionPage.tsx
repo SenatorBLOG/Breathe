@@ -86,29 +86,29 @@ function JournalEntryCard({ session }: { session: Session }) {
         className="w-full flex items-start gap-3 p-4 text-left hover:opacity-80 transition-opacity"
         onClick={() => setExpanded(e => !e)}
       >
-        <span className="text-xl flex-shrink-0 mt-0.5">{emoji}</span>
+        <span className="t-heading flex-shrink-0 mt-0.5">{emoji}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1">
-            <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>
+            <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>
               {date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
               <span className="font-normal ml-1.5" style={{ color: ts.textMuted }}>
                 {date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
               </span>
             </p>
             {session.sessionLength > 0 && (
-              <span className="text-[10px] px-2 py-0.5 rounded-full flex-shrink-0"
+              <span className="t-caption px-2 py-0.5 rounded-full flex-shrink-0"
                 style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}>
                 {session.sessionLength}m
               </span>
             )}
           </div>
           {session.notes && (
-            <p className="text-xs leading-relaxed line-clamp-2" style={{ color: ts.textSecondary }}>
+            <p className="t-caption leading-relaxed line-clamp-2" style={{ color: ts.textSecondary }}>
               {session.notes}
             </p>
           )}
           {nlp?.oneLineSummary && !expanded && (
-            <p className="text-xs mt-1.5 italic" style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
+            <p className="t-caption mt-1.5 italic" style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
               {nlp.oneLineSummary}
             </p>
           )}
@@ -120,19 +120,19 @@ function JournalEntryCard({ session }: { session: Session }) {
 
       {expanded && nlp && (
         <div className="px-4 pb-4 border-t flex flex-col gap-3" style={{ borderColor: ts.border, paddingTop: 12 }}>
-          <p className="text-xs italic" style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
+          <p className="t-caption italic" style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
             "{nlp.oneLineSummary}"
           </p>
           {/* Score bar */}
           <div className="flex items-center gap-3">
-            <span className="text-[10px] uppercase tracking-wider flex-shrink-0" style={{ color: ts.textMuted }}>Score</span>
+            <span className="t-label flex-shrink-0" style={{ color: ts.textMuted }}>Score</span>
             <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-white/10">
               <div className="h-full rounded-full" style={{
                 width: `${((nlp.score + 1) / 2) * 100}%`,
                 background: nlp.score > 0.2 ? ts.accent : nlp.score < -0.2 ? '#FF8A8A' : '#7AAEC8',
               }} />
             </div>
-            <span className="text-xs font-medium tabular-nums flex-shrink-0"
+            <span className="t-caption font-medium tabular-nums flex-shrink-0"
               style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
               {nlp.score >= 0 ? '+' : ''}{nlp.score.toFixed(2)}
             </span>
@@ -141,23 +141,23 @@ function JournalEntryCard({ session }: { session: Session }) {
           {nlp.themes.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {nlp.themes.map(t => (
-                <span key={t} className="text-[10px] px-2 py-0.5 rounded-full capitalize"
+                <span key={t} className="t-caption px-2 py-0.5 rounded-full capitalize"
                   style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}>{t}</span>
               ))}
-              <span className="text-[10px] px-2 py-0.5 rounded-full"
+              <span className="t-caption px-2 py-0.5 rounded-full"
                 style={{ backgroundColor: ts.border, color: ts.textMuted }}>intensity {nlp.intensity}/10</span>
             </div>
           )}
           {/* Technique */}
           {nlp.suggestedTechnique && (
             <div className="flex items-center justify-between">
-              <p className="text-xs" style={{ color: ts.textMuted }}>
+              <p className="t-caption" style={{ color: ts.textMuted }}>
                 Try: <span className="font-medium" style={{ color: ts.textSecondary }}>
                   {TECHNIQUE_LABELS[nlp.suggestedTechnique] ?? nlp.suggestedTechnique}
                 </span>
               </p>
               <Link to={TECHNIQUE_LINKS[nlp.suggestedTechnique] ?? '/breathing'}
-                className="flex items-center gap-1 text-xs font-medium hover:opacity-80"
+                className="flex items-center gap-1 t-caption font-medium hover:opacity-80"
                 style={{ color: ts.accent }}>
                 Try it <ArrowRight size={11} />
               </Link>
@@ -166,8 +166,8 @@ function JournalEntryCard({ session }: { session: Session }) {
           {/* Full notes */}
           {session.notes && (
             <div className="rounded-xl p-3" style={{ backgroundColor: `${ts.border}40` }}>
-              <p className="text-[10px] uppercase tracking-wider mb-1.5" style={{ color: ts.textMuted }}>Notes</p>
-              <p className="text-xs leading-relaxed whitespace-pre-wrap" style={{ color: ts.textSecondary }}>
+              <p className="t-label mb-1.5" style={{ color: ts.textMuted }}>Notes</p>
+              <p className="t-caption leading-relaxed whitespace-pre-wrap" style={{ color: ts.textSecondary }}>
                 {session.notes}
               </p>
             </div>
@@ -186,7 +186,7 @@ function AdSlot({ label = "Advertisement", className = "" }: { label?: string; c
       className={`flex items-center justify-center border border-dashed rounded-xl ${className}`}
       style={{ borderColor: ts.border, backgroundColor: `${ts.cardBg}40` }}
     >
-      <span className="text-[9px] tracking-[0.25em] uppercase select-none" style={{ color: ts.textDim }}>{label}</span>
+      <span className="t-label select-none" style={{ color: ts.textDim }}>{label}</span>
     </div>
   );
 }
@@ -199,9 +199,9 @@ function SummaryCard({ icon, label, value, sub }: { icon: React.ReactNode; label
       style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}>
       <span style={{ color: `${ts.accent}BB` }}>{icon}</span>
       <div>
-        <p className="text-base sm:text-lg font-medium tabular-nums leading-none" style={{ color: ts.textPrimary }}>{value}</p>
-        <p className="text-[9px] uppercase tracking-widest mt-0.5" style={{ color: ts.textMuted }}>{label}</p>
-        {sub && <p className="text-[9px] mt-0.5" style={{ color: ts.textDim }}>{sub}</p>}
+        <p className="t-body sm:text-lg font-medium tabular-nums leading-none" style={{ color: ts.textPrimary }}>{value}</p>
+        <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>{label}</p>
+        {sub && <p className="t-caption mt-0.5" style={{ color: ts.textDim }}>{sub}</p>}
       </div>
     </div>
   );
@@ -222,9 +222,9 @@ function ScoreRow({ label, value, color }: { label: string; value: number; color
   const ts = useThemeStyles();
   return (
     <div className="flex items-center gap-2">
-      <span className="text-[10px] w-16 flex-shrink-0" style={{ color: ts.textDim }}>{label}</span>
+      <span className="t-caption w-16 flex-shrink-0" style={{ color: ts.textDim }}>{label}</span>
       <MiniBar value={value} color={color} />
-      <span className="text-[10px] tabular-nums flex-shrink-0" style={{ color }}>{value}</span>
+      <span className="t-caption tabular-nums flex-shrink-0" style={{ color }}>{value}</span>
     </div>
   );
 }
@@ -248,16 +248,16 @@ function SessionCard({ session, onDelete }: { session: Session; onDelete: (id: s
       {/* Header row */}
       <div className="flex items-center gap-3 px-4 py-3 cursor-pointer select-none"
         onClick={() => setExpanded(e => !e)}>
-        <span className="text-xl flex-shrink-0">{moodEmoji(session.moodAfter)}</span>
+        <span className="t-heading flex-shrink-0">{moodEmoji(session.moodAfter)}</span>
 
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-medium truncate" style={{ color: ts.textPrimary }}>{fmtDate(session.sessionDate)}</p>
-          <p className="text-[10px] truncate" style={{ color: ts.textMuted }}>
+          <p className="t-caption font-medium truncate" style={{ color: ts.textPrimary }}>{fmtDate(session.sessionDate)}</p>
+          <p className="t-caption truncate" style={{ color: ts.textMuted }}>
             {fmtTime(session.sessionDate)} · {session.sessionLength}m · {session.cycles} cycles · {session.noiseLevel}
           </p>
         </div>
 
-        <span className="text-[10px] px-2 py-0.5 rounded-full border flex-shrink-0 tabular-nums"
+        <span className="t-caption px-2 py-0.5 rounded-full border flex-shrink-0 tabular-nums"
           style={{ color: deltaCol, borderColor: `${deltaCol}33`, background: `${deltaCol}0D` }}>
           {session.moodBefore}→{session.moodAfter} {delta > 0 ? `+${delta}` : delta < 0 ? `${delta}` : "="}
         </span>
@@ -278,27 +278,27 @@ function SessionCard({ session, onDelete }: { session: Session; onDelete: (id: s
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[10px]" style={{ color: ts.textMuted }}>Distractions:</span>
+            <span className="t-caption" style={{ color: ts.textMuted }}>Distractions:</span>
             <div className="flex gap-1">
               {Array.from({ length: Math.min(session.distractionCount, 10) }).map((_, i) => (
                 <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#FF8A8A]/40" />
               ))}
-              {session.distractionCount === 0 && <span className="text-[10px]" style={{ color: ts.textDim }}>none</span>}
+              {session.distractionCount === 0 && <span className="t-caption" style={{ color: ts.textDim }}>none</span>}
             </div>
             {session.distractionCount > 10 && (
-              <span className="text-[10px]" style={{ color: ts.textDim }}>+{session.distractionCount - 10}</span>
+              <span className="t-caption" style={{ color: ts.textDim }}>+{session.distractionCount - 10}</span>
             )}
           </div>
 
           {session.notes && (
-            <p className="text-[10px] italic leading-relaxed border-t pt-2"
+            <p className="t-caption italic leading-relaxed border-t pt-2"
               style={{ color: ts.textMuted, borderColor: `${ts.border}40` }}>
               "{session.notes}"
             </p>
           )}
 
           <button onClick={() => onDelete(session._id)}
-            className="self-end flex items-center gap-1.5 text-[10px] hover:text-[#FF8A8A] transition-colors"
+            className="self-end flex items-center gap-1.5 t-caption hover:text-[#FF8A8A] transition-colors"
             style={{ color: ts.textMuted }}>
             <Trash2 size={11} /> Delete
           </button>
@@ -339,7 +339,7 @@ function DotSlider({ value, max = 10, onChange, color }: {
             opacity: i <= value ? 1 : 0.4,
           }} />
       ))}
-      <span className="text-[10px] tabular-nums ml-1" style={{ color }}>{value}</span>
+      <span className="t-caption tabular-nums ml-1" style={{ color }}>{value}</span>
     </div>
   );
 }
@@ -371,7 +371,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
     anxious: t('sessions.feelings.anxious'), refreshed: t('sessions.feelings.refreshed'),
   };
 
-  const inputCls = "outline-none transition-colors text-xs rounded-xl px-3 py-2";
+  const inputCls = "outline-none transition-colors t-caption rounded-xl px-3 py-2";
   const inputStyle = {
     backgroundColor: ts.cardBg,
     border: `1px solid ${ts.border}`,
@@ -400,8 +400,8 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
             <Brain size={13} className="text-white" />
           </div>
           <div>
-            <p className="text-sm font-medium leading-none" style={{ color: ts.textPrimary }}>Log a session</p>
-            <p className="text-[10px] mt-0.5" style={{ color: ts.textMuted }}>Your data trains your personal AI coach</p>
+            <p className="t-body font-medium leading-none" style={{ color: ts.textPrimary }}>Log a session</p>
+            <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>Your data trains your personal AI coach</p>
           </div>
         </div>
         <button onClick={onClose} className="transition-colors p-1" style={{ color: ts.textMuted }}>
@@ -413,7 +413,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
       <div className="flex border-b" style={{ borderColor: ts.border }}>
         {STEPS.map((s, i) => (
           <button key={i} onClick={() => setStep(i)}
-            className="flex-1 py-2 text-[9px] uppercase tracking-widest transition-colors"
+            className="flex-1 py-2 t-label transition-colors"
             style={{
               color: step === i ? ts.textPrimary : ts.textDim,
               borderBottom: step === i ? `1px solid ${ts.accent}` : "none",
@@ -429,31 +429,31 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         {step === 0 && (
           <>
             <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textDim }}>Date & time</label>
+              <label className="t-label" style={{ color: ts.textDim }}>Date & time</label>
               <input type="datetime-local" value={form.sessionDate}
                 onChange={e => set("sessionDate", e.target.value)}
                 className={inputCls} style={inputStyle} />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textDim }}>Duration (min)</label>
+                <label className="t-label" style={{ color: ts.textDim }}>Duration (min)</label>
                 <input type="number" min={1} max={120} value={form.sessionLength}
                   onChange={e => set("sessionLength", Number(e.target.value))}
                   className={inputCls} style={inputStyle} />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textDim }}>Cycles</label>
+                <label className="t-label" style={{ color: ts.textDim }}>Cycles</label>
                 <input type="number" min={0} max={200} value={form.cycles}
                   onChange={e => set("cycles", Number(e.target.value))}
                   className={inputCls} style={inputStyle} />
               </div>
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textDim }}>Noise level</label>
+              <label className="t-label" style={{ color: ts.textDim }}>Noise level</label>
               <div className="flex gap-2">
                 {NOISE_OPTS.map(n => (
                   <button key={n} type="button" onClick={() => set("noiseLevel", n)}
-                    className="flex-1 py-2 rounded-xl text-[10px] border transition-all"
+                    className="flex-1 py-2 rounded-xl t-caption border transition-all"
                     style={{
                       borderColor: form.noiseLevel === n ? ts.borderHover : ts.border,
                       backgroundColor: form.noiseLevel === n ? ts.cardBgHover : "transparent",
@@ -470,24 +470,24 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         {/* Step 1 — mood shift */}
         {step === 1 && (
           <div className="flex flex-col gap-4">
-            <p className="text-xs" style={{ color: ts.textMuted }}>How did your mood shift during this session?</p>
+            <p className="t-caption" style={{ color: ts.textMuted }}>How did your mood shift during this session?</p>
             {(["Before", "After"] as const).map((label, i) => {
               const key = i === 0 ? "moodBefore" : "moodAfter" as const;
               const val = form[key];
               const color = i === 0 ? ts.textDim : ts.accent;
               return (
                 <div key={label} className="flex items-center gap-3">
-                  <span className="text-[10px] uppercase tracking-widest w-12 flex-shrink-0" style={{ color: ts.textMuted }}>{label}</span>
+                  <span className="t-label w-12 flex-shrink-0" style={{ color: ts.textMuted }}>{label}</span>
                   <input type="range" min={1} max={10} step={1} value={val}
                     onChange={e => set(key, Number(e.target.value))}
                     className="flex-1 appearance-none h-1.5 rounded-full cursor-pointer"
                     style={{ background: `linear-gradient(to right, ${color} ${(val-1)/9*100}%, ${ts.border}80 ${(val-1)/9*100}%)`, accentColor: color }} />
-                  <span className="text-xs tabular-nums w-5 text-right flex-shrink-0" style={{ color }}>{val}</span>
+                  <span className="t-caption tabular-nums w-5 text-right flex-shrink-0" style={{ color }}>{val}</span>
                 </div>
               );
             })}
             <div className="flex items-center justify-center">
-              <span className="text-xs px-3 py-1 rounded-full border tabular-nums"
+              <span className="t-caption px-3 py-1 rounded-full border tabular-nums"
                 style={{ color: moodDeltaColor, borderColor: `${moodDeltaColor}33`, background: `${moodDeltaColor}0D` }}>
                 {moodDelta > 0 ? `+${moodDelta} better` : moodDelta < 0 ? `${moodDelta} worse` : "no change"}
               </span>
@@ -498,7 +498,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         {/* Step 2 — feelings grid */}
         {step === 2 && (
           <div className="flex flex-col gap-3">
-            <p className="text-xs" style={{ color: ts.textMuted }}>How did you feel after? Pick all that apply.</p>
+            <p className="t-caption" style={{ color: ts.textMuted }}>How did you feel after? Pick all that apply.</p>
             <div className="grid grid-cols-4 gap-2">
               {FEELINGS.map(f => {
                 const on = feelings.includes(f);
@@ -509,8 +509,8 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
                       borderColor: on ? ts.borderHover : ts.border,
                       backgroundColor: on ? ts.cardBgHover : "transparent",
                     }}>
-                    <span className={`text-base transition-all ${on ? "" : "opacity-45"}`}>{FEELING_ICONS[f]}</span>
-                    <span className="text-[9px] uppercase tracking-wide" style={{ color: on ? ts.textPrimary : ts.textDim }}>{FEELING_LABELS[f] ?? f}</span>
+                    <span className={`t-body transition-all ${on ? "" : "opacity-45"}`}>{FEELING_ICONS[f]}</span>
+                    <span className="t-label" style={{ color: on ? ts.textPrimary : ts.textDim }}>{FEELING_LABELS[f] ?? f}</span>
                   </button>
                 );
               })}
@@ -528,12 +528,12 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
               { label: "Stress",   key: "stressLevel" as const,   color: "#FF8A8A" },
             ].map(({ label, key, color }) => (
               <div key={key} className="flex flex-col gap-1">
-                <span className="text-[10px] uppercase tracking-widest" style={{ color: ts.textDim }}>{label}</span>
+                <span className="t-label" style={{ color: ts.textDim }}>{label}</span>
                 <DotSlider value={form[key] as number} onChange={v => set(key, v)} color={color} />
               </div>
             ))}
             <div className="flex flex-col gap-1 mt-1">
-              <span className="text-[10px] uppercase tracking-widest" style={{ color: ts.textDim }}>Notes (optional)</span>
+              <span className="t-label" style={{ color: ts.textDim }}>Notes (optional)</span>
               <textarea value={form.notes} onChange={e => set("notes", e.target.value)} rows={2}
                 placeholder="Any observations…"
                 className={`${inputCls} resize-none`} style={inputStyle} />
@@ -546,7 +546,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
       <div className="flex items-center gap-3 px-6 pb-5">
         {step > 0 && (
           <button onClick={() => setStep(s => s - 1)}
-            className="px-4 py-2 rounded-xl text-xs transition-all"
+            className="px-4 py-2 rounded-xl t-caption transition-all"
             style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}>
             Back
           </button>
@@ -554,13 +554,13 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         <div className="flex-1" />
         {step < 3 ? (
           <button onClick={() => setStep(s => s + 1)}
-            className="px-6 py-2 rounded-xl text-xs text-white font-medium tracking-wide hover:scale-105 active:scale-95 transition-all"
+            className="px-6 py-2 rounded-xl t-caption text-white font-medium tracking-wide hover:scale-105 active:scale-95 transition-all"
             style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
             Continue →
           </button>
         ) : (
           <button onClick={handleSave}
-            className="px-6 py-2 rounded-xl text-xs text-white font-medium tracking-wide hover:scale-105 active:scale-95 transition-all"
+            className="px-6 py-2 rounded-xl t-caption text-white font-medium tracking-wide hover:scale-105 active:scale-95 transition-all"
             style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
             Save session ✓
           </button>
@@ -706,13 +706,13 @@ export function SessionsSection() {
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-6 pb-2">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <p className="text-[10px] tracking-[0.3em] uppercase mb-1" style={{ color: ts.textMuted }}>Breathe · History</p>
+              <p className="t-label mb-1" style={{ color: ts.textMuted }}>Breathe · History</p>
               <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>My Sessions</h1>
             </div>
             {activeTab === "sessions" && (
               <button
                 onClick={() => setShowAdd(v => !v)}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium tracking-wide transition-all hover:scale-105 active:scale-95"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white t-body font-medium tracking-wide transition-all hover:scale-105 active:scale-95"
                 style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
               >
                 {showAdd ? <X size={14} /> : <Plus size={14} />}
@@ -727,7 +727,7 @@ export function SessionsSection() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className="px-5 py-1.5 rounded-lg text-xs font-medium tracking-wide transition-all capitalize"
+                className="px-5 py-1.5 rounded-lg t-caption font-medium tracking-wide transition-all capitalize"
                 style={{
                   backgroundColor: activeTab === tab ? ts.cardBg : 'transparent',
                   color: activeTab === tab ? ts.textPrimary : ts.textMuted,
@@ -749,33 +749,33 @@ export function SessionsSection() {
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                 <div className="flex items-center gap-2">
                   <Brain size={13} style={{ color: ts.accent }} />
-                  <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>Emotional overview</p>
+                  <p className="t-label" style={{ color: ts.textMuted }}>Emotional overview</p>
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <p className="text-xl font-light tabular-nums" style={{ color: ts.textPrimary }}>{journalSessions.length}</p>
-                    <p className="text-[10px] uppercase tracking-wider mt-0.5" style={{ color: ts.textMuted }}>analyzed</p>
+                    <p className="t-heading font-light tabular-nums" style={{ color: ts.textPrimary }}>{journalSessions.length}</p>
+                    <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>analyzed</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium" style={{
+                    <p className="t-body font-medium" style={{
                       color: journalStats.avgScore > 0.2
                         ? ts.accent : journalStats.avgScore < -0.2 ? '#FF8A8A' : '#7AAEC8'
                     }}>
                       {journalStats.avgScore > 0.2 ? 'Generally positive' : journalStats.avgScore < -0.2 ? 'Challenging' : 'Balanced'}
                     </p>
-                    <p className="text-[10px] uppercase tracking-wider mt-0.5" style={{ color: ts.textMuted }}>overall mood</p>
+                    <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>overall mood</p>
                   </div>
                   <div>
-                    <p className="text-xl font-light tabular-nums" style={{ color: ts.accent }}>{journalStats.sentimentDist.positive}</p>
-                    <p className="text-[10px] uppercase tracking-wider mt-0.5" style={{ color: ts.textMuted }}>positive</p>
+                    <p className="t-heading font-light tabular-nums" style={{ color: ts.accent }}>{journalStats.sentimentDist.positive}</p>
+                    <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>positive</p>
                   </div>
                 </div>
                 {journalStats.topThemes.length > 0 && (
                   <div>
-                    <p className="text-[10px] uppercase tracking-wider mb-2" style={{ color: ts.textMuted }}>Recurring themes</p>
+                    <p className="t-label mb-2" style={{ color: ts.textMuted }}>Recurring themes</p>
                     <div className="flex flex-wrap gap-1.5">
                       {journalStats.topThemes.map(({ theme, count }) => (
-                        <span key={theme} className="text-xs px-2.5 py-1 rounded-full capitalize"
+                        <span key={theme} className="t-caption px-2.5 py-1 rounded-full capitalize"
                           style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}>
                           {theme} · {count}
                         </span>
@@ -796,9 +796,9 @@ export function SessionsSection() {
                     )}
                   </div>
                   <div className="flex gap-4 mt-1.5">
-                    <span className="text-[10px]" style={{ color: ts.accent }}>● Positive {journalStats.sentimentDist.positive}</span>
-                    <span className="text-[10px]" style={{ color: '#7AAEC8' }}>● Neutral {journalStats.sentimentDist.neutral}</span>
-                    <span className="text-[10px]" style={{ color: '#FF8A8A' }}>● Difficult {journalStats.sentimentDist.negative}</span>
+                    <span className="t-caption" style={{ color: ts.accent }}>● Positive {journalStats.sentimentDist.positive}</span>
+                    <span className="t-caption" style={{ color: '#7AAEC8' }}>● Neutral {journalStats.sentimentDist.neutral}</span>
+                    <span className="t-caption" style={{ color: '#FF8A8A' }}>● Difficult {journalStats.sentimentDist.negative}</span>
                   </div>
                 </div>
               </div>
@@ -810,13 +810,13 @@ export function SessionsSection() {
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                 <BookOpen size={34} style={{ color: ts.textDim }} />
                 <div>
-                  <p className="text-sm font-medium mb-1" style={{ color: ts.textSecondary }}>Journal is empty</p>
-                  <p className="text-xs max-w-xs" style={{ color: ts.textMuted }}>
+                  <p className="t-body font-medium mb-1" style={{ color: ts.textSecondary }}>Journal is empty</p>
+                  <p className="t-caption max-w-xs" style={{ color: ts.textMuted }}>
                     Add notes to your breathing sessions. AI will analyze your emotions and suggest techniques.
                   </p>
                 </div>
                 <Link to="/breathing"
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium hover:scale-105 transition-all"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white t-body font-medium hover:scale-105 transition-all"
                   style={{ background: ts.btnGradient }}>
                   Start a session <ArrowRight size={14} />
                 </Link>
@@ -827,9 +827,9 @@ export function SessionsSection() {
             {[...journalGroups.keys()].map(month => (
               <div key={month} className="flex flex-col gap-3">
                 <div className="flex items-center gap-3">
-                  <p className="text-xs font-medium tracking-wide" style={{ color: ts.textMuted }}>{month}</p>
+                  <p className="t-caption font-medium tracking-wide" style={{ color: ts.textMuted }}>{month}</p>
                   <div className="flex-1 h-px" style={{ backgroundColor: ts.border }} />
-                  <span className="text-[10px]" style={{ color: ts.textDim }}>
+                  <span className="t-caption" style={{ color: ts.textDim }}>
                     {journalGroups.get(month)!.length} {journalGroups.get(month)!.length === 1 ? 'entry' : 'entries'}
                   </span>
                 </div>
@@ -840,7 +840,7 @@ export function SessionsSection() {
             {journalSessions.length > 0 && (
               <div className="flex items-start gap-2 px-4 py-3 rounded-xl" style={{ backgroundColor: `${ts.accent}0A` }}>
                 <Sparkles size={12} style={{ color: ts.accent }} className="mt-0.5 flex-shrink-0" />
-                <p className="text-xs" style={{ color: ts.textMuted }}>
+                <p className="t-caption" style={{ color: ts.textMuted }}>
                   The more you journal, the better the AI understands your emotional patterns.
                 </p>
               </div>
@@ -856,7 +856,7 @@ export function SessionsSection() {
             {/* LEFT sidebar */}
             <aside className="hidden lg:flex flex-col gap-4 w-56 flex-shrink-0 pt-4">
               <div className="flex flex-col gap-2">
-                <p className="text-[9px] tracking-[0.25em] uppercase px-1 mb-1" style={{ color: ts.textDim }}>Overview</p>
+                <p className="t-label px-1 mb-1" style={{ color: ts.textDim }}>Overview</p>
                 <SummaryCard icon={<Timer size={14} />}      label={t("sessions.totalMinutes")} value={`${totalMins}m`} />
                 <SummaryCard icon={<Wind size={14} />}       label={t("sessions.totalCycles")}  value={String(totalCycles)} />
                 <SummaryCard icon={<Flame size={14} />}      label={t("sessions.sessions")}     value={String(sessions.length)} />
@@ -867,22 +867,22 @@ export function SessionsSection() {
               {/* Filters */}
               <div className="flex flex-col gap-2 rounded-2xl p-4 border"
                 style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}>
-                <p className="text-[9px] tracking-[0.25em] uppercase mb-1" style={{ color: ts.textDim }}>Filters</p>
+                <p className="t-label mb-1" style={{ color: ts.textDim }}>Filters</p>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px]" style={{ color: ts.textMuted }}>Min cycles: {minCycles}</label>
+                  <label className="t-caption" style={{ color: ts.textMuted }}>Min cycles: {minCycles}</label>
                   <input type="range" min={0} max={20} value={minCycles} onChange={e => setMinCycles(Number(e.target.value))}
                     className="w-full appearance-none h-1.5 rounded-full cursor-pointer"
                     style={{ background: `linear-gradient(to right, ${ts.accent} ${minCycles/20*100}%, ${ts.border}80 ${minCycles/20*100}%)`, accentColor: ts.accent }} />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px]" style={{ color: ts.textMuted }}>Min duration: {minDuration}m</label>
+                  <label className="t-caption" style={{ color: ts.textMuted }}>Min duration: {minDuration}m</label>
                   <input type="range" min={0} max={60} value={minDuration} onChange={e => setMinDuration(Number(e.target.value))}
                     className="w-full appearance-none h-1.5 rounded-full cursor-pointer"
                     style={{ background: `linear-gradient(to right, ${ts.accentLight} ${minDuration/60*100}%, ${ts.border}80 ${minDuration/60*100}%)`, accentColor: ts.accentLight }} />
                 </div>
                 {(minCycles > 0 || minDuration > 0) && (
                   <button onClick={() => { setMinCycles(0); setMinDuration(0); }}
-                    className="text-[9px] hover:underline self-end mt-1" style={{ color: ts.accent }}>
+                    className="t-caption hover:underline self-end mt-1" style={{ color: ts.accent }}>
                     Reset filters
                   </button>
                 )}
@@ -894,9 +894,9 @@ export function SessionsSection() {
               <div className="rounded-2xl border p-4" style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}>
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles size={11} style={{ color: ts.accent }} />
-                  <p className="text-[9px] tracking-[0.2em] uppercase" style={{ color: ts.textMuted }}>AI coach</p>
+                  <p className="t-label" style={{ color: ts.textMuted }}>AI coach</p>
                 </div>
-                <p className="text-[10px] leading-relaxed" style={{ color: ts.textMuted }}>
+                <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                   Your session history is used to personalise breathing pattern recommendations.
                 </p>
               </div>
@@ -906,12 +906,12 @@ export function SessionsSection() {
                 className="flex flex-col gap-2 rounded-2xl border p-4 transition-all hover:opacity-90"
                 style={{ backgroundColor: `${ts.accent}0E`, borderColor: `${ts.accent}30` }}>
                 <div className="flex items-center justify-between">
-                  <span className="text-base">🏆</span>
+                  <span className="t-body">🏆</span>
                   <ArrowRight size={11} style={{ color: ts.accent }} />
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold" style={{ color: ts.accentLight }}>Challenges</p>
-                  <p className="text-[9px] mt-0.5 leading-relaxed" style={{ color: ts.textMuted }}>
+                  <p className="t-caption font-semibold" style={{ color: ts.accentLight }}>Challenges</p>
+                  <p className="t-caption mt-0.5 leading-relaxed" style={{ color: ts.textMuted }}>
                     7 & 21-day streaks to build habits and earn badges
                   </p>
                 </div>
@@ -919,7 +919,7 @@ export function SessionsSection() {
 
               {sessions.length > 0 && (
                 <button onClick={handleDeleteAll}
-                  className="flex items-center gap-1.5 text-[10px] hover:text-[#FF8A8A] transition-colors px-1"
+                  className="flex items-center gap-1.5 t-caption hover:text-[#FF8A8A] transition-colors px-1"
                   style={{ color: ts.textMuted }}>
                   <Trash2 size={11} /> Delete all sessions
                 </button>
@@ -934,10 +934,10 @@ export function SessionsSection() {
                 className="lg:hidden flex items-center justify-between px-4 py-3 rounded-2xl transition-all"
                 style={{ backgroundColor: `${ts.accent}0E`, border: `1px solid ${ts.accent}30` }}>
                 <div className="flex items-center gap-2.5">
-                  <span className="text-lg">🏆</span>
+                  <span className="t-heading">🏆</span>
                   <div>
-                    <p className="text-xs font-semibold" style={{ color: ts.accentLight }}>Breathing Challenges</p>
-                    <p className="text-[10px]" style={{ color: ts.textMuted }}>7 & 21-day streaks · earn badges</p>
+                    <p className="t-caption font-semibold" style={{ color: ts.accentLight }}>Breathing Challenges</p>
+                    <p className="t-caption" style={{ color: ts.textMuted }}>7 & 21-day streaks · earn badges</p>
                   </div>
                 </div>
                 <ArrowRight size={13} style={{ color: ts.accent }} />
@@ -954,7 +954,7 @@ export function SessionsSection() {
                 <div className="relative flex-1 min-w-48">
                   <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: ts.textMuted }} />
                   <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t("sessions.search")}
-                    className="w-full pl-8 pr-8 py-2 rounded-xl text-xs outline-none transition-colors"
+                    className="w-full pl-8 pr-8 py-2 rounded-xl t-caption outline-none transition-colors"
                     style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}`, color: ts.textPrimary }} />
                   {search && (
                     <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
@@ -967,7 +967,7 @@ export function SessionsSection() {
                 <div className="flex items-center gap-1.5">
                   {(["date","duration","cycles","mood"] as SortKey[]).map(k => (
                     <button key={k} onClick={() => toggleSort(k)}
-                      className="flex items-center gap-1 px-3 py-2 rounded-xl text-[10px] uppercase tracking-widest border transition-all"
+                      className="flex items-center gap-1 px-3 py-2 rounded-xl t-label border transition-all"
                       style={{
                         backgroundColor: sortKey === k ? ts.cardBgHover : "transparent",
                         borderColor: sortKey === k ? ts.borderHover : ts.border,
@@ -980,7 +980,7 @@ export function SessionsSection() {
                 </div>
 
                 <button onClick={() => setFilterOpen(v => !v)}
-                  className="lg:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] border transition-all"
+                  className="lg:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl t-caption border transition-all"
                   style={{ color: ts.textMuted, borderColor: ts.border }}>
                   <SlidersHorizontal size={11} /> Filters
                 </button>
@@ -996,7 +996,7 @@ export function SessionsSection() {
                       { label: `Min duration: ${minDuration}m`, val: minDuration, max: 60, setFn: setMinDuration, color: ts.accentLight },
                     ].map(({ label, val, max, setFn, color }) => (
                       <div key={label} className="flex flex-col gap-1.5">
-                        <label className="text-[10px]" style={{ color: ts.textMuted }}>{label}</label>
+                        <label className="t-caption" style={{ color: ts.textMuted }}>{label}</label>
                         <input type="range" min={0} max={max} value={val} onChange={e => setFn(Number(e.target.value))}
                           className="w-full appearance-none h-1.5 rounded-full cursor-pointer"
                           style={{ background: `linear-gradient(to right, ${color} ${val/max*100}%, ${ts.border}80 ${val/max*100}%)`, accentColor: color }} />
@@ -1007,7 +1007,7 @@ export function SessionsSection() {
               )}
 
               {/* Status */}
-              <p className="text-[10px] tracking-wide" style={{ color: ts.textMuted }}>
+              <p className="t-caption tracking-wide" style={{ color: ts.textMuted }}>
                 {loading ? "Loading…" : `${filtered.length} of ${sessions.length} sessions`}
                 {(minCycles > 0 || minDuration > 0 || search) ? " · filtered" : ""}
               </p>
@@ -1023,12 +1023,12 @@ export function SessionsSection() {
               ) : filtered.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 py-20">
                   <Calendar size={32} style={{ color: ts.textDim }} />
-                  <p className="text-sm" style={{ color: ts.textMuted }}>
+                  <p className="t-body" style={{ color: ts.textMuted }}>
                     {sessions.length === 0 ? "No sessions yet — start meditating!" : "No sessions match your filters"}
                   </p>
                   {sessions.length === 0 && (
                     <Link to="/breathing"
-                      className="px-6 py-2.5 rounded-full text-white text-xs font-medium hover:scale-105 transition-all"
+                      className="px-6 py-2.5 rounded-full text-white t-caption font-medium hover:scale-105 transition-all"
                       style={{ background: ts.btnGradient }}>
                       Start meditating →
                     </Link>

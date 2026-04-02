@@ -44,8 +44,8 @@ function SectionTitle({ title, sub }: { title: string; sub?: string }) {
   const ts = useThemeStyles();
   return (
     <div className="flex flex-col gap-0.5 text-center">
-      <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>{title}</p>
-      {sub && <p className="text-[10px]" style={{ color: ts.textDim }}>{sub}</p>}
+      <p className="t-label" style={{ color: ts.textMuted }}>{title}</p>
+      {sub && <p className="t-caption" style={{ color: ts.textDim }}>{sub}</p>}
     </div>
   );
 }
@@ -162,13 +162,13 @@ export default function OnboardingPage() {
               <h1 className="text-2xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
                 {t('onboarding.welcome')}
               </h1>
-              <p className="text-sm leading-relaxed" style={{ color: ts.textSecondary }}>
+              <p className="t-body leading-relaxed" style={{ color: ts.textSecondary }}>
                 {t('onboarding.desc1')}
               </p>
-              <p className="text-sm leading-relaxed" style={{ color: ts.textMuted }}>
+              <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
                 {t('onboarding.desc2')}
               </p>
-              <p className="text-[11px] tracking-wide mt-1" style={{ color: ts.textDim }}>
+              <p className="t-caption mt-1" style={{ color: ts.textDim }}>
                 {t('onboarding.desc3')}
               </p>
             </div>
@@ -192,10 +192,10 @@ export default function OnboardingPage() {
                     }}
                   >
                     <span className="text-2xl">{g.emoji}</span>
-                    <span className="text-sm font-medium leading-snug" style={{ color: active ? ts.textPrimary : ts.textSecondary }}>
+                    <span className="t-body font-medium leading-snug" style={{ color: active ? ts.textPrimary : ts.textSecondary }}>
                       {g.label}
                     </span>
-                    <span className="text-[10px]" style={{ color: ts.textDim }}>{g.sub}</span>
+                    <span className="t-caption" style={{ color: ts.textDim }}>{g.sub}</span>
                   </button>
                 );
               })}
@@ -221,11 +221,11 @@ export default function OnboardingPage() {
                       cursor:          m.available ? 'pointer' : 'not-allowed',
                     }}
                   >
-                    <span className="text-xl">{m.emoji}</span>
-                    <span className="text-xs font-medium" style={{ color: active ? ts.textPrimary : ts.textSecondary }}>
+                    <span className="t-heading">{m.emoji}</span>
+                    <span className="t-caption font-medium" style={{ color: active ? ts.textPrimary : ts.textSecondary }}>
                       {m.label}
                     </span>
-                    <span className="text-[9px]" style={{ color: ts.textDim }}>
+                    <span className="t-caption" style={{ color: ts.textDim }}>
                       {m.available ? m.desc : t('onboarding.guidanceUnavailable')}
                     </span>
                   </button>
@@ -233,7 +233,7 @@ export default function OnboardingPage() {
               })}
             </div>
             {guidanceModes.some(m => m !== 'visual') && (
-              <p className="text-[10px] text-center" style={{ color: ts.textDim }}>
+              <p className="t-caption text-center" style={{ color: ts.textDim }}>
                 💡 {t('onboarding.guidanceHint')}
               </p>
             )}
@@ -249,12 +249,12 @@ export default function OnboardingPage() {
                   className="flex items-center gap-3 px-4 py-3.5 rounded-2xl border transition-all duration-200 hover:opacity-90 text-left"
                   style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}
                 >
-                  <span className="text-xl flex-shrink-0">💚</span>
+                  <span className="t-heading flex-shrink-0">💚</span>
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium" style={{ color: ts.textSecondary }}>
+                    <span className="t-body font-medium" style={{ color: ts.textSecondary }}>
                       {t('onboarding.connectFitbit')}
                     </span>
-                    <span className="text-[10px]" style={{ color: ts.textDim }}>Sleep · HRV · Heart Rate</span>
+                    <span className="t-caption" style={{ color: ts.textDim }}>Sleep · HRV · Heart Rate</span>
                   </div>
                 </button>
 
@@ -263,18 +263,18 @@ export default function OnboardingPage() {
                   className="flex items-center gap-3 px-4 py-3.5 rounded-2xl border transition-all duration-200 hover:opacity-90 text-left"
                   style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}
                 >
-                  <span className="text-xl flex-shrink-0">🔵</span>
+                  <span className="t-heading flex-shrink-0">🔵</span>
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium" style={{ color: ts.textSecondary }}>
+                    <span className="t-body font-medium" style={{ color: ts.textSecondary }}>
                       {t('onboarding.connectGoogleFit')}
                     </span>
-                    <span className="text-[10px]" style={{ color: ts.textDim }}>Works with Amazfit · Mi Band · Wear OS</span>
+                    <span className="t-caption" style={{ color: ts.textDim }}>Works with Amazfit · Mi Band · Wear OS</span>
                   </div>
                 </button>
 
                 <button
                   onClick={() => setWearableSkipped(true)}
-                  className="text-sm text-center py-2 transition-colors hover:opacity-80"
+                  className="t-body text-center py-2 transition-colors hover:opacity-80"
                   style={{ color: ts.textDim }}
                 >
                   {t('onboarding.wearableLater')}
@@ -291,10 +291,10 @@ export default function OnboardingPage() {
               style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}
             >
               <div className="flex flex-col gap-0.5">
-                <span className="text-sm" style={{ color: ts.textSecondary }}>
+                <span className="t-body" style={{ color: ts.textSecondary }}>
                   {t('onboarding.notifToggle')}
                 </span>
-                <span className="text-[10px]" style={{ color: ts.textDim }}>
+                <span className="t-caption" style={{ color: ts.textDim }}>
                   {t('onboarding.notifDesc')}
                 </span>
               </div>
@@ -307,7 +307,7 @@ export default function OnboardingPage() {
             <button
               onClick={handleStart}
               disabled={!goal}
-              className="w-full py-4 rounded-2xl text-white font-medium text-base tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full py-4 rounded-2xl text-white font-medium t-body tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
               style={{
                 background:  ts.btnGradient,
                 boxShadow:   goal ? ts.btnShadow : 'none',
@@ -317,7 +317,7 @@ export default function OnboardingPage() {
             </button>
             <button
               onClick={skip}
-              className="text-sm transition-colors hover:opacity-80"
+              className="t-body transition-colors hover:opacity-80"
               style={{ color: ts.textDim }}
             >
               {t('onboarding.skipAll')}

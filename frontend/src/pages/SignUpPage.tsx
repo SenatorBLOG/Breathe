@@ -137,7 +137,7 @@ export default function SignUpPage() {
                   <span style={{ color: ts.accent }}>breathing</span><br />
                   journey.
                 </h1>
-                <p className="text-sm leading-relaxed max-w-xs" style={{ color: ts.textDim }}>
+                <p className="t-body leading-relaxed max-w-xs" style={{ color: ts.textDim }}>
                   Free forever. No credit card. Just you, your breath, and a path to calm.
                 </p>
               </div>
@@ -158,13 +158,13 @@ export default function SignUpPage() {
                       }}>
                       <Check size={9} style={{ color: ts.accent }} />
                     </div>
-                    <p className="text-sm" style={{ color: ts.textDim }}>{f}</p>
+                    <p className="t-body" style={{ color: ts.textDim }}>{f}</p>
                   </div>
                 ))}
               </div>
 
               <div>
-                <p className="text-xs" style={{ color: ts.textDim }}>
+                <p className="t-caption" style={{ color: ts.textDim }}>
                   Already have an account?{' '}
                   <Link to="/login" className="hover:underline" style={{ color: ts.accent }}>
                     Sign in →
@@ -190,13 +190,13 @@ export default function SignUpPage() {
                   {ref && (
                     <div className="px-4 py-3 rounded-xl text-center"
                       style={{ background: ts.cardBgHover, border: `1px solid ${ts.borderHover}` }}>
-                      <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>
+                      <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>
                         {ref === 'stress'      && '😰 Your Stress Breather result is saved'}
                         {ref === 'shallow'     && '🌀 Your Shallow Breather result is saved'}
                         {ref === 'natural'     && '🌊 Your Natural Breather result is saved'}
                         {ref === 'stress-calc' && `📊 Your stress score (${score}/100) is saved`}
                       </p>
-                      <p className="text-[10px] mt-0.5" style={{ color: ts.textMuted }}>
+                      <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>
                         Create your account to unlock your 7-day plan
                       </p>
                     </div>
@@ -204,10 +204,10 @@ export default function SignUpPage() {
 
                   {/* Header */}
                   <div>
-                    <h2 className="text-xl font-medium tracking-wide" style={{ color: ts.textPrimary }}>
+                    <h2 className="t-heading font-medium tracking-wide" style={{ color: ts.textPrimary }}>
                       Create account
                     </h2>
-                    <p className="text-xs mt-1" style={{ color: ts.textMuted }}>
+                    <p className="t-caption mt-1" style={{ color: ts.textMuted }}>
                       {t("auth.alreadyAccount")}{' '}
                       <Link to="/login" className="hover:underline" style={{ color: ts.accent }}>
                         Sign in
@@ -218,14 +218,14 @@ export default function SignUpPage() {
                   <form onSubmit={handleSignUp} className="flex flex-col gap-4">
                     {/* Name */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                         Your name
                       </label>
                       <input
                         value={name}
                         onChange={e => setName(e.target.value)}
                         placeholder="Alex"
-                        className="w-full rounded-xl px-4 py-3 text-sm placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
+                        className="w-full rounded-xl px-4 py-3 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                         style={{
                           backgroundColor: ts.cardBg,
                           border: `1px solid ${ts.border}`,
@@ -236,7 +236,7 @@ export default function SignUpPage() {
 
                     {/* Email */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                         Email address
                       </label>
                       <input
@@ -245,7 +245,7 @@ export default function SignUpPage() {
                         onChange={e => setEmail(e.target.value)}
                         required
                         placeholder="you@example.com"
-                        className="w-full rounded-xl px-4 py-3 text-sm placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
+                        className="w-full rounded-xl px-4 py-3 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                         style={{
                           backgroundColor: ts.cardBg,
                           border: `1px solid ${ts.border}`,
@@ -256,7 +256,7 @@ export default function SignUpPage() {
 
                     {/* Password */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                         Password
                       </label>
                       <div className="relative">
@@ -267,7 +267,7 @@ export default function SignUpPage() {
                           required
                           minLength={6}
                           placeholder="Min. 6 characters"
-                          className="w-full rounded-xl px-4 py-3 pr-10 text-sm placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
+                          className="w-full rounded-xl px-4 py-3 pr-10 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                           style={{
                             backgroundColor: ts.cardBg,
                             border: `1px solid ${ts.border}`,
@@ -293,7 +293,7 @@ export default function SignUpPage() {
                                 style={{ background: i < strengthScore ? strengthColor : ts.border }} />
                             ))}
                           </div>
-                          <span className="text-[9px] tabular-nums" style={{ color: strengthColor }}>
+                          <span className="t-label tabular-nums" style={{ color: strengthColor }}>
                             {strengthLabel}
                           </span>
                         </div>
@@ -314,7 +314,7 @@ export default function SignUpPage() {
                       >
                         {agreed && <Check size={9} className="text-white" />}
                       </div>
-                      <span className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>
+                      <span className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                         {t("auth.termsAgree")}{' '}
                         <Link to="/support" style={{ color: ts.accent }}>{t("auth.terms")}</Link>{' '}
                         and{' '}
@@ -324,7 +324,7 @@ export default function SignUpPage() {
 
                     {/* Error */}
                     {error && (
-                      <div className="px-4 py-3 rounded-xl text-xs text-center"
+                      <div className="px-4 py-3 rounded-xl t-caption text-center"
                         style={{
                           backgroundColor: 'rgba(255,138,138,0.1)',
                           border: '1px solid rgba(255,138,138,0.25)',
@@ -338,7 +338,7 @@ export default function SignUpPage() {
                     <button
                       type="submit"
                       disabled={loading || !agreed}
-                      className="w-full py-3 rounded-xl text-sm font-medium tracking-wide transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.45)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 mt-1"
+                      className="w-full py-3 rounded-xl t-body font-medium tracking-wide transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.45)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 mt-1"
                       style={{ background: ts.btnGradient }}
                     >
                       {loading ? 'Creating account…' : t("auth.signUp") + ' →'}
@@ -348,7 +348,7 @@ export default function SignUpPage() {
                   {/* Divider */}
                   <div className="flex items-center gap-3">
                     <div className="flex-1 h-px" style={{ backgroundColor: ts.border }} />
-                    <span className="text-[9px] uppercase tracking-widest" style={{ color: ts.textDim }}>
+                    <span className="t-label uppercase tracking-widest" style={{ color: ts.textDim }}>
                       or sign up with
                     </span>
                     <div className="flex-1 h-px" style={{ backgroundColor: ts.border }} />
@@ -359,7 +359,7 @@ export default function SignUpPage() {
                     <button
                       type="button"
                       onClick={() => googleLogin()}
-                      className="flex items-center justify-center gap-3 w-full py-3 px-5 rounded-xl border text-sm transition-all hover:opacity-90 active:scale-[0.98]"
+                      className="flex items-center justify-center gap-3 w-full py-3 px-5 rounded-xl border t-body transition-all hover:opacity-90 active:scale-[0.98]"
                       style={{ backgroundColor: ts.cardBg, borderColor: ts.border, color: ts.textSecondary }}
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">

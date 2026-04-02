@@ -181,7 +181,7 @@ export function GlobalAudioPlayer() {
           }}
         >
           <MiniWave playing={isPlaying} />
-          <span className="text-xs max-w-[120px] truncate" style={{ color: ts.textSecondary }}>{currentTrack.name}</span>
+          <span className="t-caption max-w-[120px] truncate" style={{ color: ts.textSecondary }}>{currentTrack.name}</span>
         </button>
       ) : (
         <div className="gap-player fixed bottom-0 left-0 right-0 z-50 font-montserrat">
@@ -212,8 +212,8 @@ export function GlobalAudioPlayer() {
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-medium truncate leading-snug" style={{ color: ts.textPrimary }}>{currentTrack.name}</p>
-                    <p className="text-[10px] truncate" style={{ color: ts.textMuted }}>{currentTrack.artist_name}</p>
+                    <p className="t-caption font-medium truncate leading-snug" style={{ color: ts.textPrimary }}>{currentTrack.name}</p>
+                    <p className="t-label truncate" style={{ color: ts.textMuted }}>{currentTrack.artist_name}</p>
                   </div>
                   <MiniWave playing={isPlaying} />
                 </div>
@@ -245,13 +245,13 @@ export function GlobalAudioPlayer() {
                     </button>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] tabular-nums w-8 text-right flex-shrink-0" style={{ color: ts.textDim }}>{fmt(currentTime)}</span>
+                    <span className="t-label tabular-nums w-8 text-right flex-shrink-0" style={{ color: ts.textDim }}>{fmt(currentTime)}</span>
                     <SeekBar
                       current={currentTime}
                       total={Math.max(1, duration)}
                       onChange={t => { setCurrentTime(t); if (audioRef.current) audioRef.current.currentTime = t; }}
                     />
-                    <span className="text-[10px] tabular-nums w-8 flex-shrink-0" style={{ color: ts.textDim }}>{fmt(duration)}</span>
+                    <span className="t-label tabular-nums w-8 flex-shrink-0" style={{ color: ts.textDim }}>{fmt(duration)}</span>
                   </div>
                 </div>
 

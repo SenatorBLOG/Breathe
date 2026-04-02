@@ -48,13 +48,13 @@ export function SessionStats({ currentSession, totalStats }: SessionStatsProps) 
 
           <div>
             <p
-              className="text-[10px] sm:text-xs whitespace-nowrap"
+              className="t-label sm:text-xs whitespace-nowrap"
               style={{ color: ts.textMuted }}
             >
               Session Time
             </p>
             <p
-              className="text-sm sm:text-base font-semibold"
+              className="t-body sm:text-base font-semibold"
               style={{ color: ts.textPrimary }}
             >
               {formatTime(currentSession.duration)}
@@ -84,13 +84,13 @@ export function SessionStats({ currentSession, totalStats }: SessionStatsProps) 
 
           <div>
             <p
-              className="text-[10px] sm:text-xs whitespace-nowrap"
+              className="t-label sm:text-xs whitespace-nowrap"
               style={{ color: ts.textMuted }}
             >
               Breath Cycles
             </p>
             <p
-              className="text-sm sm:text-base font-semibold"
+              className="t-body sm:text-base font-semibold"
               style={{ color: ts.textPrimary }}
             >
               {currentSession.cycles}
@@ -120,13 +120,13 @@ export function SessionStats({ currentSession, totalStats }: SessionStatsProps) 
 
           <div>
             <p
-              className="text-[10px] sm:text-xs whitespace-nowrap"
+              className="t-label sm:text-xs whitespace-nowrap"
               style={{ color: ts.textMuted }}
             >
               Daily Streak
             </p>
             <p
-              className="text-sm sm:text-base font-semibold"
+              className="t-body sm:text-base font-semibold"
               style={{ color: ts.textPrimary }}
             >
               {totalStats.streak} days

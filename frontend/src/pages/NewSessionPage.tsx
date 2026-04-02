@@ -72,14 +72,14 @@ export default function NewSessionPage() {
           <form onSubmit={handleSubmit} className="max-w-3xl space-y-8">
             {/* Date */}
             <div>
-              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+              <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Session Date
               </Label>
               <Input
                 type="date"
                 value={formData.sessionDate}
                 onChange={(e) => setFormData({ ...formData, sessionDate: e.target.value })}
-                className="rounded-xl px-4 py-3 text-sm outline-none focus:border-[#2A5499] transition-colors"
+                className="rounded-xl px-4 py-3 t-body outline-none focus:border-[#2A5499] transition-colors"
                 style={{
                   backgroundColor: ts.cardBg,
                   border: `1px solid ${ts.border}`,
@@ -90,11 +90,11 @@ export default function NewSessionPage() {
 
             {/* Time of Day */}
             <div>
-              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+              <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Time of Day
               </Label>
               <Select value={formData.timeOfDay} onValueChange={(value: string) => setFormData({ ...formData, timeOfDay: value })}>
-                <SelectTrigger className="rounded-xl px-4 py-3 text-sm outline-none focus:border-[#2A5499] transition-colors"
+                <SelectTrigger className="rounded-xl px-4 py-3 t-body outline-none focus:border-[#2A5499] transition-colors"
                   style={{
                     backgroundColor: ts.cardBg,
                     border: `1px solid ${ts.border}`,
@@ -113,7 +113,7 @@ export default function NewSessionPage() {
 
             {/* Session Length */}
             <div>
-              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+              <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Session Length: {formData.sessionLength} minutes
               </Label>
               <Slider
@@ -128,7 +128,7 @@ export default function NewSessionPage() {
 
             {/* Cycles */}
             <div>
-              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+              <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Number of Cycles: {formData.cycles}
               </Label>
               <Slider
@@ -143,7 +143,7 @@ export default function NewSessionPage() {
 
             {/* Mood Before */}
             <div>
-              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+              <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Mood Before: {formData.moodBefore}/10
               </Label>
               <Slider
@@ -158,7 +158,7 @@ export default function NewSessionPage() {
 
             {/* Mood After */}
             <div>
-              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+              <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Mood After: {formData.moodAfter}/10
               </Label>
               <Slider
@@ -173,7 +173,7 @@ export default function NewSessionPage() {
 
             {/* Focus Level */}
             <div>
-              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+              <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Focus Level: {formData.focusLevel}/10
               </Label>
               <Slider
@@ -188,7 +188,7 @@ export default function NewSessionPage() {
 
             {/* Stress Level */}
             <div>
-              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+              <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Stress Level: {formData.stressLevel}/10
               </Label>
               <Slider
@@ -203,7 +203,7 @@ export default function NewSessionPage() {
 
             {/* Breathing Depth */}
             <div>
-              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+              <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Breathing Depth: {formData.breathingDepth}/10
               </Label>
               <Slider
@@ -218,7 +218,7 @@ export default function NewSessionPage() {
 
             {/* Calmness Score */}
             <div>
-              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+              <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Calmness Score: {formData.calmnessScore}/10
               </Label>
               <Slider
@@ -233,7 +233,7 @@ export default function NewSessionPage() {
 
             {/* Distraction Count */}
             <div>
-              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+              <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Distraction Count: {formData.distractionCount}
               </Label>
               <Slider
@@ -248,11 +248,11 @@ export default function NewSessionPage() {
 
             {/* Noise Level */}
             <div>
-              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+              <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Noise Level
               </Label>
               <Select value={formData.noiseLevel} onValueChange={(value: string) => setFormData({ ...formData, noiseLevel: value })}>
-                <SelectTrigger className="rounded-xl px-4 py-3 text-sm outline-none focus:border-[#2A5499] transition-colors"
+                <SelectTrigger className="rounded-xl px-4 py-3 t-body outline-none focus:border-[#2A5499] transition-colors"
                   style={{
                     backgroundColor: ts.cardBg,
                     border: `1px solid ${ts.border}`,
@@ -271,14 +271,14 @@ export default function NewSessionPage() {
 
             {/* Notes */}
             <div>
-              <Label className="text-sm font-medium mb-2 block" style={{ color: ts.textSecondary }}>
+              <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
                 Notes (Optional)
               </Label>
               <Textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 placeholder="Any thoughts or observations from this session..."
-                className="rounded-xl px-4 py-3 text-sm min-h-[120px] outline-none focus:border-[#2A5499] transition-colors resize-none"
+                className="rounded-xl px-4 py-3 t-body min-h-[120px] outline-none focus:border-[#2A5499] transition-colors resize-none"
                 style={{
                   backgroundColor: ts.cardBg,
                   border: `1px solid ${ts.border}`,
@@ -287,7 +287,7 @@ export default function NewSessionPage() {
               />
             </div>
 
-            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {error && <p className="text-red-500 t-body">{error}</p>}
 
             {/* Submit Buttons */}
             <div className="flex gap-4 pt-4">

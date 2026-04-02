@@ -18,7 +18,7 @@ function CustomTooltip({ active, payload }: any) {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload;
   return (
-    <div className="px-3 py-2 rounded-xl text-xs border"
+    <div className="px-3 py-2 rounded-xl t-caption border"
       style={{
         background: ts.navBg,
         borderColor: ts.border,
@@ -88,7 +88,7 @@ const MonthlyActivityChart = () => {
     return (
       <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
         <span className="text-3xl opacity-30">🫧</span>
-        <p className="text-xs" style={{ color: ts.textMuted }}>No sessions yet</p>
+        <p className="t-caption" style={{ color: ts.textMuted }}>No sessions yet</p>
       </div>
     );
   }
@@ -122,10 +122,10 @@ const MonthlyActivityChart = () => {
 
           {/* Centre label */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <p className="text-xl font-medium tabular-nums leading-none" style={{ color: ts.textPrimary }}>
+            <p className="t-heading font-medium tabular-nums leading-none" style={{ color: ts.textPrimary }}>
               {avgMinutes}
             </p>
-            <p className="text-[9px] uppercase tracking-widest mt-0.5" style={{ color: ts.textMuted }}>
+            <p className="t-label uppercase tracking-widest mt-0.5" style={{ color: ts.textMuted }}>
               avg min
             </p>
           </div>
@@ -138,13 +138,13 @@ const MonthlyActivityChart = () => {
             return (
               <div key={d.name} className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: d.color }} />
-                <span className="text-[10px] w-16 flex-shrink-0" style={{ color: ts.textSecondary }}>
+                <span className="t-label w-16 flex-shrink-0" style={{ color: ts.textSecondary }}>
                   {d.name}
                 </span>
                 <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: `${ts.border}66` }}>
                   <div className="h-full rounded-full" style={{ width: `${pct}%`, background: d.color }} />
                 </div>
-                <span className="text-[10px] tabular-nums flex-shrink-0 w-14 text-right" style={{ color: ts.textMuted }}>
+                <span className="t-label tabular-nums flex-shrink-0 w-14 text-right" style={{ color: ts.textMuted }}>
                   {d.value}× · {pct}%
                 </span>
               </div>
@@ -155,11 +155,11 @@ const MonthlyActivityChart = () => {
 
       {/* Sub-caption */}
       <div className="flex items-center justify-between border-t pt-3" style={{ borderColor: `${ts.border}40` }}>
-        <span className="text-[10px]" style={{ color: ts.textMuted }}>{total} sessions total</span>
+        <span className="t-label" style={{ color: ts.textMuted }}>{total} sessions total</span>
 
         <div className="flex gap-2">
           {BUCKETS.filter(b => pieData.some(p => p.name === b.name)).map(b => (
-            <span key={b.name} className="text-[9px] px-2 py-0.5 rounded-full border"
+            <span key={b.name} className="t-label px-2 py-0.5 rounded-full border"
               style={{ color: b.color, borderColor: `${b.color}33`, background: `${b.color}0D` }}>
               {b.label}
             </span>

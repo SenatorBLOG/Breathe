@@ -137,7 +137,7 @@ export default function AppleHealthImport({ onImported }: Props) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center t-heading"
             style={{ 
               background: step === 'done' ? `${ts.accent}15` : 'rgba(255,100,100,0.1)', 
               border: `1px solid ${step === 'done' ? ts.accent : 'rgba(255,100,100,0.2)'}` 
@@ -145,8 +145,8 @@ export default function AppleHealthImport({ onImported }: Props) {
             🍎
           </div>
           <div>
-            <p style={{ color: ts.textPrimary }} className="text-sm font-semibold">Apple Health</p>
-            <p className="text-[10px] mt-0.5" style={{ color: step === 'done' ? ts.accent : ts.textSecondary }}>
+            <p style={{ color: ts.textPrimary }} className="t-body font-semibold">Apple Health</p>
+            <p className="t-label mt-0.5" style={{ color: step === 'done' ? ts.accent : ts.textSecondary }}>
               {step === 'done' ? `Synced · ${summary?.sleepDays} days` : 'Import via export.xml'}
             </p>
           </div>
@@ -170,15 +170,15 @@ export default function AppleHealthImport({ onImported }: Props) {
             ].map((item, i) => !item.hide && (
               <div key={i} className="flex flex-col gap-0.5 p-3 rounded-xl border"
                 style={{ background: `${ts.cardBg}80`, borderColor: ts.border }}>
-                <p style={{ color: item.color }} className="text-sm font-bold tabular-nums">{item.val}</p>
-                <p style={{ color: ts.textSecondary }} className="text-[9px] uppercase tracking-wider">{item.label}</p>
+                <p style={{ color: item.color }} className="t-body font-bold tabular-nums">{item.val}</p>
+                <p style={{ color: ts.textSecondary }} className="t-label uppercase tracking-wider">{item.label}</p>
               </div>
             ))}
           </div>
           <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border"
             style={{ background: `${ts.accent}10`, borderColor: `${ts.accent}20` }}>
             <CheckCircle size={14} style={{ color: ts.accent }} className="flex-shrink-0" />
-            <p style={{ color: ts.accent }} className="text-[11px] font-medium">
+            <p style={{ color: ts.accent }} className="t-caption font-medium">
               Data imported. Your AI coach has updated your recommendations.
             </p>
           </div>
@@ -201,14 +201,14 @@ export default function AppleHealthImport({ onImported }: Props) {
             <>
               <div className="w-6 h-6 border-2 rounded-full animate-spin" 
                 style={{ borderColor: `${ts.accent}30`, borderTopColor: ts.accent }} />
-              <p style={{ color: ts.textSecondary }} className="text-xs">Processing file…</p>
+              <p style={{ color: ts.textSecondary }} className="t-caption">Processing file…</p>
             </>
           ) : (
             <>
               <Upload size={20} style={{ color: ts.textSecondary }} />
               <div className="text-center">
-                <p style={{ color: ts.textPrimary }} className="text-xs font-medium">Drop export.xml here</p>
-                <p style={{ color: ts.textSecondary }} className="text-[10px] mt-1">or click to browse</p>
+                <p style={{ color: ts.textPrimary }} className="t-caption font-medium">Drop export.xml here</p>
+                <p style={{ color: ts.textSecondary }} className="t-label mt-1">or click to browse</p>
               </div>
             </>
           )}
@@ -222,9 +222,9 @@ export default function AppleHealthImport({ onImported }: Props) {
       {/* Error state */}
       {step === 'error' && (
         <div className="p-3 rounded-xl border" style={{ background: 'rgba(255,100,100,0.05)', borderColor: 'rgba(255,100,100,0.2)' }}>
-          <p className="text-[#FF8A8A] text-xs leading-relaxed">{error}</p>
+          <p className="text-[#FF8A8A] t-caption leading-relaxed">{error}</p>
           <button onClick={() => { setStep('idle'); setError(''); }}
-            className="mt-2 text-[10px] font-medium uppercase tracking-wider hover:opacity-80"
+            className="mt-2 t-label font-medium uppercase tracking-wider hover:opacity-80"
             style={{ color: ts.accent }}>
             Try again
           </button>
@@ -234,7 +234,7 @@ export default function AppleHealthImport({ onImported }: Props) {
       {/* Instructions */}
       {step === 'idle' && (
         <details className="group">
-          <summary className="text-[10px] cursor-pointer list-none flex items-center gap-1"
+          <summary className="t-label cursor-pointer list-none flex items-center gap-1"
             style={{ color: ts.textSecondary }}>
             <ChevronRight size={10} className="group-open:rotate-90 transition-transform" />
             How to export from Apple Health?
@@ -247,8 +247,8 @@ export default function AppleHealthImport({ onImported }: Props) {
               'After export, find export.xml inside the archive',
             ].map((s, i) => (
               <div key={i} className="flex items-start gap-2">
-                <span style={{ color: ts.accent }} className="text-[9px] font-mono mt-0.5">{i+1}.</span>
-                <p style={{ color: ts.textSecondary }} className="text-[10px] leading-snug">{s}</p>
+                <span style={{ color: ts.accent }} className="t-label font-mono mt-0.5">{i+1}.</span>
+                <p style={{ color: ts.textSecondary }} className="t-label leading-snug">{s}</p>
               </div>
             ))}
           </div>

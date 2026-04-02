@@ -29,10 +29,10 @@ function StatRow({ label, pct, count, color, bg }: {
   const ts = useThemeStyles();
   return (
     <div className="flex items-center gap-2">
-      <span className="text-[9px] w-14 flex-shrink-0 uppercase tracking-wide" style={{ color }}>{label}</span>
+      <span className="t-label w-14 flex-shrink-0 uppercase tracking-wide" style={{ color }}>{label}</span>
       <MoodBar pct={pct} color={color} bg={bg} />
-      <span className="text-[9px] tabular-nums w-7 text-right flex-shrink-0" style={{ color }}>{pct}%</span>
-      <span className="text-[9px] w-5 flex-shrink-0" style={{ color: ts.textDim }}>({count})</span>
+      <span className="t-label tabular-nums w-7 text-right flex-shrink-0" style={{ color }}>{pct}%</span>
+      <span className="t-label w-5 flex-shrink-0" style={{ color: ts.textDim }}>({count})</span>
     </div>
   );
 }
@@ -60,9 +60,9 @@ function InfoCard({ title, value, sub, children, accentColor }: {
         style={{ background: `${glow}15`, filter: 'blur(18px)' }} />
 
       <div>
-        <p className="text-xl font-semibold tabular-nums leading-none" style={{ color: ts.textPrimary }}>{value}</p>
-        {sub && <p className="text-[10px] mt-0.5 tabular-nums" style={{ color: ts.textDim }}>{sub}</p>}
-        <p className="text-[9px] uppercase tracking-widest mt-1" style={{ color: ts.textMuted }}>{title}</p>
+        <p className="t-heading font-semibold tabular-nums leading-none" style={{ color: ts.textPrimary }}>{value}</p>
+        {sub && <p className="t-label mt-0.5 tabular-nums" style={{ color: ts.textDim }}>{sub}</p>}
+        <p className="t-label uppercase tracking-widest mt-1" style={{ color: ts.textMuted }}>{title}</p>
       </div>
 
       {children && <div className="flex flex-col gap-1.5 pt-1">{children}</div>}

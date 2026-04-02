@@ -118,7 +118,7 @@ function JournalEntry({ session }: { session: JournalSession }) {
         <div className="flex-1 min-w-0">
           {/* Date + session length */}
           <div className="flex items-center justify-between gap-2 mb-1">
-            <p className="text-xs font-medium" style={{ color: ts.textPrimary }}>
+            <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>
               {date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
               {' · '}
               <span style={{ color: ts.textMuted }}>
@@ -127,26 +127,26 @@ function JournalEntry({ session }: { session: JournalSession }) {
             </p>
             <div className="flex items-center gap-2 flex-shrink-0">
               {session.sessionLength > 0 && (
-                <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}>
+                <span className="t-caption px-2 py-0.5 rounded-full" style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}>
                   {session.sessionLength}m
                 </span>
               )}
               {moodDelta > 0 && (
-                <span className="text-xs" style={{ color: ts.accent }}>+{moodDelta} mood</span>
+                <span className="t-caption" style={{ color: ts.accent }}>+{moodDelta} mood</span>
               )}
             </div>
           </div>
 
           {/* Notes excerpt */}
           {session.notes && (
-            <p className="text-xs leading-relaxed line-clamp-2" style={{ color: ts.textSecondary }}>
+            <p className="t-caption leading-relaxed line-clamp-2" style={{ color: ts.textSecondary }}>
               {session.notes}
             </p>
           )}
 
           {/* NLP one-line summary + themes preview */}
           {nlp?.oneLineSummary && !expanded && (
-            <p className="text-xs mt-1.5 italic" style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
+            <p className="t-caption mt-1.5 italic" style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
               {nlp.oneLineSummary}
             </p>
           )}
@@ -164,17 +164,17 @@ function JournalEntry({ session }: { session: JournalSession }) {
           <div className="pt-3 flex flex-col gap-3">
 
             {/* One-line summary */}
-            <p className="text-xs italic" style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
+            <p className="t-caption italic" style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
               "{nlp.oneLineSummary}"
             </p>
 
             {/* Score bar */}
             <div className="flex items-center gap-3">
-              <span className="text-[10px] uppercase tracking-wider flex-shrink-0" style={{ color: ts.textMuted }}>
+              <span className="t-label flex-shrink-0" style={{ color: ts.textMuted }}>
                 Emotional score
               </span>
               {scoreBar(nlp.score, ts.accent)}
-              <span className="text-xs font-medium tabular-nums flex-shrink-0" style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
+              <span className="t-caption font-medium tabular-nums flex-shrink-0" style={{ color: sentimentColor(nlp.sentiment, ts.accent) }}>
                 {nlp.score >= 0 ? '+' : ''}{nlp.score.toFixed(2)}
               </span>
             </div>
@@ -185,14 +185,14 @@ function JournalEntry({ session }: { session: JournalSession }) {
                 {nlp.themes.map(t => (
                   <span
                     key={t}
-                    className="text-[10px] px-2 py-0.5 rounded-full capitalize"
+                    className="t-label px-2 py-0.5 rounded-full capitalize"
                     style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}
                   >
                     {t}
                   </span>
                 ))}
                 <span
-                  className="text-[10px] px-2 py-0.5 rounded-full"
+                  className="t-label px-2 py-0.5 rounded-full"
                   style={{ backgroundColor: `${ts.border}`, color: ts.textMuted }}
                 >
                   intensity {nlp.intensity}/10
@@ -203,7 +203,7 @@ function JournalEntry({ session }: { session: JournalSession }) {
             {/* Technique suggestion */}
             {nlp.suggestedTechnique && (
               <div className="flex items-center justify-between">
-                <p className="text-xs" style={{ color: ts.textMuted }}>
+                <p className="t-caption" style={{ color: ts.textMuted }}>
                   Recommended technique:
                   <span className="font-medium ml-1" style={{ color: ts.textSecondary }}>
                     {TECHNIQUE_LABELS[nlp.suggestedTechnique] ?? nlp.suggestedTechnique}
@@ -211,7 +211,7 @@ function JournalEntry({ session }: { session: JournalSession }) {
                 </p>
                 <Link
                   to={TECHNIQUE_LINKS[nlp.suggestedTechnique] ?? '/breathing'}
-                  className="flex items-center gap-1 text-xs font-medium hover:opacity-80"
+                  className="flex items-center gap-1 t-caption font-medium hover:opacity-80"
                   style={{ color: ts.accent }}
                 >
                   Try it <ArrowRight size={11} />
@@ -222,10 +222,10 @@ function JournalEntry({ session }: { session: JournalSession }) {
             {/* Full notes */}
             {session.notes && (
               <div className="rounded-xl p-3" style={{ backgroundColor: `${ts.border}40` }}>
-                <p className="text-[10px] uppercase tracking-wider mb-1.5" style={{ color: ts.textMuted }}>
+                <p className="t-label mb-1.5" style={{ color: ts.textMuted }}>
                   Your notes
                 </p>
-                <p className="text-xs leading-relaxed whitespace-pre-wrap" style={{ color: ts.textSecondary }}>
+                <p className="t-caption leading-relaxed whitespace-pre-wrap" style={{ color: ts.textSecondary }}>
                   {session.notes}
                 </p>
               </div>
@@ -267,7 +267,7 @@ export default function JournalPage() {
         <NavBar />
 
         <header className="max-w-3xl mx-auto w-full px-4 sm:px-6 pt-10 pb-4">
-          <p className="text-[10px] tracking-[0.3em] uppercase mb-2" style={{ color: ts.textMuted }}>
+          <p className="t-label mb-2" style={{ color: ts.textMuted }}>
             Breathe · Emotional Journal
           </p>
           <div className="flex items-end justify-between gap-4">
@@ -275,7 +275,7 @@ export default function JournalPage() {
               <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
                 Your Journal
               </h1>
-              <p className="text-xs mt-1 max-w-md" style={{ color: ts.textMuted }}>
+              <p className="t-caption mt-1 max-w-md" style={{ color: ts.textMuted }}>
                 {insights?.totalAnalyzed
                   ? `${insights.totalAnalyzed} sessions analyzed · AI-powered emotional intelligence`
                   : 'Add notes to your sessions to unlock emotional insights'}
@@ -283,7 +283,7 @@ export default function JournalPage() {
             </div>
             <Link
               to="/breathing"
-              className="flex items-center gap-2 px-4 py-2 rounded-full text-white text-xs font-medium tracking-wide transition-all hover:scale-105 active:scale-95 flex-shrink-0"
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-white t-caption font-medium tracking-wide transition-all hover:scale-105 active:scale-95 flex-shrink-0"
               style={{ background: ts.btnGradient }}
             >
               New session <ArrowRight size={12} />
@@ -301,35 +301,35 @@ export default function JournalPage() {
             >
               <div className="flex items-center gap-2">
                 <Brain size={14} style={{ color: ts.accent }} />
-                <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+                <p className="t-label" style={{ color: ts.textMuted }}>
                   30-day overview
                 </p>
               </div>
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <p className="text-xl font-light tabular-nums" style={{ color: ts.textPrimary }}>
+                  <p className="t-heading font-light tabular-nums" style={{ color: ts.textPrimary }}>
                     {insights.totalAnalyzed}
                   </p>
-                  <p className="text-[10px] uppercase tracking-wider mt-0.5" style={{ color: ts.textMuted }}>
+                  <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>
                     analyzed
                   </p>
                 </div>
                 {avgLabel && (
                   <div>
-                    <p className="text-sm font-medium" style={{ color: sentimentColor(insights.avgScore! > 0.2 ? 'positive' : insights.avgScore! < -0.2 ? 'negative' : 'neutral', ts.accent) }}>
+                    <p className="t-body font-medium" style={{ color: sentimentColor(insights.avgScore! > 0.2 ? 'positive' : insights.avgScore! < -0.2 ? 'negative' : 'neutral', ts.accent) }}>
                       {avgLabel}
                     </p>
-                    <p className="text-[10px] uppercase tracking-wider mt-0.5" style={{ color: ts.textMuted }}>
+                    <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>
                       overall mood
                     </p>
                   </div>
                 )}
                 <div>
-                  <p className="text-xl font-light tabular-nums" style={{ color: '#4AE8A0' }}>
+                  <p className="t-heading font-light tabular-nums" style={{ color: '#4AE8A0' }}>
                     {insights.sentimentDist.positive}
                   </p>
-                  <p className="text-[10px] uppercase tracking-wider mt-0.5" style={{ color: ts.textMuted }}>
+                  <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>
                     positive sessions
                   </p>
                 </div>
@@ -338,14 +338,14 @@ export default function JournalPage() {
               {/* Top themes */}
               {insights.topThemes.length > 0 && (
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider mb-2" style={{ color: ts.textMuted }}>
+                  <p className="t-label mb-2" style={{ color: ts.textMuted }}>
                     Recurring themes
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {insights.topThemes.map(({ theme, count }) => (
                       <span
                         key={theme}
-                        className="text-xs px-2.5 py-1 rounded-full capitalize"
+                        className="t-caption px-2.5 py-1 rounded-full capitalize"
                         style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}
                       >
                         {theme} · {count}
@@ -358,7 +358,7 @@ export default function JournalPage() {
               {/* Sentiment bar */}
               {insights.totalAnalyzed > 0 && (
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider mb-2" style={{ color: ts.textMuted }}>
+                  <p className="t-label mb-2" style={{ color: ts.textMuted }}>
                     Sentiment distribution
                   </p>
                   <div className="flex h-2 rounded-full overflow-hidden gap-0.5">
@@ -394,13 +394,13 @@ export default function JournalPage() {
                     )}
                   </div>
                   <div className="flex gap-4 mt-1.5">
-                    <span className="text-[10px]" style={{ color: ts.accent }}>
+                    <span className="t-caption" style={{ color: ts.accent }}>
                       ● Positive {insights.sentimentDist.positive}
                     </span>
-                    <span className="text-[10px]" style={{ color: '#7AAEC8' }}>
+                    <span className="t-caption" style={{ color: '#7AAEC8' }}>
                       ● Neutral {insights.sentimentDist.neutral}
                     </span>
-                    <span className="text-[10px]" style={{ color: '#FF8A8A' }}>
+                    <span className="t-caption" style={{ color: '#FF8A8A' }}>
                       ● Difficult {insights.sentimentDist.negative}
                     </span>
                   </div>
@@ -424,16 +424,16 @@ export default function JournalPage() {
             >
               <BookOpen size={36} style={{ color: ts.textDim }} />
               <div>
-                <p className="text-sm font-medium mb-1" style={{ color: ts.textSecondary }}>
+                <p className="t-body font-medium mb-1" style={{ color: ts.textSecondary }}>
                   Your journal is empty
                 </p>
-                <p className="text-xs max-w-xs" style={{ color: ts.textMuted }}>
+                <p className="t-caption max-w-xs" style={{ color: ts.textMuted }}>
                   Add notes to your breathing sessions. The AI will analyze your emotions and suggest techniques.
                 </p>
               </div>
               <Link
                 to="/breathing"
-                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium tracking-wide transition-all hover:scale-105"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white t-body font-medium tracking-wide transition-all hover:scale-105"
                 style={{ background: ts.btnGradient }}
               >
                 Start a session <ArrowRight size={14} />
@@ -445,11 +445,11 @@ export default function JournalPage() {
           {months.map(month => (
             <div key={month} className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <p className="text-xs font-medium tracking-wide" style={{ color: ts.textMuted }}>
+                <p className="t-caption font-medium tracking-wide" style={{ color: ts.textMuted }}>
                   {month}
                 </p>
                 <div className="flex-1 h-px" style={{ backgroundColor: ts.border }} />
-                <span className="text-[10px]" style={{ color: ts.textDim }}>
+                <span className="t-caption" style={{ color: ts.textDim }}>
                   {grouped.get(month)!.length} {grouped.get(month)!.length === 1 ? 'entry' : 'entries'}
                 </span>
               </div>
@@ -463,7 +463,7 @@ export default function JournalPage() {
           {!loading && sessions.length > 0 && (
             <div className="flex items-start gap-2 px-4 py-3 rounded-xl" style={{ backgroundColor: `${ts.accent}0A` }}>
               <Sparkles size={12} style={{ color: ts.accent }} className="mt-0.5 flex-shrink-0" />
-              <p className="text-xs" style={{ color: ts.textMuted }}>
+              <p className="t-caption" style={{ color: ts.textMuted }}>
                 The more you journal, the better the AI understands your emotional patterns and can recommend the right technique at the right time.
               </p>
             </div>

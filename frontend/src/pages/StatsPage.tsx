@@ -45,7 +45,7 @@ function AdSlot({ label = 'Advertisement', className = '' }: { label?: string; c
         borderColor: ts.border,
         backgroundColor: `${ts.cardBg}40`,
       }}>
-      <span className="text-[9px] tracking-widest uppercase select-none" style={{ color: ts.textDim }}>
+      <span className="t-label select-none" style={{ color: ts.textDim }}>
         {label}
       </span>
     </div>
@@ -64,8 +64,8 @@ function ChartCard({ title, sub, children, className = '' }: {
         border: `1px solid ${ts.border}`,
       }}>
       <div>
-        <h3 className="text-sm font-medium" style={{ color: ts.textPrimary }}>{title}</h3>
-        {sub && <p className="text-[10px] mt-0.5" style={{ color: ts.textMuted }}>{sub}</p>}
+        <h3 className="t-body font-medium" style={{ color: ts.textPrimary }}>{title}</h3>
+        {sub && <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>{sub}</p>}
       </div>
       <div className="w-full min-w-0">{children}</div>
     </div>
@@ -88,10 +88,10 @@ function MilestoneBadge({ icon, label, value, glow }: {
         style={{ background: `${glow.replace('0.08', '0.15')}` }}>
         {icon}
       </div>
-      <p className="text-lg font-medium tabular-nums leading-none" style={{ color: ts.textSecondary }}>
+      <p className="t-heading font-medium tabular-nums leading-none" style={{ color: ts.textSecondary }}>
         {value}
       </p>
-      <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+      <p className="t-label" style={{ color: ts.textMuted }}>
         {label}
       </p>
     </div>
@@ -107,10 +107,10 @@ function InsightCard({ icon, title, desc }: { icon: string; title: string; desc:
         backgroundColor: ts.cardBg,
         border: `1px solid ${ts.border}`,
       }}>
-      <span className="text-xl flex-shrink-0">{icon}</span>
+      <span className="t-heading flex-shrink-0">{icon}</span>
       <div>
-        <p className="text-xs font-medium mb-1" style={{ color: ts.textPrimary }}>{title}</p>
-        <p className="text-xs leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
+        <p className="t-caption font-medium mb-1" style={{ color: ts.textPrimary }}>{title}</p>
+        <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
       </div>
     </div>
   );
@@ -178,7 +178,7 @@ export function StatsSection() {
         </div>
 
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-8 pb-4">
-          <p className="text-[10px] tracking-[0.3em] uppercase mb-2" style={{ color: ts.textMuted }}>
+          <p className="t-label mb-2" style={{ color: ts.textMuted }}>
             Breathe · Analytics
           </p>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -186,7 +186,7 @@ export function StatsSection() {
               <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
                 Your Progress
               </h1>
-              <p className="text-xs mt-1 max-w-md" style={{ color: ts.textMuted }}>
+              <p className="t-caption mt-1 max-w-md" style={{ color: ts.textMuted }}>
                 {sessions.length > 0
                   ? `${sessions.length} sessions recorded · ${totalMins} minutes of mindfulness · your data is training your AI coach`
                   : 'Start meditating to unlock your personal analytics'}
@@ -194,7 +194,7 @@ export function StatsSection() {
             </div>
             <Link
               to="/breathing"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-medium tracking-wide transition-all hover:shadow-[0_0_24px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 self-start sm:self-auto"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white t-body font-medium tracking-wide transition-all hover:shadow-[0_0_24px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 self-start sm:self-auto"
               style={{ background: ts.btnGradient }}
             >
               Meditate now <ArrowRight size={14} />
@@ -223,14 +223,14 @@ export function StatsSection() {
                   }}>
                   <div className="flex items-center gap-1.5">
                     <Moon size={12} style={{ color: ts.accent }} />
-                    <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                    <p className="t-label" style={{ color: ts.textMuted }}>
                       Avg sleep 7d
                     </p>
                   </div>
-                  <p className="text-lg font-medium tabular-nums" style={{ color: ts.textPrimary }}>
+                  <p className="t-heading font-medium tabular-nums" style={{ color: ts.textPrimary }}>
                     {Math.floor(health.avgSleep7d/60)}h{health.avgSleep7d%60}m
                   </p>
-                  <p className="text-[9px]" style={{
+                  <p className="t-caption" style={{
                     color: health.sleepQuality === 'good' ? ts.accent : health.sleepQuality === 'fair' ? '#FFD97D' : '#FF8A8A'
                   }}>
                     {health.sleepQuality}
@@ -245,14 +245,14 @@ export function StatsSection() {
                   }}>
                   <div className="flex items-center gap-1.5">
                     <Activity size={12} style={{ color: ts.accent }} />
-                    <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                    <p className="t-label" style={{ color: ts.textMuted }}>
                       Avg HRV 7d
                     </p>
                   </div>
-                  <p className="text-lg font-medium tabular-nums" style={{ color: ts.textPrimary }}>
+                  <p className="t-heading font-medium tabular-nums" style={{ color: ts.textPrimary }}>
                     {health.avgHRV7d}ms
                   </p>
-                  <p className="text-[9px]" style={{ color: ts.textMuted }}>
+                  <p className="t-caption" style={{ color: ts.textMuted }}>
                     heart rate variability
                   </p>
                 </div>
@@ -265,14 +265,14 @@ export function StatsSection() {
                   }}>
                   <div className="flex items-center gap-1.5">
                     <Heart size={12} style={{ color: '#FF8A8A' }} />
-                    <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                    <p className="t-label" style={{ color: ts.textMuted }}>
                       Resting HR
                     </p>
                   </div>
-                  <p className="text-lg font-medium tabular-nums" style={{ color: ts.textPrimary }}>
+                  <p className="t-heading font-medium tabular-nums" style={{ color: ts.textPrimary }}>
                     {health.restingHR} bpm
                   </p>
-                  <p className="text-[9px]" style={{ color: ts.textMuted }}>
+                  <p className="t-caption" style={{ color: ts.textMuted }}>
                     last recorded
                   </p>
                 </div>
@@ -285,11 +285,11 @@ export function StatsSection() {
                   }}>
                   <div className="flex items-center gap-1.5">
                     <Sparkles size={12} style={{ color: ts.accent }} />
-                    <p className="text-[9px] uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                    <p className="t-label" style={{ color: ts.textMuted }}>
                       Recovery
                     </p>
                   </div>
-                  <p className="text-lg font-medium tabular-nums" style={{ color: ts.textPrimary }}>
+                  <p className="t-heading font-medium tabular-nums" style={{ color: ts.textPrimary }}>
                     {health.recoveryScore}/100
                   </p>
                   <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: ts.border }}>
@@ -302,11 +302,11 @@ export function StatsSection() {
                 </div>
               )}
               <div className="sm:col-span-4 flex items-center justify-between px-1">
-                <p className="text-[9px]" style={{ color: ts.textMuted }}>
+                <p className="t-caption" style={{ color: ts.textMuted }}>
                   <Watch size={9} className="inline mr-1" />
                   Data from: {health.sources.map(s => s === 'apple_health' ? 'Apple Health' : s === 'google_fit' ? 'Google Fit' : 'Fitbit').join(', ')}
                 </p>
-                <Link to="/profile" className="text-[9px] hover:underline" style={{ color: ts.accent }}>
+                <Link to="/profile" className="t-caption hover:underline" style={{ color: ts.accent }}>
                   Manage integrations →
                 </Link>
               </div>
@@ -320,10 +320,10 @@ export function StatsSection() {
               border: `1px solid ${ts.border}`,
             }}>
             <div className="mb-3">
-              <h3 className="text-sm font-medium" style={{ color: ts.textPrimary }}>
+              <h3 className="t-body font-medium" style={{ color: ts.textPrimary }}>
                 Key metrics
               </h3>
-              <p className="text-[10px] mt-0.5" style={{ color: ts.textMuted }}>
+              <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>
                 Averages across all your sessions
               </p>
             </div>
@@ -357,7 +357,7 @@ export function StatsSection() {
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2 mb-1">
               <Sparkles size={12} style={{ color: ts.accent }} />
-              <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+              <p className="t-label" style={{ color: ts.textMuted }}>
                 Insights
               </p>
             </div>
@@ -372,11 +372,11 @@ export function StatsSection() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Brain size={12} style={{ color: ts.accent }} />
-                  <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: ts.textMuted }}>
+                  <p className="t-label" style={{ color: ts.textMuted }}>
                     Emotional Intelligence
                   </p>
                 </div>
-                <Link to="/journal" className="text-xs hover:underline flex items-center gap-1" style={{ color: ts.accent }}>
+                <Link to="/journal" className="t-caption hover:underline flex items-center gap-1" style={{ color: ts.accent }}>
                   View journal <ArrowRight size={11} />
                 </Link>
               </div>
@@ -415,8 +415,8 @@ export function StatsSection() {
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}
                 >
                   <div>
-                    <h3 className="text-sm font-medium" style={{ color: ts.textPrimary }}>Recurring themes</h3>
-                    <p className="text-[10px] mt-0.5" style={{ color: ts.textMuted }}>
+                    <h3 className="t-body font-medium" style={{ color: ts.textPrimary }}>Recurring themes</h3>
+                    <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>
                       Based on {nlp.totalAnalyzed} analyzed sessions
                     </p>
                   </div>
@@ -426,7 +426,7 @@ export function StatsSection() {
                       {nlp.topThemes.map(({ theme, count }) => (
                         <span
                           key={theme}
-                          className="text-xs px-2.5 py-1 rounded-full capitalize"
+                          className="t-caption px-2.5 py-1 rounded-full capitalize"
                           style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}
                         >
                           {theme} · {count}
@@ -436,7 +436,7 @@ export function StatsSection() {
                   )}
 
                   <div>
-                    <p className="text-[10px] uppercase tracking-wider mb-1.5" style={{ color: ts.textMuted }}>
+                    <p className="t-label mb-1.5" style={{ color: ts.textMuted }}>
                       Sentiment split
                     </p>
                     <div className="flex h-2 rounded-full overflow-hidden gap-0.5">
@@ -451,9 +451,9 @@ export function StatsSection() {
                       )}
                     </div>
                     <div className="flex gap-3 mt-1.5">
-                      <span className="text-[10px]" style={{ color: ts.accent }}>● Positive {nlp.sentimentDist.positive}</span>
-                      <span className="text-[10px]" style={{ color: '#7AAEC8' }}>● Neutral {nlp.sentimentDist.neutral}</span>
-                      <span className="text-[10px]" style={{ color: '#FF8A8A' }}>● Difficult {nlp.sentimentDist.negative}</span>
+                      <span className="t-caption" style={{ color: ts.accent }}>● Positive {nlp.sentimentDist.positive}</span>
+                      <span className="t-caption" style={{ color: '#7AAEC8' }}>● Neutral {nlp.sentimentDist.neutral}</span>
+                      <span className="t-caption" style={{ color: '#FF8A8A' }}>● Difficult {nlp.sentimentDist.negative}</span>
                     </div>
                   </div>
                 </div>
@@ -473,14 +473,14 @@ export function StatsSection() {
                 boxShadow: ts.btnShadow,
               }}>
               <Trophy size={22} style={{ color: ts.accent }} />
-              <p className="text-xs font-medium" style={{ color: ts.textSecondary }}>
+              <p className="t-caption font-medium" style={{ color: ts.textSecondary }}>
                 {sessions.length === 0
                   ? 'Start your first session'
                   : streak >= 7 ? `${streak} days strong!`
                   : 'Keep the streak alive'}
               </p>
               <Link to="/breathing"
-                className="w-full py-2 rounded-xl text-xs font-medium tracking-wide transition-all hover:shadow-[0_0_16px_rgba(58,130,247,0.4)]"
+                className="w-full py-2 rounded-xl t-caption font-medium tracking-wide transition-all hover:shadow-[0_0_16px_rgba(58,130,247,0.4)]"
                 style={{ background: ts.btnGradient }}>
                 {t("stats.breatheNow")}
               </Link>
