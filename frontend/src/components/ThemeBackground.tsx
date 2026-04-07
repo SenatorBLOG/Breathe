@@ -5,7 +5,7 @@ import { useTheme } from '../contexts/ThemeContext';
 const CFG = {
   night: {
     src:     '/Background_Night.jpg',
-    opacity: 0.55,   // was 0.38 — now visible
+    opacity: 0.55,
     overlay: 'radial-gradient(ellipse at 50% 0%, rgba(1,8,20,0.05) 0%, rgba(1,8,20,0.78) 80%)',
   },
   day: {
@@ -25,11 +25,22 @@ export default function ThemeBackground() {
   const { src, opacity, overlay } = CFG[theme] ?? CFG.night;
   return (
     <>
-      <img src={src} alt="" aria-hidden="true"
-        className="fixed inset-0 w-full h-full pointer-events-none select-none"
-        style={{ objectFit: 'cover', objectPosition: 'center', opacity, zIndex: 0, transition: 'opacity 0.6s ease' }}
+      <div 
+        aria-hidden="true" 
+        className="fixed inset-0 pointer-events-none select-none"
+        style={{
+          backgroundImage: `url(${src})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          opacity,
+          zIndex: 0,
+          transition: 'opacity 0.6s ease',
+        }}
       />
-      <div aria-hidden="true" className="fixed inset-0 pointer-events-none"
+      <div 
+        aria-hidden="true" 
+        className="fixed inset-0 pointer-events-none"
         style={{ background: overlay, zIndex: 1, transition: 'background 0.6s ease' }}
       />
     </>

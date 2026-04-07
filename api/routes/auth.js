@@ -149,11 +149,19 @@ router.get('/me', authenticate, async (req, res) => {
 // ─── PATCH /api/auth/me ───────────────────────────────────────────────────────
 router.patch('/me', authenticate, async (req, res) => {
   try {
-    const { nickname, avatar, bodyProfile } = req.body;
+    const { nickname, avatar, bodyProfile, emailPreferences } = req.body;
     const updates = {};
-    if (nickname   !== undefined) updates.nickname    = String(nickname).trim().slice(0, 30);
-    if (avatar     !== undefined) updates.avatar      = avatar;
-    if (bodyProfile !== undefined) updates.bodyProfile = bodyProfile;
+    if (nickname          !== undefined) updates.nickname    = String(nickname).trim().slice(0, 30);
+    if (avatar            !== undefined) updates.avatar      = avatar;
+    if (bodyProfile       !== undefined) updates.bodyProfile = bodyProfile;
+    if (emailPreferences  !== undefined) {
+      if (typeof emailPreferences.reminder === 'boolean')
+        updates['emailPreferences.reminder'] = emailPreferences.reminder;
+      if (typeof emailPreferences.reminderHour === 'number')
+        updates['emailPreferences.reminderHour'] = Math.max(0, Math.min(23, Math.floor(emailPreferences.reminderHour)));
+      if (typeof emailPreferences.weekly === 'boolean')
+        updates['emailPreferences.weekly'] = emailPreferences.weekly;
+    }
 
     const user = await User.findByIdAndUpdate(
       req.user._id,

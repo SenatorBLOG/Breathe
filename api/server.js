@@ -107,25 +107,33 @@ app.use('/api/integrations', require('./routes/integrations'));
 app.use('/api/globe',        require('./routes/globe'));
 app.use('/api/unsubscribe',  require('./routes/unsubscribe'));
 app.use('/api/users',        require('./routes/users'));
+app.use('/api/leaderboard',  require('./routes/leaderboard'));
 
-// ── Cron: streak reminder — runs every hour ───────────────────────
+// ── Cron: daily reminder — runs every hour ────────────────────────
+// Fires for users whose reminderHour matches the current UTC hour,
+// haven't practised in >24 h, and haven't received a reminder today.
 cron.schedule('0 * * * *', async () => {
   try {
-    const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000); // 48 hrs ago
-    const users  = await User.find({
-      lastSessionAt:            { $lt: cutoff },
-      reminderEmailSent:        null,
-      'emailPreferences.reminder': true,
-      unsubscribedAt:           { $exists: false },
-      email:                    { $exists: true },
+    const currentHour = new Date().getUTCHours();
+    const cutoff24h   = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const todayStart  = new Date(); todayStart.setUTCHours(0, 0, 0, 0);
+
+    const users = await User.find({
+      'emailPreferences.reminder':     true,
+      'emailPreferences.reminderHour': currentHour,
+      unsubscribedAt: { $exists: false },
+      email:          { $exists: true },
+      $and: [
+        { $or: [{ lastSessionAt: { $lt: cutoff24h } }, { lastSessionAt: { $exists: false } }] },
+        { $or: [{ reminderEmailSent: { $lt: todayStart } }, { reminderEmailSent: null }] },
+      ],
     }).select('email name lastSessionAt').lean();
 
     for (const u of users) {
-      const daysSince = Math.floor((Date.now() - new Date(u.lastSessionAt)) / 86400000);
       try {
-        await sendReminder(u.email, u.name, daysSince);
+        await sendReminder(u.email, u.name);
         await User.updateOne({ _id: u._id }, { $set: { reminderEmailSent: new Date() } });
-        console.log(`📧 Reminder sent → ${u.email}`);
+        console.log(`📧 Daily reminder sent → ${u.email}`);
       } catch (err) {
         console.error(`Reminder failed for ${u.email}:`, err.message);
       }

@@ -37,8 +37,9 @@ export default function NavBar() {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => (
+  const NavLink = ({ to, children, dataTour }: { to: string; children: React.ReactNode; dataTour?: string }) => (
     <Link to={to} onClick={() => setIsMenuOpen(false)}
+      {...(dataTour ? { 'data-tour': dataTour } : {})}
       className="relative t-body tracking-wide transition-colors duration-200 group"
       style={{ color: isActive(to) ? ts.accentLight : ts.textSecondary }}>
       {children}
@@ -84,11 +85,11 @@ export default function NavBar() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
-            <NavLink to="/home-page">{t("nav.home")}</NavLink>
+            <NavLink to="/">{t("nav.home")}</NavLink>
             <NavLink to="/breathing">{t("nav.meditate")}</NavLink>
             <NavLink to="/globe">{t("nav.globe", "Globe")}</NavLink>
             <NavLink to="/music-library">{t("nav.sounds")}</NavLink>
-            <NavLink to="/community">{t("nav.community")}</NavLink>
+            <NavLink to="/community" dataTour="nav-community">{t("nav.community")}</NavLink>
             {!isAuthenticated && (
               <>
                 <NavLink to="/faq">{t("nav.learn")}</NavLink>
@@ -115,6 +116,7 @@ export default function NavBar() {
             ) : (
               <>
                 <button onClick={() => navigate('/profile')}
+                  data-tour="nav-profile"
                   className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   {(user?.avatar || user?.picture)
@@ -186,7 +188,7 @@ export default function NavBar() {
             style={{ borderTop: `1px solid ${ts.border}`, backgroundColor: ts.navBg }}>
             <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col gap-1">
               {[
-                { to: '/home-page',    label: t('nav.home') },
+                { to: '/',    label: t('nav.home') },
                 { to: '/breathing',    label: t('nav.meditate') },
                 { to: '/globe',        label: `🌍 ${t('nav.globe', 'Globe')}` },
                 { to: '/music-library',label: t('nav.sounds') },

@@ -10,6 +10,7 @@ import NewsletterWidget from '../components/NewsletterWidget';
 import SoulOrb from '../components/AICoach/SoulOrb';
 import HomeInteractive from '../components/HomeInteractive';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import UserProgressStrip from '../components/UserProgressStrip';
 
 // ─── Animated number counter ─────────────────────────────────────────────────
 function AnimatedNumber({ target, suffix = '' }: { target: number; suffix?: string }) {
@@ -278,6 +279,11 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* USER PROGRESS STRIP */}
+        <div className="w-full py-4 sm:py-6">
+          <UserProgressStrip />
+        </div>
+
         {/* QUICK-START TECHNIQUES */}
         <RevealSection className="px-4 sm:px-6 lg:px-8 py-10 max-w-6xl mx-auto w-full">
           <div className="flex items-center justify-between mb-5">
@@ -361,6 +367,7 @@ export default function HomePage() {
                 </div>
                 <Link
                   to="/breathing"
+                  data-tour="begin-session"
                   className="w-full py-3 rounded-xl t-body font-medium transition-colors text-center tracking-wide"
                   style={{ background: ts.btnGradient }}
                 >
@@ -369,25 +376,67 @@ export default function HomePage() {
               </div>
 
               {/* Sleep guides */}
-              <div className="rounded-2xl p-5 flex flex-col gap-3"
+              <div className="rounded-2xl overflow-hidden flex flex-col"
                 style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <p className="t-label" style={{ color: ts.textMuted }}>
-                  Sleep guides
-                </p>
-                {[
-                  { label: 'AI Sleep Story — personalized', href: '/sleep/story',                    icon: '🌙' },
-                  { label: 'Why Sleep is So Important',     href: '/sleep/why-sleep-is-important',   icon: '💤' },
-                  { label: 'What is Sleep Apnea?',          href: '/sleep/what-is-sleep-apnea',      icon: '😮‍💨' },
-                  { label: 'Breathwork for Deep Sleep',     href: '/sleep/breathwork-for-deep-sleep', icon: '🌊' },
-                  { label: 'Why Slow Breathing Calms You',  href: '/science/slow-breathing',         icon: '⚡' },
-                ].map(({ label, href, icon }) => (
-                  <Link key={href} to={href}
-                    className="flex items-center gap-2 t-caption transition-all hover:opacity-80"
-                    style={{ color: ts.accent }}>
-                    <span>{icon}</span>
-                    <span>{label} →</span>
-                  </Link>
-                ))}
+
+                {/* Header */}
+                <div className="px-5 pt-5 pb-3 flex items-center justify-between">
+                  <div>
+                    <p className="t-body font-semibold tracking-wide" style={{ color: ts.textPrimary }}>
+                      🌙 Sleep guides
+                    </p>
+                    <p className="t-caption mt-0.5" style={{ color: ts.textDim }}>
+                      Science-backed · AI-powered
+                    </p>
+                  </div>
+                </div>
+
+                {/* Featured card — AI Sleep Story */}
+                <Link to="/sleep/story"
+                  className="mx-4 mb-3 flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:opacity-90 hover:scale-[1.01] active:scale-[0.99]"
+                  style={{
+                    background: `linear-gradient(135deg, ${ts.accent}22, ${ts.accent}08)`,
+                    border: `1px solid ${ts.accent}40`,
+                  }}>
+                  <span className="text-2xl flex-shrink-0">🌙</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="t-body font-medium leading-snug" style={{ color: ts.accentLight }}>
+                      AI Sleep Story
+                    </p>
+                    <p className="t-caption mt-0.5 truncate" style={{ color: ts.textDim }}>
+                      Personalized narrative to drift off
+                    </p>
+                  </div>
+                  <span className="t-caption flex-shrink-0" style={{ color: ts.accent }}>→</span>
+                </Link>
+
+                {/* Divider */}
+                <div className="mx-4 mb-2 h-px" style={{ background: ts.border }} />
+
+                {/* Regular guide list */}
+                <div className="flex flex-col px-4 pb-4 gap-0.5">
+                  {[
+                    { icon: '💤', label: 'Why Sleep is So Important',    sub: '5 min read',  href: '/sleep/why-sleep-is-important'   },
+                    { icon: '😮‍💨', label: 'What is Sleep Apnea?',         sub: '6 min read',  href: '/sleep/what-is-sleep-apnea'      },
+                    { icon: '🌊', label: 'Breathwork for Deep Sleep',    sub: 'Practice',    href: '/sleep/breathwork-for-deep-sleep' },
+                    { icon: '⚡', label: 'Why Slow Breathing Calms You', sub: 'Science',     href: '/science/slow-breathing'         },
+                  ].map(({ icon, label, sub, href }) => (
+                    <Link key={href} to={href}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all hover:opacity-90 group"
+                      style={{ background: 'transparent' }}
+                      onMouseEnter={e => (e.currentTarget.style.background = `${ts.border}60`)}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                      <span className="text-base flex-shrink-0 w-6 text-center">{icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="t-caption font-medium leading-snug truncate" style={{ color: ts.textSecondary }}>
+                          {label}
+                        </p>
+                        <p className="t-caption" style={{ color: ts.textDim, fontSize: '10px' }}>{sub}</p>
+                      </div>
+                      <span className="t-caption opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" style={{ color: ts.accent }}>→</span>
+                    </Link>
+                  ))}
+                </div>
               </div>
 
               <AdSlot label="Ad · 300×600 half-page" tall />

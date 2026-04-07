@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema(
       },
       minlength: 6,
     },
-    name: { type: String },     // <--- Add this
+    name: { type: String },
     picture: { type: String },
     authType: {
       type: String,
@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
 
     // Profile
     nickname: { type: String, trim: true, maxlength: 30 },
-    avatar:   { type: String }, // user-uploaded photo (base64 or URL)
+    avatar:   { type: String },
     bodyProfile: {
       heightCm: { type: Number, min: 50,  max: 300 },
       weightKg: { type: Number, min: 20,  max: 500 },
@@ -38,6 +38,12 @@ const userSchema = new mongoose.Schema(
       gender:   { type: String, enum: ['male', 'female', 'other', 'prefer_not'] },
       goal:     { type: String, enum: ['sleep', 'stress', 'focus', 'energy', 'general'] },
     },
+
+    // Achievements
+    achievements: [{
+      id:         { type: String, required: true },
+      unlockedAt: { type: Date, default: Date.now },
+    }],
 
     // Blocked users
     blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
@@ -47,9 +53,13 @@ const userSchema = new mongoose.Schema(
     reminderEmailSent: { type: Date, default: null },
     unsubscribedAt:    { type: Date },
     emailPreferences: {
-      reminder: { type: Boolean, default: true },
-      weekly:   { type: Boolean, default: true },
+      reminder:     { type: Boolean, default: true },
+      reminderHour: { type: Number,  default: 20, min: 0, max: 23 },
+      weekly:       { type: Boolean, default: true },
     },
+
+    // Theme preference
+    theme: { type: String, enum: ['night', 'day', 'nature'], default: 'night' },
   },
   { timestamps: true }
 );

@@ -40,6 +40,8 @@ import ScrollToTopButton from './components/ScrollToTopButton';
 import PWAInstallBanner from './components/PWAInstallBanner';
 import OfflineIndicator from './components/OfflineIndicator';
 import ChallengeNudge from './components/ChallengeNudge';
+import OnboardingTour from './components/OnboardingTour';
+import LeaderboardPage from './pages/LeaderboardPage';
 
 import './index.css';
 import { GlobalAudioPlayer } from './components/AudioPlayer/GlobalAudioPlayer';
@@ -49,9 +51,9 @@ import { AuthProvider } from './components/contexts/AuthContext';
 
 // ─── Page transition wrapper ─────────────────────────────────────────────────
 const pageVariants = {
-  initial:  { opacity: 0, y: 10 },
-  animate:  { opacity: 1, y: 0,  transition: { duration: 0.22, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] } },
-  exit:     { opacity: 0, y: -6, transition: { duration: 0.16, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] } },
+  initial:  { opacity: 0 },
+  animate:  { opacity: 1, transition: { duration: 0.22, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] } },
+  exit:     { opacity: 0, transition: { duration: 0.16, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] } },
 };
 
 function PageWrapper({ children }: { children: React.ReactNode }) {
@@ -61,7 +63,6 @@ function PageWrapper({ children }: { children: React.ReactNode }) {
       initial="initial"
       animate="animate"
       exit="exit"
-      style={{ willChange: 'opacity, transform' }}
     >
       {children}
     </motion.div>
@@ -75,8 +76,8 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
-        <Route path="/"             element={<Navigate to="/home-page" replace />} />
-        <Route path="/home-page"    element={<PageWrapper><HomePage /></PageWrapper>} />
+        <Route path="/"             element={<PageWrapper><HomePage /></PageWrapper>} />
+        <Route path="/home-page"    element={<Navigate to="/" replace />} />
         <Route path="/breathing"    element={<PageWrapper><BreathingPage /></PageWrapper>} />
         <Route path="/sessions"     element={<Navigate to="/profile" replace />} />
         <Route path="/sessions/new" element={<PageWrapper><NewSessionPage /></PageWrapper>} />
@@ -103,6 +104,7 @@ function AnimatedRoutes() {
         <Route path="/breathing/morning-ritual"        element={<PageWrapper><MorningRitualPage /></PageWrapper>} />
         <Route path="/privacy"                         element={<PageWrapper><PrivacyPolicyPage /></PageWrapper>} />
         <Route path="/challenges"                      element={<Navigate to="/profile" replace />} />
+        <Route path="/leaderboard"                     element={<PageWrapper><LeaderboardPage /></PageWrapper>} />
         <Route path="*"              element={<PageWrapper><HomePage /></PageWrapper>} />
       </Routes>
     </AnimatePresence>
@@ -125,6 +127,7 @@ export default function App() {
             <PWAInstallBanner />
             <OfflineIndicator />
             <ChallengeNudge />
+            <OnboardingTour />
           </div>
         </MusicProvider>
       </AuthProvider>

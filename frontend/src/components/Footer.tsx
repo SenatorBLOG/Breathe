@@ -71,7 +71,7 @@ export default function Footer() {
             </span>
 
             {[
-              { to: "/home-page",    label: t("nav.home") },
+              { to: "/",    label: t("nav.home") },
               { to: "/breathing",    label: t("nav.meditate") },
               { to: "/music-library",label: t("nav.sounds") },
               { to: "/community",    label: t("nav.community") },
@@ -177,7 +177,7 @@ export default function Footer() {
           {/* Links */}
           <div className="grid grid-cols-2 gap-2">
             {[
-              { to: "/home-page",    label: t("nav.home") },
+              { to: "/",    label: t("nav.home") },
               { to: "/breathing",    label: t("nav.meditate") },
               { to: "/music-library",label: t("nav.sounds") },
               { to: "/community",    label: t("nav.community") },

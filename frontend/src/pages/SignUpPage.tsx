@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../components/contexts/AuthContext';
 import { useGoogleLogin } from '@react-oauth/google';
+import { syncGoalFromProfile } from '../utils/mlDefaults';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
@@ -43,7 +44,7 @@ export default function SignUpPage() {
       navigate('/breathing', { state: { coachPreset: preset, coachPresetName: preset.name } });
     } else {
       const onboarded = localStorage.getItem('breathe_onboarded');
-      navigate(onboarded ? '/home-page' : '/onboarding');
+      navigate(onboarded ? '/' : '/onboarding');
     }
   };
 
@@ -55,6 +56,7 @@ export default function SignUpPage() {
         login(res.data.token, res.data.user);
         localStorage.setItem('userId', res.data.user?._id ?? '');
         toast.success('Signed up with Google! Welcome to Breathe');
+        api.get('/auth/me').then(r => syncGoalFromProfile(r.data)).catch(() => {});
         redirectAfterAuth();
       } catch (err: any) {
         const msg = err.response?.data?.error || 'Google sign up failed';

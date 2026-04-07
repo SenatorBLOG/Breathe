@@ -23,12 +23,12 @@ async function sendWelcome(email, name) {
   });
 }
 
-async function sendReminder(email, name, daysSince) {
+async function sendReminder(email, name) {
   await getResend().emails.send({
     from:    FROM,
     to:      email,
-    subject: `Hey ${name || 'there'} — you haven't breathed in ${daysSince} days 🌊`,
-    html:    reminderHtml({ name, email, daysSince }),
+    subject: `You haven't meditated today — 2 minutes will change your evening`,
+    html:    reminderHtml({ name, email }),
   });
 }
 

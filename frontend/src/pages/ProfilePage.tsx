@@ -10,6 +10,22 @@ import {
   RefreshCw, Unlink, Moon, Heart, Activity, Zap, ChevronRight,
   Watch, Camera, Save,
 } from 'lucide-react';
+import { AchievementBadge } from '../components/AchievementToast';
+
+const ALL_ACHIEVEMENTS = [
+  { id: 'first_breath',  icon: '🌬', title: 'First Breath',   desc: 'Complete your first session' },
+  { id: 'sessions_5',   icon: '⭐', title: 'Getting Started', desc: '5 sessions completed' },
+  { id: 'sessions_10',  icon: '🎯', title: 'Dedicated',       desc: '10 sessions completed' },
+  { id: 'sessions_50',  icon: '💪', title: 'Committed',       desc: '50 sessions completed' },
+  { id: 'sessions_100', icon: '💯', title: 'Century',         desc: '100 sessions completed' },
+  { id: 'streak_3',     icon: '🔥', title: 'Warming Up',      desc: '3-day streak' },
+  { id: 'streak_7',     icon: '⚡', title: 'Week Warrior',    desc: '7-day streak' },
+  { id: 'streak_30',    icon: '🌟', title: 'Monthly Master',  desc: '30-day streak' },
+  { id: 'long_session', icon: '🌊', title: 'Deep Diver',      desc: 'Session lasting 20+ minutes' },
+  { id: 'early_bird',   icon: '🌅', title: 'Early Bird',      desc: 'Session before 7 AM' },
+  { id: 'night_owl',    icon: '🦉', title: 'Night Owl',       desc: 'Session after 11 PM' },
+  { id: 'mood_boost',   icon: '😊', title: 'Mood Boost',      desc: 'Mood improved 3+ points' },
+];
 import AppleHealthImport from '../components/AppleHealthImport';
 import HeartRateMonitor from '../components/HeartRateMonitor';
 import { useThemeStyles } from '../hooks/useThemeStyles';
@@ -441,7 +457,10 @@ export default function ProfilePage() {
   const { user, updateUser } = useContext(AuthContext);
 
   // ── Tab ─────────────────────────────────────────────────────────────────────
-  const [tab, setTab] = useState<'profile' | 'devices' | 'challenges' | 'sessions' | 'progress'>('profile');
+  const validTabs = ['profile', 'devices', 'challenges', 'sessions', 'progress'] as const;
+  type TabId = typeof validTabs[number];
+  const paramTab = new URLSearchParams(location.search).get('tab') as TabId | null;
+  const [tab, setTab] = useState<TabId>(validTabs.includes(paramTab as TabId) ? (paramTab as TabId) : 'profile');
 
   // ── Profile form ─────────────────────────────────────────────────────────────
   const [nickname, setNickname]    = useState('');
@@ -450,6 +469,13 @@ export default function ProfilePage() {
   const [saving, setSaving]        = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // ── Reminder prefs ────────────────────────────────────────────────────────────
+  const [reminderEnabled, setReminderEnabled] = useState(true);
+  const [reminderHour, setReminderHour]       = useState(20);
+
+  // ── Achievements ──────────────────────────────────────────────────────────────
+  const [earnedAchievements, setEarnedAchievements] = useState<{ id: string; unlockedAt: string }[]>([]);
 
   useEffect(() => {
     api.get('/auth/me')
@@ -465,6 +491,11 @@ export default function ProfilePage() {
             goal:     data.bodyProfile.goal     ?? '',
           });
         }
+        if (data.emailPreferences) {
+          setReminderEnabled(data.emailPreferences.reminder ?? true);
+          setReminderHour(data.emailPreferences.reminderHour ?? 20);
+        }
+        if (data.achievements) setEarnedAchievements(data.achievements);
       })
       .catch(() => {})
       .finally(() => setLoadingProfile(false));
@@ -512,6 +543,10 @@ export default function ProfilePage() {
         ...(body.age      && { age:      Number(body.age) }),
         ...(body.gender   && { gender:   body.gender }),
         ...(body.goal     && { goal:     body.goal }),
+      };
+      payload.emailPreferences = {
+        reminder:     reminderEnabled,
+        reminderHour: reminderHour,
       };
       const { data } = await api.patch('/auth/me', payload);
       updateUser({ nickname: data.nickname, avatar: data.avatar });
@@ -749,6 +784,48 @@ export default function ProfilePage() {
                 </div>
               </Section>
 
+              {/* Daily reminder */}
+              <Section label="Daily Reminder">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="t-body" style={{ color: ts.textSecondary }}>Email reminder</p>
+                    <p className="t-caption mt-0.5" style={{ color: ts.textDim }}>
+                      We'll nudge you if you haven't meditated that day
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setReminderEnabled(v => !v)}
+                    className="relative w-11 h-6 rounded-full transition-all duration-200 flex-shrink-0"
+                    style={{ background: reminderEnabled ? ts.accent : ts.border }}
+                  >
+                    <div
+                      className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200"
+                      style={{ left: reminderEnabled ? 22 : 2 }}
+                    />
+                  </button>
+                </div>
+
+                {reminderEnabled && (
+                  <div className="flex items-center gap-3 mt-1">
+                    <p className="t-caption flex-shrink-0" style={{ color: ts.textMuted }}>Send at (UTC)</p>
+                    <div className="flex items-center gap-1 px-3 py-2 rounded-xl flex-1"
+                      style={{ background: ts.cardBgHover, border: `1px solid ${ts.border}` }}>
+                      <input
+                        type="number" min={0} max={23} value={reminderHour}
+                        onChange={e => setReminderHour(Math.max(0, Math.min(23, Number(e.target.value))))}
+                        className="w-10 bg-transparent t-body outline-none tabular-nums text-center"
+                        style={{ color: ts.textPrimary }}
+                      />
+                      <span className="t-caption" style={{ color: ts.textMuted }}>:00</span>
+                    </div>
+                    <p className="t-caption flex-shrink-0" style={{ color: ts.textDim }}>
+                      {String(reminderHour).padStart(2, '0')}:00 UTC
+                    </p>
+                  </div>
+                )}
+              </Section>
+
               {/* How we use this */}
               <div className="px-4 py-3 rounded-xl"
                 style={{ background: `${ts.accent}0D`, border: `1px solid ${ts.border}` }}>
@@ -802,6 +879,22 @@ export default function ProfilePage() {
                   <ChevronRight size={14} style={{ color: ts.accent }} />
                 </button>
               </div>
+              {/* Achievements */}
+              <Section label={`Achievements · ${earnedAchievements.length}/${ALL_ACHIEVEMENTS.length}`}>
+                <div className="grid grid-cols-4 gap-2">
+                  {ALL_ACHIEVEMENTS.map(a => {
+                    const earned = earnedAchievements.find(e => e.id === a.id);
+                    return (
+                      <AchievementBadge
+                        key={a.id}
+                        achievement={a}
+                        earned={!!earned}
+                        earnedAt={earned?.unlockedAt}
+                      />
+                    );
+                  })}
+                </div>
+              </Section>
             </div>
           )}
 

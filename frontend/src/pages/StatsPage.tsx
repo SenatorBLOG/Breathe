@@ -306,7 +306,7 @@ export function StatsSection() {
                   <Watch size={9} className="inline mr-1" />
                   Data from: {health.sources.map(s => s === 'apple_health' ? 'Apple Health' : s === 'google_fit' ? 'Google Fit' : 'Fitbit').join(', ')}
                 </p>
-                <Link to="/profile" className="t-caption hover:underline" style={{ color: ts.accent }}>
+                <Link to="/profile?tab=devices" className="t-caption hover:underline" style={{ color: ts.accent }}>
                   Manage integrations →
                 </Link>
               </div>
