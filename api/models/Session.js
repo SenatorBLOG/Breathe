@@ -24,6 +24,16 @@ const sessionSchema = new mongoose.Schema({
     oneLineSummary:     { type: String, default: null },
     analyzedAt:         { type: Date, default: null },
   },
+  // ML Recommendation fields
+  mlRecommendation: {
+    recommendedTechnique: { type: String, enum: ['breathing', 'sleep', 'focus', 'relaxation'], default: null },
+    confidence: { type: Number, min: 0, max: 1, default: null },
+    probabilities: { type: Map, of: Number, default: {} },
+    modelVersion: { type: String, default: null },
+  },
+  userChoice: { type: String, enum: ['breathing', 'sleep', 'focus', 'relaxation'], default: null },
+  rating: { type: Number, min: 1, max: 5, default: null },
+  usedForTraining: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model('Session', sessionSchema);
