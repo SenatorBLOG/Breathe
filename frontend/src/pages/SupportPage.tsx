@@ -160,7 +160,7 @@ export default function SupportPage() {
                       }}>
                       Send another
                     </button>
-                    <Link to="/home-page"
+                    <Link to="/"
                       className="px-5 py-2 rounded-xl t-caption text-white font-medium transition-all hover:shadow-[0_0_16px_rgba(58,130,247,0.35)]"
                       style={{ background: ts.btnGradient }}>
                       Back to home

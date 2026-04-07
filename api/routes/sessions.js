@@ -5,6 +5,7 @@ const Session  = require('../models/Session');
 const User     = require('../models/User');
 const authenticate = require('../middleware/auth');
 const mlService = require('../services/mlService');
+const { checkAchievements } = require('../services/achievementService');
 
 // ─── Helper — works with both old (req.userId) and new (req.user._id) middleware
 function getUserId(req) {
@@ -48,6 +49,9 @@ router.post('/', authenticate, async (req, res) => {
     await session.save();
     console.log('✅ Saved session:', session._id, 'for user:', userId);
 
+    // Check achievements (fire-and-forget, returns unlocked list to client)
+    const newAchievements = await checkAchievements(userId, session).catch(() => []);
+
     // Update lastSessionAt and reset reminder flag (fire-and-forget)
     User.updateOne(
       { _id: userId },
@@ -80,7 +84,7 @@ router.post('/', authenticate, async (req, res) => {
       }
     })();
 
-    res.status(201).json(session);
+    res.status(201).json({ ...session.toObject(), newAchievements });
   } catch (err) {
     console.error('❌ Failed to save session:', err.message);
     res.status(400).json({ error: err.message });

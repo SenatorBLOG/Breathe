@@ -29,17 +29,17 @@ const STYLES: Record<Theme, ThemeStyles> = {
   night: {
     btnGradient:   'linear-gradient(135deg,#1A5FCC,#3A82F7)',
     btnShadow:     '0 0 24px rgba(58,130,247,0.4)',
-    textPrimary:   '#EEF5FF',   // near-white — h1, names, card titles
-    textSecondary: '#7AC4FF',   // bright blue — secondary headings, active elements
-    textMuted:     '#5A8FBB',   // descriptions, dates, labels
-    textDim:       '#2A4060',   // placeholders, inactive
-    cardBg:        'rgba(11,22,40,0.85)',
-    cardBgHover:   'rgba(13,27,51,0.90)',
+    textPrimary:   '#EEF5FF',
+    textSecondary: '#7AC4FF',
+    textMuted:     '#7AABCC',   // ↑ brighter: was #5A8FBB
+    textDim:       '#3A5070',   // ↑ brighter: was #2A4060
+    cardBg:        'rgba(12,24,44,0.88)',
+    cardBgHover:   'rgba(16,32,60,0.94)',
     pageBg:        '#010814',
-    border:        'rgba(30,51,88,0.5)',
-    borderHover:   'rgba(42,84,153,0.7)',
-    accent:        '#1A5FCC',
-    accentLight:   '#3A82F7',
+    border:        'rgba(58,130,247,0.18)',  // ↑ blue-tinted, more visible
+    borderHover:   'rgba(58,130,247,0.45)',
+    accent:        '#3A82F7',   // ↑ bright blue as primary accent (was dark #1A5FCC)
+    accentLight:   '#7AC4FF',
     navBg:         'rgba(6,12,26,0.96)',
   },
   day: {
@@ -47,31 +47,31 @@ const STYLES: Record<Theme, ThemeStyles> = {
     btnShadow:     '0 0 24px rgba(232,160,32,0.45)',
     textPrimary:   '#0A0A1E',
     textSecondary: '#1A2A5E',
-    textMuted:     '#364478',
-    textDim:       '#5A6A92',
-    cardBg:        'rgba(255,252,240,0.88)',
-    cardBgHover:   'rgba(255,250,230,0.95)',
+    textMuted:     '#4A5A80',   // ↑ brighter: was #364478
+    textDim:       '#6A7A9A',   // ↑ brighter: was #5A6A92
+    cardBg:        'rgba(255,252,240,0.92)',
+    cardBgHover:   'rgba(255,250,230,0.98)',
     pageBg:        '#F5F0E8',
-    border:        'rgba(200,180,120,0.5)',
-    borderHover:   'rgba(200,160,60,0.7)',
+    border:        'rgba(180,140,60,0.40)',  // ↑ more visible
+    borderHover:   'rgba(200,140,30,0.65)',
     accent:        '#C8860A',
     accentLight:   '#E8A020',
     navBg:         'rgba(245,240,220,0.97)',
   },
   nature: {
-    btnGradient:   'linear-gradient(135deg,#1A7A40,#2ECC71)',
-    btnShadow:     '0 0 24px rgba(46,204,113,0.4)',
-    textPrimary:   '#E8FFF0',   // near-white with green tint — h1, names, titles
-    textSecondary: '#4AE8A0',   // bright mint — secondary headings, active elements
-    textMuted:     '#5BA870',   // descriptions, dates, labels
-    textDim:       '#3A6848',   // placeholders, inactive
-    cardBg:        'rgba(10,28,14,0.88)',
-    cardBgHover:   'rgba(14,36,18,0.94)',
+    btnGradient:   'linear-gradient(135deg,#1A9A50,#2ECC71)',
+    btnShadow:     '0 0 24px rgba(46,204,113,0.45)',
+    textPrimary:   '#EDFFF5',
+    textSecondary: '#4AE8A0',   // bright mint — keep
+    textMuted:     '#90CCA8',   // ↑ much brighter: was #5BA870
+    textDim:       '#4A7858',   // ↑ brighter: was #3A6848
+    cardBg:        'rgba(16,42,22,0.90)',    // ↑ lighter + more opaque vs bg
+    cardBgHover:   'rgba(22,56,30,0.96)',
     pageBg:        '#0A1A0E',
-    border:        'rgba(46,120,65,0.55)',
-    borderHover:   'rgba(70,160,90,0.75)',
-    accent:        '#1A7A40',
-    accentLight:   '#2ECC71',
+    border:        'rgba(74,200,110,0.22)',  // ↑ bright green tint, visible
+    borderHover:   'rgba(74,220,120,0.50)',
+    accent:        '#2ECC71',   // ↑ bright green as accent (was dark #1A7A40)
+    accentLight:   '#4AE8A0',
     navBg:         'rgba(6,18,8,0.97)',
   },
 };

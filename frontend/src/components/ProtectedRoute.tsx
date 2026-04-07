@@ -9,7 +9,7 @@ export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const location = useLocation();
   if (!isAuthenticated) {
     // re-addresing to home page here
-    return <Navigate to="/home-page" state={{ from: location }} replace />;
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
   return children;
 };

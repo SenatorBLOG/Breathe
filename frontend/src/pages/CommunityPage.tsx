@@ -111,13 +111,13 @@ const CATEGORY_META: Record<string, { label: string; color: string; bg: string }
 
 // ─── Tag colour palette — fixed, theme-independent ───────────────────────────
 const TAG_PALETTE = [
-  { color: '#00D4FF', bg: 'rgba(0,212,255,0.10)',    border: 'rgba(0,212,255,0.28)'    }, // neon cyan
-  { color: '#FF6B9D', bg: 'rgba(255,107,157,0.10)',  border: 'rgba(255,107,157,0.28)'  }, // pink
-  { color: '#FFD97D', bg: 'rgba(255,217,125,0.10)',  border: 'rgba(255,217,125,0.28)'  }, // amber
-  { color: '#A78BFA', bg: 'rgba(167,139,250,0.10)',  border: 'rgba(167,139,250,0.28)'  }, // violet
-  { color: '#FF9A5C', bg: 'rgba(255,154,92,0.10)',   border: 'rgba(255,154,92,0.28)'   }, // orange
-  { color: '#34D399', bg: 'rgba(52,211,153,0.10)',   border: 'rgba(52,211,153,0.28)'   }, // emerald
-  { color: '#F87171', bg: 'rgba(248,113,113,0.10)',  border: 'rgba(248,113,113,0.28)'  }, // rose
+  { color: '#00D4FF', bg: 'rgba(0,212,255,0.14)',    border: 'rgba(0,212,255,0.45)'    }, // neon cyan
+  { color: '#FF6B9D', bg: 'rgba(255,107,157,0.14)',  border: 'rgba(255,107,157,0.45)'  }, // pink
+  { color: '#FFD97D', bg: 'rgba(255,217,125,0.14)',  border: 'rgba(255,217,125,0.45)'  }, // amber
+  { color: '#A78BFA', bg: 'rgba(167,139,250,0.14)',  border: 'rgba(167,139,250,0.45)'  }, // violet
+  { color: '#FF9A5C', bg: 'rgba(255,154,92,0.14)',   border: 'rgba(255,154,92,0.45)'   }, // orange
+  { color: '#34D399', bg: 'rgba(52,211,153,0.14)',   border: 'rgba(52,211,153,0.45)'   }, // emerald
+  { color: '#F87171', bg: 'rgba(248,113,113,0.14)',  border: 'rgba(248,113,113,0.45)'  }, // rose
 ] as const;
 
 function pickTagColor(tag: string) {
@@ -508,7 +508,7 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete, 
         </div>
 
         {/* Text */}
-        <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
+        <p className="t-caption leading-relaxed" style={{ color: ts.textSecondary }}>
           {post.text}
         </p>
 

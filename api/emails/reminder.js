@@ -1,7 +1,6 @@
 // emails/reminder.js
-function reminderHtml({ name, email, daysSince }) {
+function reminderHtml({ name, email }) {
   const displayName = name || 'there';
-  const daysText = daysSince === 2 ? '2 days' : `${daysSince} days`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,10 +26,10 @@ function reminderHtml({ name, email, daysSince }) {
             <td style="background:#0B1628;border-radius:20px;border:1px solid rgba(30,51,88,0.7);padding:40px 36px;">
 
               <p style="margin:0 0 8px;font-size:22px;font-weight:600;color:#B8D9FF;">
-                Hey ${displayName} — it's been ${daysText} 🌊
+                Hey ${displayName} — you haven't meditated today 🌊
               </p>
               <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#4A7AAA;">
-                Your nervous system doesn't take days off. Even 3 minutes of breathwork today resets your stress baseline and keeps your practice alive.
+                2 minutes will change your evening. Your nervous system doesn't take days off — a short breathwork session now resets your stress baseline and keeps your streak alive.
               </p>
 
               <!-- Techniques -->

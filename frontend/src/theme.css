@@ -1,100 +1,103 @@
-/* src/theme.css — Breathe themes, compatible with Tailwind v4 */
+/* src/theme.css — Оптимизированные темы Breathe */
 
-/* ══ Page background per theme ══════════════════════════════════════════════ */
-html[data-theme="night"], html[data-theme="night"] body { background-color: #010814 !important; }
-html[data-theme="day"],   html[data-theme="day"]   body { background-color: #EEF2FF !important; }
-html[data-theme="nature"],html[data-theme="nature"] body { background-color: #0A1A0E !important; }
+/* ══ Базовые настройки и переменные ══════════════════════════════════════════ */
+:root {
+  --transition-speed: 0.3s;
+  --transition-timing: ease-in-out;
+}
 
-/* Also target via documentElement */
+/* Принудительная цветовая схема для браузера */
 :root[data-theme="day"]    { color-scheme: light; }
-:root[data-theme="night"]  { color-scheme: dark; }
+:root[data-theme="night"],
 :root[data-theme="nature"] { color-scheme: dark; }
 
-/* ══ DAY THEME ══════════════════════════════════════════════════════════════ */
-
-/* Text */
-[data-theme="day"] *[class*="text-[#B8D9FF]"] { color: #1A2A5E !important; }
-[data-theme="day"] *[class*="text-[#7AC4FF]"] { color: #2B4A90 !important; }
-[data-theme="day"] *[class*="text-[#4A9EFF]"] { color: #1A5FCC !important; }
-[data-theme="day"] *[class*="text-[#4A7AAA]"] { color: #3A5A90 !important; }
-[data-theme="day"] *[class*="text-[#3D6080]"] { color: #4A6A9A !important; }
-[data-theme="day"] *[class*="text-[#2A4060]"] { color: #6080B0 !important; }
-
-/* Backgrounds */
-[data-theme="day"] *[class*="bg-[#010814]"]  { background-color: #EEF2FF !important; }
-[data-theme="day"] *[class*="bg-[#040A14]"]  { background-color: #E4EAFF !important; }
-[data-theme="day"] *[class*="bg-[#060C1A]"]  { background-color: rgba(220,230,255,0.7) !important; }
-[data-theme="day"] *[class*="bg-[#0B1628]"]  { background-color: rgba(255,255,255,0.88) !important; }
-[data-theme="day"] *[class*="bg-[#0D1B33]"]  { background-color: rgba(240,244,255,0.9) !important; }
-
-/* Borders */
-[data-theme="day"] *[class*="border-[#1E3358]"] { border-color: rgba(120,160,220,0.45) !important; }
-[data-theme="day"] *[class*="border-[#2A5499]"] { border-color: rgba(80,130,210,0.5) !important; }
-
-/* Nav + Footer */
-[data-theme="day"] nav    { background: rgba(238,242,255,0.97) !important; border-color: rgba(120,160,220,0.3) !important; }
-[data-theme="day"] footer { background: rgba(225,232,255,0.97) !important; border-color: rgba(120,160,220,0.3) !important; }
-
-/* Inputs */
-[data-theme="day"] input:not([type="range"]),
-[data-theme="day"] textarea,
-[data-theme="day"] select {
-  background: rgba(240,244,255,0.95) !important;
-  border-color: rgba(120,160,220,0.5) !important;
-  color: #1A2A5E !important;
-}
-[data-theme="day"] input::placeholder,
-[data-theme="day"] textarea::placeholder { color: #6080B0 !important; }
-
-/* Buttons with gradient */
-[data-theme="day"] button[style*="1A5FCC"],
-[data-theme="day"] a[style*="1A5FCC"] {
-  filter: brightness(1.1) saturate(1.2);
+/* Глобальные переходы для мягкой смены темы */
+*, *::before, *::after {
+  transition: background-color var(--transition-speed) var(--transition-timing), 
+              border-color var(--transition-speed) var(--transition-timing), 
+              color var(--transition-speed) var(--transition-timing),
+              box-shadow var(--transition-speed) var(--transition-timing);
 }
 
-/* ══ NATURE THEME ═══════════════════════════════════════════════════════════ */
+/* ══ Page background ══════════════════════════════════════════════════════════ */
+html[data-theme="night"],  body[data-theme="night"]  { background-color: #020617 !important; }
+html[data-theme="day"],    body[data-theme="day"]    { background-color: #F8FAFC !important; }
+html[data-theme="nature"], body[data-theme="nature"] { background-color: #050C07 !important; }
 
-/* Text */
-[data-theme="nature"] *[class*="text-[#B8D9FF]"] { color: #C8F0D8 !important; }
-[data-theme="nature"] *[class*="text-[#7AC4FF]"] { color: #6DD99A !important; }
-[data-theme="nature"] *[class*="text-[#4A9EFF]"] { color: #2ECC71 !important; }
-[data-theme="nature"] *[class*="text-[#4A7AAA]"] { color: #3D8A55 !important; }
-[data-theme="nature"] *[class*="text-[#3D6080]"] { color: #3D8A55 !important; }
-[data-theme="nature"] *[class*="text-[#2A4060]"] { color: #1A5038 !important; }
+/* ══ DAY THEME (Улучшенная читаемость) ════════════════════════════════════════ */
 
-/* Backgrounds */
-[data-theme="nature"] *[class*="bg-[#010814]"]  { background-color: #0A1A0E !important; }
-[data-theme="nature"] *[class*="bg-[#040A14]"]  { background-color: #0D2012 !important; }
-[data-theme="nature"] *[class*="bg-[#060C1A]"]  { background-color: rgba(8,22,12,0.7) !important; }
-[data-theme="nature"] *[class*="bg-[#0B1628]"]  { background-color: rgba(10,28,14,0.85) !important; }
-[data-theme="nature"] *[class*="bg-[#0D1B33]"]  { background-color: rgba(10,28,14,0.88) !important; }
+/* Текст: от глубокого индиго до мягкого серо-голубого */
+[data-theme="day"] *[class*="text-[#B8D9FF]"] { color: #0F172A !important; } /* Основной текст */
+[data-theme="day"] *[class*="text-[#7AC4FF]"] { color: #1E293B !important; } 
+[data-theme="day"] *[class*="text-[#4A9EFF]"] { color: #2563EB !important; } /* Акценты/Ссылки */
+[data-theme="day"] *[class*="text-[#4A7AAA]"] { color: #334155 !important; }
+[data-theme="day"] *[class*="text-[#3D6080]"] { color: #475569 !important; }
+[data-theme="day"] *[class*="text-[#2A4060]"] { color: #64748B !important; }
 
-/* Borders */
-[data-theme="nature"] *[class*="border-[#1E3358]"] { border-color: rgba(40,100,55,0.45) !important; }
-[data-theme="nature"] *[class*="border-[#2A5499]"] { border-color: rgba(46,140,70,0.5) !important; }
+/* Фоны: чистые и светлые */
+[data-theme="day"] *[class*="bg-[#010814]"]  { background-color: #F1F5F9 !important; }
+[data-theme="day"] *[class*="bg-[#040A14]"]  { background-color: #E2E8F0 !important; }
+[data-theme="day"] *[class*="bg-[#060C1A]"]  { background-color: rgba(241, 245, 249, 0.8) !important; }
+[data-theme="day"] *[class*="bg-[#0B1628]"]  { background-color: #FFFFFF !important; }
+[data-theme="day"] *[class*="bg-[#0D1B33]"]  { background-color: rgba(255, 255, 255, 0.9) !important; }
 
-/* Nav + Footer */
-[data-theme="nature"] nav    { background: rgba(8,20,10,0.97) !important; border-color: rgba(40,100,55,0.3) !important; }
-[data-theme="nature"] footer { background: rgba(8,20,10,0.97) !important; border-color: rgba(40,100,55,0.25) !important; }
+/* Бордеры */
+[data-theme="day"] *[class*="border-[#1E3358]"] { border-color: #CBD5E1 !important; }
+[data-theme="day"] *[class*="border-[#2A5499]"] { border-color: #94A3B8 !important; }
 
-/* Inputs */
-[data-theme="nature"] input:not([type="range"]),
-[data-theme="nature"] textarea,
-[data-theme="nature"] select {
-  background: rgba(10,28,14,0.85) !important;
-  border-color: rgba(40,100,55,0.55) !important;
-  color: #C8F0D8 !important;
+/* Nav + Footer с эффектом стекла */
+[data-theme="day"] nav { 
+  background: rgba(255, 255, 255, 0.8) !important; 
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important; 
 }
-[data-theme="nature"] input::placeholder,
-[data-theme="nature"] textarea::placeholder { color: #1A5038 !important; }
 
-/* Buttons with gradient → green */
+/* ══ NATURE THEME (Эстетика леса и высокая контрастность) ═════════════════════ */
+
+/* Текст: Освежающий мятный и мягкий травяной */
+[data-theme="nature"] *[class*="text-[#B8D9FF]"] { color: #ECFDF5 !important; }
+[data-theme="nature"] *[class*="text-[#7AC4FF]"] { color: #A7F3D0 !important; }
+[data-theme="nature"] *[class*="text-[#4A9EFF]"] { color: #10B981 !important; } /* Яркий зеленый акцент */
+[data-theme="nature"] *[class*="text-[#4A7AAA]"] { color: #6EE7B7 !important; }
+[data-theme="nature"] *[class*="text-[#3D6080]"] { color: #34D399 !important; }
+[data-theme="nature"] *[class*="text-[#2A4060]"] { color: #065F46 !important; }
+
+/* Фоны: Глубокий темно-зеленый (не черный) */
+[data-theme="nature"] *[class*="bg-[#010814]"]  { background-color: #050C07 !important; }
+[data-theme="nature"] *[class*="bg-[#040A14]"]  { background-color: #06160C !important; }
+[data-theme="nature"] *[class*="bg-[#0B1628]"]  { background-color: #0B2114 !important; }
+[data-theme="nature"] *[class*="bg-[#0D1B33]"]  { background-color: rgba(11, 33, 20, 0.9) !important; }
+
+/* Бордеры */
+[data-theme="nature"] *[class*="border-[#1E3358]"] { border-color: #143D21 !important; }
+[data-theme="nature"] *[class*="border-[#2A5499]"] { border-color: #10B981 !important; }
+
+/* Кнопки: Градиент более сочный */
 [data-theme="nature"] button[style*="1A5FCC"],
 [data-theme="nature"] a[style*="1A5FCC"] {
-  background: linear-gradient(135deg,#1A7A40,#2ECC71) !important;
-  box-shadow: 0 4px 20px rgba(46,204,113,0.3) !important;
+  background: linear-gradient(135deg, #059669, #10B981) !important;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2) !important;
+  color: white !important;
 }
 
-/* ══ Smooth transitions ═════════════════════════════════════════════════════ */
-body, #root { transition: background-color 0.4s ease !important; }
-nav, footer { transition: background 0.4s ease, border-color 0.4s ease !important; }
+/* ══ Формы и Инпуты (Общее улучшение) ═══════════════════════════════════════ */
+[data-theme="day"] input, [data-theme="day"] textarea, [data-theme="day"] select {
+  background: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+[data-theme="nature"] input, [data-theme="nature"] textarea, [data-theme="nature"] select {
+  background: #0B2114 !important;
+  border: 1px solid #143D21 !important;
+  color: #ECFDF5 !important;
+}
+
+/* Фокус для инпутов */
+input:focus {
+  outline: 2px solid #3B82F6 !important;
+  outline-offset: -1px;
+}
+[data-theme="nature"] input:focus {
+  outline-color: #10B981 !important;
+}

@@ -11,6 +11,7 @@ import { AuthContext } from '../components/contexts/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import { syncGoalFromProfile } from '../utils/mlDefaults';
 
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -39,7 +40,7 @@ export default function LoginPage() {
       const preset = RESULT_TO_PRESET[ref];
       navigate('/breathing', { state: { coachPreset: preset, coachPresetName: preset.name } });
     } else {
-      navigate('/home-page');
+      navigate('/');
     }
   };
 
@@ -51,6 +52,7 @@ export default function LoginPage() {
         login(res.data.token, res.data.user);
         localStorage.setItem('userId', res.data.user?._id ?? '');
         toast.success('Welcome to Breathe');
+        api.get('/auth/me').then(r => syncGoalFromProfile(r.data)).catch(() => {});
         redirectAfterAuth();
       } catch {
         toast.error('Google login failed');
@@ -70,6 +72,8 @@ export default function LoginPage() {
       login(res.data.token, res.data.user);
       localStorage.setItem('userId', res.data.user?._id ?? '');
       toast.success(t("auth.welcomeBack"), { description: t("auth.sessionsWaiting") });
+      // Sync server-side goal into local ML defaults (fire-and-forget)
+      api.get('/auth/me').then(r => syncGoalFromProfile(r.data)).catch(() => {});
       redirectAfterAuth();
     } catch (err: any) {
       const msg = err.response?.data?.error || 'Invalid email or password';

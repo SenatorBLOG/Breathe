@@ -45,7 +45,7 @@ function InfoCard({ title, value, sub, children, accentColor }: {
   const ts = useThemeStyles();
   const glow = accentColor ?? ts.accent;
   return (
-    <div className="relative flex flex-col gap-2 p-4 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.015]"
+    <div className="relative flex flex-col gap-2 p-4 rounded-2xl overflow-hidden"
       style={{
         background: ts.cardBg,
         border: `1px solid ${ts.border}`,
@@ -121,7 +121,7 @@ const MoodTrackingGrid = () => {
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4">
 
         {/* Breakdown */}
         <InfoCard title="Mood breakdown · all sessions"

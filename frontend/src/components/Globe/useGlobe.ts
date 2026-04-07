@@ -749,9 +749,12 @@ export function useGlobe({
       isDraggingRef.current = true;
       lastMouseRef.current  = { x: e.clientX, y: e.clientY };
       velocityRef.current   = { x: 0, y: 0 };
+      // Track drag globally so fast mouse moves outside canvas still rotate
+      window.addEventListener('mousemove', onWindowMouseMove);
+      window.addEventListener('mouseup',   onWindowMouseUp);
     }
-    function onMouseMove(e: MouseEvent) {
-      if (!isDraggingRef.current) { handleRaycast(e.clientX, e.clientY); return; }
+    function onWindowMouseMove(e: MouseEvent) {
+      if (!isDraggingRef.current) return;
       const dx = e.clientX - lastMouseRef.current.x;
       const dy = e.clientY - lastMouseRef.current.y;
       lastMouseRef.current = { x: e.clientX, y: e.clientY };
@@ -762,16 +765,22 @@ export function useGlobe({
       globeGroup.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, globeGroup.rotation.x));
       lastInteractionRef.current = Date.now();
     }
-    function onMouseUp(e: MouseEvent) {
+    function onWindowMouseUp(e: MouseEvent) {
       if (!isDraggingRef.current) return;
       isDraggingRef.current = false;
       lastInteractionRef.current = Date.now();
+      window.removeEventListener('mousemove', onWindowMouseMove);
+      window.removeEventListener('mouseup',   onWindowMouseUp);
       const dx = e.clientX - lastMouseRef.current.x;
       const dy = e.clientY - lastMouseRef.current.y;
       if (Math.abs(dx) < 3 && Math.abs(dy) < 3) handleClick(e.clientX, e.clientY);
     }
+    function onMouseMove(e: MouseEvent) {
+      if (isDraggingRef.current) return; // global handler handles drag
+      handleRaycast(e.clientX, e.clientY);
+    }
     function onMouseLeave() {
-      isDraggingRef.current = false;
+      if (isDraggingRef.current) return; // still dragging outside canvas — let global handler finish
       setHoveredPin(null);
       setHoveredCity(null);
       setHoveredPos(null);
@@ -825,7 +834,6 @@ export function useGlobe({
 
     canvas.addEventListener('mousedown',  onMouseDown);
     canvas.addEventListener('mousemove',  onMouseMove);
-    canvas.addEventListener('mouseup',    onMouseUp);
     canvas.addEventListener('mouseleave', onMouseLeave);
     canvas.addEventListener('touchstart', onTouchStart, { passive: false });
     canvas.addEventListener('touchmove',  onTouchMove,  { passive: false });
@@ -917,8 +925,9 @@ export function useGlobe({
       ro.disconnect();
       canvas.removeEventListener('mousedown',  onMouseDown);
       canvas.removeEventListener('mousemove',  onMouseMove);
-      canvas.removeEventListener('mouseup',    onMouseUp);
       canvas.removeEventListener('mouseleave', onMouseLeave);
+      window.removeEventListener('mousemove',  onWindowMouseMove);
+      window.removeEventListener('mouseup',    onWindowMouseUp);
       canvas.removeEventListener('touchstart', onTouchStart);
       canvas.removeEventListener('touchmove',  onTouchMove);
       canvas.removeEventListener('touchend',   onTouchEnd);

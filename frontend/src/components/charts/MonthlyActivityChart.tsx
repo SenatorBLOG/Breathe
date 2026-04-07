@@ -138,13 +138,13 @@ const MonthlyActivityChart = () => {
             return (
               <div key={d.name} className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: d.color }} />
-                <span className="t-label w-16 flex-shrink-0" style={{ color: ts.textSecondary }}>
+                <span className="t-label w-12 flex-shrink-0" style={{ color: ts.textSecondary }}>
                   {d.name}
                 </span>
                 <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: `${ts.border}66` }}>
                   <div className="h-full rounded-full" style={{ width: `${pct}%`, background: d.color }} />
                 </div>
-                <span className="t-label tabular-nums flex-shrink-0 w-14 text-right" style={{ color: ts.textMuted }}>
+                <span className="t-label tabular-nums flex-shrink-0 w-12 text-right" style={{ color: ts.textMuted }}>
                   {d.value}× · {pct}%
                 </span>
               </div>
@@ -154,10 +154,9 @@ const MonthlyActivityChart = () => {
       </div>
 
       {/* Sub-caption */}
-      <div className="flex items-center justify-between border-t pt-3" style={{ borderColor: `${ts.border}40` }}>
+      <div className="flex flex-col gap-2 border-t pt-3" style={{ borderColor: `${ts.border}40` }}>
         <span className="t-label" style={{ color: ts.textMuted }}>{total} sessions total</span>
-
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {BUCKETS.filter(b => pieData.some(p => p.name === b.name)).map(b => (
             <span key={b.name} className="t-label px-2 py-0.5 rounded-full border"
               style={{ color: b.color, borderColor: `${b.color}33`, background: `${b.color}0D` }}>

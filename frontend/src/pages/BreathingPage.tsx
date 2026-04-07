@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useBreathingGuidance } from '../hooks/useBreathingGuidance';
 import GuidancePicker, { type GuidanceMode, type VoiceGender } from '../components/GuidancePicker';
+import AmbientSoundPlayer from '../components/AmbientSoundPlayer';
 import { useHealthData } from '../hooks/useHealthData';
 import { calcCalmScore, type SessionBiometrics } from '../utils/calmScore';
 import CalmScoreResult from '../components/CalmScoreResult';
@@ -391,37 +392,73 @@ export default function BreathingPage() {
           />
         </div>
 
+        {/* ── Start / Pause ──────────────────────────────────────────────────── */}
         <button
           onClick={() => setIsActive(a => !a)}
-          className="group relative flex items-center gap-2.5 px-8 py-3 rounded-full text-white t-body font-medium tracking-wide transition-all duration-300 hover:shadow-[0_0_30px_rgba(58,130,247,0.45)] hover:scale-105 active:scale-95"
-          style={{ background: ts.btnGradient }}
+          className="w-full max-w-sm py-3.5 rounded-full text-white t-body font-medium tracking-wide flex items-center justify-center gap-2.5 transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+          style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
         >
           {isActive ? (
             <><svg width="12" height="14" viewBox="0 0 12 14" fill="white"><rect x="0" y="0" width="4" height="14" rx="1.5"/><rect x="8" y="0" width="4" height="14" rx="1.5"/></svg>Pause</>
           ) : (
-            <><svg width="11" height="13" viewBox="0 0 12 14" fill="white"><path d="M1 1l10 6L1 13V1z"/></svg>{cycles > 0 ? "Resume" : "Start"}</>
+            <><svg width="11" height="13" viewBox="0 0 12 14" fill="white"><path d="M1 1l10 6L1 13V1z"/></svg>{cycles > 0 ? 'Resume' : 'Start'}</>
           )}
         </button>
 
-        <GuidancePicker
-          mode={guidanceMode}
-          voiceGender={voiceGender}
-          onChange={handleGuidanceChange}
-        />
-
-        <div className="flex flex-col items-center gap-2">
-          <HeartRateMonitor variant="compact" />
-          <div className="flex gap-3">
-            {[
-              { icon: <Flame size={12} />, label: t("breathing.streak"),   value: `${totalStats.streak}d`         },
-              { icon: <Zap size={12} />,   label: t("breathing.allTime"), value: `${totalStats.totalMinutes}m`    },
-              { icon: <Wind size={12} />,  label: t("breathing.sessions"), value: String(totalStats.totalSessions) },
-            ].map(({ icon, label, value }, i) => (
-              <div key={label} className="stat-in" style={{ animationDelay: `${0.3 + i * 0.1}s`, opacity: 0 }}>
-                <StatPill icon={icon} label={label} value={value} dim={isActive} />
-              </div>
-            ))}
+        {/* ── Sound controls panel (no overflow:hidden — preserves popover) ──── */}
+        <div
+          className="w-full max-w-sm rounded-2xl"
+          style={{
+            background: 'rgba(6,12,26,0.78)',
+            border: `1px solid ${ts.border}`,
+            backdropFilter: 'blur(16px)',
+          }}
+        >
+          {/* Guidance row */}
+          <div
+            className="flex items-center justify-between px-4 py-3"
+            style={{ borderBottom: `1px solid ${ts.border}` }}
+          >
+            <span className="t-label uppercase tracking-[0.18em]" style={{ color: ts.textDim }}>Voice</span>
+            <GuidancePicker mode={guidanceMode} voiceGender={voiceGender} onChange={handleGuidanceChange} />
           </div>
+
+          {/* Ambient sound row */}
+          <div className="px-3 py-2.5">
+            <AmbientSoundPlayer />
+          </div>
+        </div>
+
+        {/* ── Stats strip ────────────────────────────────────────────────────── */}
+        <div
+          className="w-full max-w-sm rounded-2xl flex items-stretch"
+          style={{
+            background: 'rgba(6,12,26,0.78)',
+            border: `1px solid ${ts.border}`,
+            backdropFilter: 'blur(16px)',
+          }}
+        >
+          <div
+            className="flex-1 flex items-center justify-center px-2 py-3.5"
+            style={{ borderRight: `1px solid ${ts.border}` }}
+          >
+            <HeartRateMonitor variant="compact" />
+          </div>
+          {([
+            { icon: <Flame size={11} />, label: t('breathing.streak'),   value: `${totalStats.streak}d`         },
+            { icon: <Zap   size={11} />, label: t('breathing.allTime'),  value: `${totalStats.totalMinutes}m`    },
+            { icon: <Wind  size={11} />, label: t('breathing.sessions'), value: String(totalStats.totalSessions) },
+          ] as const).map(({ icon, label, value }, i) => (
+            <div
+              key={label}
+              className="flex-1 flex flex-col items-center justify-center gap-1 py-3.5"
+              style={{ borderRight: i < 2 ? `1px solid ${ts.border}` : 'none' }}
+            >
+              <span style={{ color: ts.accent }}>{icon}</span>
+              <span className="t-body font-semibold tabular-nums leading-tight" style={{ color: ts.textSecondary }}>{value}</span>
+              <span className="t-label uppercase tracking-wider leading-tight" style={{ color: ts.textMuted }}>{label}</span>
+            </div>
+          ))}
         </div>
       </section>
 

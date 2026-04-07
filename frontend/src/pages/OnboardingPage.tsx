@@ -5,17 +5,19 @@ import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import ThemeBackground from '../components/ThemeBackground';
 import { requestPushPermission } from '../utils/pushNotifications';
+import api from '../api';
+import { saveMlDefaults } from '../utils/mlDefaults';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-type Goal = 'sleep' | 'anxiety' | 'focus' | 'energy';
+type Goal = 'sleep' | 'stress' | 'focus' | 'energy';  // 'stress' matches User model enum
 type GuidanceMode = 'visual' | 'sound' | 'vibration' | 'voice';
 
 // ─── Presets ──────────────────────────────────────────────────────────────────
 const PRESETS: Record<Goal, { inhale: number; hold: number; exhale: number; pause: number }> = {
-  sleep:   { inhale: 4, hold: 7, exhale: 8, pause: 1 },
-  anxiety: { inhale: 4, hold: 4, exhale: 4, pause: 4 },
-  focus:   { inhale: 5, hold: 0, exhale: 5, pause: 1 },
-  energy:  { inhale: 2, hold: 1, exhale: 2, pause: 1 },
+  sleep:  { inhale: 4, hold: 7, exhale: 8, pause: 1 },
+  stress: { inhale: 4, hold: 4, exhale: 4, pause: 4 },
+  focus:  { inhale: 5, hold: 0, exhale: 5, pause: 1 },
+  energy: { inhale: 2, hold: 1, exhale: 2, pause: 1 },
 };
 
 const BACKEND = import.meta.env.VITE_API_BASE?.replace('/api', '')
@@ -83,18 +85,28 @@ export default function OnboardingPage() {
     );
   };
 
-  const connectWearable = (provider: string) => {
+  // Persist everything (localStorage + backend if logged in)
+  const persistChoices = async (selectedGoal: Goal | null) => {
     localStorage.setItem('breathe_onboarded', 'true');
-    if (goal) localStorage.setItem('breathe_goal', goal);
     localStorage.setItem('breathe_guidance_modes', JSON.stringify(guidanceModes));
+    if (selectedGoal) {
+      saveMlDefaults(selectedGoal);  // saves goal + stress + time_of_day for ML
+      // Sync to backend profile if user is authenticated
+      const token = localStorage.getItem('token');
+      if (token) {
+        api.patch('/auth/me', { bodyProfile: { goal: selectedGoal } }).catch(() => {});
+      }
+    }
+  };
+
+  const connectWearable = async (provider: string) => {
+    await persistChoices(goal);
     const token = localStorage.getItem('token') ?? '';
     window.location.href = `${BACKEND}/api/integrations/${provider}/connect?token=${token}`;
   };
 
-  const handleStart = () => {
-    localStorage.setItem('breathe_onboarded', 'true');
-    if (goal) localStorage.setItem('breathe_goal', goal);
-    localStorage.setItem('breathe_guidance_modes', JSON.stringify(guidanceModes));
+  const handleStart = async () => {
+    await persistChoices(goal);
     navigate('/breathing', {
       state: {
         coachPreset:     goal ? PRESETS[goal] : undefined,
@@ -103,15 +115,15 @@ export default function OnboardingPage() {
     });
   };
 
-  const skip = () => {
-    localStorage.setItem('breathe_onboarded', 'true');
+  const skip = async () => {
+    await persistChoices(goal);
     navigate('/breathing');
   };
 
   // ─── Data ──────────────────────────────────────────────────────────────────
   const GOALS: { key: Goal; emoji: string; label: string; sub: string }[] = [
     { key: 'sleep',   emoji: '😴', label: t('onboarding.goals.sleep'),   sub: t('onboarding.goals.sleepDesc')   },
-    { key: 'anxiety', emoji: '😰', label: t('onboarding.goals.anxiety'), sub: t('onboarding.goals.anxietyDesc') },
+    { key: 'stress',  emoji: '😰', label: t('onboarding.goals.stress'),  sub: t('onboarding.goals.stressDesc')  },
     { key: 'focus',   emoji: '🎯', label: t('onboarding.goals.focus'),   sub: t('onboarding.goals.focusDesc')   },
     { key: 'energy',  emoji: '⚡', label: t('onboarding.goals.energy'),  sub: t('onboarding.goals.energyDesc')  },
   ];
