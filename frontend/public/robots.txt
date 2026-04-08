@@ -8,6 +8,7 @@ Disallow: /sessions
 Disallow: /new-session
 Disallow: /onboarding
 Disallow: /data-consent
+Disallow: /signup
 
 # API — handled by backend
 Disallow: /api/

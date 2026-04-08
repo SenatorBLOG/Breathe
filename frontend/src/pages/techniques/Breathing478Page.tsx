@@ -4,12 +4,18 @@ import { Link } from 'react-router-dom';
 import NavBar from '../../components/NavBar';
 import Footer from '../../components/Footer';
 import ThemeBackground from '../../components/ThemeBackground';
+import PageSEO from '../../components/PageSEO';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 export default function Breathing478Page() {
   const ts = useThemeStyles();
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="4-7-8 Breathing — Fall Asleep Faster with This Sleep Technique"
+        description="The 4-7-8 breathing method: inhale 4s, hold 7s, exhale 8s. Activates the parasympathetic nervous system to help you fall asleep naturally. Try it free."
+        canonical="/breathing/4-7-8"
+      />
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">

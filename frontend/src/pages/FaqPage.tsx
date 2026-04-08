@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
+import PageSEO from '../components/PageSEO';
 import Footer from '../components/Footer';
 import { ChevronDown, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -219,6 +220,11 @@ export default function FAQPage() {
 
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="FAQ — Breathing Exercises & Breathwork Questions Answered"
+        description="Answers to common questions about breathing exercises, breathwork techniques, and how Breathe works. Learn about Box Breathing, 4-7-8, Wim Hof, and more."
+        canonical="/faq"
+      />
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">

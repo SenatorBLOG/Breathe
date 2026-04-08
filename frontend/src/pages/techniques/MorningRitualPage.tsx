@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NavBar from '../../components/NavBar';
 import Footer from '../../components/Footer';
 import ThemeBackground from '../../components/ThemeBackground';
+import PageSEO from '../../components/PageSEO';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 const FAQS = [
@@ -64,20 +64,15 @@ const SCHEMA = {
 export default function MorningRitualPage() {
   const ts = useThemeStyles();
 
-  useEffect(() => {
-    document.title = '3-Minute Morning Breathing Ritual — Focus & Energy for the Day';
-    let desc = document.querySelector('meta[name="description"]');
-    if (!desc) { desc = document.createElement('meta'); desc.setAttribute('name', 'description'); document.head.appendChild(desc); }
-    desc.setAttribute('content', 'A simple 3-minute breathwork sequence to do every morning before coffee. Boosts focus, energy and mood — no equipment, no experience needed.');
-    let canonical = document.querySelector('link[rel="canonical"]');
-    if (!canonical) { canonical = document.createElement('link'); canonical.setAttribute('rel', 'canonical'); document.head.appendChild(canonical); }
-    canonical.setAttribute('href', 'https://breatheonline.app/breathing/morning-ritual');
-  }, []);
-
   const divider = <div style={{ height: 1, backgroundColor: ts.border + '40' }} />;
 
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="3-Minute Morning Breathing Ritual — Focus & Energy for the Day"
+        description="A simple 3-minute breathwork sequence to do every morning before coffee. Boosts focus, energy and mood — no equipment, no experience needed."
+        canonical="/breathing/morning-ritual"
+      />
       <ThemeBackground />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA) }} />

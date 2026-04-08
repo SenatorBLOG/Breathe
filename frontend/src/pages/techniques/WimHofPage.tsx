@@ -4,12 +4,18 @@ import { Link } from 'react-router-dom';
 import NavBar from '../../components/NavBar';
 import Footer from '../../components/Footer';
 import ThemeBackground from '../../components/ThemeBackground';
+import PageSEO from '../../components/PageSEO';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 export default function WimHofPage() {
   const ts = useThemeStyles();
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="Wim Hof Breathing Method — Boost Energy & Cold Tolerance"
+        description="Practice the Wim Hof breathing method online. Rapid breathing cycles boost energy, strengthen immunity, and increase cold tolerance. Free guided sessions."
+        canonical="/breathing/wim-hof"
+      />
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">

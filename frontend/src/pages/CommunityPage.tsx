@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
+import PageSEO from '../components/PageSEO';
 import Footer from '../components/Footer';
 import api from '../api';
 import { toast } from 'sonner';
@@ -759,6 +760,11 @@ export default function CommunityPage() {
 
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="Breathing Community — Share Your Journey"
+        description="Join thousands of people sharing their breathwork journey. Read posts, share experiences, and stay motivated with the Breathe community."
+        canonical="/community"
+      />
       <style>{`
         @keyframes commIn {
           from { opacity: 0; transform: translateY(8px); }

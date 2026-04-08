@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import NavBar from '../../components/NavBar';
 import Footer from '../../components/Footer';
 import ThemeBackground from '../../components/ThemeBackground';
+import PageSEO from '../../components/PageSEO';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 function TechCard({ icon, title, desc }: { icon: string; title: string; desc: string }) {
@@ -55,6 +56,11 @@ export default function BoxBreathingPage() {
   const ts = useThemeStyles();
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="Box Breathing — 4-4-4-4 Technique for Focus & Stress Relief"
+        description="Learn Box Breathing: inhale 4s, hold 4s, exhale 4s, hold 4s. Used by Navy SEALs and athletes to reduce stress and sharpen focus. Try it free online."
+        canonical="/breathing/box-breathing"
+      />
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">

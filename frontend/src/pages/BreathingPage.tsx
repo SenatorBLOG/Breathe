@@ -19,6 +19,7 @@ import Footer from '../components/Footer';
 import { SessionFeedbackModal } from '../components/SessionFeedbackModal';
 import { Flame, Wind, Timer, Zap } from 'lucide-react';
 import ThemeBackground from '../components/ThemeBackground';
+import PageSEO from '../components/PageSEO';
 
 const FEEDBACK_AFTER_CYCLES = 3;
 
@@ -361,6 +362,11 @@ export default function BreathingPage() {
         .stat-in { animation: fadeInUp 0.6s ease forwards; }
       `}</style>
 
+      <PageSEO
+        title="Guided Breathing Exercises — Box, 4-7-8, Wim Hof & More"
+        description="Free guided breathing sessions for sleep, stress relief, and focus. Try Box Breathing, 4-7-8, Wim Hof Method and more. No download needed — works in your browser."
+        canonical="/breathing"
+      />
       <ThemeBackground />
       <VideoBackground videoFiles={videos} isActive={isActive} targetOpacity={0.55} playbackRate={1} crossfadeSeconds={2.0} pauseBetweenVideos={1.8} brightness={1.05} phase={phase} desiredPlaySeconds={desiredPlaySeconds} maxSpeed={1.2} />
       <div className="fixed inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.72) 100%)" }} />
