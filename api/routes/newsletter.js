@@ -60,7 +60,7 @@ function buildEmailHtml({ tip, unsubUrl }) {
 
       <a href="https://breatheonline.app/breathing"
         style="display:inline-block;background:linear-gradient(135deg,#1A5FCC,#3A82F7);color:#fff;text-decoration:none;padding:12px 28px;border-radius:100px;font-size:13px;font-weight:500;letter-spacing:0.05em;">
-        🌬 &nbsp;Try it now
+        <img src="/icons/1.blow.webp" alt="" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;" /> Try it now
       </a>
     </div>
 

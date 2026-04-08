@@ -17,7 +17,7 @@ function reminderHtml({ name, email }) {
           <!-- Logo -->
           <tr>
             <td align="center" style="padding-bottom:32px;">
-              <span style="font-size:28px;letter-spacing:0.08em;color:#B8D9FF;font-weight:300;">🌬 BREATHE</span>
+              <span style="font-size:28px;letter-spacing:0.08em;color:#B8D9FF;font-weight:300;"><img src="/icons/1.blow.webp" alt="" style="width:28px;height:28px;vertical-align:middle;margin-right:8px;" /> BREATHE</span>
             </td>
           </tr>
 
@@ -83,7 +83,7 @@ function reminderHtml({ name, email }) {
                   <td align="center">
                     <a href="https://breatheonline.app/breathing"
                       style="display:inline-block;background:linear-gradient(135deg,#1A5FCC,#3A82F7);color:#ffffff;text-decoration:none;font-size:15px;font-weight:600;padding:14px 36px;border-radius:12px;letter-spacing:0.02em;">
-                      🌬 Resume my practice →
+                      <img src="/icons/1.blow.webp" alt="" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;" /> Resume my practice →
                     </a>
                   </td>
                 </tr>

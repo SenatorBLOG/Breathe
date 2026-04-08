@@ -20,7 +20,7 @@ function weeklyHtml({ name, email, stats }) {
           <!-- Logo -->
           <tr>
             <td align="center" style="padding-bottom:32px;">
-              <span style="font-size:28px;letter-spacing:0.08em;color:#B8D9FF;font-weight:300;">🌬 BREATHE</span>
+              <span style="font-size:28px;letter-spacing:0.08em;color:#B8D9FF;font-weight:300;"><img src="/icons/1.blow.webp" alt="" style="width:28px;height:28px;vertical-align:middle;margin-right:8px;" /> BREATHE</span>
             </td>
           </tr>
 

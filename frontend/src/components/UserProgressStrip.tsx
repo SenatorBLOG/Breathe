@@ -150,6 +150,7 @@ export default function UserProgressStrip() {
             border: `1px solid ${ts.border}`,
             cursor: 'pointer',
             transition: 'border-color 0.2s',
+            willChange: 'border-color',
           }}>
             <span style={{ fontSize: 20 }}>🔥</span>
             <span style={{ fontSize: 13, color: ts.textMuted }}>

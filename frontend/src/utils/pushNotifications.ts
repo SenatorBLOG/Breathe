@@ -21,8 +21,8 @@ export function sendLocalNotification(title: string, options?: NotificationOptio
   if (getPushPermission() !== 'granted') return;
   try {
     new Notification(title, {
-      icon: '/icons/icon-192.png',
-      badge: '/icons/icon-192.png',
+      icon: '/icons/icon-192.webp',
+      badge: '/icons/icon-192.webp',
       ...options,
     });
   } catch (err) {

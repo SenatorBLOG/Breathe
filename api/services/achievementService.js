@@ -4,7 +4,7 @@ const Session = require('../models/Session');
 const User    = require('../models/User');
 
 const ACHIEVEMENTS = [
-  { id: 'first_breath',   icon: '🌬', title: 'First Breath',    desc: 'Complete your first session' },
+  { id: 'first_breath',   icon: '/icons/1.blow.webp', title: 'First Breath',    desc: 'Complete your first session' },
   { id: 'sessions_5',     icon: '⭐', title: 'Getting Started',  desc: '5 sessions completed' },
   { id: 'sessions_10',    icon: '🎯', title: 'Dedicated',        desc: '10 sessions completed' },
   { id: 'sessions_50',    icon: '💪', title: 'Committed',        desc: '50 sessions completed' },

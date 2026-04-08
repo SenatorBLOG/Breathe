@@ -4,17 +4,17 @@ import { useTheme } from '../contexts/ThemeContext';
 
 const CFG = {
   night: {
-    src:     '/Background_Night.jpg',
+    src:     '/Background_Night.webp',
     opacity: 0.55,
     overlay: 'radial-gradient(ellipse at 50% 0%, rgba(1,8,20,0.05) 0%, rgba(1,8,20,0.78) 80%)',
   },
   day: {
-    src:     '/Background_Day.jpg',
+    src:     '/Background_Day.webp',
     opacity: 0.45,
     overlay: 'radial-gradient(ellipse at 50% 0%, rgba(255,248,230,0.0) 0%, rgba(240,235,210,0.60) 100%)',
   },
   nature: {
-    src:     '/Background_Nature.jpg',
+    src:     '/Background_Nature.webp',
     opacity: 0.60,
     overlay: 'radial-gradient(ellipse at 50% 0%, rgba(5,15,8,0.0) 0%, rgba(5,15,8,0.72) 80%)',
   },

@@ -18,7 +18,7 @@ interface Step {
 const STEPS: Step[] = [
   {
     selector: null,
-    title: '🌬 Welcome to Breathe',
+    title: 'Welcome to Breathe',
     body: 'Quick 30-second tour to help you find your way around. You can skip anytime.',
     placement: 'center',
   },

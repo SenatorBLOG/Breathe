@@ -6,6 +6,7 @@ import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
 import api from '../api';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import Icon from '../components/Icon';
 
 type TabType = 'time' | 'weekly' | 'streak';
 
@@ -201,7 +202,7 @@ export default function LeaderboardPage() {
               className="px-8 py-3 rounded-xl t-body font-medium text-white transition-all hover:opacity-90"
               style={{ background: ts.btnGradient }}
             >
-              🌬 Start a session
+              <Icon name="1.blow" size={16} className="inline-block mr-1" /> Start a session
             </Link>
           </div>
 
