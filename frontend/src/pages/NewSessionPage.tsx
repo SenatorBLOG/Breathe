@@ -13,6 +13,7 @@ import { Slider } from "../components/ui/slider";
 import Footer from "../components/Footer";
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import ThemeBackground from '../components/ThemeBackground';
+import Icon from '../components/Icon';
 
 // ── ML recommendation types ───────────────────────────────────────────────────
 interface MLRec {
@@ -22,7 +23,7 @@ interface MLRec {
 }
 
 const TECHNIQUE_META: Record<string, { icon: string; label: string; desc: string; color: string; glow: string; link: string }> = {
-  breathing:   { icon: '🌬️', label: 'Breathing Exercise', desc: 'Rhythmic breath control to calm your nervous system', color: '#4A9EFF', glow: 'rgba(74,158,255,0.25)', link: '/breathing' },
+  breathing:   { icon: '1.blow', label: 'Breathing Exercise', desc: 'Rhythmic breath control to calm your nervous system', color: '#4A9EFF', glow: 'rgba(74,158,255,0.25)', link: '/breathing' },
   sleep:       { icon: '🌙', label: 'Sleep Meditation',   desc: 'Gentle body scan to ease into deep, restful sleep',   color: '#7AC4FF', glow: 'rgba(122,196,255,0.25)', link: '/sleep' },
   focus:       { icon: '🎯', label: 'Focus Session',      desc: 'Sharpen attention and enter a clear mental state',     color: '#4AE8A0', glow: 'rgba(74,232,160,0.25)', link: '/breathing' },
   relaxation:  { icon: '🧘', label: 'Deep Relaxation',    desc: 'Progressive release of tension from head to toe',     color: '#C084FC', glow: 'rgba(192,132,252,0.25)', link: '/breathing' },
@@ -125,7 +126,7 @@ function MLRecommendationCard({ rec, loading }: { rec: MLRec | null; loading: bo
               border: `1px solid ${meta.color}30`,
               boxShadow: `0 0 18px ${meta.glow}`,
             }}>
-              {meta.icon}
+              {/^[\w.-]+$/.test(meta.icon) ? <Icon name={meta.icon} size={26} /> : meta.icon}
             </div>
             <div>
               <div style={{ fontSize: 20, fontWeight: 700, color: ts.textPrimary, lineHeight: 1.2 }}>

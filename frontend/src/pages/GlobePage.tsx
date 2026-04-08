@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useContext, type CSSProperties } from 'react';
+import { useState, useEffect, useCallback, useContext, lazy, Suspense, type CSSProperties } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { useThemeStyles } from '../hooks/useThemeStyles';
@@ -9,7 +9,7 @@ import PageSEO from '../components/PageSEO';
 import api from '../api';
 import { toast } from 'sonner';
 import MeditationGlobe from '../components/Globe/MeditationGlobe';
-import CesiumGlobe from '../components/Globe/CesiumGlobe';
+const CesiumGlobe = lazy(() => import('../components/Globe/CesiumGlobe'));
 import GlobeControls from '../components/Globe/GlobeControls';
 import type { GlobePin, GlobeStyle } from '../components/Globe/useGlobe';
 
@@ -257,12 +257,18 @@ export default function GlobePage() {
           )}
 
           {style === 'cesium' ? (
-            <CesiumGlobe
-              pins={pins}
-              filterTechnique={filterTechnique}
-              onPinClick={handlePinClick}
-              onGlobeClick={handleGlobeClick}
-            />
+            <Suspense fallback={
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: ts.textMuted, fontSize: 14 }}>
+                Loading Cesium…
+              </div>
+            }>
+              <CesiumGlobe
+                pins={pins}
+                filterTechnique={filterTechnique}
+                onPinClick={handlePinClick}
+                onGlobeClick={handleGlobeClick}
+              />
+            </Suspense>
           ) : (
             <MeditationGlobe
               pins={pins}
@@ -482,7 +488,8 @@ export default function GlobePage() {
                   borderRadius: 14,
                   overflow: 'hidden',
                   cursor: 'pointer',
-                  transition: 'transform 0.15s, box-shadow 0.15s',
+                  transition: 'transform 0.15s',
+                  willChange: 'transform',
                 }}
                 onMouseEnter={e => {
                   (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)';

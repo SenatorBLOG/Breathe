@@ -5,7 +5,7 @@ const challengeSchema = new mongoose.Schema({
   slug:          { type: String, required: true, unique: true },
   title:         { type: String, required: true },
   subtitle:      { type: String, default: '' },
-  icon:          { type: String, default: '🌬️' },
+  icon:          { type: String, default: '/icons/1.blow.webp' },
   duration:      { type: Number, required: true },
   technique:     { type: String, default: '' },
   preset:        { inhale: Number, hold: Number, exhale: Number, pause: Number },

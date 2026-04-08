@@ -11,6 +11,7 @@ import SoulOrb from '../components/AICoach/SoulOrb';
 import HomeInteractive from '../components/HomeInteractive';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import UserProgressStrip from '../components/UserProgressStrip';
+import Icon from '../components/Icon';
 
 // ─── Animated number counter ─────────────────────────────────────────────────
 function AnimatedNumber({ target, suffix = '' }: { target: number; suffix?: string }) {
@@ -243,7 +244,7 @@ export default function HomePage() {
               style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
             >
               <span className="relative z-10 flex items-center gap-2">
-                <span className="t-heading">🌬</span>
+                <Icon name="1.blow" size={20} />
                 {t('hero.cta')}
               </span>
             </Link>
@@ -360,7 +361,7 @@ export default function HomePage() {
             <div className="flex flex-col gap-5">
               <div className="rounded-2xl p-6 flex flex-col items-center text-center gap-4"
                    style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <img src="/icons/Lotus_png.png" alt="Lotus" className="w-20 h-20 object-contain opacity-90" />
+                <Icon name="Lotus_png" size={80} alt="Lotus" className="object-contain opacity-90" />
                 <div>
                   <p className="t-body font-medium mb-1" style={{ color: ts.textSecondary }}>{t('home.readyToBegin')}</p>
                   <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{t('home.readyDesc')}</p>

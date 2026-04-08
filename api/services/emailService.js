@@ -18,7 +18,7 @@ async function sendWelcome(email, name) {
   await getResend().emails.send({
     from:    FROM,
     to:      email,
-    subject: '🌬 Welcome to Breathe — your practice starts now',
+    subject: 'Welcome to Breathe — your practice starts now',
     html:    welcomeHtml({ name, email }),
   });
 }

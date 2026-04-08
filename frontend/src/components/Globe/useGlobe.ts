@@ -1068,7 +1068,7 @@ export function useGlobe({
         applyTex(terrainTexRef.current);
       } else {
         new THREE.TextureLoader().load(
-          '/textures/earth-relief.jpg',
+          '/textures/earth-relief.webp',
           (tex) => { terrainTexRef.current = tex; applyTex(tex); },
           undefined,
           () => { if (sph) { sph.color.set(gf.ocean); sph.needsUpdate = true; } }

@@ -61,6 +61,7 @@ function SeekBar({ current, total, onChange }: { current: number; total: number;
           background: ts.btnGradient,
           boxShadow: hot ? ts.btnShadow : "none",
           transition: "box-shadow 0.15s",
+          willChange: "box-shadow",
         }}
       />
       {hot && (
