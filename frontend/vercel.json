@@ -15,7 +15,7 @@
       "destination": "https://breathe-production-6cce.up.railway.app/api/:path*"
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ],

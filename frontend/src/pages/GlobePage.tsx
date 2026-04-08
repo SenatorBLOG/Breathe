@@ -5,6 +5,7 @@ import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useTheme } from '../contexts/ThemeContext';
 import { AuthContext } from '../components/contexts/AuthContext';
 import ThemeBackground from '../components/ThemeBackground';
+import PageSEO from '../components/PageSEO';
 import api from '../api';
 import { toast } from 'sonner';
 import MeditationGlobe from '../components/Globe/MeditationGlobe';
@@ -150,6 +151,11 @@ export default function GlobePage() {
 
   return (
     <div style={{ color: ts.textPrimary }}>
+      <PageSEO
+        title="Breathe Together — Global Breathing Community Map"
+        description="See breathers around the world in real time. Join the global breathing community and connect with people practicing mindfulness and breathwork."
+        canonical="/globe"
+      />
       <ThemeBackground />
     {/* ── Globe viewport: exactly one screen height ──────────────────────── */}
     <div

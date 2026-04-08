@@ -4,12 +4,18 @@ import { Link } from 'react-router-dom';
 import NavBar from '../../components/NavBar';
 import Footer from '../../components/Footer';
 import ThemeBackground from '../../components/ThemeBackground';
+import PageSEO from '../../components/PageSEO';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 export default function BreathingAnxietyPage() {
   const ts = useThemeStyles();
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="Breathing Exercises for Anxiety — Calm Panic in Minutes"
+        description="Breathing techniques to stop anxiety and panic attacks fast. Slow your nervous system, reduce cortisol, and regain calm with guided breathwork. Free online."
+        canonical="/breathing/anxiety"
+      />
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">

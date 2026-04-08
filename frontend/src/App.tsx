@@ -33,6 +33,7 @@ import SlowBreathingPage from './pages/science/SlowBreathingPage';
 import MorningRitualPage from './pages/techniques/MorningRitualPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 
+import { HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import AICoachButton from './components/AICoach/AICoachButton';
@@ -113,6 +114,7 @@ function AnimatedRoutes() {
 
 export default function App() {
   return (
+    <HelmetProvider>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''}>
     <Router>
       <ThemeProvider>
@@ -134,5 +136,6 @@ export default function App() {
       </ThemeProvider>
     </Router>
     </GoogleOAuthProvider>
+    </HelmetProvider>
   );
 }
