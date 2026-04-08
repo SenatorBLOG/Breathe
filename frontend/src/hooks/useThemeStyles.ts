@@ -32,7 +32,7 @@ const STYLES: Record<Theme, ThemeStyles> = {
     textPrimary:   '#EEF5FF',
     textSecondary: '#7AC4FF',
     textMuted:     '#7AABCC',   // ↑ brighter: was #5A8FBB
-    textDim:       '#3A5070',   // ↑ brighter: was #2A4060
+    textDim:       '#7090B4',   // ↑ WCAG AA: was #3A5070 (contrast ~2.6:1 → 6.6:1)
     cardBg:        'rgba(12,24,44,0.88)',
     cardBgHover:   'rgba(16,32,60,0.94)',
     pageBg:        '#010814',
@@ -64,7 +64,7 @@ const STYLES: Record<Theme, ThemeStyles> = {
     textPrimary:   '#EDFFF5',
     textSecondary: '#4AE8A0',   // bright mint — keep
     textMuted:     '#90CCA8',   // ↑ much brighter: was #5BA870
-    textDim:       '#4A7858',   // ↑ brighter: was #3A6848
+    textDim:       '#72A880',   // ↑ WCAG AA: was #4A7858 (contrast ~3.7:1 → 6.4:1)
     cardBg:        'rgba(16,42,22,0.90)',    // ↑ lighter + more opaque vs bg
     cardBgHover:   'rgba(22,56,30,0.96)',
     pageBg:        '#0A1A0E',

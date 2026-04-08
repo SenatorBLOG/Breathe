@@ -64,8 +64,9 @@ export default function AICoachButton({ variant = 'floating' }: AICoachButtonPro
         .animate-pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
       `}</style>
 
-      <button 
+      <button
         onClick={() => setOpen(true)}
+        aria-label="Open AI Coach"
         className="fixed bottom-24 right-6 z-40 flex items-center justify-center w-14 h-14 sm:w-auto sm:px-5 rounded-2xl sm:rounded-full text-white shadow-2xl transition-all hover:-translate-y-1 active:scale-90 animate-pulse-glow"
         style={{ background: ts.accent }}
       >

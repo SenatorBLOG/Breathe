@@ -216,6 +216,7 @@ export default function HomePage() {
 
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />
+        <main className="flex-1 flex flex-col">
 
         {/* HERO */}
         <section className="flex flex-col items-center justify-center text-center px-4 pt-16 pb-12 sm:pt-24 sm:pb-16 md:pt-32 md:pb-20 gap-8">
@@ -445,6 +446,7 @@ export default function HomePage() {
           </div>
         </RevealSection>
 
+        </main>
         <Footer />
       </div>
     </div>

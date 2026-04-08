@@ -127,6 +127,7 @@ export default function Footer() {
                 href="https://instagram.com/"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Breathe on Instagram"
                 className="transition-all duration-200 hover:scale-110"
                 style={{ color: ts.textMuted }}
               >
@@ -136,6 +137,7 @@ export default function Footer() {
                 href="https://github.com/SenatorBLOG/"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Breathe on GitHub"
                 className="transition-all duration-200 hover:scale-110"
                 style={{ color: ts.textMuted }}
               >
@@ -143,6 +145,7 @@ export default function Footer() {
               </a>
               <a
                 href="mailto:support@breatheapp.com"
+                aria-label="Email support"
                 className="transition-all duration-200 hover:scale-110"
                 style={{ color: ts.textMuted }}
               >
@@ -168,9 +171,9 @@ export default function Footer() {
             </Link>
 
             <div className="flex gap-4">
-              <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" style={{ color: ts.textMuted }}><FaInstagram size={14} /></a>
-              <a href="https://github.com/SenatorBLOG/" target="_blank" rel="noopener noreferrer" style={{ color: ts.textMuted }}><FaGithub size={14} /></a>
-              <a href="mailto:support@breatheapp.com" style={{ color: ts.textMuted }}><FaEnvelope size={14} /></a>
+              <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Breathe on Instagram" style={{ color: ts.textMuted }}><FaInstagram size={14} /></a>
+              <a href="https://github.com/SenatorBLOG/" target="_blank" rel="noopener noreferrer" aria-label="Breathe on GitHub" style={{ color: ts.textMuted }}><FaGithub size={14} /></a>
+              <a href="mailto:support@breatheapp.com" aria-label="Email support" style={{ color: ts.textMuted }}><FaEnvelope size={14} /></a>
             </div>
           </div>
 
