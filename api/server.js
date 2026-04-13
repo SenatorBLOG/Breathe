@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const serverless = require('serverless-http');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
@@ -92,9 +91,5 @@ app.use('/api/stats', statsRouter);
 app.get('/api/ping', (req, res) => res.json({ ok: true }));
 app.get('/', (req, res) => res.send('Breathe server is running!'));
 
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-}
-
-module.exports = serverless(app);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
