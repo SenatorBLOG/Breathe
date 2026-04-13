@@ -79,14 +79,36 @@ app.use(async (req, res, next) => {
   }
 });
 
-// Routes — point to server-src
-const authRouter = require('../server-src/routes/auth');
-const sessionsRouter = require('../server-src/routes/sessions');
-const statsRouter = require('../server-src/routes/stats');
+// Routes
+const authRouter        = require('./routes/auth');
+const sessionsRouter    = require('./routes/sessions');
+const statsRouter       = require('./routes/stats');
+const usersRouter       = require('./routes/users');
+const postsRouter       = require('./routes/posts');
+const globeRouter       = require('./routes/globe');
+const coachRouter       = require('./routes/coach');
+const challengesRouter  = require('./routes/challenges');
+const leaderboardRouter = require('./routes/leaderboard');
+const newsletterRouter  = require('./routes/newsletter');
+const supportRouter     = require('./routes/support');
+const nlpRouter         = require('./routes/nlp');
+const unsubscribeRouter = require('./routes/unsubscribe');
+const integrationsRouter = require('./routes/integrations');
 
-app.use('/api/auth', authRouter);
-app.use('/api/sessions', sessionsRouter);
-app.use('/api/stats', statsRouter);
+app.use('/api/auth',         authRouter);
+app.use('/api/sessions',     sessionsRouter);
+app.use('/api/stats',        statsRouter);
+app.use('/api/users',        usersRouter);
+app.use('/api/posts',        postsRouter);
+app.use('/api/globe',        globeRouter);
+app.use('/api/coach',        coachRouter);
+app.use('/api/challenges',   challengesRouter);
+app.use('/api/leaderboard',  leaderboardRouter);
+app.use('/api/newsletter',   newsletterRouter);
+app.use('/api/support',      supportRouter);
+app.use('/api/nlp',          nlpRouter);
+app.use('/api/unsubscribe',  unsubscribeRouter);
+app.use('/api/integrations', integrationsRouter);
 
 app.get('/api/ping', (req, res) => res.json({ ok: true }));
 app.get('/', (req, res) => res.send('Breathe server is running!'));
