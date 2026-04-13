@@ -29,11 +29,21 @@ export default defineConfig({
         // them independently and the entry chunk stays small
         manualChunks(id) {
           if (id.includes('node_modules')) {
+            // Keep React + all its internals together — splitting them causes
+            // "Cannot set properties of undefined" because React globals
+            // initialise across chunk boundaries in the wrong order.
+            if (
+              id.includes('/react/') ||
+              id.includes('/react-dom/') ||
+              id.includes('/react-is/') ||
+              id.includes('/scheduler/') ||
+              id.includes('/react/jsx-runtime') ||
+              id.includes('/react/jsx-dev-runtime')
+            ) return 'vendor-react';
             if (id.includes('framer-motion'))  return 'vendor-framer';
             if (id.includes('react-router'))   return 'vendor-router';
             if (id.includes('react-oauth'))    return 'vendor-oauth';
             if (id.includes('@radix-ui'))      return 'vendor-radix';
-            if (id.includes('react') || id.includes('react-dom')) return 'vendor-react';
             return 'vendor';
           }
         },
