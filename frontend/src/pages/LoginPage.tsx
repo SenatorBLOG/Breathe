@@ -1,7 +1,7 @@
 // src/pages/LoginPage.tsx
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { useGoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { syncGoalFromProfile } from '../utils/mlDefaults';
 
-export default function LoginPage() {
+function LoginPageInner() {
   const { t } = useTranslation();
   const ts = useThemeStyles();
   const navigate = useNavigate();
@@ -303,5 +303,13 @@ export default function LoginPage() {
         <Footer />
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''}>
+      <LoginPageInner />
+    </GoogleOAuthProvider>
   );
 }
