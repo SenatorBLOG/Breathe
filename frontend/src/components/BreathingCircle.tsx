@@ -113,6 +113,7 @@ export function BreathingCircle({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          willChange: "transform",
           // Градиент теперь строится на цветах темы
           background: `
             radial-gradient(

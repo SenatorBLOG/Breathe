@@ -53,7 +53,9 @@
       "WebFetch(domain:pagespeed.web.dev)",
       "WebFetch(domain:www.googleapis.com)",
       "Bash(magick --version)",
-      "Bash(convert --version)"
+      "Bash(convert --version)",
+      "Bash(ls .git/MERGE_HEAD .git/CHERRY_PICK_HEAD .git/REBASE_HEAD)",
+      "Bash(cat .git/MERGE_MSG)"
     ]
   }
 }

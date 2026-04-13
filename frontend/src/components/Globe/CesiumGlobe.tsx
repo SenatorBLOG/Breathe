@@ -1,6 +1,29 @@
 // src/components/Globe/CesiumGlobe.tsx
-// Cesium is lazy-imported so it doesn't bloat the main bundle.
+// Cesium assets (Cesium.js + widgets.css) are loaded on-demand via a script
+// loader so they only download when the Globe page is actually visited.
 import { useEffect, useRef } from 'react';
+
+/** Load Cesium.js + widgets.css once, return a promise that resolves when ready. */
+let cesiumReady: Promise<void> | null = null;
+function loadCesium(): Promise<void> {
+  if (cesiumReady) return cesiumReady;
+  cesiumReady = new Promise((resolve, reject) => {
+    // Inject widgets CSS async (non-blocking)
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/cesium/Widgets/widgets.css';
+    document.head.appendChild(link);
+
+    // Inject Cesium.js only now
+    const script = document.createElement('script');
+    script.src = '/cesium/Cesium.js';
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+  return cesiumReady;
+}
 import type { GlobePin } from './useGlobe';
 
 const PIN_COLORS: Record<string, string> = {
@@ -57,8 +80,10 @@ export default function CesiumGlobe({ pins, filterTechnique, onPinClick, onGlobe
 
     let destroyed = false;
 
-    import('cesium').then(Cesium => {
+    loadCesium().then(() => {
       if (destroyed || !containerRef.current) return;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const Cesium = (window as any).Cesium;
 
       Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_TOKEN ?? '';
 

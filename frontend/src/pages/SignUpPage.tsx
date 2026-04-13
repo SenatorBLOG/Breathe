@@ -2,7 +2,7 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../components/contexts/AuthContext';
-import { useGoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 import { syncGoalFromProfile } from '../utils/mlDefaults';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
@@ -13,7 +13,7 @@ import { Eye, EyeOff, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 
-export default function SignUpPage() {
+function SignUpPageInner() {
   const { t } = useTranslation();
   const ts = useThemeStyles();
   const navigate = useNavigate();
@@ -382,5 +382,13 @@ export default function SignUpPage() {
         <Footer />
       </div>
     </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''}>
+      <SignUpPageInner />
+    </GoogleOAuthProvider>
   );
 }

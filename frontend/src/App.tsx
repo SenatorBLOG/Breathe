@@ -1,6 +1,6 @@
 // App.tsx
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 function ScrollToTop() {
@@ -9,44 +9,45 @@ function ScrollToTop() {
   return null;
 }
 
+// Eagerly load the home page — it's the landing page and must render fast
 import HomePage from './pages/HomePage.tsx';
-import BreathingPage from './pages/BreathingPage';
-import LoginPage from './pages/LoginPage';
-import SignUpPage from './pages/SignUpPage';
-import NewSessionPage from './pages/NewSessionPage';
-import CommunityPage from './pages/CommunityPage';
-import FAQPage from './pages/FaqPage';
-import SupportPage from './pages/SupportPage';
-import BoxBreathingPage from './pages/techniques/BoxBreathingPage';
-import Breathing478Page from './pages/techniques/Breathing478Page';
-import WimHofPage from './pages/techniques/WimHofPage';
-import BreathingAnxietyPage from './pages/techniques/BreathingAnxietyPage';
-import ProfilePage from './pages/ProfilePage';
-import DataConsentPage from './pages/DataConsentPage';
-import OnboardingPage from './pages/OnboardingPage';
-import GlobePage from './pages/GlobePage';
-import SleepApneaPage from './pages/sleep/SleepApneaPage';
-import WhySleepPage from './pages/sleep/WhySleepPage';
-import BreathworkSleepPage from './pages/sleep/BreathworkSleepPage';
-import SleepStoryPage from './pages/sleep/SleepStoryPage';
-import SlowBreathingPage from './pages/science/SlowBreathingPage';
-import MorningRitualPage from './pages/techniques/MorningRitualPage';
-import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+
+// All other pages are lazy-loaded — they only download when the route is visited
+const BreathingPage        = lazy(() => import('./pages/BreathingPage'));
+const LoginPage            = lazy(() => import('./pages/LoginPage'));
+const SignUpPage           = lazy(() => import('./pages/SignUpPage'));
+const NewSessionPage       = lazy(() => import('./pages/NewSessionPage'));
+const CommunityPage        = lazy(() => import('./pages/CommunityPage'));
+const FAQPage              = lazy(() => import('./pages/FaqPage'));
+const SupportPage          = lazy(() => import('./pages/SupportPage'));
+const BoxBreathingPage     = lazy(() => import('./pages/techniques/BoxBreathingPage'));
+const Breathing478Page     = lazy(() => import('./pages/techniques/Breathing478Page'));
+const WimHofPage           = lazy(() => import('./pages/techniques/WimHofPage'));
+const BreathingAnxietyPage = lazy(() => import('./pages/techniques/BreathingAnxietyPage'));
+const ProfilePage          = lazy(() => import('./pages/ProfilePage'));
+const DataConsentPage      = lazy(() => import('./pages/DataConsentPage'));
+const OnboardingPage       = lazy(() => import('./pages/OnboardingPage'));
+const GlobePage            = lazy(() => import('./pages/GlobePage'));
+const SleepApneaPage       = lazy(() => import('./pages/sleep/SleepApneaPage'));
+const WhySleepPage         = lazy(() => import('./pages/sleep/WhySleepPage'));
+const BreathworkSleepPage  = lazy(() => import('./pages/sleep/BreathworkSleepPage'));
+const SleepStoryPage       = lazy(() => import('./pages/sleep/SleepStoryPage'));
+const SlowBreathingPage    = lazy(() => import('./pages/science/SlowBreathingPage'));
+const MorningRitualPage    = lazy(() => import('./pages/techniques/MorningRitualPage'));
+const PrivacyPolicyPage    = lazy(() => import('./pages/PrivacyPolicyPage'));
+const LeaderboardPage      = lazy(() => import('./pages/LeaderboardPage'));
+const MusicLibrary         = lazy(() => import('./components/AudioPlayer/MusicLibrary').then(m => ({ default: m.MusicLibrary })));
 
 import { HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import AICoachButton from './components/AICoach/AICoachButton';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import PWAInstallBanner from './components/PWAInstallBanner';
 import OfflineIndicator from './components/OfflineIndicator';
 import ChallengeNudge from './components/ChallengeNudge';
 import OnboardingTour from './components/OnboardingTour';
-import LeaderboardPage from './pages/LeaderboardPage';
-
 import './index.css';
 import { GlobalAudioPlayer } from './components/AudioPlayer/GlobalAudioPlayer';
-import { MusicLibrary } from './components/AudioPlayer/MusicLibrary';
 import { MusicProvider } from './components/contexts/MusicContext';
 import { AuthProvider } from './components/contexts/AuthContext';
 
@@ -115,14 +116,15 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <HelmetProvider>
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''}>
     <Router>
       <ThemeProvider>
       <AuthProvider>
         <MusicProvider>
           <div className="min-h-screen">
             <ScrollToTop />
-            <AnimatedRoutes />
+            <Suspense fallback={null}>
+              <AnimatedRoutes />
+            </Suspense>
             <AICoachButton variant="floating" />
             <ScrollToTopButton />
             <GlobalAudioPlayer />
@@ -135,7 +137,6 @@ export default function App() {
       </AuthProvider>
       </ThemeProvider>
     </Router>
-    </GoogleOAuthProvider>
     </HelmetProvider>
   );
 }

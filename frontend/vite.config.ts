@@ -8,39 +8,35 @@ export default defineConfig({
   plugins: [
     react(),
     mkcert(),
-    cesium(),
-    // Make Cesium non-render-blocking: defer the JS, load CSS async
-    {
-      name: 'defer-cesium',
-      transformIndexHtml: {
-        order: 'post',
-        handler(html: string) {
-          return html
-            // Add defer to Cesium.js script tag
-            .replace(
-              /<script src="\/cesium\/Cesium\.js"><\/script>/,
-              '<script defer src="/cesium/Cesium.js"></script>',
-            )
-            // Load widgets.css without blocking render (media print trick)
-            .replace(
-              /<link rel="stylesheet" href="\/cesium\/Widgets\/widgets\.css">/,
-              '<link rel="stylesheet" media="print" onload="this.media=\'all\'" href="/cesium/Widgets/widgets.css"><noscript><link rel="stylesheet" href="/cesium/Widgets/widgets.css"></noscript>',
-            );
-        },
-      },
-    },
+    // vite-plugin-cesium copies Cesium static assets to /public/cesium.
+    // We do NOT inject a global <script> tag — CesiumGlobe.tsx loads
+    // Cesium.js on-demand via a dynamic script loader so it only downloads
+    // on the /globe route.
+    cesium({ rebuildCesium: false }),
   ],
   base: '/', // критически важно для Vercel
   build: {
     target: 'esnext',
     outDir: 'build',
     assetsDir: 'assets',
-    cssCodeSplit: true,  // разбивает CSS
+    cssCodeSplit: true,
     rollupOptions: {
       output: {
         assetFileNames: 'assets/[name]-[hash][extname]',
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
+        // Split vendor libraries into separate chunks so browsers can cache
+        // them independently and the entry chunk stays small
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('framer-motion'))  return 'vendor-framer';
+            if (id.includes('react-router'))   return 'vendor-router';
+            if (id.includes('react-oauth'))    return 'vendor-oauth';
+            if (id.includes('@radix-ui'))      return 'vendor-radix';
+            if (id.includes('react') || id.includes('react-dom')) return 'vendor-react';
+            return 'vendor';
+          }
+        },
       },
     },
   },
