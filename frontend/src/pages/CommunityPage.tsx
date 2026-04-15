@@ -1,7 +1,7 @@
 // src/pages/CommunityPage.tsx
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import PageSEO from '../components/PageSEO';
@@ -379,6 +379,7 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete, 
 }) {
   const ts = useThemeStyles();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [liked, setLiked] = useState(post.likedByMe);
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [commentCount] = useState(post.commentCount);
@@ -447,9 +448,14 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete, 
         />
       )}
 
-      <div className="flex flex-col gap-3 p-4 rounded-2xl border transition-all duration-300"
+      <div className="flex flex-col gap-3 p-4 rounded-2xl border transition-all duration-300 cursor-pointer"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        onClick={(e) => {
+          const target = e.target as HTMLElement;
+          if (target.closest('button, a, input, textarea')) return;
+          navigate(`/community/post/${post._id}`);
+        }}
         style={{
           background: ts.cardBg,
           borderColor: hovered ? ts.borderHover : ts.border,
