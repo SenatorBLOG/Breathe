@@ -18,6 +18,7 @@ const LoginPage            = lazy(() => import('./pages/LoginPage'));
 const SignUpPage           = lazy(() => import('./pages/SignUpPage'));
 const NewSessionPage       = lazy(() => import('./pages/NewSessionPage'));
 const CommunityPage        = lazy(() => import('./pages/CommunityPage'));
+const CommunityPostPage    = lazy(() => import('./pages/CommunityPostPage'));
 const FAQPage              = lazy(() => import('./pages/FaqPage'));
 const SupportPage          = lazy(() => import('./pages/SupportPage'));
 const BoxBreathingPage     = lazy(() => import('./pages/techniques/BoxBreathingPage'));
@@ -85,7 +86,8 @@ function AnimatedRoutes() {
         <Route path="/sessions/new" element={<PageWrapper><NewSessionPage /></PageWrapper>} />
         <Route path="/statistics"   element={<Navigate to="/profile" replace />} />
         <Route path="/faq"           element={<PageWrapper><FAQPage /></PageWrapper>} />
-        <Route path="/community"     element={<PageWrapper><CommunityPage /></PageWrapper>} />
+        <Route path="/community"          element={<PageWrapper><CommunityPage /></PageWrapper>} />
+        <Route path="/community/post/:id" element={<PageWrapper><CommunityPostPage /></PageWrapper>} />
         <Route path="/login"         element={<PageWrapper><LoginPage /></PageWrapper>} />
         <Route path="/signup"        element={<PageWrapper><SignUpPage /></PageWrapper>} />
         <Route path="/support"      element={<PageWrapper><SupportPage /></PageWrapper>} />
