@@ -94,12 +94,14 @@ const supportRouter     = require('./routes/support');
 const nlpRouter         = require('./routes/nlp');
 const unsubscribeRouter = require('./routes/unsubscribe');
 const integrationsRouter = require('./routes/integrations');
+const communityRouter    = require('./routes/community');
 
 app.use('/api/auth',         authRouter);
 app.use('/api/sessions',     sessionsRouter);
 app.use('/api/stats',        statsRouter);
 app.use('/api/users',        usersRouter);
 app.use('/api/posts',        postsRouter);
+app.use('/api/community',    communityRouter);
 app.use('/api/globe',        globeRouter);
 app.use('/api/coach',        coachRouter);
 app.use('/api/challenges',   challengesRouter);
