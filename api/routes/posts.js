@@ -122,6 +122,32 @@ router.get('/:id', optionalAuth, async (req, res) => {
   }
 });
 
+// ─── GET /api/posts/:id/related — up to 3 posts sharing tags ─────────────────
+router.get('/:id/related', optionalAuth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id).select('tags category');
+    if (!post) return res.status(404).json({ error: 'Post not found' });
+
+    const filter = {
+      _id: { $ne: post._id },
+      $or: [
+        { tags: { $in: post.tags } },
+        { category: post.category },
+      ],
+    };
+
+    const related = await Post.find(filter)
+      .sort({ createdAt: -1 })
+      .limit(3)
+      .populate('author', 'username name email');
+
+    const userId = uid(req);
+    res.json(related.map(p => formatPost(p, userId)));
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch related posts' });
+  }
+});
+
 // ─── DELETE /api/posts/:id ────────────────────────────────────────────────────
 router.delete('/:id', auth, async (req, res) => {
   try {
