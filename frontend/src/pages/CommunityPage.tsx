@@ -10,11 +10,13 @@ import api from '../api';
 import { toast } from 'sonner';
 import {
   Heart, MessageCircle, Trash2, Send,
-  Plus, X, ChevronDown, Users, Flame, Sparkles,
+  X, ChevronDown, Users, Sparkles,
   MoreVertical, Flag, UserX,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import CommunityHero from '../components/community/CommunityHero';
+import CommunitySidebar from '../components/community/CommunitySidebar';
 
 // ─── Skeleton components ──────────────────────────────────────────────────────
 function SkeletonBlock({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) {
@@ -706,16 +708,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
   );
 }
 
-// ─── Sidebar stat ─────────────────────────────────────────────────────────────
-function SidebarStat({ value, label }: { value: string; label: string }) {
-  const ts = useThemeStyles();
-  return (
-    <div className="flex items-center justify-between py-2 border-b last:border-0" style={{ borderColor: ts.border }}>
-      <span className="t-caption" style={{ color: ts.textMuted }}>{label}</span>
-      <span className="t-body font-semibold tabular-nums" style={{ color: ts.textSecondary }}>{value}</span>
-    </div>
-  );
-}
+
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 const CATEGORIES_FILTER = ['all', 'experience', 'question', 'achievement', 'tip'] as const;
@@ -728,6 +721,7 @@ export default function CommunityPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [category, setCategory] = useState<string>('all');
+  const [activeTag, setActiveTag] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
@@ -735,11 +729,12 @@ export default function CommunityPage() {
   const isLoggedIn = Boolean(token);
   const currentUserId = localStorage.getItem('userId') ?? undefined;
 
-  const fetchPosts = useCallback(async (cat: string, pg: number) => {
+  const fetchPosts = useCallback(async (cat: string, pg: number, tag?: string | null) => {
     setLoading(true);
     try {
       const params = new URLSearchParams({ page: String(pg), limit: '15' });
       if (cat !== 'all') params.set('category', cat);
+      if (tag) params.set('tag', tag);
       const { data } = await api.get(`/posts?${params}`);
       setPosts(pg === 1 ? data.posts : prev => [...prev, ...data.posts]);
       setTotalPages(data.pages);
@@ -747,8 +742,8 @@ export default function CommunityPage() {
     finally { setLoading(false); }
   }, []);
 
-  useEffect(() => { setPage(1); fetchPosts(category, 1); }, [category]);
-  useEffect(() => { if (page > 1) fetchPosts(category, page); }, [page]);
+  useEffect(() => { setPage(1); fetchPosts(category, 1, activeTag); }, [category, activeTag]);
+  useEffect(() => { if (page > 1) fetchPosts(category, page, activeTag); }, [page]);
 
   const handleCreate = () => { if (!isLoggedIn) { setShowLogin(true); return; } setShowCreate(true); };
   const onCreated = (p: Post) => setPosts(prev => [p, ...prev]);
@@ -762,6 +757,12 @@ export default function CommunityPage() {
 
   const onBlock = (authorId: string) => {
     setPosts(prev => prev.filter(p => p.author._id !== authorId));
+  };
+
+  const onTagClick = (tag: string) => {
+    setActiveTag(prev => prev === tag ? null : tag);
+    setCategory('all');
+    setPage(1);
   };
 
   return (
@@ -798,34 +799,58 @@ export default function CommunityPage() {
 
         {/* Header */}
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-6 pb-2">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="t-label mb-1" style={{ color: ts.textMuted }}>
-                Breathe · Community
-              </p>
-              <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
-                Community
-              </h1>
-              <p className="t-caption mt-1" style={{ color: ts.textMuted }}>
-                {t("community.subtitle")}
-              </p>
-            </div>
-            <button onClick={handleCreate}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white t-body font-medium tracking-wide transition-all hover:shadow-[0_0_24px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95"
-              style={{ background: ts.btnGradient }}>
-              <Plus size={14} /> Post
-            </button>
-          </div>
+          <p className="t-label mb-1" style={{ color: ts.textMuted }}>Breathe · Community</p>
+          <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
+            Community
+          </h1>
+          <p className="t-caption mt-1" style={{ color: ts.textMuted }}>
+            {t("community.subtitle")}
+          </p>
         </header>
 
         {/* Body */}
-        <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 pb-20 pt-4">
+        <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 pb-20 pt-4 flex flex-col gap-4">
+
+          {/* Hero */}
+          <CommunityHero isLoggedIn={isLoggedIn} onPost={handleCreate} />
+
+          {/* Mobile chips: category + active tag — only on small screens */}
+          <div className="flex lg:hidden gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+            {activeTag && (
+              <button
+                onClick={() => setActiveTag(null)}
+                className="flex-shrink-0 px-3 py-1.5 rounded-xl t-label border transition-all"
+                style={{ backgroundColor: 'rgba(0,212,255,0.10)', borderColor: 'rgba(0,212,255,0.35)', color: '#00D4FF' }}>
+                ✕ #{activeTag}
+              </button>
+            )}
+            {CATEGORIES_FILTER.map(c => (
+              <button key={c} onClick={() => setCategory(c)}
+                className="flex-shrink-0 px-3 py-1.5 rounded-xl t-label border transition-all"
+                style={{
+                  backgroundColor: category === c ? 'rgba(0,212,255,0.10)' : ts.cardBg,
+                  borderColor: category === c ? 'rgba(0,212,255,0.35)' : ts.border,
+                  color: category === c ? '#00D4FF' : ts.textMuted,
+                }}>
+                {t(`community.categories.${c}`, c)}
+              </button>
+            ))}
+          </div>
+
           <div className="flex gap-5">
 
             {/* Feed */}
             <div className="flex-1 min-w-0 flex flex-col gap-4">
-              {/* Category filter pills */}
-              <div className="flex gap-1.5 flex-wrap">
+
+              {/* Category filter pills — desktop only */}
+              <div className="hidden lg:flex gap-1.5 flex-wrap">
+                {activeTag && (
+                  <button onClick={() => setActiveTag(null)}
+                    className="px-3 py-1.5 rounded-xl t-label border transition-all"
+                    style={{ backgroundColor: 'rgba(0,212,255,0.10)', borderColor: 'rgba(0,212,255,0.35)', color: '#00D4FF' }}>
+                    ✕ #{activeTag}
+                  </button>
+                )}
                 {CATEGORIES_FILTER.map(c => (
                   <button key={c} onClick={() => setCategory(c)}
                     className="px-3 py-1.5 rounded-xl t-label border transition-all"
@@ -864,68 +889,18 @@ export default function CommunityPage() {
                   {page < totalPages && (
                     <button onClick={() => setPage(p => p + 1)} disabled={loading}
                       className="self-center px-6 py-2.5 rounded-full t-caption transition-all disabled:opacity-40 mt-2"
-                      style={{
-                        color: ts.textSecondary,
-                        border: `1px solid ${ts.border}`,
-                      }}>
+                      style={{ color: ts.textSecondary, border: `1px solid ${ts.border}` }}>
                       {loading ? 'Loading…' : 'Load more'}
                     </button>
                   )}
                 </div>
               )}
 
-              {/* Mid ad */}
               {posts.length > 5 && <AdSlot className="h-14" />}
             </div>
 
             {/* Sidebar */}
-            <aside className="hidden lg:flex flex-col gap-4 w-56 flex-shrink-0">
-              {/* About */}
-              <div className="rounded-2xl p-4 border" style={{ borderColor: ts.border, backgroundColor: ts.cardBg }}>
-                <div className="flex items-center gap-2 mb-3">
-                  <Flame size={13} style={{ color: ts.accent }} />
-                  <p className="t-label uppercase tracking-widest font-semibold" style={{ color: ts.textSecondary }}>About</p>
-                </div>
-                <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
-                  A space for meditators to share experiences, ask questions, and celebrate progress. Be kind. Be real.
-                </p>
-              </div>
-
-              {/* Stats */}
-              <div className="rounded-2xl p-4 border" style={{ borderColor: ts.border, backgroundColor: ts.cardBg }}>
-                <p className="t-label uppercase tracking-widest mb-2 font-semibold" style={{ color: ts.textSecondary }}>Community</p>
-                <SidebarStat value={String(posts.length)} label="Posts loaded" />
-                <SidebarStat value={String(posts.reduce((s, p) => s + p.likeCount, 0))} label="Total likes" />
-                <SidebarStat value={String(posts.reduce((s, p) => s + p.commentCount, 0))} label="Total comments" />
-              </div>
-
-              {/* Rules */}
-              <div className="rounded-2xl p-4 border" style={{ borderColor: ts.border, backgroundColor: ts.cardBg }}>
-                <p className="t-label uppercase tracking-widest mb-3 font-semibold" style={{ color: ts.textSecondary }}>{t('community.rules')}</p>
-                {([t('community.rule1'), t('community.rule2'), t('community.rule3'), t('community.rule4')]).map((r, i) => (
-                  <div key={i} className="flex items-center gap-2 py-1.5 border-b last:border-0" style={{ borderColor: ts.border }}>
-                    <span className="t-caption font-bold" style={{ color: ts.accentLight }}>{i + 1}</span>
-                    <span className="t-caption" style={{ color: ts.textMuted }}>{r}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* CTA for logged-out */}
-              {!isLoggedIn && (
-                <div className="rounded-2xl p-4 border flex flex-col gap-3" style={{ borderColor: ts.borderHover, backgroundColor: ts.cardBg }}>
-                  <p className="t-body font-semibold" style={{ color: ts.textPrimary }}>Join Breathe</p>
-                  <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
-                    Create an account to post, comment, and track your meditation journey.
-                  </p>
-                  <Link to="/register" className="w-full py-2 rounded-xl t-label text-white text-center font-medium transition-all"
-                    style={{ background: ts.btnGradient }}>
-                    Sign up free
-                  </Link>
-                </div>
-              )}
-
-              <AdSlot className="h-52" />
-            </aside>
+            <CommunitySidebar onTagClick={onTagClick} />
           </div>
         </main>
 
