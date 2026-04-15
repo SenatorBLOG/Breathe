@@ -108,6 +108,20 @@ router.post('/', auth, [
   }
 });
 
+// ─── GET /api/posts/:id — single post, public ────────────────────────────────
+router.get('/:id', optionalAuth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id).populate('author', 'username name email');
+    if (!post) return res.status(404).json({ error: 'Post not found' });
+
+    const commentCount = await Comment.countDocuments({ post: post._id });
+    const userId = uid(req);
+    res.json({ ...formatPost(post, userId), commentCount });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch post' });
+  }
+});
+
 // ─── DELETE /api/posts/:id ────────────────────────────────────────────────────
 router.delete('/:id', auth, async (req, res) => {
   try {
