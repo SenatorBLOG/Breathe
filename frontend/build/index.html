@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <link rel="stylesheet" href="/cesium/Widgets/widgets.css">
+    <script src="/cesium/Cesium.js"></script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -14,6 +17,13 @@
       content="breathing exercises, guided breathing, meditation online, box breathing, 4-7-8 breathing, sleep breathing, anxiety breathing, wim hof breathing, breathwork, mindfulness" />
     <meta name="author" content="Breathe App" />
     <link rel="canonical" href="https://breatheonline.app/" />
+    <!-- Critical above-the-fold styles inlined to eliminate render-blocking CSS -->
+    <style>
+      *,::before,::after{box-sizing:border-box;margin:0;padding:0}
+      html{-webkit-text-size-adjust:100%;font-family:ui-sans-serif,system-ui,sans-serif}
+      body{min-height:100vh;background:#010814;color:#fff}
+      #root{min-height:100vh}
+    </style>
 
     <!-- ═══════════════════════════════════════════════════
          OPEN GRAPH (Facebook, LinkedIn, Telegram)
@@ -22,7 +32,7 @@
     <meta property="og:url"         content="https://breatheonline.app/" />
     <meta property="og:title"       content="Breathe — Guided Breathing & Meditation App" />
     <meta property="og:description" content="Guided breathing for sleep, focus & calm. Follow the animated orb. No download, free to use." />
-    <meta property="og:image"       content="https://breatheonline.app/og-image.jpg" />
+    <meta property="og:image"       content="https://breatheonline.app/og-image.webp" />
     <meta property="og:image:width"  content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name"   content="Breathe" />
@@ -35,22 +45,28 @@
     <meta name="twitter:url"         content="https://breatheonline.app/" />
     <meta name="twitter:title"       content="Breathe — Guided Breathing & Meditation App" />
     <meta name="twitter:description" content="Guided breathing for sleep, focus & calm. Follow the animated orb. No download, free to use." />
-    <meta name="twitter:image"       content="https://breatheonline.app/og-image.jpg" />
+    <meta name="twitter:image"       content="https://breatheonline.app/og-image.webp" />
 
     <!-- ═══════════════════════════════════════════════════
          FAVICON
     ═══════════════════════════════════════════════════ -->
-    <link rel="icon"             type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" sizes="180x180"      href="/apple-touch-icon.png" />
+    <link rel="icon" href="/favicon.ico?v=3" />
+    <link rel="apple-touch-icon" sizes="180x180"      href="/apple-touch-icon.webp" />
     <link rel="manifest"         href="/site.webmanifest" />
     <meta name="theme-color" content="#010814" />
+    <meta name="apple-mobile-web-app-capable"          content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title"            content="Breathe" />
+    <meta name="mobile-web-app-capable"                content="yes" />
 
     <!-- ═══════════════════════════════════════════════════
          FONTS
     ═══════════════════════════════════════════════════ -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap"
+          onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" /></noscript>
 
     <!-- ═══════════════════════════════════════════════════
          STRUCTURED DATA — WebApplication schema
@@ -77,7 +93,7 @@
         "Mood tracking",
         "Community forum"
       ],
-      "screenshot": "https://breatheonline.app/og-image.jpg",
+      "screenshot": "https://breatheonline.app/og-image.webp",
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "4.9",
@@ -121,6 +137,13 @@
     </script>
 
     <!-- ═══════════════════════════════════════════════════
+         GOOGLE ADSENSE
+         Replace ca-pub-XXXXXXXXXXXXXXXXX with your publisher ID
+         from adsense.google.com after approval
+    ═══════════════════════════════════════════════════ -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+    <!-- ═══════════════════════════════════════════════════
          GOOGLE ANALYTICS 4
          Replace G-XXXXXXXXXX with your actual Measurement ID
          from analytics.google.com
@@ -136,8 +159,8 @@
       });
     </script>
 
-    <script type="module" crossorigin src="/assets/index-4idvYVd_.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-Bwp_cQef.css">
+    <script type="module" crossorigin src="/assets/index-BrToW67p.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DRYJO5Ar.css">
   </head>
   <body>
     <div id="root"></div>

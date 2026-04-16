@@ -8,7 +8,7 @@ import Footer from '../components/Footer';
 import api from '../api';
 import { toast } from 'sonner';
 import { AuthContext } from '../components/contexts/AuthContext';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Flame, BarChart2, Waves } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { syncGoalFromProfile } from '../utils/mlDefaults';
@@ -123,12 +123,12 @@ function LoginPageInner() {
               {/* Stats */}
               <div className="flex flex-col gap-3">
                 {[
-                  { icon: '🔥', text: 'Your streak is still alive' },
-                  { icon: '📊', text: 'Progress saved from last time' },
-                  { icon: '🌊', text: 'Community posts to catch up on' },
+                  { icon: <Flame size={18} color="#F97316" />, text: 'Your streak is still alive' },
+                  { icon: <BarChart2 size={18} color="#4A9EFF" />, text: 'Progress saved from last time' },
+                  { icon: <Waves size={18} color="#38BDF8" />, text: 'Community posts to catch up on' },
                 ].map(({ icon, text }) => (
                   <div key={text} className="flex items-center gap-3">
-                    <span className="t-body">{icon}</span>
+                    <span className="flex-shrink-0">{icon}</span>
                     <p className="t-body" style={{ color: ts.textMuted }}>{text}</p>
                   </div>
                 ))}

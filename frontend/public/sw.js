@@ -1,4 +1,4 @@
-const CACHE_NAME = 'breathe-v2';
+const CACHE_NAME = 'breathe-v4';
 const OFFLINE_URL = '/breathing';
 
 // Assets to cache immediately on install
@@ -48,12 +48,17 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-GET and API calls
+  // Skip non-GET, API calls, and all localhost/dev server requests
   if (request.method !== 'GET') return;
+  if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') return;
   if (url.pathname.startsWith('/api/')) return;
 
-  // Images and fonts: cache-first
-  if (request.destination === 'image' || request.destination === 'font') {
+  // Images and fonts: cache-first (exclude favicons — they must always be fresh)
+  if (
+    (request.destination === 'image' || request.destination === 'font') &&
+    !url.pathname.includes('favicon') &&
+    !url.pathname.includes('apple-touch-icon')
+  ) {
     event.respondWith(
       caches.match(request).then(cached => {
         if (cached) return cached;
@@ -84,7 +89,7 @@ self.addEventListener('fetch', event => {
         const fetchPromise = fetch(request).then(response => {
           cache.put(request, response.clone());
           return response;
-        });
+        }).catch(() => cached || new Response('', { status: 503 }));
         return cached || fetchPromise;
       })
     )

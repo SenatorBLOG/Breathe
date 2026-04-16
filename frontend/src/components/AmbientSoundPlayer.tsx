@@ -1,15 +1,16 @@
 // src/components/AmbientSoundPlayer.tsx
 // Web Audio API synthesized ambient sounds — no files needed.
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { CloudRain, Waves, Leaf, Wind, Volume2, Music } from 'lucide-react';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 
 type SoundType = 'rain' | 'ocean' | 'forest' | 'white';
 
-const SOUNDS: { id: SoundType; label: string; emoji: string }[] = [
-  { id: 'rain',   label: 'Rain',        emoji: '🌧' },
-  { id: 'ocean',  label: 'Ocean',       emoji: '🌊' },
-  { id: 'forest', label: 'Forest',      emoji: '🌿' },
-  { id: 'white',  label: 'White noise', emoji: '〰' },
+const SOUNDS: { id: SoundType; label: string; icon: ReactNode }[] = [
+  { id: 'rain',   label: 'Rain',        icon: <CloudRain size={18} /> },
+  { id: 'ocean',  label: 'Ocean',       icon: <Waves size={18} /> },
+  { id: 'forest', label: 'Forest',      icon: <Leaf size={18} /> },
+  { id: 'white',  label: 'White noise', icon: <Wind size={18} /> },
 ];
 
 // ── Synthesis helpers ──────────────────────────────────────────────────────────
@@ -81,7 +82,11 @@ function makeNoise(ctx: AudioContext, type: SoundType): AudioNode {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function AmbientSoundPlayer() {
+interface AmbientSoundPlayerProps {
+  inline?: boolean;
+}
+
+export default function AmbientSoundPlayer({ inline = false }: AmbientSoundPlayerProps) {
   const ts = useThemeStyles();
   const [active, setActive]   = useState<SoundType | null>(null);
   const [volume, setVolume]   = useState(0.35);
@@ -211,13 +216,35 @@ export default function AmbientSoundPlayer() {
       src.connect(hp);
       chain = hp;
     } else if (id === 'ocean') {
+      // Bandpass shapes pink noise into wave-rush character (200–800 Hz body)
+      const bp = ctx.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.value = 380;
+      bp.Q.value = 0.65;
+      src.connect(bp);
+
+      // A gentle low-shelf adds underwater rumble
+      const shelf = ctx.createBiquadFilter();
+      shelf.type = 'lowshelf';
+      shelf.frequency.value = 150;
+      shelf.gain.value = 6;
+      bp.connect(shelf);
+
+      // waveGain: LFO sweeps 0.1 → 0.9 → creates swell rhythm
+      const waveGain = ctx.createGain();
+      waveGain.gain.value = 0.5;        // center; LFO adds ±0.38
+      shelf.connect(waveGain);
+
       const lfo = ctx.createOscillator();
-      lfo.frequency.value = 0.1;
-      const lfoGain = ctx.createGain();
-      lfoGain.gain.value = 0.45;
-      lfo.connect(lfoGain);
-      lfoGain.connect(masterGain.gain);
+      lfo.type = 'sine';
+      lfo.frequency.value = 0.12;       // one wave every ~8 s
+      const lfoScale = ctx.createGain();
+      lfoScale.gain.value = 0.38;
+      lfo.connect(lfoScale);
+      lfoScale.connect(waveGain.gain);  // modulates waveGain, NOT masterGain
       lfo.start();
+
+      chain = waveGain;                 // chain.connect(masterGain) done below
     }
 
     chain.connect(masterGain);
@@ -245,26 +272,76 @@ export default function AmbientSoundPlayer() {
   // Cleanup on unmount
   useEffect(() => () => { stop(); ctxRef.current?.close(); }, [stop]);
 
+  // ── Inline mode (embedded in a panel, no toggle/popup) ───────────────────
+  if (inline) {
+    return (
+      <div className="flex flex-col gap-2 w-full">
+        <div className="grid grid-cols-4 gap-1.5">
+          {SOUNDS.map(s => (
+            <button
+              key={s.id}
+              onClick={() => toggle(s.id)}
+              className="flex flex-col items-center gap-1 py-2.5 rounded-xl border t-label transition-all"
+              style={{
+                background: active === s.id ? `rgba(58,130,247,0.14)` : 'rgba(10,18,36,0.55)',
+                borderColor: active === s.id ? `rgba(58,130,247,0.45)` : 'rgba(30,51,88,0.5)',
+                color: active === s.id ? '#7AC4FF' : 'rgba(74,96,128,0.65)',
+                boxShadow: active === s.id ? '0 0 12px rgba(58,130,247,0.2)' : 'none',
+              }}
+            >
+              {s.icon}
+              <span style={{ fontSize: 9, letterSpacing: '0.05em' }}>{s.label}</span>
+            </button>
+          ))}
+        </div>
+        {active && (
+          <div className="flex items-center gap-2 px-0.5 pt-0.5">
+            <Volume2 size={14} style={{ color: 'rgba(74,96,128,0.55)', flexShrink: 0 }} />
+            <input
+              type="range" min={0} max={1} step={0.01} value={volume}
+              onChange={e => setVolume(Number(e.target.value))}
+              className="flex-1"
+              style={{ accentColor: '#3A82F7' }}
+            />
+            <span className="t-label tabular-nums w-7 text-right" style={{ color: 'rgba(74,96,128,0.55)' }}>
+              {Math.round(volume * 100)}%
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full">
       {/* Toggle header */}
       <button
         onClick={() => setExpanded(v => !v)}
-        className="flex items-center gap-2 px-3 py-2 rounded-xl t-caption transition-all"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl t-caption transition-all w-full"
         style={{
           background: expanded ? `${ts.accent}14` : 'transparent',
           border: `1px solid ${expanded ? ts.accent + '40' : ts.border}`,
           color: ts.textSecondary,
         }}
       >
-        <span>🎵</span>
-        <span className="flex-1 text-left">Ambient sound</span>
-        {active && <span className="t-label px-2 py-0.5 rounded-full" style={{ background: ts.accent, color: '#fff' }}>ON</span>}
-        <span style={{ color: ts.textDim, fontSize: 10 }}>{expanded ? '▲' : '▼'}</span>
+        <Music size={13} />
+        <span className="flex-1 text-left truncate" style={{ fontSize: 11 }}>Ambient</span>
+        {active && <span className="t-label px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: ts.accent, color: '#fff', fontSize: 9 }}>ON</span>}
+        <span style={{ color: ts.textDim, fontSize: 9 }}>{expanded ? '▲' : '▼'}</span>
       </button>
 
       {expanded && (
-        <div className="flex flex-col gap-2 px-1">
+        <div
+          className="absolute left-0 right-0 z-50 rounded-2xl p-3 flex flex-col gap-2"
+          style={{
+            bottom: 'calc(100% + 8px)',
+            background: 'rgba(6,12,26,0.96)',
+            border: `1px solid ${ts.borderHover}`,
+            backdropFilter: 'blur(20px)',
+            boxShadow: '0 -8px 32px rgba(0,0,0,0.5)',
+          }}
+        >
+          <p className="t-label uppercase tracking-widest px-1" style={{ color: ts.textDim }}>Ambient sound</p>
           {/* Sound buttons */}
           <div className="grid grid-cols-4 gap-1.5">
             {SOUNDS.map(s => (
@@ -279,7 +356,7 @@ export default function AmbientSoundPlayer() {
                   boxShadow: active === s.id ? `0 0 12px ${ts.accent}22` : 'none',
                 }}
               >
-                <span style={{ fontSize: 18 }}>{s.emoji}</span>
+                {s.icon}
                 <span style={{ fontSize: 9, letterSpacing: '0.04em' }}>{s.label}</span>
               </button>
             ))}
@@ -288,7 +365,7 @@ export default function AmbientSoundPlayer() {
           {/* Volume slider */}
           {active && (
             <div className="flex items-center gap-2 px-1">
-              <span className="t-label" style={{ color: ts.textDim }}>🔉</span>
+              <Volume2 size={14} style={{ color: ts.textDim, flexShrink: 0 }} />
               <input
                 type="range" min={0} max={1} step={0.01} value={volume}
                 onChange={e => setVolume(Number(e.target.value))}

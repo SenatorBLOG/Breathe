@@ -5,7 +5,7 @@ import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
 import api from '../api';
-import { Send, Mail, MessageCircle, BookOpen, Users, CheckCircle } from 'lucide-react';
+import { Send, Mail, MessageCircle, BookOpen, Users, CheckCircle, Bug, Lightbulb, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 
@@ -62,12 +62,12 @@ function QuickCard({ icon, title, desc, to, label }: {
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Category = 'bug' | 'question' | 'feedback' | 'account' | 'other';
 
-const CATEGORIES: { value: Category; label: string; icon: string }[] = [
-  { value: 'bug',      label: 'Bug report',    icon: '🐛' },
-  { value: 'question', label: 'Question',      icon: '💭' },
-  { value: 'feedback', label: 'Feedback',      icon: '💡' },
-  { value: 'account',  label: 'Account issue', icon: '👤' },
-  { value: 'other',    label: 'Other',         icon: '📩' },
+const CATEGORIES: { value: Category; label: string; icon: React.ReactNode }[] = [
+  { value: 'bug',      label: 'Bug report',    icon: <Bug size={18} color="#F97316" /> },
+  { value: 'question', label: 'Question',      icon: <MessageCircle size={18} color="#7AC4FF" /> },
+  { value: 'feedback', label: 'Feedback',      icon: <Lightbulb size={18} color="#FACC15" /> },
+  { value: 'account',  label: 'Account issue', icon: <User size={18} color="#A78BFA" /> },
+  { value: 'other',    label: 'Other',         icon: <Mail size={18} color="#4ADE80" /> },
 ];
 
 // ─── Page ─────────────────────────────────────────────────────────────────────

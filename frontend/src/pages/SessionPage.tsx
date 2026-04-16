@@ -627,6 +627,9 @@ export function SessionsSection() {
     else { setSortKey(key); setSortDir("desc"); }
   };
 
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 20;
+
   const filtered = useMemo(() => {
     let out = [...sessions];
     if (search) {
@@ -645,6 +648,12 @@ export function SessionsSection() {
     });
     return out;
   }, [sessions, search, sortKey, sortDir, minCycles, minDuration]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => { setPage(1); }, [search, sortKey, sortDir, minCycles, minDuration]);
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated  = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const totalMins   = Math.round(sessions.reduce((s, x) => s + x.sessionLength, 0));
   const totalCycles = Math.round(sessions.reduce((s, x) => s + x.cycles, 0));
@@ -1010,6 +1019,7 @@ export function SessionsSection() {
               <p className="t-caption tracking-wide" style={{ color: ts.textMuted }}>
                 {loading ? "Loading…" : `${filtered.length} of ${sessions.length} sessions`}
                 {(minCycles > 0 || minDuration > 0 || search) ? " · filtered" : ""}
+                {totalPages > 1 ? ` · page ${page}/${totalPages}` : ""}
               </p>
 
               {/* Session list */}
@@ -1036,11 +1046,51 @@ export function SessionsSection() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-2">
-                  {filtered.map((s, i) => (
-                    <div key={s._id} className="sess-in" style={{ animationDelay: `${i * 0.04}s`, opacity: 0 }}>
+                  {paginated.map((s, i) => (
+                    <div key={s._id} className="sess-in" style={{ animationDelay: `${i * 0.03}s`, opacity: 0 }}>
                       <SessionCard session={s} onDelete={handleDeleteOne} />
                     </div>
                   ))}
+                </div>
+              )}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between pt-2">
+                  <button
+                    onClick={() => { setPage(p => p - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    disabled={page === 1}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl t-caption border transition-all disabled:opacity-30"
+                    style={{ color: ts.textMuted, borderColor: ts.border }}
+                  >
+                    <ChevronUp size={12} style={{ transform: 'rotate(-90deg)' }} /> Prev
+                  </button>
+
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                      <button
+                        key={p}
+                        onClick={() => { setPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                        className="w-8 h-8 rounded-lg t-caption transition-all"
+                        style={{
+                          backgroundColor: p === page ? ts.accent : 'transparent',
+                          color: p === page ? '#fff' : ts.textMuted,
+                          border: `1px solid ${p === page ? ts.accent : ts.border}`,
+                        }}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => { setPage(p => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    disabled={page === totalPages}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl t-caption border transition-all disabled:opacity-30"
+                    style={{ color: ts.textMuted, borderColor: ts.border }}
+                  >
+                    Next <ChevronDown size={12} style={{ transform: 'rotate(-90deg)' }} />
+                  </button>
                 </div>
               )}
 

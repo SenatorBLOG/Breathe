@@ -1,16 +1,17 @@
 // Floating nudge that occasionally reminds users about challenges.
 // Shows once per day, 25s after page load, not on /profile.
-import { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { AuthContext } from './contexts/AuthContext';
+import { Trophy, Flame, Zap, Moon, Wind } from 'lucide-react';
 
-const MESSAGES = [
-  { icon: '🏆', text: 'Ready for a 7-day breathing challenge?', sub: 'Build a lasting habit in one week' },
-  { icon: '🔥', text: 'Day streaks keep your calm consistent', sub: 'Start a challenge in your profile' },
-  { icon: '⚡', text: 'Earn your first badge this week', sub: '7-day Box Breathing — beginner friendly' },
-  { icon: '🌙', text: 'Sleep challenge: 7 nights of 4-7-8', sub: 'Users report falling asleep 40% faster' },
-  { icon: '🧘', text: 'Challenge yourself to breathe daily', sub: 'Your profile has 6 challenges waiting' },
+const MESSAGES: { icon: React.ReactNode; text: string; sub: string }[] = [
+  { icon: <Trophy size={20} color="#F59E0B" />, text: 'Ready for a 7-day breathing challenge?', sub: 'Build a lasting habit in one week' },
+  { icon: <Flame size={20} color="#F97316" />, text: 'Day streaks keep your calm consistent', sub: 'Start a challenge in your profile' },
+  { icon: <Zap size={20} color="#FACC15" />, text: 'Earn your first badge this week', sub: '7-day Box Breathing — beginner friendly' },
+  { icon: <Moon size={20} color="#818CF8" />, text: 'Sleep challenge: 7 nights of 4-7-8', sub: 'Users report falling asleep 40% faster' },
+  { icon: <Wind size={20} color="#A78BFA" />, text: 'Challenge yourself to breathe daily', sub: 'Your profile has 6 challenges waiting' },
 ];
 
 const COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
@@ -65,7 +66,7 @@ export default function ChallengeNudge() {
         }
       `}</style>
 
-      <span className="text-2xl flex-shrink-0 mt-0.5">{msg.icon}</span>
+      <span className="flex-shrink-0 mt-0.5">{msg.icon}</span>
 
       <div className="flex-1 min-w-0">
         <p className="t-caption font-semibold leading-snug" style={{ color: ts.textPrimary }}>

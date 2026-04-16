@@ -2,6 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const Session = require('../models/Session');
+const Integration = require('../models/Integration');
+const auth = require('../middleware/auth');
+const mongoose = require('mongoose');
 
 // Utility to ensure we always handle empty/undefined values safely
 const toMinutes = (value) => {
@@ -229,6 +232,90 @@ router.get('/progress', async (req, res) => {
       });
 
     res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/stats/hrv-correlation
+// returns last 30 days of per-day HRV + meditation session data, with trend summary
+router.get('/hrv-correlation', auth, async (req, res) => {
+  try {
+    const userId = new mongoose.Types.ObjectId(req.user._id);
+
+    const today = new Date();
+    const start = new Date(today);
+    start.setDate(start.getDate() - 29);
+    start.setHours(0, 0, 0, 0);
+
+    // Fetch sessions for this user in the last 30 days
+    const sessions = await Session.find({
+      userId,
+      sessionDate: { $gte: start },
+    }).lean();
+
+    // Fetch HRV data from any integration for this user
+    const integrations = await Integration.find({ userId }).lean();
+    const allHRV = [];
+    integrations.forEach(integ => {
+      if (Array.isArray(integ.data?.hrv)) {
+        integ.data.hrv.forEach(entry => {
+          if (entry && entry.date) allHRV.push(entry);
+        });
+      }
+    });
+
+    // Deduplicate HRV by date (keep first encountered)
+    const hrvByDate = new Map();
+    allHRV.forEach(entry => {
+      if (!hrvByDate.has(entry.date)) hrvByDate.set(entry.date, entry);
+    });
+
+    // Build per-day array for last 30 days
+    const days = [];
+    for (let i = 0; i < 30; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      const key = d.toISOString().slice(0, 10);
+
+      const daySessions = sessions.filter(
+        s => new Date(s.sessionDate).toISOString().slice(0, 10) === key
+      );
+
+      const hrvEntry = hrvByDate.get(key);
+      const hrv = hrvEntry ? (hrvEntry.rmssd ?? hrvEntry.value ?? null) : null;
+
+      days.push({
+        date: key,
+        hrv: hrv !== null ? Math.round(hrv * 10) / 10 : null,
+        hadSession: daySessions.length > 0,
+        sessionCount: daySessions.length,
+      });
+    }
+
+    // Trend: avg HRV on meditation days vs non-meditation days
+    const meditationDays = days.filter(d => d.hadSession && d.hrv !== null);
+    const restDays       = days.filter(d => !d.hadSession && d.hrv !== null);
+
+    const avg = arr =>
+      arr.length ? Math.round((arr.reduce((s, d) => s + d.hrv, 0) / arr.length) * 10) / 10 : null;
+
+    const avgHRVOnMeditationDays = avg(meditationDays);
+    const avgHRVOnRestDays       = avg(restDays);
+
+    let percentDiff = null;
+    if (avgHRVOnMeditationDays !== null && avgHRVOnRestDays !== null && avgHRVOnRestDays > 0) {
+      percentDiff = Math.round(((avgHRVOnMeditationDays - avgHRVOnRestDays) / avgHRVOnRestDays) * 100);
+    }
+
+    res.json({
+      days,
+      trend: {
+        avgHRVOnMeditationDays,
+        avgHRVOnRestDays,
+        percentDiff,
+      },
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

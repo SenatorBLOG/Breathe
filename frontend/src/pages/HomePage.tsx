@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Square, Moon, Heart, Flame, Wind, Infinity, Waves, Zap, BarChart2, Globe } from 'lucide-react';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
@@ -91,7 +92,7 @@ function StatCard({ value, label }: { value: string; label: string }) {
 function ContentCard({
   icon, title, desc, tag, href = '#',
 }: {
-  icon: string; title: string; desc: string; tag?: string; href?: string;
+  icon: React.ReactNode; title: string; desc: string; tag?: string; href?: string;
 }) {
   const ts = useThemeStyles();
   return (
@@ -159,7 +160,7 @@ const TECHNIQUE_PRESETS: Record<string, PhaseDurations> = {
 
 // ─── Technique pill ──────────────────────────────────────────────────────────
 function TechniquePill({ name, time, icon, presetKey, presetName }: {
-  name: string; time: string; icon: string;
+  name: string; time: string; icon: React.ReactNode;
   presetKey: string; presetName: string;
 }) {
   const ts = useThemeStyles();
@@ -303,12 +304,12 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 reveal-stagger">
-            <TechniquePill name={t("techniques.box")}       time={t("techniques.boxDesc")}       icon="⬜" presetKey="box"       presetName="Box Breathing" />
-            <TechniquePill name={t("techniques.sleep478")}  time={t("techniques.sleep478Desc")}  icon="🌙" presetKey="sleep478"  presetName="4-7-8 Breathing" />
-            <TechniquePill name={t("techniques.coherent")}  time={t("techniques.coherentDesc")}  icon="💙" presetKey="coherent"  presetName="Coherent Breathing" />
-            <TechniquePill name={t("techniques.wimhof")}    time={t("techniques.wimhofDesc")}    icon="🔥" presetKey="wimhof"    presetName="Wim Hof Method" />
-            <TechniquePill name={t("techniques.belly")}     time={t("techniques.bellyDesc")}     icon="🌀" presetKey="belly"     presetName="Belly Breathing" />
-            <TechniquePill name={t("techniques.alternate")} time={t("techniques.alternateDesc")} icon="☯️" presetKey="alternate" presetName="Alternate Nostril" />
+            <TechniquePill name={t("techniques.box")}       time={t("techniques.boxDesc")}       icon={<Square size={20} color="#38BDF8" />}   presetKey="box"       presetName="Box Breathing" />
+            <TechniquePill name={t("techniques.sleep478")}  time={t("techniques.sleep478Desc")}  icon={<Moon size={20} color="#818CF8" />}     presetKey="sleep478"  presetName="4-7-8 Breathing" />
+            <TechniquePill name={t("techniques.coherent")}  time={t("techniques.coherentDesc")}  icon={<Heart size={20} color="#60A5FA" />}    presetKey="coherent"  presetName="Coherent Breathing" />
+            <TechniquePill name={t("techniques.wimhof")}    time={t("techniques.wimhofDesc")}    icon={<Flame size={20} color="#F97316" />}    presetKey="wimhof"    presetName="Wim Hof Method" />
+            <TechniquePill name={t("techniques.belly")}     time={t("techniques.bellyDesc")}     icon={<Wind size={20} color="#A78BFA" />}     presetKey="belly"     presetName="Belly Breathing" />
+            <TechniquePill name={t("techniques.alternate")} time={t("techniques.alternateDesc")} icon={<Infinity size={20} color="#4ADE80" />} presetKey="alternate" presetName="Alternate Nostril" />
           </div>
         </RevealSection>
 
@@ -342,11 +343,11 @@ export default function HomePage() {
                   {t('home.exploreMindfulness')}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 reveal-stagger">
-                  <ContentCard icon="🌊" tag="Guide" title={t('home.contentCards.sleepTitle')} desc={t('home.contentCards.sleepDesc')} href="/sleep/breathwork-for-deep-sleep" />
-                  <ContentCard icon="⚡" tag="Science" title={t('home.contentCards.scienceTitle')} desc={t('home.contentCards.scienceDesc')} href="/science/slow-breathing" />
-                  <ContentCard icon="🧘" tag="Practice" title={t('home.contentCards.morningTitle')} desc={t('home.contentCards.morningDesc')} href="/breathing/morning-ritual" />
-                  <ContentCard icon="📊" tag="Track" title={t('home.contentCards.progressTitle')} desc={t('home.contentCards.progressDesc')} href="/sessions" />
-                  <ContentCard icon="🌍" tag="Community" title={t('home.contentCards.communityTitle')} desc={t('home.contentCards.communityDesc')} href="/community" />
+                  <ContentCard icon={<Waves size={20} color="#38BDF8" />}    tag="Guide"     title={t('home.contentCards.sleepTitle')}     desc={t('home.contentCards.sleepDesc')}      href="/sleep/breathwork-for-deep-sleep" />
+                  <ContentCard icon={<Zap size={20} color="#FACC15" />}      tag="Science"   title={t('home.contentCards.scienceTitle')}   desc={t('home.contentCards.scienceDesc')}    href="/science/slow-breathing" />
+                  <ContentCard icon={<Wind size={20} color="#A78BFA" />}     tag="Practice"  title={t('home.contentCards.morningTitle')}   desc={t('home.contentCards.morningDesc')}    href="/breathing/morning-ritual" />
+                  <ContentCard icon={<BarChart2 size={20} color="#4A9EFF" />} tag="Track"    title={t('home.contentCards.progressTitle')}  desc={t('home.contentCards.progressDesc')}   href="/sessions" />
+                  <ContentCard icon={<Globe size={20} color="#4ADE80" />}    tag="Community" title={t('home.contentCards.communityTitle')} desc={t('home.contentCards.communityDesc')}  href="/community" />
                 </div>
               </div>
 

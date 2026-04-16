@@ -9,22 +9,23 @@ import { toast } from 'sonner';
 import {
   RefreshCw, Unlink, Moon, Heart, Activity, Zap, ChevronRight,
   Watch, Camera, Save,
+  Wind, Star, Target, Dumbbell, Trophy, Flame, Sparkles, Waves, Sunrise, Smile,
 } from 'lucide-react';
 import { AchievementBadge } from '../components/AchievementToast';
 
 const ALL_ACHIEVEMENTS = [
-  { id: 'first_breath',  icon: '🌬', title: 'First Breath',   desc: 'Complete your first session' },
-  { id: 'sessions_5',   icon: '⭐', title: 'Getting Started', desc: '5 sessions completed' },
-  { id: 'sessions_10',  icon: '🎯', title: 'Dedicated',       desc: '10 sessions completed' },
-  { id: 'sessions_50',  icon: '💪', title: 'Committed',       desc: '50 sessions completed' },
-  { id: 'sessions_100', icon: '💯', title: 'Century',         desc: '100 sessions completed' },
-  { id: 'streak_3',     icon: '🔥', title: 'Warming Up',      desc: '3-day streak' },
-  { id: 'streak_7',     icon: '⚡', title: 'Week Warrior',    desc: '7-day streak' },
-  { id: 'streak_30',    icon: '🌟', title: 'Monthly Master',  desc: '30-day streak' },
-  { id: 'long_session', icon: '🌊', title: 'Deep Diver',      desc: 'Session lasting 20+ minutes' },
-  { id: 'early_bird',   icon: '🌅', title: 'Early Bird',      desc: 'Session before 7 AM' },
-  { id: 'night_owl',    icon: '🦉', title: 'Night Owl',       desc: 'Session after 11 PM' },
-  { id: 'mood_boost',   icon: '😊', title: 'Mood Boost',      desc: 'Mood improved 3+ points' },
+  { id: 'first_breath',  icon: <Wind   size={20} color="#7AC4FF" />, title: 'First Breath',   desc: 'Complete your first session' },
+  { id: 'sessions_5',   icon: <Star   size={20} color="#FFD700" />, title: 'Getting Started', desc: '5 sessions completed' },
+  { id: 'sessions_10',  icon: <Target size={20} color="#4A9EFF" />, title: 'Dedicated',       desc: '10 sessions completed' },
+  { id: 'sessions_50',  icon: <Dumbbell size={20} color="#A78BFA" />, title: 'Committed',     desc: '50 sessions completed' },
+  { id: 'sessions_100', icon: <Trophy size={20} color="#F59E0B" />, title: 'Century',         desc: '100 sessions completed' },
+  { id: 'streak_3',     icon: <Flame  size={20} color="#F97316" />, title: 'Warming Up',      desc: '3-day streak' },
+  { id: 'streak_7',     icon: <Zap    size={20} color="#FACC15" />, title: 'Week Warrior',    desc: '7-day streak' },
+  { id: 'streak_30',    icon: <Sparkles size={20} color="#C084FC" />, title: 'Monthly Master', desc: '30-day streak' },
+  { id: 'long_session', icon: <Waves  size={20} color="#38BDF8" />, title: 'Deep Diver',      desc: 'Session lasting 20+ minutes' },
+  { id: 'early_bird',   icon: <Sunrise size={20} color="#FB923C" />, title: 'Early Bird',     desc: 'Session before 7 AM' },
+  { id: 'night_owl',    icon: <Moon   size={20} color="#818CF8" />, title: 'Night Owl',       desc: 'Session after 11 PM' },
+  { id: 'mood_boost',   icon: <Smile  size={20} color="#34D399" />, title: 'Mood Boost',      desc: 'Mood improved 3+ points' },
 ];
 import AppleHealthImport from '../components/AppleHealthImport';
 import HeartRateMonitor from '../components/HeartRateMonitor';
@@ -36,12 +37,12 @@ import { StatsSection } from './StatsPage';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const GOALS = [
-  { value: 'sleep',   label: 'Better Sleep',    icon: '😴' },
-  { value: 'stress',  label: 'Less Stress',      icon: '🧘' },
-  { value: 'focus',   label: 'More Focus',       icon: '🎯' },
-  { value: 'energy',  label: 'More Energy',      icon: '⚡' },
-  { value: 'general', label: 'General Wellness', icon: '🌊' },
-] as const;
+  { value: 'sleep',   label: 'Better Sleep',    icon: <Moon    size={16} color="#7AC4FF" /> },
+  { value: 'stress',  label: 'Less Stress',      icon: <Wind    size={16} color="#A78BFA" /> },
+  { value: 'focus',   label: 'More Focus',       icon: <Target  size={16} color="#4AE8A0" /> },
+  { value: 'energy',  label: 'More Energy',      icon: <Zap     size={16} color="#FACC15" /> },
+  { value: 'general', label: 'General Wellness', icon: <Waves   size={16} color="#38BDF8" /> },
+];
 
 const GENDERS = [
   { value: 'male',       label: 'Male' },
@@ -70,7 +71,7 @@ interface IntegrationStatus {
 const PROVIDER_META = {
   fitbit: {
     label: 'Fitbit',
-    icon: '💚',
+    icon: <Heart size={16} color="#4ADE80" />,
     color: '#4AE8A0',
     bg: 'rgba(74,232,160,0.08)',
     description: 'Wearable device (watch / band)',
@@ -79,7 +80,7 @@ const PROVIDER_META = {
   },
   google_fit: {
     label: 'Google Fit',
-    icon: '🔵',
+    icon: <Activity size={16} color="#4A9EFF" />,
     color: '#4A9EFF',
     bg: 'rgba(74,158,255,0.08)',
     description: 'Android / Wear OS platform',
@@ -265,140 +266,53 @@ function StatPill({ icon, label, value, color }: { icon: React.ReactNode; label:
   );
 }
 
-// ─── Integration card ─────────────────────────────────────────────────────────
-function IntegrationCard({ status, provider, onConnect, onDisconnect, onSync, syncing }: {
-  status?: IntegrationStatus;
-  provider: 'fitbit' | 'google_fit';
-  onConnect: () => void;
-  onDisconnect: () => void;
-  onSync: () => void;
-  syncing: boolean;
+// ─── Single source row ────────────────────────────────────────────────────────
+function SourceRow({ icon, label, sublabel, connected, color, onAction, actionLabel, actionLoading, children }: {
+  icon: React.ReactNode; label: string; sublabel: string;
+  connected: boolean; color: string;
+  onAction: () => void; actionLabel: string; actionLoading?: boolean;
+  children?: React.ReactNode;
 }) {
-  const ts   = useThemeStyles();
-  const meta = PROVIDER_META[provider];
-  const sleep = status?.data?.sleep?.slice(-7) ?? [];
-  const hrv   = (status?.data?.hrv?.slice(-7) ?? []).filter(d => d.rmssd);
-  const hr    = status?.data?.heartRate?.slice(-1)[0];
-
-  const avgSleep = sleep.length ? Math.round(sleep.reduce((s, d) => s + d.duration, 0) / sleep.length) : null;
-  const avgHRV   = hrv.length   ? Math.round(hrv.reduce((s, d) => s + d.rmssd!, 0) / hrv.length)   : null;
-
+  const ts = useThemeStyles();
   return (
-    <div className="flex flex-col gap-4 p-5 rounded-2xl border transition-all"
+    <div className="flex flex-col gap-3 p-4 rounded-2xl transition-all"
       style={{
         backgroundColor: ts.cardBg,
-        borderColor: status?.connected ? `${meta.color}33` : ts.border,
-        boxShadow: status?.connected ? `0 0 20px ${meta.bg}` : 'none',
+        border: `1px solid ${connected ? color + '30' : ts.border}`,
       }}>
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center t-heading flex-shrink-0"
-            style={{ background: meta.bg, border: `1px solid ${meta.color}33` }}>
-            {meta.icon}
-          </div>
-          <div>
-            <p className="t-body font-semibold" style={{ color: ts.textPrimary }}>{meta.label}</p>
-            <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>{meta.description}</p>
-            <p className="t-caption mt-0.5" style={{ color: status?.connected ? meta.color : ts.textMuted }}>
-              {status?.connected
-                ? `Connected · last sync: ${status.lastSyncAt ? timeAgo(status.lastSyncAt) : 'never'}`
-                : 'Not connected'}
-            </p>
-          </div>
+      <div className="flex items-center gap-3">
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 t-body"
+          style={{ background: color + '14', border: `1px solid ${color}28` }}>
+          {icon}
         </div>
-        {status?.connected ? (
-          <div className="flex items-center gap-1 flex-shrink-0">
-            <button onClick={onSync} disabled={syncing} title="Sync data now"
-              className="p-1.5 rounded-lg transition-colors disabled:opacity-40"
-              style={{ color: ts.textMuted }}>
-              <RefreshCw size={13} className={syncing ? 'animate-spin' : ''} />
-            </button>
-            <button onClick={onDisconnect} title="Disconnect"
-              className="p-1.5 rounded-lg transition-colors"
-              style={{ color: ts.textMuted }}>
-              <Unlink size={13} />
-            </button>
-          </div>
-        ) : (
-          <button onClick={onConnect}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl t-caption font-medium transition-all hover:scale-105 flex-shrink-0"
-            style={{ background: ts.btnGradient }}>
-            Connect <ChevronRight size={11} />
-          </button>
-        )}
+        <div className="flex-1 min-w-0">
+          <p className="t-body font-medium leading-tight" style={{ color: ts.textPrimary }}>{label}</p>
+          <p className="t-label mt-0.5" style={{ color: connected ? color : ts.textMuted }}>{sublabel}</p>
+        </div>
+        <button
+          onClick={onAction}
+          disabled={actionLoading}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-label font-medium flex-shrink-0 transition-all hover:scale-105 disabled:opacity-40"
+          style={connected
+            ? { color: ts.textMuted, border: `1px solid ${ts.border}`, background: 'transparent' }
+            : { color: '#fff', background: ts.btnGradient }
+          }
+        >
+          {actionLoading ? <RefreshCw size={11} className="animate-spin" /> : null}
+          {actionLabel}
+        </button>
       </div>
-
-      {!status?.connected && (
-        <div className="px-3 py-2 rounded-xl" style={{ background: `${meta.color}08`, border: `1px solid ${meta.color}1A` }}>
-          <p className="t-label mb-1" style={{ color: meta.color }}>Tracks</p>
-          <p className="t-caption" style={{ color: ts.textMuted }}>{meta.details}</p>
-        </div>
-      )}
-
-      {status?.connected && sleep.length > 0 && (
-        <>
-          <div className="grid grid-cols-3 gap-2">
-            {avgSleep !== null && <StatPill icon={<Moon size={12} />} label={`Avg sleep · ${sleep.length}d`} value={fmtDur(avgSleep)} color="#7AC4FF" />}
-            {avgHRV   !== null && <StatPill icon={<Activity size={12} />} label="Avg HRV" value={`${avgHRV} ms`} color="#4A9EFF" />}
-            {hr?.restingRate   && <StatPill icon={<Heart size={12} />} label="Resting HR" value={`${hr.restingRate} bpm`} color="#FF8A8A" />}
-          </div>
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-1.5">
-              <Moon size={10} style={{ color: ts.textMuted }} />
-              <p className="t-label" style={{ color: ts.textMuted }}>Sleep duration</p>
-              <span className="t-caption ml-auto" style={{ color: ts.textDim }}>source: {meta.label}</span>
-            </div>
-            <SleepBars days={sleep} />
-          </div>
-          {hrv.length > 1 && (
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-1.5">
-                <Activity size={10} style={{ color: ts.textMuted }} />
-                <p className="t-label" style={{ color: ts.textMuted }}>HRV (RMSSD) · last {hrv.length} days</p>
-                <span className="t-caption ml-auto" style={{ color: ts.textDim }}>higher = more recovered</span>
-              </div>
-              <HRVLine days={status?.data?.hrv?.slice(-7) ?? []} />
-            </div>
-          )}
-          {hr && (hr.restingRate || hr.avgRate) && (
-            <div className="px-3 py-2 rounded-xl" style={{ background: 'rgba(255,138,138,0.06)', border: '1px solid rgba(255,138,138,0.15)' }}>
-              <p className="t-label mb-1" style={{ color: '#FF8A8A' }}>Heart rate</p>
-              {hr.restingRate && (
-                <p className="t-caption" style={{ color: ts.textSecondary }}>
-                  Resting: <strong>{hr.restingRate} bpm</strong>
-                  <span className="t-caption ml-1.5" style={{ color: ts.textMuted }}>
-                    {hr.restingRate < 60 ? 'Excellent' : hr.restingRate < 70 ? 'Good' : hr.restingRate < 80 ? 'Average' : 'High'}
-                  </span>
-                </p>
-              )}
-              {hr.avgRate && !hr.restingRate && (
-                <p className="t-caption" style={{ color: ts.textSecondary }}>Daily avg: <strong>{hr.avgRate} bpm</strong></p>
-              )}
-              <p className="t-caption mt-1" style={{ color: ts.textDim }}>from {fmt(hr.date)}</p>
-            </div>
-          )}
-        </>
-      )}
-
-      {status?.connected && sleep.length === 0 && (
-        <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl"
-          style={{ backgroundColor: `${meta.color}08`, border: `1px dashed ${meta.color}33` }}>
-          <RefreshCw size={11} style={{ color: meta.color }} />
-          <div>
-            <p className="t-caption font-medium" style={{ color: ts.textSecondary }}>No data yet — tap ↻ to sync</p>
-            <p className="t-caption mt-0.5" style={{ color: ts.textDim }}>
-              Will pull last 7 days of {meta.dataTypes.join(', ').toLowerCase()} from {meta.label}
-            </p>
-          </div>
-        </div>
-      )}
+      {children}
     </div>
   );
 }
 
-// ─── AI health insight ────────────────────────────────────────────────────────
+// ─── AI health insight (compact chip + hover popover) ────────────────────────
 function HealthInsight({ integrations }: { integrations: IntegrationStatus[] }) {
   const ts = useThemeStyles();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
   const allSleep = integrations.flatMap(i => i.data?.sleep ?? []);
   const allHRV   = integrations.flatMap(i => i.data?.hrv   ?? []).filter(d => d.rmssd);
   if (!allSleep.length && !allHRV.length) return null;
@@ -411,41 +325,67 @@ function HealthInsight({ integrations }: { integrations: IntegrationStatus[] }) 
 
   if (lastSleep && lastSleep.duration < 360) {
     icon = '😴'; title = 'Poor sleep detected';
-    desc = `You only got ${Math.floor(lastSleep.duration/60)}h${lastSleep.duration%60}m last night. Your nervous system needs recovery.`;
+    desc = `${Math.floor(lastSleep.duration/60)}h${lastSleep.duration%60}m last night — try 4-7-8 to recover.`;
     technique = '4-7-8 Breathing'; techniqueHref = '/breathing/4-7-8';
   } else if (lastHRV && avgHRV && lastHRV.rmssd! < avgHRV * 0.8) {
-    icon = '💙'; title = 'HRV below your baseline';
-    desc = `Your HRV is ${Math.round(lastHRV.rmssd!)}ms — lower than your average of ${Math.round(avgHRV)}ms.`;
+    icon = '💙'; title = 'HRV below baseline';
+    desc = `${Math.round(lastHRV.rmssd!)}ms vs your avg ${Math.round(avgHRV)}ms — go gentle today.`;
     technique = 'Coherent Breathing'; techniqueHref = '/breathing';
   } else if (lastSleep && lastSleep.score && lastSleep.score > 80) {
-    icon = '⚡'; title = 'Great recovery — push today';
-    desc = `Sleep score ${lastSleep.score}/100. Your body is well recovered — great day for an energising session.`;
+    icon = '⚡'; title = `Score ${lastSleep.score}/100 — push today`;
+    desc = 'Great recovery. Ideal day for an energising session.';
     technique = 'Wim Hof Method'; techniqueHref = '/breathing/wim-hof';
   } else {
-    icon = '🌊'; title = 'Daily baseline maintenance';
-    desc = 'Consistent daily breathing practice keeps your HRV stable and stress resilience high.';
+    icon = '🌊'; title = 'Baseline looks good';
+    desc = 'Consistent practice keeps HRV stable.';
     technique = 'Box Breathing'; techniqueHref = '/breathing/box-breathing';
   }
 
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
   return (
-    <div className="flex flex-col gap-3 p-5 rounded-2xl border"
-      style={{ backgroundColor: ts.cardBg, borderColor: ts.borderHover, boxShadow: ts.btnShadow }}>
-      <div className="flex items-center gap-2">
-        <Zap size={12} style={{ color: ts.accent }} />
-        <p className="t-label" style={{ color: ts.textMuted }}>AI Coach · Health Insight</p>
-      </div>
-      <div className="flex items-start gap-3">
-        <span className="text-2xl flex-shrink-0">{icon}</span>
-        <div className="flex flex-col gap-1.5">
-          <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{title}</p>
+    <div ref={ref} className="relative w-fit">
+      {/* Compact chip */}
+      <button
+        onClick={() => setOpen(v => !v)}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full t-label transition-all hover:scale-105"
+        style={{
+          backgroundColor: `${ts.accent}12`,
+          border: `1px solid ${ts.accent}30`,
+          color: ts.accent,
+        }}
+      >
+        <Zap size={10} />
+        <span>{icon} {title}</span>
+      </button>
+
+      {/* Popover */}
+      {open && (
+        <div
+          className="absolute top-full mt-2 left-0 z-50 w-64 rounded-2xl p-4 flex flex-col gap-3"
+          style={{
+            backgroundColor: ts.cardBg,
+            border: `1px solid ${ts.borderHover}`,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+          }}
+        >
           <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{desc}</p>
-          <Link to={techniqueHref}
-            className="flex items-center gap-1.5 t-caption font-medium px-4 py-2 rounded-xl w-fit mt-1 transition-all hover:scale-105"
-            style={{ background: ts.btnGradient }}>
-            ✦ Try {technique} <ChevronRight size={11} />
+          <Link
+            to={techniqueHref}
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-1.5 t-caption font-medium px-4 py-2 rounded-xl w-fit transition-all hover:scale-105"
+            style={{ background: ts.btnGradient, color: '#fff' }}
+          >
+            Try {technique} <ChevronRight size={11} />
           </Link>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -908,80 +848,155 @@ export default function ProfilePage() {
           {tab === 'challenges' && <ChallengesSection />}
 
           {/* ── Health Devices tab ────────────────────────────────────────────── */}
-          {tab === 'devices' && (
-            <div className="flex flex-col gap-6">
-              <div className="flex items-start justify-between gap-4">
-                <p className="t-caption" style={{ color: ts.textMuted }}>
-                  Connect your wearable to get AI coaching based on your real sleep and HRV data.
-                </p>
-                <Link to="/data-consent"
-                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl t-caption"
-                  style={{ color: ts.accent, border: `1px solid ${ts.border}` }}>
-                  Why we need data →
-                </Link>
-              </div>
+          {tab === 'devices' && (() => {
+            const fitbit     = getStatus('fitbit') as IntegrationStatus | undefined;
+            const googleFit  = getStatus('google_fit') as IntegrationStatus | undefined;
 
-              {integrations.length > 0 && <HealthInsight integrations={integrations} />}
+            // Aggregate health data across all connected sources
+            const allSleep = integrations.flatMap(i => i.data?.sleep ?? []);
+            const allHRV   = integrations.flatMap(i => (i.data?.hrv ?? []).filter(d => d.rmssd));
+            const allHR    = integrations.flatMap(i => i.data?.heartRate ?? []);
+            const hasData  = allSleep.length > 0 || allHRV.length > 0;
 
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between">
-                  <p className="t-label" style={{ color: ts.textMuted }}>
-                    <Watch size={11} className="inline mr-1.5" /> Connected services
-                  </p>
-                  {integrations.length > 0 && (
-                    <button onClick={sync} disabled={syncing}
-                      className="flex items-center gap-1.5 t-caption disabled:opacity-40"
-                      style={{ color: ts.accent }}>
-                      <RefreshCw size={10} className={syncing ? 'animate-spin' : ''} />
-                      Sync all
-                    </button>
+            const avgSleep7 = (() => {
+              const s = allSleep.slice(-7);
+              return s.length ? Math.round(s.reduce((a, d) => a + d.duration, 0) / s.length) : null;
+            })();
+            const avgHRV7 = (() => {
+              const h = allHRV.slice(-7);
+              return h.length ? Math.round(h.reduce((a, d) => a + (d.rmssd ?? 0), 0) / h.length) : null;
+            })();
+            const restingHR = allHR.length ? (allHR[allHR.length - 1]?.restingRate ?? null) : null;
+
+            return (
+              <div className="flex flex-col gap-5">
+
+                {/* ── Health summary (only when data exists) ── */}
+                {hasData && (
+                  <div className="rounded-2xl p-4"
+                    style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>Health overview · last 7 days</p>
+                      {integrations.length > 0 && <HealthInsight integrations={integrations} />}
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <Moon size={10} style={{ color: '#7AC4FF' }} />
+                          <p className="t-label" style={{ color: ts.textMuted }}>Sleep</p>
+                        </div>
+                        <p className="t-subheading font-semibold tabular-nums" style={{ color: avgSleep7 ? ts.textPrimary : ts.textDim }}>
+                          {avgSleep7 ? fmtDur(avgSleep7) : '—'}
+                        </p>
+                        <p className="t-label" style={{ color: avgSleep7 && avgSleep7 >= 420 ? ts.accent : avgSleep7 && avgSleep7 >= 300 ? '#FFD97D' : ts.textDim }}>
+                          {avgSleep7 ? (avgSleep7 >= 420 ? 'good' : avgSleep7 >= 300 ? 'fair' : 'poor') : 'no data'}
+                        </p>
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <Activity size={10} style={{ color: ts.accent }} />
+                          <p className="t-label" style={{ color: ts.textMuted }}>HRV</p>
+                        </div>
+                        <p className="t-subheading font-semibold tabular-nums" style={{ color: avgHRV7 ? ts.textPrimary : ts.textDim }}>
+                          {avgHRV7 ? `${avgHRV7} ms` : '—'}
+                        </p>
+                        <p className="t-label" style={{ color: ts.textDim }}>
+                          {avgHRV7 ? (avgHRV7 >= 60 ? 'great' : avgHRV7 >= 40 ? 'good' : 'low') : 'no data'}
+                        </p>
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <Heart size={10} style={{ color: '#FF8A8A' }} />
+                          <p className="t-label" style={{ color: ts.textMuted }}>Resting HR</p>
+                        </div>
+                        <p className="t-subheading font-semibold tabular-nums" style={{ color: restingHR ? ts.textPrimary : ts.textDim }}>
+                          {restingHR ? `${restingHR} bpm` : '—'}
+                        </p>
+                        <p className="t-label" style={{ color: ts.textDim }}>
+                          {restingHR ? (restingHR < 60 ? 'excellent' : restingHR < 70 ? 'good' : 'average') : 'no data'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Sources ── */}
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between px-1">
+                    <p className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>Sources</p>
+                    <div className="flex items-center gap-3">
+                      {integrations.some(i => i.connected) && (
+                        <button onClick={sync} disabled={syncing}
+                          className="flex items-center gap-1 t-label disabled:opacity-40 hover:underline"
+                          style={{ color: ts.accent }}>
+                          <RefreshCw size={9} className={syncing ? 'animate-spin' : ''} /> Sync all
+                        </button>
+                      )}
+                      <Link to="/data-consent" className="t-label hover:underline" style={{ color: ts.textDim }}>Privacy</Link>
+                    </div>
+                  </div>
+
+                  {loadingInt ? (
+                    <div className="flex flex-col gap-2">
+                      {[0, 1, 2, 3].map(i => <div key={i} className="h-16 rounded-2xl animate-pulse" style={{ backgroundColor: ts.cardBg }} />)}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      {/* Fitbit */}
+                      <SourceRow
+                        icon={<Heart size={16} color="#4ADE80" />} label="Fitbit" color="#4AE8A0"
+                        connected={!!fitbit?.connected}
+                        sublabel={fitbit?.connected ? `Synced ${fitbit.lastSyncAt ? timeAgo(fitbit.lastSyncAt) : 'never'} · sleep · HRV · HR` : 'Wearable — sleep stages, HRV, heart rate'}
+                        onAction={fitbit?.connected ? () => disconnect('fitbit') : () => connect('fitbit')}
+                        actionLabel={fitbit?.connected ? 'Disconnect' : 'Connect'}
+                      >
+                        {fitbit?.connected && (() => {
+                          const s = fitbit.data?.sleep?.slice(-7) ?? [];
+                          const h = (fitbit.data?.hrv?.slice(-7) ?? []).filter(d => d.rmssd);
+                          const avg = s.length ? Math.round(s.reduce((a, d) => a + d.duration, 0) / s.length) : null;
+                          const hrvAvg = h.length ? Math.round(h.reduce((a, d) => a + (d.rmssd ?? 0), 0) / h.length) : null;
+                          return avg || hrvAvg ? (
+                            <div className="flex gap-2 flex-wrap">
+                              {avg    && <StatPill icon={<Moon size={11} />}     label="Avg sleep" value={fmtDur(avg)}    color="#7AC4FF" />}
+                              {hrvAvg && <StatPill icon={<Activity size={11} />} label="Avg HRV"   value={`${hrvAvg} ms`} color="#4A9EFF" />}
+                            </div>
+                          ) : null;
+                        })()}
+                      </SourceRow>
+
+                      {/* Google Fit */}
+                      <SourceRow
+                        icon={<Activity size={16} color="#4A9EFF" />} label="Google Fit" color="#4A9EFF"
+                        connected={!!googleFit?.connected}
+                        sublabel={googleFit?.connected ? `Synced ${googleFit.lastSyncAt ? timeAgo(googleFit.lastSyncAt) : 'never'} · sleep · HR` : 'Android / Wear OS — sleep duration, heart rate'}
+                        onAction={googleFit?.connected ? () => disconnect('google_fit') : () => connect('google-fit')}
+                        actionLabel={googleFit?.connected ? 'Disconnect' : 'Connect'}
+                      >
+                        {googleFit?.connected && (() => {
+                          const s = googleFit.data?.sleep?.slice(-7) ?? [];
+                          const avg = s.length ? Math.round(s.reduce((a, d) => a + d.duration, 0) / s.length) : null;
+                          return avg ? (
+                            <div className="flex gap-2">
+                              <StatPill icon={<Moon size={11} />} label="Avg sleep" value={fmtDur(avg)} color="#7AC4FF" />
+                            </div>
+                          ) : null;
+                        })()}
+                      </SourceRow>
+
+                      {/* Apple Health */}
+                      <AppleHealthImport onImported={() => fetchStatus()} />
+
+                      {/* BLE Heart Rate — only shown on Chrome/Edge with Web Bluetooth */}
+                      {'bluetooth' in navigator && (
+                        <HeartRateMonitor variant="full" />
+                      )}
+                    </div>
                   )}
                 </div>
 
-                {loadingInt ? (
-                  <div className="flex flex-col gap-3">
-                    {[0, 1].map(i => <div key={i} className="h-24 rounded-2xl animate-pulse" style={{ backgroundColor: ts.cardBg }} />)}
-                  </div>
-                ) : (
-                  <>
-                    <IntegrationCard
-                      provider="fitbit"
-                      status={getStatus('fitbit') as IntegrationStatus | undefined}
-                      onConnect={() => connect('fitbit')}
-                      onDisconnect={() => disconnect('fitbit')}
-                      onSync={sync} syncing={syncing}
-                    />
-                    <IntegrationCard
-                      provider="google_fit"
-                      status={getStatus('google_fit') as IntegrationStatus | undefined}
-                      onConnect={() => connect('google-fit')}
-                      onDisconnect={() => disconnect('google_fit')}
-                      onSync={sync} syncing={syncing}
-                    />
-                    <HeartRateMonitor variant="full" />
-                    <AppleHealthImport onImported={() => fetchStatus()} />
-                  </>
-                )}
               </div>
-
-              {/* How it works */}
-              <div className="flex flex-col gap-3 p-5 rounded-2xl"
-                style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
-                <p className="t-label" style={{ color: ts.textMuted }}>How it works</p>
-                {[
-                  { icon: '🔗', text: 'Connect your Fitbit or Google Fit account with one click' },
-                  { icon: '📊', text: 'We read your sleep stages, HRV, and resting heart rate' },
-                  { icon: '🤖', text: 'AI coach analyzes your recovery and recommends the right technique' },
-                  { icon: '🌊', text: 'Tap "Try X" to start a session perfectly calibrated to your body today' },
-                ].map(({ icon, text }) => (
-                  <div key={text} className="flex items-center gap-3">
-                    <span className="t-body flex-shrink-0">{icon}</span>
-                    <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{text}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+            );
+          })()}
 
         </main>
         <Footer />

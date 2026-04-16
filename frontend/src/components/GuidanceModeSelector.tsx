@@ -1,36 +1,37 @@
 import React from 'react';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useTranslation } from 'react-i18next';
+import { Eye, Bell, Vibrate, Mic } from 'lucide-react';
 // Legacy multi-mode selector — kept for reference, not currently rendered
 type LegacyGuidanceMode = 'visual' | 'sound' | 'vibration' | 'voice';
 
 const MODES: {
   key: LegacyGuidanceMode;
-  icon: string;
+  icon: React.ReactNode;
   labelKey: string;
   supported: () => boolean;
 }[] = [
   {
     key: 'visual',
-    icon: '👁',
+    icon: <Eye size={18} color="#7AC4FF" />,
     labelKey: 'breathing.guidance.visual',
     supported: () => true,
   },
   {
     key: 'sound',
-    icon: '🔔',
+    icon: <Bell size={18} color="#A78BFA" />,
     labelKey: 'breathing.guidance.sound',
     supported: () => 'AudioContext' in window || 'webkitAudioContext' in (window as any),
   },
   {
     key: 'vibration',
-    icon: '📳',
+    icon: <Vibrate size={18} color="#4AE8A0" />,
     labelKey: 'breathing.guidance.vibration',
     supported: () => 'vibrate' in navigator,
   },
   {
     key: 'voice',
-    icon: '🎙',
+    icon: <Mic size={18} color="#FB923C" />,
     labelKey: 'breathing.guidance.voice',
     supported: () => 'speechSynthesis' in window,
   },

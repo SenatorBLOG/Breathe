@@ -4,20 +4,16 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useBreathingGuidance } from '../hooks/useBreathingGuidance';
-import GuidancePicker, { type GuidanceMode, type VoiceGender } from '../components/GuidancePicker';
+import { type GuidanceMode, type VoiceGender } from '../components/GuidancePicker';
 import AmbientSoundPlayer from '../components/AmbientSoundPlayer';
-import { useHealthData } from '../hooks/useHealthData';
-import { calcCalmScore, type SessionBiometrics } from '../utils/calmScore';
-import CalmScoreResult from '../components/CalmScoreResult';
 import { scheduleStreakReminder, requestPushPermission, getPushPermission } from '../utils/pushNotifications';
-import HeartRateMonitor from '../components/HeartRateMonitor';
 import { BreathingCircle, Phase } from '../components/BreathingCircle';
 import { VideoBackground } from '../components/VideoBackground';
 import api from '../api';
 import { toast } from 'sonner';
 import Footer from '../components/Footer';
 import { SessionFeedbackModal } from '../components/SessionFeedbackModal';
-import { Flame, Wind, Timer, Zap } from 'lucide-react';
+import { Wind, Timer, Zap, Waves, Moon, VolumeX, Vibrate, Mic, User } from 'lucide-react';
 import ThemeBackground from '../components/ThemeBackground';
 import PageSEO from '../components/PageSEO';
 
@@ -159,6 +155,61 @@ function PresetPill({ name, pattern, onApply, current }: {
   );
 }
 
+// ─── Guidance meta ────────────────────────────────────────────────────────────
+const GUIDANCE_META: Record<GuidanceMode, { icon: React.ReactNode; label: string; color: string; glow: string }> = {
+  silent:    { icon: <VolumeX size={18} />,  label: 'Silent',  color: '#4A9EFF', glow: 'rgba(74,158,255,0.3)'   },
+  vibration: { icon: <Vibrate size={18} />,  label: 'Vibrate', color: '#4AE8A0', glow: 'rgba(74,232,160,0.3)'  },
+  voice:     { icon: <Mic size={18} />,      label: 'Voice',   color: '#7AC4FF', glow: 'rgba(122,196,255,0.3)' },
+};
+
+// ─── Mini stat bar (visual, non-interactive, matches phase-bar language) ──────
+const MINI_BAR_H = 56;
+
+function StatMiniBar({ color, glow, value, max, unit, label }: {
+  color: string; glow: string; value: number; max: number; unit: string; label: string;
+}) {
+  const fillPct = Math.min(Math.max(value / max, value > 0 ? 0.07 : 0), 1);
+  const fillH   = value > 0 ? Math.round(fillPct * (MINI_BAR_H - 12)) + 12 : 0;
+  return (
+    <div className="flex flex-col items-center gap-1.5 flex-1 select-none">
+      <span
+        className="t-caption font-bold tabular-nums leading-none"
+        style={{ color: value > 0 ? color : 'rgba(74,96,128,0.4)' }}
+      >
+        {value > 0 ? `${value}${unit}` : `0${unit}`}
+      </span>
+      <div
+        className="relative w-full rounded-xl overflow-hidden"
+        style={{ height: MINI_BAR_H, background: 'rgba(6,12,26,0.7)', border: `1px solid ${color}18` }}
+      >
+        {value > 0 && (
+          <>
+            <div
+              className="absolute bottom-0 left-0 right-0 rounded-xl"
+              style={{
+                height: fillH,
+                background: `linear-gradient(to top, ${color}, ${color}50)`,
+                boxShadow: `0 -3px 18px ${glow}`,
+                transition: 'height 0.9s cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
+            />
+            <div
+              className="absolute left-1/2 -translate-x-1/2 rounded-full"
+              style={{ width: 22, height: 2, bottom: fillH - 3, background: 'rgba(255,255,255,0.22)' }}
+            />
+          </>
+        )}
+      </div>
+      <span
+        className="t-label uppercase tracking-[0.09em] text-center whitespace-nowrap"
+        style={{ color: 'rgba(74,96,128,0.6)' }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
 export default function BreathingPage() {
   const { t, i18n } = useTranslation();
   const ts = useThemeStyles();
@@ -184,12 +235,6 @@ export default function BreathingPage() {
     const state = location.state as { coachPresetName?: string } | null;
     return state?.coachPresetName ?? null;
   });
-  const { data: health } = useHealthData();
-  const [hrBefore, setHrBefore] = useState<number[]>([]);
-  const [hrDuring, setHrDuring] = useState<number[]>([]);
-  const [calmResult, setCalmResult] = useState<any>(null);
-  const hrBeforeRef = useRef<number[]>([]);
-  const hrDuringRef = useRef<number[]>([]);
   const [cycles, setCycles] = useState(0);
   const [currentDuration, setCurrentDuration] = useState(0);
   const [totalStats, setTotalStats] = useState({ totalSessions: 0, totalMinutes: 0, streak: 0 });
@@ -411,60 +456,106 @@ export default function BreathingPage() {
           )}
         </button>
 
-        {/* ── Sound controls panel (no overflow:hidden — preserves popover) ──── */}
+        {/* ── Controls + Stats panel (redesigned) ──────────────────────────── */}
         <div
-          className="w-full max-w-sm rounded-2xl"
+          className="w-full max-w-sm rounded-3xl"
           style={{
-            background: 'rgba(6,12,26,0.78)',
-            border: `1px solid ${ts.border}`,
-            backdropFilter: 'blur(16px)',
+            background: 'rgba(4,8,18,0.84)',
+            border: '1px solid rgba(30,51,88,0.65)',
+            backdropFilter: 'blur(24px)',
+            boxShadow: '0 8px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04)',
           }}
         >
-          {/* Guidance row */}
-          <div
-            className="flex items-center justify-between px-4 py-3"
-            style={{ borderBottom: `1px solid ${ts.border}` }}
-          >
-            <span className="t-label uppercase tracking-[0.18em]" style={{ color: ts.textDim }}>Voice</span>
-            <GuidancePicker mode={guidanceMode} voiceGender={voiceGender} onChange={handleGuidanceChange} />
-          </div>
-
-          {/* Ambient sound row */}
-          <div className="px-3 py-2.5">
-            <AmbientSoundPlayer />
-          </div>
-        </div>
-
-        {/* ── Stats strip ────────────────────────────────────────────────────── */}
-        <div
-          className="w-full max-w-sm rounded-2xl flex items-stretch"
-          style={{
-            background: 'rgba(6,12,26,0.78)',
-            border: `1px solid ${ts.border}`,
-            backdropFilter: 'blur(16px)',
-          }}
-        >
-          <div
-            className="flex-1 flex items-center justify-center px-2 py-3.5"
-            style={{ borderRight: `1px solid ${ts.border}` }}
-          >
-            <HeartRateMonitor variant="compact" />
-          </div>
-          {([
-            { icon: <Flame size={11} />, label: t('breathing.streak'),   value: `${totalStats.streak}d`         },
-            { icon: <Zap   size={11} />, label: t('breathing.allTime'),  value: `${totalStats.totalMinutes}m`    },
-            { icon: <Wind  size={11} />, label: t('breathing.sessions'), value: String(totalStats.totalSessions) },
-          ] as const).map(({ icon, label, value }, i) => (
-            <div
-              key={label}
-              className="flex-1 flex flex-col items-center justify-center gap-1 py-3.5"
-              style={{ borderRight: i < 2 ? `1px solid ${ts.border}` : 'none' }}
-            >
-              <span style={{ color: ts.accent }}>{icon}</span>
-              <span className="t-body font-semibold tabular-nums leading-tight" style={{ color: ts.textSecondary }}>{value}</span>
-              <span className="t-label uppercase tracking-wider leading-tight" style={{ color: ts.textMuted }}>{label}</span>
+          {/* ── Guidance mode ───────────────────────────────────────────────── */}
+          <div className="px-4 pt-4 pb-3">
+            <p className="t-label uppercase tracking-[0.22em] mb-2.5" style={{ color: 'rgba(74,96,128,0.5)' }}>
+              Guidance
+            </p>
+            <div className="flex gap-2">
+              {(['silent', 'vibration', 'voice'] as GuidanceMode[]).map(m => {
+                const gm = GUIDANCE_META[m];
+                const active = guidanceMode === m;
+                const disabled = (m === 'vibration' && !('vibrate' in navigator)) ||
+                                 (m === 'voice' && !('speechSynthesis' in window));
+                return (
+                  <button
+                    key={m}
+                    onClick={() => !disabled && handleGuidanceChange(m, voiceGender)}
+                    disabled={disabled}
+                    className="flex-1 flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition-all duration-200 disabled:opacity-25"
+                    style={{
+                      background: active ? `${gm.color}12` : 'rgba(255,255,255,0.025)',
+                      borderColor: active ? `${gm.color}45` : 'rgba(30,51,88,0.5)',
+                      boxShadow: active ? `0 0 20px ${gm.glow}, inset 0 1px 0 rgba(255,255,255,0.05)` : 'none',
+                    }}
+                  >
+                    {gm.icon}
+                    <span className="t-label font-semibold uppercase tracking-[0.07em]"
+                      style={{ color: active ? gm.color : 'rgba(74,96,128,0.5)' }}>
+                      {gm.label}
+                    </span>
+                    {active && (
+                      <div className="w-1 h-1 rounded-full"
+                        style={{ background: gm.color, boxShadow: `0 0 5px ${gm.color}` }} />
+                    )}
+                  </button>
+                );
+              })}
             </div>
-          ))}
+            {/* Voice gender sub-selector */}
+            {guidanceMode === 'voice' && 'speechSynthesis' in window && (
+              <div className="flex gap-2 mt-2">
+                {(['female', 'male'] as VoiceGender[]).map(g => (
+                  <button
+                    key={g}
+                    onClick={() => handleGuidanceChange('voice', g)}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl border t-label transition-all"
+                    style={{
+                      background: voiceGender === g ? 'rgba(122,196,255,0.1)' : 'rgba(255,255,255,0.02)',
+                      borderColor: voiceGender === g ? 'rgba(122,196,255,0.35)' : 'rgba(30,51,88,0.4)',
+                      color: voiceGender === g ? '#7AC4FF' : 'rgba(74,96,128,0.5)',
+                    }}
+                  >
+                    <User size={16} />
+                    <span>{g === 'female' ? 'Female' : 'Male'}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(30,51,88,0.9), transparent)' }} />
+
+          {/* ── Ambient sound ───────────────────────────────────────────────── */}
+          <div className="px-4 py-3">
+            <p className="t-label uppercase tracking-[0.22em] mb-2.5" style={{ color: 'rgba(74,96,128,0.5)' }}>
+              Ambient
+            </p>
+            <AmbientSoundPlayer inline />
+          </div>
+
+          <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(30,51,88,0.9), transparent)' }} />
+
+          {/* ── Stats mini-bars ─────────────────────────────────────────────── */}
+          <div className="px-3 pb-4 pt-3">
+            <div className="flex items-end gap-2.5">
+              <StatMiniBar
+                color="#FF8C42" glow="rgba(255,140,66,0.4)"
+                value={totalStats.streak} max={30} unit="d"
+                label={t('breathing.streak')}
+              />
+              <StatMiniBar
+                color="#7AC4FF" glow="rgba(122,196,255,0.4)"
+                value={totalStats.totalMinutes} max={600} unit="m"
+                label={t('breathing.allTime')}
+              />
+              <StatMiniBar
+                color="#3A82F7" glow="rgba(58,130,247,0.4)"
+                value={totalStats.totalSessions} max={100} unit=""
+                label={t('breathing.sessions')}
+              />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -500,24 +591,24 @@ export default function BreathingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
             {([
               {
-                icon: '🌊', title: 'Box Breathing', tag: 'Focus & Calm',
+                icon: <Waves size={22} color="#38BDF8" />, title: 'Box Breathing', tag: 'Focus & Calm',
                 pattern: { inhale: 4, hold: 4, exhale: 4, pause: 4 },
                 desc: 'Equal phases retrain your nervous system for stress resilience. Trusted by Navy SEALs and elite athletes.',
                 href: '/breathing/box-breathing',
               },
               {
-                icon: '🌙', title: '4-7-8 for Sleep', tag: 'Deep Sleep',
+                icon: <Moon size={22} color="#818CF8" />, title: '4-7-8 for Sleep', tag: 'Deep Sleep',
                 pattern: { inhale: 4, hold: 7, exhale: 8, pause: 1 },
                 desc: 'Long hold + slow exhale activates your parasympathetic system. One of the most effective natural sleep aids.',
                 href: '/breathing/4-7-8',
               },
               {
-                icon: '⚡', title: 'Energizing', tag: 'Boost Energy',
+                icon: <Zap size={22} color="#FACC15" />, title: 'Energizing', tag: 'Boost Energy',
                 pattern: { inhale: 6, hold: 0, exhale: 2, pause: 1 },
                 desc: 'Short sharp cycles flood your body with oxygen and sharpen alertness in under two minutes.',
                 href: '/breathing/wim-hof',
               },
-            ] as const).map(({ icon, title, tag, pattern, desc, href }) => {
+            ]).map(({ icon, title, tag, pattern, desc, href }) => {
               const nums = [pattern.inhale, pattern.hold, pattern.exhale, pattern.pause];
               const labels = ['Inhale', 'Hold', 'Exhale', 'Pause'];
               return (
