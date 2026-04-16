@@ -1,13 +1,14 @@
 // src/contexts/ThemeContext.tsx
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { Moon, Sun, Leaf } from 'lucide-react';
 import api from '../api';
 
 export type Theme = 'night' | 'day' | 'nature';
 
-export const THEME_META: Record<Theme, { icon: string; label: string }> = {
-  night:  { icon: '🌙', label: 'Ocean' },
-  day:    { icon: '☀️', label: 'Celestial' },
-  nature: { icon: '🌿', label: 'Nature' },
+export const THEME_META: Record<Theme, { icon: React.ReactNode; label: string }> = {
+  night:  { icon: <Moon size={16} color="#818CF8" />, label: 'Ocean' },
+  day:    { icon: <Sun size={16} color="#FACC15" />, label: 'Celestial' },
+  nature: { icon: <Leaf size={16} color="#4ADE80" />, label: 'Nature' },
 };
 
 const CYCLE: Theme[] = ['night', 'day', 'nature'];

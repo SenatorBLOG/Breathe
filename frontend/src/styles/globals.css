@@ -101,27 +101,28 @@
 /* ── Unified Typography Scale ─────────────────────────────────────────────── */
 /* Use these semantic classes instead of scattered text-xs / text-[10px] etc. */
 .t-label {
-  font-size: 10px;
-  letter-spacing: 0.25em;
+  font-size: 11px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
+  font-weight: 500;
 }
 .t-caption {
-  font-size: 11px;
-  line-height: 1.5;
+  font-size: 12px;
+  line-height: 1.55;
 }
 .t-body {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
 }
 .t-subheading {
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.45;
   font-weight: 500;
 }
 .t-heading {
-  font-size: 18px;
-  line-height: 1.35;
-  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.3;
+  font-weight: 600;
 }
 .t-display {
   font-size: clamp(2rem, 8vw, 6rem);

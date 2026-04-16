@@ -1,6 +1,6 @@
 // src/components/SessionFeedbackModal.tsx
 import React, { useState } from "react";
-import { X, Sparkles, Brain } from "lucide-react";
+import { X, Sparkles, Brain, Target, Waves, Zap, Moon, Wind, Heart, AlertCircle, Leaf, VolumeX, Volume1, Volume2 } from "lucide-react";
 import { useThemeStyles } from "../hooks/useThemeStyles";
 
 interface FeedbackData {
@@ -86,10 +86,10 @@ function BeforeAfterSlider({ before, after, onBefore, onAfter }: {
 
 // ─── TagGrid ──────────────────────────────────────────────────────────────────
 const TAGS = [
-  { key: "focused", icon: "🎯", label: "Focused" }, { key: "calm", icon: "🌊", label: "Calm" },
-  { key: "energized", icon: "⚡", label: "Energized" }, { key: "drowsy", icon: "💤", label: "Drowsy" },
-  { key: "distracted", icon: "🌀", label: "Distracted" }, { key: "peaceful", icon: "☮️", label: "Peaceful" },
-  { key: "anxious", icon: "😰", label: "Anxious" }, { key: "refreshed", icon: "🌿", label: "Refreshed" },
+  { key: "focused", icon: <Target size={16} color="#4AE8A0" />, label: "Focused" }, { key: "calm", icon: <Waves size={16} color="#38BDF8" />, label: "Calm" },
+  { key: "energized", icon: <Zap size={16} color="#FACC15" />, label: "Energized" }, { key: "drowsy", icon: <Moon size={16} color="#818CF8" />, label: "Drowsy" },
+  { key: "distracted", icon: <Wind size={16} color="#A78BFA" />, label: "Distracted" }, { key: "peaceful", icon: <Heart size={16} color="#34D399" />, label: "Peaceful" },
+  { key: "anxious", icon: <AlertCircle size={16} color="#F97316" />, label: "Anxious" }, { key: "refreshed", icon: <Leaf size={16} color="#4ADE80" />, label: "Refreshed" },
 ];
 function TagGrid({ selected, onToggle }: { selected: string[]; onToggle: (t: string) => void }) {
   const ts = useThemeStyles();
@@ -112,8 +112,8 @@ function TagGrid({ selected, onToggle }: { selected: string[]; onToggle: (t: str
 
 // ─── NoisePicker ──────────────────────────────────────────────────────────────
 const NOISE_OPTS = [
-  { value: "Silent", icon: "🔇" }, { value: "Quiet", icon: "🔉" },
-  { value: "Moderate", icon: "🔊" }, { value: "Noisy", icon: "📢" },
+  { value: "Silent", icon: <VolumeX size={16} color="#94A3B8" /> }, { value: "Quiet", icon: <Volume1 size={16} color="#7AC4FF" /> },
+  { value: "Moderate", icon: <Volume2 size={16} color="#4A9EFF" /> }, { value: "Noisy", icon: <Volume2 size={16} color="#F97316" /> },
 ];
 function NoisePicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const ts = useThemeStyles();

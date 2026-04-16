@@ -746,9 +746,11 @@ export function useGlobe({
     }
 
     function onMouseDown(e: MouseEvent) {
+      e.preventDefault();
       isDraggingRef.current = true;
       lastMouseRef.current  = { x: e.clientX, y: e.clientY };
       velocityRef.current   = { x: 0, y: 0 };
+      cv.style.cursor = 'grabbing';
       // Track drag globally so fast mouse moves outside canvas still rotate
       window.addEventListener('mousemove', onWindowMouseMove);
       window.addEventListener('mouseup',   onWindowMouseUp);
@@ -769,6 +771,7 @@ export function useGlobe({
       if (!isDraggingRef.current) return;
       isDraggingRef.current = false;
       lastInteractionRef.current = Date.now();
+      cv.style.cursor = 'grab';
       window.removeEventListener('mousemove', onWindowMouseMove);
       window.removeEventListener('mouseup',   onWindowMouseUp);
       const dx = e.clientX - lastMouseRef.current.x;

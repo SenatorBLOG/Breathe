@@ -5,7 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
-import { Heart, Shield, TrendingUp, Zap, Lock, Eye, ChevronRight, Check } from 'lucide-react';
+import { Heart, Shield, TrendingUp, Zap, Lock, Eye, ChevronRight, Check, Watch, Globe, Bot } from 'lucide-react';
 
 // ─── Feature card ─────────────────────────────────────────────────────────────
 function FeatureCard({ icon, title, desc, example }: {
@@ -185,10 +185,10 @@ export default function DataConsentPage() {
             </p>
             <div className="relative flex flex-col gap-0">
               {[
-                { icon: '⌚', label: 'Your watch/device', desc: 'Heart rate via Bluetooth LE — never leaves your device without permission' },
-                { icon: '🌐', label: 'Your browser', desc: 'Processed locally first — we only send aggregated session summaries' },
-                { icon: '🔒', label: 'Breathe servers', desc: 'Encrypted, stored under your account — never sold, never shared' },
-                { icon: '🤖', label: 'Your AI Coach', desc: 'Uses your patterns to improve recommendations — only accessible to you' },
+                { icon: <Watch size={20} color="#7AC4FF" />, label: 'Your watch/device', desc: 'Heart rate via Bluetooth LE — never leaves your device without permission' },
+                { icon: <Globe size={20} color="#4ADE80" />, label: 'Your browser', desc: 'Processed locally first — we only send aggregated session summaries' },
+                { icon: <Lock size={20} color="#A78BFA" />, label: 'Breathe servers', desc: 'Encrypted, stored under your account — never sold, never shared' },
+                { icon: <Bot size={20} color="#F59E0B" />, label: 'Your AI Coach', desc: 'Uses your patterns to improve recommendations — only accessible to you' },
               ].map(({ icon, label, desc }, i) => (
                 <div key={label} className="flex gap-3">
                   <div className="flex flex-col items-center">

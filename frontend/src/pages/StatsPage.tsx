@@ -5,6 +5,7 @@ import AnnualProgressChart from '../components/charts/AnnualProgressChart';
 import StatsCards from '../components/charts/StatsCards';
 import MoodTrackingGrid from '../components/charts/MoodTrackingGrid';
 import MonthlyActivityChart from '../components/charts/MonthlyActivityChart';
+import HRVCorrelation from '../components/charts/HRVCorrelation';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
@@ -12,7 +13,8 @@ import { Link } from 'react-router-dom';
 import api from '../api';
 import {
   Flame, TrendingUp, Wind, Timer,
-  Brain, Sparkles, ArrowRight, Trophy, Moon, Activity, Heart, Watch
+  Brain, Sparkles, ArrowRight, Trophy, Moon, Activity, Heart, Watch,
+  Waves, Leaf, Calendar, Zap
 } from 'lucide-react';
 import { useHealthData } from '../hooks/useHealthData';
 import { useTranslation } from 'react-i18next';
@@ -99,7 +101,7 @@ function MilestoneBadge({ icon, label, value, glow }: {
 }
 
 // ─── Insight card ─────────────────────────────────────────────────────────────
-function InsightCard({ icon, title, desc }: { icon: string; title: string; desc: string }) {
+function InsightCard({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   const ts = useThemeStyles();
   return (
     <div className="flex items-start gap-3 p-4 rounded-2xl transition-colors"
@@ -122,7 +124,7 @@ export function StatsSection() {
   const ts = useThemeStyles();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [nlp, setNlp] = useState<NLPInsights | null>(null);
-  const { data: health } = useHealthData();
+  const { data: health, loading: healthLoading } = useHealthData();
 
   useEffect(() => {
     api.get('/sessions').then(r => setSessions(r.data)).catch(() => {});
@@ -153,21 +155,21 @@ export function StatsSection() {
   // Dynamic insight based on data
   const insights = [
     sessions.length >= 5 && avgMoodDelta !== null && avgMoodDelta > 0
-      ? { icon: '🌊', title: 'Mood is improving', desc: `Across your last ${sessions.length} sessions your mood lifted by +${avgMoodDelta.toFixed(1)} on average. Keep the rhythm going.` }
-      : { icon: '🌱', title: 'Getting started', desc: 'Complete 5 sessions to unlock your first mood trend insights.' },
+      ? { icon: <Waves size={20} color="#38BDF8" />, title: 'Mood is improving', desc: `Across your last ${sessions.length} sessions your mood lifted by +${avgMoodDelta.toFixed(1)} on average. Keep the rhythm going.` }
+      : { icon: <Leaf size={20} color="#4ADE80" />, title: 'Getting started', desc: 'Complete 5 sessions to unlock your first mood trend insights.' },
     totalMins >= 60
-      ? { icon: '⏱', title: `${Math.floor(totalMins / 60)}h+ of mindfulness`, desc: 'Consistent short sessions beat occasional long ones. You\'re building real habits.' }
-      : { icon: '⏱', title: 'Building the habit', desc: 'Just a few minutes daily is enough to rewire your stress response. Every session counts.' },
+      ? { icon: <Timer size={20} color="#A78BFA" />, title: `${Math.floor(totalMins / 60)}h+ of mindfulness`, desc: 'Consistent short sessions beat occasional long ones. You\'re building real habits.' }
+      : { icon: <Timer size={20} color="#A78BFA" />, title: 'Building the habit', desc: 'Just a few minutes daily is enough to rewire your stress response. Every session counts.' },
     streak >= 3
-      ? { icon: '🔥', title: `${streak}-day streak`, desc: 'Streaks build momentum. Your nervous system is learning to shift faster each day.' }
-      : { icon: '📅', title: 'Daily practice', desc: 'Meditate 3 days in a row to ignite your first streak and unlock deeper pattern insights.' },
+      ? { icon: <Flame size={20} color="#F97316" />, title: `${streak}-day streak`, desc: 'Streaks build momentum. Your nervous system is learning to shift faster each day.' }
+      : { icon: <Calendar size={20} color="#7AC4FF" />, title: 'Daily practice', desc: 'Meditate 3 days in a row to ignite your first streak and unlock deeper pattern insights.' },
     health.recoveryScore !== null
       ? health.recoveryScore >= 75
-        ? { icon: '⚡', title: 'Great recovery today', desc: `Recovery ${health.recoveryScore}/100 — ideal for an energising Wim Hof session.` }
+        ? { icon: <Zap size={20} color="#FACC15" />, title: 'Great recovery today', desc: `Recovery ${health.recoveryScore}/100 — ideal for an energising Wim Hof session.` }
         : health.recoveryScore >= 50
-        ? { icon: '🌊', title: 'Moderate recovery', desc: `Recovery ${health.recoveryScore}/100 — Box or Coherent Breathing recommended today.` }
-        : { icon: '💙', title: 'Rest & restore', desc: `Recovery ${health.recoveryScore}/100 — try 4-7-8 to support your nervous system.` }
-      : { icon: '🧠', title: 'AI coach learning', desc: 'Every session you log trains your personal recommendation engine.' },
+        ? { icon: <Waves size={20} color="#38BDF8" />, title: 'Moderate recovery', desc: `Recovery ${health.recoveryScore}/100 — Box or Coherent Breathing recommended today.` }
+        : { icon: <Heart size={20} color="#60A5FA" />, title: 'Rest & restore', desc: `Recovery ${health.recoveryScore}/100 — try 4-7-8 to support your nervous system.` }
+      : { icon: <Brain size={20} color="#C084FC" />, title: 'AI coach learning', desc: 'Every session you log trains your personal recommendation engine.' },
   ];
 
   return (
@@ -352,6 +354,18 @@ export function StatsSection() {
               <MonthlyActivityChart />
             </ChartCard>
           </div>
+
+          {/* HRV Correlation */}
+          <ChartCard
+            title="HRV & Meditation Correlation"
+            sub="How your breathing practice affects heart rate variability over 30 days"
+          >
+            <HRVCorrelation
+              hrv={health.hrv}
+              sessions={sessions}
+              loadingHealth={healthLoading}
+            />
+          </ChartCard>
 
           {/* Insights strip */}
           <div className="flex flex-col gap-3">
