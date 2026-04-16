@@ -25,3 +25,7 @@ dist-ssr
 BreatheDB_keys.txt
 .env
 api/.env.worktrees/
+
+node_modules/
+build/
+dist/
