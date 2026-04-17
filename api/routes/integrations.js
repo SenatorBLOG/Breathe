@@ -362,11 +362,53 @@ function processGoogleFitData(fitData) {
 }
 
 // ─── POST /api/integrations/apple-health ─────────────────────────────────────
+const VALID_SLEEP_STAGES = ['DEEP', 'LIGHT', 'REM', 'AWAKE'];
+
+function normalizeSleepDay(day) {
+  if (!day || typeof day !== 'object') return day;
+  const out = { ...day };
+  if (day.stages !== undefined) {
+    if (!Array.isArray(day.stages)) {
+      throw new Error('stages must be an array');
+    }
+    for (const seg of day.stages) {
+      if (!seg || typeof seg !== 'object') {
+        throw new Error('stage segment must be an object');
+      }
+      if (typeof seg.startMin !== 'number' || !Number.isFinite(seg.startMin)) {
+        throw new Error('stage segment startMin must be a finite number');
+      }
+      if (typeof seg.endMin !== 'number' || !Number.isFinite(seg.endMin)) {
+        throw new Error('stage segment endMin must be a finite number');
+      }
+      if (!VALID_SLEEP_STAGES.includes(seg.stage)) {
+        throw new Error(`stage segment stage must be one of ${VALID_SLEEP_STAGES.join(', ')}`);
+      }
+    }
+    out.stages = day.stages.map(s => ({
+      startMin: s.startMin,
+      endMin:   s.endMin,
+      stage:    s.stage,
+    }));
+  }
+  if (day.bedtime  !== undefined) out.bedtime  = day.bedtime;
+  if (day.wakeTime !== undefined) out.wakeTime = day.wakeTime;
+  if (day.score    !== undefined) out.score    = day.score;
+  return out;
+}
+
 router.post('/apple-health', auth, async (req, res) => {
   try {
     const { sleep, hrv, heartRate } = req.body;
     if (!sleep?.length && !hrv?.length) {
       return res.status(400).json({ error: 'No health data provided' });
+    }
+
+    let normalizedSleep;
+    try {
+      normalizedSleep = Array.isArray(sleep) ? sleep.map(normalizeSleepDay) : (sleep ?? []);
+    } catch (validationErr) {
+      return res.status(400).json({ error: validationErr.message });
     }
 
     await Integration.findOneAndUpdate(
@@ -376,7 +418,7 @@ router.post('/apple-health', auth, async (req, res) => {
         provider:     'apple_health',
         accessToken:  'file_import', // no OAuth for Apple
         lastSyncAt:   new Date(),
-        'data.sleep':     sleep     ?? [],
+        'data.sleep':     normalizedSleep,
         'data.hrv':       hrv       ?? [],
         'data.heartRate': heartRate ?? [],
       },
