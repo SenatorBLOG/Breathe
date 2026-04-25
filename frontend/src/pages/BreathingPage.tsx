@@ -7,13 +7,13 @@ import { useBreathingGuidance } from '../hooks/useBreathingGuidance';
 import { type GuidanceMode, type VoiceGender } from '../components/GuidancePicker';
 import AmbientSoundPlayer from '../components/AmbientSoundPlayer';
 import { scheduleStreakReminder, requestPushPermission, getPushPermission } from '../utils/pushNotifications';
-import { BreathingCircle, Phase } from '../components/BreathingCircle';
+import { CoachOrb, Phase } from '../components/AICoach/CoachOrb';
 import { VideoBackground } from '../components/VideoBackground';
 import api from '../api';
 import { toast } from 'sonner';
 import Footer from '../components/Footer';
 import { SessionFeedbackModal } from '../components/SessionFeedbackModal';
-import { Wind, Timer, Zap, Waves, Moon, VolumeX, Vibrate, Mic, User } from 'lucide-react';
+import { Wind, Timer, Zap, Waves, Moon, VolumeX, Vibrate, Mic, User, Settings, X, ChevronDown } from 'lucide-react';
 import ThemeBackground from '../components/ThemeBackground';
 import PageSEO from '../components/PageSEO';
 
@@ -139,18 +139,21 @@ function PresetPill({ name, pattern, onApply, current }: {
   const ts = useThemeStyles();
   const active = JSON.stringify(pattern) === JSON.stringify(current);
   return (
-    <button onClick={() => onApply(pattern)}
-      className={`flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl border transition-all duration-200 ${
-        active 
-          ? "bg-[#0D1B33]/90 border-[#2A5499]/70 shadow-[0_0_12px_rgba(74,158,255,0.12)]"
-          : "bg-[#0B1628]/50 border-[#1E3358]/40 hover:border-[#2A5499]/60"
-      }`}
-      style={{ backgroundColor: active ? ts.cardBgHover : ts.cardBg }}
+    <button
+      onClick={() => onApply(pattern)}
+      className="flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl border transition-all duration-200"
+      style={{
+        background: active ? ts.cardBgHover : ts.cardBg,
+        borderColor: active ? ts.borderHover : ts.border,
+        boxShadow: active ? `0 0 12px ${ts.accent}20` : 'none',
+      }}
     >
-      <span className={`t-label font-medium ${active ? "" : ""}`} style={{ color: active ? ts.textSecondary : ts.textMuted }}>
+      <span className="t-label font-medium" style={{ color: active ? ts.textSecondary : ts.textMuted }}>
         {name}
       </span>
-      <span className="text-[#4A7AAA] t-label">{pattern.inhale}-{pattern.hold}-{pattern.exhale}-{pattern.pause}</span>
+      <span className="t-label" style={{ color: ts.textDim }}>
+        {pattern.inhale}-{pattern.hold}-{pattern.exhale}-{pattern.pause}
+      </span>
     </button>
   );
 }
@@ -162,47 +165,73 @@ const GUIDANCE_META: Record<GuidanceMode, { icon: React.ReactNode; label: string
   voice:     { icon: <Mic size={18} />,      label: 'Voice',   color: '#7AC4FF', glow: 'rgba(122,196,255,0.3)' },
 };
 
-// ─── Mini stat bar (visual, non-interactive, matches phase-bar language) ──────
-const MINI_BAR_H = 56;
+// ─── Stat ring (SVG arc progress, theme-aware) ───────────────────────────────
+const RING_SIZE = 72;
+const RING_STROKE = 4.5;
 
-function StatMiniBar({ color, glow, value, max, unit, label }: {
+function StatRing({ value, max, unit, label, color, glow }: {
   color: string; glow: string; value: number; max: number; unit: string; label: string;
 }) {
-  const fillPct = Math.min(Math.max(value / max, value > 0 ? 0.07 : 0), 1);
-  const fillH   = value > 0 ? Math.round(fillPct * (MINI_BAR_H - 12)) + 12 : 0;
+  const r        = (RING_SIZE - RING_STROKE) / 2;
+  const circ     = 2 * Math.PI * r;
+  const pct      = value > 0 ? Math.min(value / max, 1) : 0;
+  const filled   = circ * pct;
+  const hasValue = value > 0;
+
   return (
-    <div className="flex flex-col items-center gap-1.5 flex-1 select-none">
-      <span
-        className="t-caption font-bold tabular-nums leading-none"
-        style={{ color: value > 0 ? color : 'rgba(74,96,128,0.4)' }}
-      >
-        {value > 0 ? `${value}${unit}` : `0${unit}`}
-      </span>
-      <div
-        className="relative w-full rounded-xl overflow-hidden"
-        style={{ height: MINI_BAR_H, background: 'rgba(6,12,26,0.7)', border: `1px solid ${color}18` }}
-      >
-        {value > 0 && (
-          <>
-            <div
-              className="absolute bottom-0 left-0 right-0 rounded-xl"
+    <div className="flex flex-col items-center gap-2 flex-1 select-none">
+      <div className="relative" style={{ width: RING_SIZE, height: RING_SIZE }}>
+        <svg width={RING_SIZE} height={RING_SIZE} style={{ transform: 'rotate(-90deg)', overflow: 'visible' }}>
+          {/* background track */}
+          <circle
+            cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={r}
+            fill="none" stroke={`${color}1A`} strokeWidth={RING_STROKE}
+          />
+          {/* progress arc */}
+          {hasValue && (
+            <circle
+              cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={r}
+              fill="none" stroke={color}
+              strokeWidth={RING_STROKE} strokeLinecap="round"
+              strokeDasharray={`${filled} ${circ - filled}`}
               style={{
-                height: fillH,
-                background: `linear-gradient(to top, ${color}, ${color}50)`,
-                boxShadow: `0 -3px 18px ${glow}`,
-                transition: 'height 0.9s cubic-bezier(0.4, 0, 0.2, 1)',
+                filter: `drop-shadow(0 0 5px ${glow})`,
+                transition: 'stroke-dasharray 1.4s cubic-bezier(0.4,0,0.2,1)',
               }}
             />
-            <div
-              className="absolute left-1/2 -translate-x-1/2 rounded-full"
-              style={{ width: 22, height: 2, bottom: fillH - 3, background: 'rgba(255,255,255,0.22)' }}
-            />
-          </>
-        )}
+          )}
+        </svg>
+        {/* centre value */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center leading-none pointer-events-none">
+          <span
+            className="font-bold tabular-nums"
+            style={{
+              fontSize: value >= 100 ? 13 : 16,
+              color: hasValue ? color : 'rgba(74,96,128,0.28)',
+              textShadow: hasValue ? `0 0 14px ${glow}` : 'none',
+              transition: 'color 0.6s, text-shadow 0.6s',
+            }}
+          >
+            {value}
+          </span>
+          {unit && (
+            <span
+              className="tracking-wider uppercase mt-0.5"
+              style={{
+                fontSize: 8,
+                fontWeight: 600,
+                color: hasValue ? `${color}99` : 'rgba(74,96,128,0.18)',
+                transition: 'color 0.6s',
+              }}
+            >
+              {unit}
+            </span>
+          )}
+        </div>
       </div>
       <span
-        className="t-label uppercase tracking-[0.09em] text-center whitespace-nowrap"
-        style={{ color: 'rgba(74,96,128,0.6)' }}
+        className="t-label uppercase tracking-[0.1em] text-center whitespace-nowrap"
+        style={{ color: 'rgba(74,96,128,0.52)' }}
       >
         {label}
       </span>
@@ -238,6 +267,7 @@ export default function BreathingPage() {
   const [cycles, setCycles] = useState(0);
   const [currentDuration, setCurrentDuration] = useState(0);
   const [totalStats, setTotalStats] = useState({ totalSessions: 0, totalMinutes: 0, streak: 0 });
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [pendingPayload, setPendingPayload] = useState<any | null>(null);
   const savedClientIdsRef = useRef(new Set<string>());
@@ -404,6 +434,8 @@ export default function BreathingPage() {
     <div className="relative flex flex-col min-h-screen font-montserrat">
       <style>{`
         @keyframes fadeInUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+        @keyframes slideUp  { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
         .stat-in { animation: fadeInUp 0.6s ease forwards; }
       `}</style>
 
@@ -432,7 +464,7 @@ export default function BreathingPage() {
         </div>
 
         <div className="flex items-center justify-center" style={{ width: circleSize * 1.28, height: circleSize * 1.28 }}>
-          <BreathingCircle
+          <CoachOrb
             isActive={isActive}
             phaseDurations={phaseDurations}
             onCycleComplete={() => setCycles(c => c + 1)}
@@ -456,117 +488,181 @@ export default function BreathingPage() {
           )}
         </button>
 
-        {/* ── Controls + Stats panel (redesigned) ──────────────────────────── */}
-        <div
-          className="w-full max-w-sm rounded-3xl"
+        {/* ── Settings trigger pill ─────────────────────────────────────── */}
+        <button
+          onClick={() => setSettingsOpen(true)}
+          className="w-full max-w-sm flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-200 active:scale-[0.98] hover:opacity-80"
           style={{
-            background: 'rgba(4,8,18,0.84)',
-            border: '1px solid rgba(30,51,88,0.65)',
-            backdropFilter: 'blur(24px)',
-            boxShadow: '0 8px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04)',
+            background: 'rgba(4,8,18,0.70)',
+            border: `1px solid ${ts.border}`,
+            backdropFilter: 'blur(20px)',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.28)',
           }}
         >
-          {/* ── Guidance mode ───────────────────────────────────────────────── */}
-          <div className="px-4 pt-4 pb-3">
-            <p className="t-label uppercase tracking-[0.22em] mb-2.5" style={{ color: 'rgba(74,96,128,0.5)' }}>
-              Guidance
-            </p>
-            <div className="flex gap-2">
-              {(['silent', 'vibration', 'voice'] as GuidanceMode[]).map(m => {
-                const gm = GUIDANCE_META[m];
-                const active = guidanceMode === m;
-                const disabled = (m === 'vibration' && !('vibrate' in navigator)) ||
-                                 (m === 'voice' && !('speechSynthesis' in window));
-                return (
-                  <button
-                    key={m}
-                    onClick={() => !disabled && handleGuidanceChange(m, voiceGender)}
-                    disabled={disabled}
-                    className="flex-1 flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition-all duration-200 disabled:opacity-25"
-                    style={{
-                      background: active ? `${gm.color}12` : 'rgba(255,255,255,0.025)',
-                      borderColor: active ? `${gm.color}45` : 'rgba(30,51,88,0.5)',
-                      boxShadow: active ? `0 0 20px ${gm.glow}, inset 0 1px 0 rgba(255,255,255,0.05)` : 'none',
-                    }}
-                  >
-                    {gm.icon}
-                    <span className="t-label font-semibold uppercase tracking-[0.07em]"
-                      style={{ color: active ? gm.color : 'rgba(74,96,128,0.5)' }}>
-                      {gm.label}
-                    </span>
-                    {active && (
-                      <div className="w-1 h-1 rounded-full"
-                        style={{ background: gm.color, boxShadow: `0 0 5px ${gm.color}` }} />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-            {/* Voice gender sub-selector */}
-            {guidanceMode === 'voice' && 'speechSynthesis' in window && (
-              <div className="flex gap-2 mt-2">
-                {(['female', 'male'] as VoiceGender[]).map(g => (
-                  <button
-                    key={g}
-                    onClick={() => handleGuidanceChange('voice', g)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl border t-label transition-all"
-                    style={{
-                      background: voiceGender === g ? 'rgba(122,196,255,0.1)' : 'rgba(255,255,255,0.02)',
-                      borderColor: voiceGender === g ? 'rgba(122,196,255,0.35)' : 'rgba(30,51,88,0.4)',
-                      color: voiceGender === g ? '#7AC4FF' : 'rgba(74,96,128,0.5)',
-                    }}
-                  >
-                    <User size={16} />
-                    <span>{g === 'female' ? 'Female' : 'Male'}</span>
-                  </button>
-                ))}
-              </div>
+          <Settings size={14} style={{ color: ts.textMuted, flexShrink: 0 }} />
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <span className="t-label uppercase tracking-[0.18em]" style={{ color: ts.textMuted }}>
+              {GUIDANCE_META[guidanceMode].label}
+            </span>
+            {totalStats.streak > 0 && (
+              <>
+                <span style={{ color: ts.textDim, fontSize: 10 }}>·</span>
+                <span className="t-label font-semibold" style={{ color: ts.accent }}>
+                  {totalStats.streak}d streak
+                </span>
+              </>
             )}
           </div>
-
-          <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(30,51,88,0.9), transparent)' }} />
-
-          {/* ── Ambient sound ───────────────────────────────────────────────── */}
-          <div className="px-4 py-3">
-            <p className="t-label uppercase tracking-[0.22em] mb-2.5" style={{ color: 'rgba(74,96,128,0.5)' }}>
-              Ambient
-            </p>
-            <AmbientSoundPlayer inline />
-          </div>
-
-          <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(30,51,88,0.9), transparent)' }} />
-
-          {/* ── Stats mini-bars ─────────────────────────────────────────────── */}
-          <div className="px-3 pb-4 pt-3">
-            <div className="flex items-end gap-2.5">
-              <StatMiniBar
-                color="#FF8C42" glow="rgba(255,140,66,0.4)"
-                value={totalStats.streak} max={30} unit="d"
-                label={t('breathing.streak')}
-              />
-              <StatMiniBar
-                color="#7AC4FF" glow="rgba(122,196,255,0.4)"
-                value={totalStats.totalMinutes} max={600} unit="m"
-                label={t('breathing.allTime')}
-              />
-              <StatMiniBar
-                color="#3A82F7" glow="rgba(58,130,247,0.4)"
-                value={totalStats.totalSessions} max={100} unit=""
-                label={t('breathing.sessions')}
-              />
-            </div>
-          </div>
-        </div>
+          <ChevronDown size={13} style={{ color: ts.textDim, flexShrink: 0 }} />
+        </button>
       </section>
 
-      <section className="relative z-10 bg-[#040A14]/90 backdrop-blur-sm border-t border-[#1E3358]/30 py-14 px-4 sm:px-6">
+      {/* ── Settings bottom sheet ──────────────────────────────────────────────── */}
+      {settingsOpen && (
+        <>
+          {/* backdrop */}
+          <div
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+            style={{ animation: 'fadeIn 0.18s ease' }}
+            onClick={() => setSettingsOpen(false)}
+          />
+          {/* sheet */}
+          <div
+            className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-4 pb-4 sm:items-center sm:inset-0 sm:pb-0"
+            style={{ pointerEvents: 'none' }}
+          >
+            <div
+              className="w-full max-w-sm rounded-3xl overflow-hidden"
+              style={{
+                pointerEvents: 'auto',
+                background: 'rgba(4,8,18,0.97)',
+                border: `1px solid ${ts.border}`,
+                backdropFilter: 'blur(40px)',
+                boxShadow: `0 -8px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04)`,
+                animation: 'slideUp 0.26s cubic-bezier(0.22,1,0.36,1)',
+              }}
+            >
+              {/* drag handle */}
+              <div className="flex justify-center pt-3 pb-1 sm:hidden">
+                <div className="w-9 h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.09)' }} />
+              </div>
+
+              {/* header */}
+              <div className="flex items-center justify-between px-5 pt-4 pb-3.5">
+                <span className="t-label uppercase tracking-[0.22em] font-semibold" style={{ color: ts.textMuted }}>
+                  Session Settings
+                </span>
+                <button
+                  onClick={() => setSettingsOpen(false)}
+                  className="flex items-center justify-center w-7 h-7 rounded-full transition-opacity hover:opacity-60"
+                  style={{ background: 'rgba(255,255,255,0.06)', color: ts.textMuted }}
+                >
+                  <X size={13} />
+                </button>
+              </div>
+
+              <div className="mx-5 h-px" style={{ background: `linear-gradient(90deg,transparent,${ts.border},transparent)` }} />
+
+              {/* guidance */}
+              <div className="px-5 pt-4 pb-3">
+                <p className="t-label uppercase tracking-[0.22em] mb-3" style={{ color: ts.textDim }}>Guidance</p>
+                <div className="flex gap-2">
+                  {(['silent', 'vibration', 'voice'] as GuidanceMode[]).map(m => {
+                    const gm = GUIDANCE_META[m];
+                    const active = guidanceMode === m;
+                    const disabled = (m === 'vibration' && !('vibrate' in navigator)) ||
+                                     (m === 'voice' && !('speechSynthesis' in window));
+                    return (
+                      <button
+                        key={m}
+                        onClick={() => !disabled && handleGuidanceChange(m, voiceGender)}
+                        disabled={disabled}
+                        className="flex-1 flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition-all duration-200 disabled:opacity-25"
+                        style={{
+                          background: active ? `${gm.color}12` : 'rgba(255,255,255,0.025)',
+                          borderColor: active ? `${gm.color}45` : ts.border,
+                          boxShadow: active ? `0 0 20px ${gm.glow}, inset 0 1px 0 rgba(255,255,255,0.05)` : 'none',
+                        }}
+                      >
+                        <span style={{ color: active ? gm.color : ts.textMuted }}>{gm.icon}</span>
+                        <span className="t-label font-semibold uppercase tracking-[0.07em]"
+                          style={{ color: active ? gm.color : ts.textMuted }}>
+                          {gm.label}
+                        </span>
+                        {active && (
+                          <div className="w-1 h-1 rounded-full"
+                            style={{ background: gm.color, boxShadow: `0 0 5px ${gm.color}` }} />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+                {guidanceMode === 'voice' && 'speechSynthesis' in window && (
+                  <div className="flex gap-2 mt-2">
+                    {(['female', 'male'] as VoiceGender[]).map(g => (
+                      <button
+                        key={g}
+                        onClick={() => handleGuidanceChange('voice', g)}
+                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl border t-label transition-all"
+                        style={{
+                          background: voiceGender === g ? `${ts.accentLight}15` : 'rgba(255,255,255,0.02)',
+                          borderColor: voiceGender === g ? `${ts.accentLight}55` : ts.border,
+                          color: voiceGender === g ? ts.accentLight : ts.textMuted,
+                        }}
+                      >
+                        <User size={16} />
+                        <span>{g === 'female' ? 'Female' : 'Male'}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="mx-5 h-px" style={{ background: `linear-gradient(90deg,transparent,${ts.border},transparent)` }} />
+
+              {/* ambient */}
+              <div className="px-5 py-4">
+                <p className="t-label uppercase tracking-[0.22em] mb-3" style={{ color: ts.textDim }}>Ambient</p>
+                <AmbientSoundPlayer inline />
+              </div>
+
+              <div className="mx-5 h-px" style={{ background: `linear-gradient(90deg,transparent,${ts.border},transparent)` }} />
+
+              {/* stat rings */}
+              <div className="px-5 pb-7 pt-4">
+                <p className="t-label uppercase tracking-[0.22em] mb-5" style={{ color: ts.textDim }}>Your Progress</p>
+                <div className="flex items-start justify-around">
+                  <StatRing
+                    value={totalStats.streak} max={30} unit="days"
+                    label={t('breathing.streak')}
+                    color={ts.accent} glow={`${ts.accent}88`}
+                  />
+                  <StatRing
+                    value={totalStats.totalMinutes} max={600} unit="min"
+                    label={t('breathing.allTime')}
+                    color={ts.accentLight} glow={`${ts.accentLight}88`}
+                  />
+                  <StatRing
+                    value={totalStats.totalSessions} max={100} unit=""
+                    label={t('breathing.sessions')}
+                    color="#A78BFA" glow="rgba(167,139,250,0.6)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      <section className="relative z-10 backdrop-blur-sm border-t py-14 px-4 sm:px-6"
+        style={{ background: `${ts.pageBg}E6`, borderColor: ts.border }}>
         <div className="max-w-2xl mx-auto flex flex-col items-center gap-10">
           <div className="text-center">
-            <p className="t-label tracking-[0.3em] uppercase text-[#4A7AAA] mb-2">Breathing pattern</p>
-            <h2 className="text-[#7AC4FF] t-heading sm:text-2xl font-light tracking-wide mb-1">
+            <p className="t-label tracking-[0.3em] uppercase mb-2" style={{ color: ts.textDim }}>Breathing pattern</p>
+            <h2 className="t-heading sm:text-2xl font-light tracking-wide mb-1" style={{ color: ts.accentLight }}>
               {phaseDurations.inhale}–{phaseDurations.hold}–{phaseDurations.exhale}–{phaseDurations.pause}
             </h2>
-            <p className="text-[#3D6080] t-caption">Drag bars up · down to adjust · 1–10 seconds</p>
+            <p className="t-caption" style={{ color: ts.textDim }}>Drag bars up · down to adjust · 1–10 seconds</p>
           </div>
 
           <div className="w-full flex items-end gap-4 sm:gap-6 px-2" style={{ height: BAR_H + 56 }}>
@@ -580,7 +676,7 @@ export default function BreathingPage() {
           <div className="w-full h-px" style={{ backgroundColor: ts.border }} />
 
           <div className="flex flex-col items-center gap-3 w-full">
-            <p className="t-label tracking-[0.3em] uppercase text-[#4A7AAA]">Quick presets</p>
+            <p className="t-label tracking-[0.3em] uppercase" style={{ color: ts.textDim }}>Quick presets</p>
             <div className="flex flex-wrap justify-center gap-2">
               {presets.map(p => (
                 <PresetPill key={p.name} name={p.name} pattern={p.pattern} onApply={setPhaseDurations} current={phaseDurations} />

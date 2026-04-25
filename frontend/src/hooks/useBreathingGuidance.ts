@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 
 export type GuidanceMode = 'silent' | 'vibration' | 'voice';
 export type VoiceGender  = 'female' | 'male';
@@ -29,12 +29,20 @@ interface Options {
 }
 
 export function useBreathingGuidance({ mode, voiceGender, language, enabled }: Options) {
+  // Track whether vibrate() was actually called so the cleanup only stops
+  // an in-progress vibration, not one that never started.
+  // Chrome blocks navigator.vibrate() before a user gesture, which would
+  // produce a console [Intervention] warning on every page load otherwise.
+  const didVibrateRef = useRef(false);
 
   const guidePhase = useCallback((phase: 'inhale' | 'hold' | 'exhale' | 'pause') => {
     if (!enabled || mode === 'silent') return;
 
     if (mode === 'vibration') {
-      if ('vibrate' in navigator) navigator.vibrate(VIBRATION_PATTERNS[phase] ?? [100]);
+      if ('vibrate' in navigator) {
+        navigator.vibrate(VIBRATION_PATTERNS[phase] ?? [100]);
+        didVibrateRef.current = true;
+      }
       return;
     }
 
@@ -73,7 +81,10 @@ export function useBreathingGuidance({ mode, voiceGender, language, enabled }: O
   useEffect(() => {
     return () => {
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-      if ('vibrate' in navigator) navigator.vibrate(0);
+      // Only stop vibration if we actually started one — avoids the Chrome
+      // [Intervention] warning that fires when vibrate(0) is called before
+      // any user gesture (e.g. React StrictMode double-mount cleanup).
+      if (didVibrateRef.current && 'vibrate' in navigator) navigator.vibrate(0);
     };
   }, []);
 

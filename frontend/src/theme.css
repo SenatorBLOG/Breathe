@@ -32,7 +32,7 @@ html[data-theme="nature"], body[data-theme="nature"] { background-color: #050C07
 [data-theme="day"] *[class*="text-[#4A9EFF]"] { color: #2563EB !important; } /* Акценты/Ссылки */
 [data-theme="day"] *[class*="text-[#4A7AAA]"] { color: #334155 !important; }
 [data-theme="day"] *[class*="text-[#3D6080]"] { color: #475569 !important; }
-[data-theme="day"] *[class*="text-[#2A4060]"] { color: #64748B !important; }
+[data-theme="day"] *[class*="text-[#2A4060]"] { color: #F1F5F9 !important; }
 
 /* Фоны: чистые и светлые */
 [data-theme="day"] *[class*="bg-[#010814]"]  { background-color: #F1F5F9 !important; }

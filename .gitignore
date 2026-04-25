@@ -24,6 +24,8 @@ dist-ssr
 
 BreatheDB_keys.txt
 .env
+.history
+.claude
 api/.env.worktrees/
 
 node_modules/

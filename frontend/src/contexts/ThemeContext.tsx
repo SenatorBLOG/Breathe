@@ -69,8 +69,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (token) {
       try {
         await api.patch('/users/me', { theme: newTheme });
-      } catch (err) {
-        console.error('Failed to save theme to profile:', err);
+      } catch {
+        // PATCH may fail in dev due to CORS — theme is already saved to localStorage above
       }
     }
   }, []);
