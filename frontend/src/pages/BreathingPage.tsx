@@ -3,11 +3,12 @@ import NavBar from '../components/NavBar';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../contexts/ThemeContext';
 import { useBreathingGuidance } from '../hooks/useBreathingGuidance';
 import { type GuidanceMode, type VoiceGender } from '../components/GuidancePicker';
 import AmbientSoundPlayer from '../components/AmbientSoundPlayer';
 import { scheduleStreakReminder, requestPushPermission, getPushPermission } from '../utils/pushNotifications';
-import { BreathingCircle, Phase } from '../components/BreathingCircle';
+import { CoachOrb, Phase } from '../components/AICoach/CoachOrb';
 import { VideoBackground } from '../components/VideoBackground';
 import api from '../api';
 import { toast } from 'sonner';
@@ -34,11 +35,15 @@ function StatPill({ icon, label, value, dim = false }: {
 }) {
   const ts = useThemeStyles();
   return (
-    <div className={`flex items-center gap-2 px-3 py-2 rounded-2xl backdrop-blur-sm border transition-all duration-500 ${
-      dim
-        ? "bg-[#060C1A]/35 border-[#1E3358]/20 opacity-35"
-        : "bg-[#060C1A]/65 border-[#1E3358]/60 shadow-[0_0_20px_rgba(0,0,0,0.4)]"
-    }`}>
+    <div
+      className="flex items-center gap-2 px-3 py-2 rounded-2xl backdrop-blur-sm border transition-all duration-500"
+      style={{
+        backgroundColor: ts.cardBg,
+        borderColor: ts.border,
+        opacity: dim ? 0.35 : 1,
+        boxShadow: dim ? 'none' : '0 0 20px rgba(0,0,0,0.2)',
+      }}
+    >
       <span style={{ color: ts.accent }}>{icon}</span>
       <div className="flex flex-col leading-none">
         <span className="t-body sm:text-base font-medium tabular-nums" style={{ color: ts.textSecondary }}>
@@ -168,19 +173,20 @@ const MINI_BAR_H = 56;
 function StatMiniBar({ color, glow, value, max, unit, label }: {
   color: string; glow: string; value: number; max: number; unit: string; label: string;
 }) {
+  const ts = useThemeStyles();
   const fillPct = Math.min(Math.max(value / max, value > 0 ? 0.07 : 0), 1);
   const fillH   = value > 0 ? Math.round(fillPct * (MINI_BAR_H - 12)) + 12 : 0;
   return (
     <div className="flex flex-col items-center gap-1.5 flex-1 select-none">
       <span
         className="t-caption font-bold tabular-nums leading-none"
-        style={{ color: value > 0 ? color : 'rgba(74,96,128,0.4)' }}
+        style={{ color: value > 0 ? color : ts.textDim }}
       >
         {value > 0 ? `${value}${unit}` : `0${unit}`}
       </span>
       <div
         className="relative w-full rounded-xl overflow-hidden"
-        style={{ height: MINI_BAR_H, background: 'rgba(6,12,26,0.7)', border: `1px solid ${color}18` }}
+        style={{ height: MINI_BAR_H, background: ts.cardBgHover, border: `1px solid ${color}28` }}
       >
         {value > 0 && (
           <>
@@ -202,7 +208,7 @@ function StatMiniBar({ color, glow, value, max, unit, label }: {
       </div>
       <span
         className="t-label uppercase tracking-[0.09em] text-center whitespace-nowrap"
-        style={{ color: 'rgba(74,96,128,0.6)' }}
+        style={{ color: ts.textDim }}
       >
         {label}
       </span>
@@ -213,6 +219,7 @@ function StatMiniBar({ color, glow, value, max, unit, label }: {
 export default function BreathingPage() {
   const { t, i18n } = useTranslation();
   const ts = useThemeStyles();
+  const { theme } = useTheme();
   const [isActive, setIsActive] = useState(false);
   const [guidanceMode, setGuidanceMode] = useState<GuidanceMode>(
     () => (localStorage.getItem('breathe_guidance_mode') as GuidanceMode) || 'silent'
@@ -370,8 +377,8 @@ export default function BreathingPage() {
       const cid = `c_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
       const base = {
         sessionDate: new Date().toISOString(),
-        moodBefore: 5, moodAfter: 5, focusLevel: 5, stressLevel: 5,
-        breathingDepth: 5, calmnessScore: 5, distractionCount: 0,
+        moodBefore: 3, moodAfter: 3, focusLevel: 3, stressLevel: 3,
+        breathingDepth: 3, calmnessScore: 3, distractionCount: 0,
         timeOfDay: new Date().toLocaleTimeString([], { hour12: false }),
         noiseLevel: "Quiet", sessionLength, cycles,
         notes: "", clientId: cid,
@@ -414,7 +421,9 @@ export default function BreathingPage() {
       />
       <ThemeBackground />
       <VideoBackground videoFiles={videos} isActive={isActive} targetOpacity={0.55} playbackRate={1} crossfadeSeconds={2.0} pauseBetweenVideos={1.8} brightness={1.05} phase={phase} desiredPlaySeconds={desiredPlaySeconds} maxSpeed={1.2} />
-      <div className="fixed inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.72) 100%)" }} />
+      {theme !== 'day' && (
+        <div className="fixed inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.72) 100%)" }} />
+      )}
 
       <div className="relative z-50"><NavBar /></div>
 
@@ -432,7 +441,7 @@ export default function BreathingPage() {
         </div>
 
         <div className="flex items-center justify-center" style={{ width: circleSize * 1.28, height: circleSize * 1.28 }}>
-          <BreathingCircle
+          <CoachOrb
             isActive={isActive}
             phaseDurations={phaseDurations}
             onCycleComplete={() => setCycles(c => c + 1)}
@@ -460,15 +469,15 @@ export default function BreathingPage() {
         <div
           className="w-full max-w-sm rounded-3xl"
           style={{
-            background: 'rgba(4,8,18,0.84)',
-            border: '1px solid rgba(30,51,88,0.65)',
+            background: ts.cardBg,
+            border: `1px solid ${ts.borderHover}`,
             backdropFilter: 'blur(24px)',
-            boxShadow: '0 8px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04)',
+            boxShadow: `0 8px 40px rgba(0,0,0,0.2), inset 0 1px 0 ${ts.border}`,
           }}
         >
           {/* ── Guidance mode ───────────────────────────────────────────────── */}
           <div className="px-4 pt-4 pb-3">
-            <p className="t-label uppercase tracking-[0.22em] mb-2.5" style={{ color: 'rgba(74,96,128,0.5)' }}>
+            <p className="t-label uppercase tracking-[0.22em] mb-2.5" style={{ color: ts.textDim }}>
               Guidance
             </p>
             <div className="flex gap-2">
@@ -484,14 +493,14 @@ export default function BreathingPage() {
                     disabled={disabled}
                     className="flex-1 flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition-all duration-200 disabled:opacity-25"
                     style={{
-                      background: active ? `${gm.color}12` : 'rgba(255,255,255,0.025)',
-                      borderColor: active ? `${gm.color}45` : 'rgba(30,51,88,0.5)',
-                      boxShadow: active ? `0 0 20px ${gm.glow}, inset 0 1px 0 rgba(255,255,255,0.05)` : 'none',
+                      background: active ? `${gm.color}18` : ts.cardBgHover,
+                      borderColor: active ? `${gm.color}55` : ts.border,
+                      boxShadow: active ? `0 0 20px ${gm.glow}` : 'none',
                     }}
                   >
                     {gm.icon}
                     <span className="t-label font-semibold uppercase tracking-[0.07em]"
-                      style={{ color: active ? gm.color : 'rgba(74,96,128,0.5)' }}>
+                      style={{ color: active ? gm.color : ts.textDim }}>
                       {gm.label}
                     </span>
                     {active && (
@@ -511,9 +520,9 @@ export default function BreathingPage() {
                     onClick={() => handleGuidanceChange('voice', g)}
                     className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl border t-label transition-all"
                     style={{
-                      background: voiceGender === g ? 'rgba(122,196,255,0.1)' : 'rgba(255,255,255,0.02)',
-                      borderColor: voiceGender === g ? 'rgba(122,196,255,0.35)' : 'rgba(30,51,88,0.4)',
-                      color: voiceGender === g ? '#7AC4FF' : 'rgba(74,96,128,0.5)',
+                      background: voiceGender === g ? `${ts.accentLight}18` : ts.cardBgHover,
+                      borderColor: voiceGender === g ? ts.borderHover : ts.border,
+                      color: voiceGender === g ? ts.accentLight : ts.textDim,
                     }}
                   >
                     <User size={16} />
@@ -524,20 +533,23 @@ export default function BreathingPage() {
             )}
           </div>
 
-          <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(30,51,88,0.9), transparent)' }} />
+          <div className="mx-4 h-px" style={{ background: `linear-gradient(90deg, transparent, ${ts.border}, transparent)` }} />
 
           {/* ── Ambient sound ───────────────────────────────────────────────── */}
           <div className="px-4 py-3">
-            <p className="t-label uppercase tracking-[0.22em] mb-2.5" style={{ color: 'rgba(74,96,128,0.5)' }}>
+            <p className="t-label uppercase tracking-[0.22em] mb-2.5" style={{ color: ts.textDim }}>
               Ambient
             </p>
             <AmbientSoundPlayer inline />
           </div>
 
-          <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(30,51,88,0.9), transparent)' }} />
+          <div className="mx-4 h-px" style={{ background: `linear-gradient(90deg, transparent, ${ts.border}, transparent)` }} />
 
           {/* ── Stats mini-bars ─────────────────────────────────────────────── */}
           <div className="px-3 pb-4 pt-3">
+            <p className="t-label uppercase tracking-[0.22em] mb-2.5 px-1" style={{ color: ts.textDim }}>
+              Your Progress
+            </p>
             <div className="flex items-end gap-2.5">
               <StatMiniBar
                 color="#FF8C42" glow="rgba(255,140,66,0.4)"
@@ -559,14 +571,14 @@ export default function BreathingPage() {
         </div>
       </section>
 
-      <section className="relative z-10 bg-[#040A14]/90 backdrop-blur-sm border-t border-[#1E3358]/30 py-14 px-4 sm:px-6">
+      <section className="relative z-10 backdrop-blur-sm border-t py-14 px-4 sm:px-6" style={{ backgroundColor: ts.navBg, borderColor: ts.border }}>
         <div className="max-w-2xl mx-auto flex flex-col items-center gap-10">
           <div className="text-center">
-            <p className="t-label tracking-[0.3em] uppercase text-[#4A7AAA] mb-2">Breathing pattern</p>
-            <h2 className="text-[#7AC4FF] t-heading sm:text-2xl font-light tracking-wide mb-1">
+            <p className="t-label tracking-[0.3em] uppercase mb-2" style={{ color: ts.textMuted }}>Breathing pattern</p>
+            <h2 className="t-heading sm:text-2xl font-light tracking-wide mb-1" style={{ color: ts.accentLight }}>
               {phaseDurations.inhale}–{phaseDurations.hold}–{phaseDurations.exhale}–{phaseDurations.pause}
             </h2>
-            <p className="text-[#3D6080] t-caption">Drag bars up · down to adjust · 1–10 seconds</p>
+            <p className="t-caption" style={{ color: ts.textDim }}>Drag bars up · down to adjust · 1–10 seconds</p>
           </div>
 
           <div className="w-full flex items-end gap-4 sm:gap-6 px-2" style={{ height: BAR_H + 56 }}>
@@ -580,7 +592,7 @@ export default function BreathingPage() {
           <div className="w-full h-px" style={{ backgroundColor: ts.border }} />
 
           <div className="flex flex-col items-center gap-3 w-full">
-            <p className="t-label tracking-[0.3em] uppercase text-[#4A7AAA]">Quick presets</p>
+            <p className="t-label tracking-[0.3em] uppercase" style={{ color: ts.textMuted }}>Quick presets</p>
             <div className="flex flex-wrap justify-center gap-2">
               {presets.map(p => (
                 <PresetPill key={p.name} name={p.name} pattern={p.pattern} onApply={setPhaseDurations} current={phaseDurations} />
@@ -675,7 +687,7 @@ export default function BreathingPage() {
             setPendingPayload(null);
           }
         }}
-        initialData={{ moodBefore: 5, moodAfter: 5, focusLevel: 5, stressLevel: 5, breathingDepth: 5, calmnessScore: 5, distractionCount: 0, noiseLevel: "Quiet", notes: "" }}
+        initialData={{ moodBefore: 3, moodAfter: 3, focusLevel: 3, stressLevel: 3, breathingDepth: 3, calmnessScore: 3, distractionCount: 0, noiseLevel: "Quiet", notes: "" }}
         onSubmit={async (feedback: any) => {
           if (!pendingPayload) return;
           await saveSession({ ...pendingPayload, ...feedback, feedbackSubmitted: true });

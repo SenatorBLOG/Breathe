@@ -69,11 +69,11 @@ function BeforeAfterSlider({ before, after, onBefore, onAfter }: {
         return (
           <div key={label} className="flex items-center gap-3">
             <span className="t-label w-12 flex-shrink-0" style={{ color: ts.textMuted }}>{label}</span>
-            <input type="range" min={1} max={10} step={1} value={val}
+            <input type="range" min={1} max={5} step={1} value={val}
               onChange={e => set(Number(e.target.value))}
               className="flex-1 appearance-none h-1.5 rounded-full cursor-pointer"
               style={{
-                background: `linear-gradient(to right, ${color} ${(val-1)/9*100}%, ${ts.border} ${(val-1)/9*100}%)`,
+                background: `linear-gradient(to right, ${color} ${(val-1)/4*100}%, ${ts.border} ${(val-1)/4*100}%)`,
                 accentColor: color,
               }} />
             <span className="t-caption tabular-nums w-5 text-right" style={{ color: ts.textSecondary }}>{val}</span>
@@ -132,7 +132,7 @@ function NoisePicker({ value, onChange }: { value: string; onChange: (v: string)
 }
 
 // ─── DotSlider ────────────────────────────────────────────────────────────────
-function DotSlider({ value, max = 10, onChange, color: colorProp }: {
+function DotSlider({ value, max = 5, onChange, color: colorProp }: {
   value: number; max?: number; onChange: (v: number) => void; color?: string;
 }) {
   const ts = useThemeStyles();
@@ -279,7 +279,7 @@ export function SessionFeedbackModal({ open, onClose, initialData, onSubmit }: P
                   ))}
                   <div className="flex flex-col gap-1.5">
                     <span className="t-caption" style={{ color: ts.textMuted }}>Distractions</span>
-                    <DotSlider value={form.distractionCount} max={10} onChange={v => set("distractionCount", v)} color={ts.accentLight} />
+                    <DotSlider value={form.distractionCount} onChange={v => set("distractionCount", v)} color={ts.accentLight} />
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <span className="t-caption" style={{ color: ts.textMuted }}>Noise level</span>
