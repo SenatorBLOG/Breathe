@@ -264,27 +264,27 @@ function getBreakdown(score: number): string[] {
 // ─── Stress calculator ────────────────────────────────────────────────────────
 function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
   const { isAuthenticated } = useContext(AuthContext);
-  const [sleep,   setSleep]   = useState(5);
-  const [anxiety, setAnxiety] = useState(5);
-  const [focus,   setFocus]   = useState(5);
-  const [energy,  setEnergy]  = useState(5);
+  const [sleep,   setSleep]   = useState(3);
+  const [anxiety, setAnxiety] = useState(3);
+  const [focus,   setFocus]   = useState(3);
+  const [energy,  setEnergy]  = useState(3);
   const [showResult, setShowResult] = useState(false);
 
   const score = Math.round(
-    (sleep   / 10) * 25 +
-    ((10 - anxiety) / 10) * 25 +
-    (focus   / 10) * 25 +
-    (energy  / 10) * 25,
+    (sleep   / 5) * 25 +
+    ((5 - anxiety) / 5) * 25 +
+    (focus   / 5) * 25 +
+    (energy  / 5) * 25,
   );
 
   const scoreLabel = score >= 76 ? 'Low Stress' : score >= 51 ? 'Balanced' : score >= 31 ? 'Moderate Stress' : 'High Stress';
   const scoreColor = score >= 76 ? '#4AE8A0'    : score >= 51 ? '#4A9EFF'  : score >= 31 ? '#FFD97D'         : '#FF8A8A';
 
   const insights: string[] = [];
-  if (sleep   <= 4) insights.push('Sleep is your biggest lever right now');
-  if (anxiety >= 7) insights.push('Anxiety is spiking your baseline stress');
-  if (focus   <= 4) insights.push('Low focus suggests mental fatigue');
-  if (energy  <= 4) insights.push('Morning routine would help energy levels');
+  if (sleep   <= 2) insights.push('Sleep is your biggest lever right now');
+  if (anxiety >= 4) insights.push('Anxiety is spiking your baseline stress');
+  if (focus   <= 2) insights.push('Low focus suggests mental fatigue');
+  if (energy  <= 2) insights.push('Morning routine would help energy levels');
   if (insights.length === 0) {
     insights.push('Maintain your current healthy balance', 'Add Coherent Breathing to go deeper', 'Evening wind-down session recommended');
   }
@@ -357,15 +357,15 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
   return (
     <div className="flex flex-col gap-4">
       {sliders.map(({ label, value, set, color, invert }) => {
-        const pct = ((value - 1) / 9) * 100;
+        const pct = ((value - 1) / 4) * 100;
         return (
           <div key={label} className="flex flex-col gap-1">
             <div className="flex justify-between items-center">
               <label className="t-caption" style={{ color: ts.textSecondary }}>{label}</label>
-              <span className="t-caption tabular-nums font-medium" style={{ color }}>{value}/10</span>
+              <span className="t-caption tabular-nums font-medium" style={{ color }}>{value}/5</span>
             </div>
             <input
-              type="range" min={1} max={10} value={value}
+              type="range" min={1} max={5} value={value}
               onChange={e => set(Number(e.target.value))}
               className="w-full appearance-none h-1.5 rounded-full cursor-pointer"
               style={{
@@ -375,7 +375,7 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
             />
             <div className="flex justify-between">
               <span className="t-caption" style={{ color: ts.textDim }}>{invert ? 'Low' : '1'}</span>
-              <span className="t-caption" style={{ color: ts.textDim }}>{invert ? 'High' : '10'}</span>
+              <span className="t-caption" style={{ color: ts.textDim }}>{invert ? 'High' : '5'}</span>
             </div>
           </div>
         );
