@@ -32,10 +32,18 @@ function QuickCard({ icon, title, desc, to, label }: {
   const ts = useThemeStyles();
   return (
     <Link to={to}
-      className="flex flex-col gap-3 p-5 rounded-2xl border transition-all duration-200 group"
+      className="flex flex-col gap-3 p-5 rounded-2xl border transition-all duration-200 group hover:-translate-y-0.5"
       style={{
         backgroundColor: ts.cardBg,
         borderColor: ts.border,
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = ts.borderHover;
+        e.currentTarget.style.backgroundColor = ts.cardBgHover;
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = ts.border;
+        e.currentTarget.style.backgroundColor = ts.cardBg;
       }}>
       <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
         style={{
@@ -184,10 +192,9 @@ export default function SupportPage() {
                       <div className="flex gap-2 flex-wrap">
                         {CATEGORIES.map(c => (
                           <button key={c.value} onClick={() => setCategory(c.value)}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-caption border transition-all ${
-                              category === c.value ? "bg-[#0D1B33]" : ""
-                            }`}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-caption border transition-all"
                             style={{
+                              backgroundColor: category === c.value ? ts.cardBgHover : 'transparent',
                               borderColor: category === c.value ? ts.borderHover : ts.border,
                               color: category === c.value ? ts.textSecondary : ts.textMuted,
                             }}>

@@ -37,19 +37,24 @@ export default function NavBar() {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const NavLink = ({ to, children, dataTour }: { to: string; children: React.ReactNode; dataTour?: string }) => (
-    <Link to={to} onClick={() => setIsMenuOpen(false)}
-      {...(dataTour ? { 'data-tour': dataTour } : {})}
-      className="relative t-body tracking-wide transition-colors duration-200 group"
-      style={{ color: isActive(to) ? ts.accentLight : ts.textSecondary }}>
-      {children}
-      <span className="absolute -bottom-0.5 left-0 h-px transition-all duration-300"
-        style={{
-          width: isActive(to) ? '100%' : '0%',
-          backgroundColor: ts.accent,
-        }} />
-    </Link>
-  );
+  const NavLink = ({ to, children, dataTour }: { to: string; children: React.ReactNode; dataTour?: string }) => {
+    const active = isActive(to);
+    return (
+      <Link to={to} onClick={() => setIsMenuOpen(false)}
+        {...(dataTour ? { 'data-tour': dataTour } : {})}
+        className="relative t-body tracking-wide transition-colors duration-200 group"
+        style={{ color: active ? ts.accentLight : ts.textSecondary }}
+        onMouseEnter={e => { if (!active) e.currentTarget.style.color = ts.textPrimary; }}
+        onMouseLeave={e => { if (!active) e.currentTarget.style.color = ts.textSecondary; }}>
+        {children}
+        <span className="absolute -bottom-0.5 left-0 h-px transition-all duration-300 group-hover:w-full"
+          style={{
+            width: active ? '100%' : '0%',
+            backgroundColor: ts.accent,
+          }} />
+      </Link>
+    );
+  };
 
   return (
     <>
@@ -75,8 +80,14 @@ export default function NavBar() {
 
           {/* Logo */}
           <a href="/breathing" onClick={onLogoClick} className="flex items-center gap-2 flex-shrink-0 group">
-            <div className="w-6 h-6 rounded-full flex-shrink-0 transition-shadow duration-300 group-hover:shadow-[0_0_16px_rgba(74,158,255,0.6)]"
-              style={{ background: `radial-gradient(circle at 35% 35%, ${ts.accentLight}, ${ts.accent} 70%)`, boxShadow: `0 0 10px ${ts.accent}55` }} />
+            <div className="w-6 h-6 rounded-full flex-shrink-0 transition-shadow duration-300"
+              style={{
+                background: `radial-gradient(circle at 35% 35%, ${ts.accentLight}, ${ts.accent} 70%)`,
+                boxShadow: `0 0 10px ${ts.accent}55`,
+              }}
+              onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 18px ${ts.accent}99`)}
+              onMouseLeave={e => (e.currentTarget.style.boxShadow = `0 0 10px ${ts.accent}55`)}
+            />
             <span className="t-body sm:text-lg font-medium tracking-wide transition-colors"
               style={{ color: ts.textPrimary }}>
               Breathe

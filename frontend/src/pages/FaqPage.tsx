@@ -143,11 +143,10 @@ function AccordionItem({ item, index }: { item: FAQItem; index: number }) {
 
   return (
     <div
-      className={`rounded-xl border transition-all duration-300 overflow-hidden ${
-        open ? 'border-[#2A5499]/50' : 'border-[#1E3358]/40 hover:border-[#1E3358]/70'
-      }`}
+      className="rounded-xl border transition-all duration-300 overflow-hidden"
       style={{
         backgroundColor: open ? ts.cardBgHover : ts.cardBg,
+        borderColor: open ? ts.borderHover : ts.border,
       }}
     >
       <button
@@ -165,17 +164,23 @@ function AccordionItem({ item, index }: { item: FAQItem; index: number }) {
         <ChevronDown
           size={14}
           className={`flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
-          style={{ color: open ? ts.accent : ts.borderHover }}
+          style={{ color: open ? ts.accent : ts.textDim }}
         />
       </button>
 
-      {open && (
+      <div
+        className="overflow-hidden transition-all duration-300 ease-out"
+        style={{
+          maxHeight: open ? 600 : 0,
+          opacity: open ? 1 : 0,
+        }}
+      >
         <div className="px-5 pb-5 pt-0">
           <div className="ml-7 pl-3 border-l" style={{ borderColor: ts.border }}>
             <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>{item.a}</p>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -253,7 +258,7 @@ export default function FAQPage() {
 
           {/* Search */}
           <div className="relative w-full max-w-md mt-2">
-            <Search size={13} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A7AAA]" style={{ color: ts.textDim }} />
+            <Search size={13} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: ts.textDim }} />
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
@@ -308,14 +313,10 @@ export default function FAQPage() {
                   <button
                     key={cat.id}
                     onClick={() => setActiveCategory(cat.id)}
-                    className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all t-caption ${
-                      activeCategory === cat.id
-                        ? 'bg-[#0D1B33] border border-[#2A5499]/50'
-                        : 'border border-transparent'
-                    }`}
+                    className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all t-caption border"
                     style={{
                       backgroundColor: activeCategory === cat.id ? ts.cardBgHover : ts.cardBg,
-                      borderColor: activeCategory === cat.id ? ts.borderHover : "transparent",
+                      borderColor: activeCategory === cat.id ? ts.borderHover : 'transparent',
                       color: activeCategory === cat.id ? ts.textSecondary : ts.textMuted,
                     }}
                   >
@@ -333,14 +334,11 @@ export default function FAQPage() {
                   <button
                     key={cat.id}
                     onClick={() => setActiveCategory(cat.id)}
-                    className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-label border transition-all ${
-                      activeCategory === cat.id
-                        ? 'bg-[#0D1B33] border-[#2A5499]/50 text-[#7AC4FF]'
-                        : 'border-[#1E3358]/40 text-[#4A7AAA]'
-                    }`}
+                    className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-label border transition-all"
                     style={{
                       backgroundColor: activeCategory === cat.id ? ts.cardBgHover : ts.cardBg,
                       borderColor: activeCategory === cat.id ? ts.borderHover : ts.border,
+                      color: activeCategory === cat.id ? ts.accentLight : ts.textMuted,
                     }}
                   >
                     {cat.icon} {cat.label}

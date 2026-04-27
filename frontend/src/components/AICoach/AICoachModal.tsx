@@ -27,7 +27,7 @@ const TypingIndicator = () => {
   return (
     <div className="flex items-end gap-2 mb-4 animate-in fade-in duration-300">
       <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-lg"
-           style={{ background: `linear-gradient(135deg, ${ts.accent}, #4AE8A0)` }}>
+           style={{ background: `linear-gradient(135deg, ${ts.accent}, ${ts.accentLight})` }}>
         <Sparkles size={14} className="text-white animate-pulse" />
       </div>
       <div className="flex gap-1 px-4 py-3 rounded-2xl rounded-bl-none border"
@@ -58,7 +58,7 @@ const CoachBubble = ({ message, isLatest, onTry }: { message: Message; isLatest:
   return (
     <div className="flex items-end gap-2 mb-4 animate-in slide-in-from-left-2 duration-300">
       <div className="w-8 h-8 rounded-xl flex-shrink-0 flex items-center justify-center shadow-md"
-           style={{ background: `linear-gradient(135deg, ${ts.accent}, #4AE8A0)` }}>
+           style={{ background: `linear-gradient(135deg, ${ts.accent}, ${ts.accentLight})` }}>
         <Sparkles size={14} className="text-white" />
       </div>
       <div className="flex flex-col gap-2 max-w-[85%]">

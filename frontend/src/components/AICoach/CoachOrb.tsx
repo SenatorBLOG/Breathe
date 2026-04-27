@@ -121,7 +121,7 @@ const bottomHighlight =
     return () => { clearTimeout(outerTid); clearTimeout(innerTid); };
   }, []);
 
-  // ── Pupil tracking ─────────────────────────────────────────────────────────
+  // ── Pupil tracking — only when idle (not during active session) ───────────
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!orbRef.current) return;
     const rect = orbRef.current.getBoundingClientRect();
@@ -136,10 +136,19 @@ const bottomHighlight =
     setPupilY((dy / dist) * maxOffset * factor);
   }, []);
 
+  // When session starts, smoothly return pupils to center
   useEffect(() => {
+    if (isActive) {
+      setPupilX(0);
+      setPupilY(0);
+    }
+  }, [isActive]);
+
+  useEffect(() => {
+    if (isActive) return; // don't track mouse during meditation
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [handleMouseMove]);
+  }, [handleMouseMove, isActive]);
 
   // ── Per-phase countdown ────────────────────────────────────────────────────
   useEffect(() => {
@@ -217,8 +226,8 @@ const bottomHighlight =
   const eyeGap    = Math.round(size * 0.12);
   const smileW    = Math.round(size * 0.17);
   const smileH    = Math.round(size * 0.055);
-  const labelSize = Math.min(Math.round(size * 0.053), 20);
-  const timerSize = Math.min(Math.round(size * 0.037), 15);
+  const labelSize = Math.min(Math.round(size * 0.050), 17);
+  const timerSize = Math.min(Math.round(size * 0.130), 42);
   const glowBlur  = Math.round(size * 0.5);
   const haloInset = Math.round(size * 0.1);
 
@@ -381,51 +390,37 @@ const bottomHighlight =
             userSelect: 'none',
           }}>
             {isActive ? (
-              <div style={{
-                textAlign: 'center',
-                padding: `${Math.round(size * 0.016)}px ${Math.round(size * 0.06)}px ${Math.round(size * 0.022)}px`,
-                borderRadius: Math.round(size * 0.048),
-                background: 'rgba(0,0,0,0.13)',
-                // Glass layer — blurs the sphere gradient behind the text
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255,255,255,0.08)',
-              }}>
+              <div style={{ textAlign: 'center', lineHeight: 1 }}>
                 <div style={{
-                  color: 'rgba(255,255,255,0.96)',
+                  color: 'rgba(255,255,255,0.70)',
                   fontSize: labelSize,
-                  fontWeight: 700,
-                  letterSpacing: '0.20em',
+                  fontWeight: 600,
+                  letterSpacing: '0.22em',
                   textTransform: 'uppercase',
-                  textShadow: '0 1px 6px rgba(0,0,0,0.35)',
+                  textShadow: '0 1px 8px rgba(0,0,0,0.50)',
                 }}>
                   {PHASE_LABEL[phase]}
                 </div>
                 <div style={{
-                  color: 'rgba(255,255,255,0.50)',
+                  color: 'rgba(255,255,255,0.92)',
                   fontSize: timerSize,
-                  fontWeight: 500,
-                  marginTop: Math.round(size * 0.008),
+                  fontWeight: 700,
+                  marginTop: Math.round(size * 0.012),
                   fontVariantNumeric: 'tabular-nums',
+                  textShadow: '0 2px 12px rgba(0,0,0,0.55)',
+                  letterSpacing: '-0.02em',
                 }}>
-                  {countdown}s
+                  {countdown}
                 </div>
               </div>
             ) : (
-              <div style={{ textAlign: 'center' }}>
+              <div style={{ textAlign: 'center', lineHeight: 1 }}>
                 <div style={{
-                  color: 'rgba(255,255,255,0.75)',
+                  color: 'rgba(255,255,255,0.55)',
                   fontSize: labelSize,
                   fontWeight: 600,
-                  letterSpacing: '0.08em',
+                  letterSpacing: '0.12em',
                   textShadow: '0 2px 10px rgba(0,0,0,0.4)',
-                }}>
-                  Start
-                </div>
-                <div style={{
-                  color: 'rgba(255,255,255,0.36)',
-                  fontSize: timerSize,
-                  marginTop: Math.round(size * 0.01),
                 }}>
                   Tap to begin
                 </div>

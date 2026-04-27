@@ -94,10 +94,27 @@ html[data-theme="nature"], body[data-theme="nature"] { background-color: #050C07
 }
 
 /* Фокус для инпутов */
-input:focus {
+input:focus, textarea:focus, select:focus {
   outline: 2px solid #3B82F6 !important;
   outline-offset: -1px;
 }
-[data-theme="nature"] input:focus {
+[data-theme="day"] input:focus,
+[data-theme="day"] textarea:focus,
+[data-theme="day"] select:focus {
+  outline-color: #C8860A !important;
+}
+[data-theme="nature"] input:focus,
+[data-theme="nature"] textarea:focus,
+[data-theme="nature"] select:focus {
   outline-color: #10B981 !important;
+}
+
+/* Day-theme placeholder (default placeholder-[#2A4060] is invisible on white inputs) */
+[data-theme="day"] input::placeholder,
+[data-theme="day"] textarea::placeholder {
+  color: #94A3B8 !important;
+}
+[data-theme="nature"] input::placeholder,
+[data-theme="nature"] textarea::placeholder {
+  color: #5BA870 !important;
 }

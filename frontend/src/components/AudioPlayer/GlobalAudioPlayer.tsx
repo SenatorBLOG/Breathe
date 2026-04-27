@@ -175,11 +175,13 @@ export function GlobalAudioPlayer() {
       {!visible ? (
         <button
           onClick={() => setVisible(true)}
-          className="fixed bottom-4 right-4 z-50 flex items-center gap-2 px-3 py-2 rounded-full border backdrop-blur-md shadow-lg hover:border-[#2A5499] transition-all"
+          className="fixed bottom-4 right-4 z-50 flex items-center gap-2 px-3 py-2 rounded-full border backdrop-blur-md shadow-lg transition-all"
           style={{
             backgroundColor: ts.cardBg,
             borderColor: ts.border,
           }}
+          onMouseEnter={e => (e.currentTarget.style.borderColor = ts.borderHover)}
+          onMouseLeave={e => (e.currentTarget.style.borderColor = ts.border)}
         >
           <MiniWave playing={isPlaying} />
           <span className="t-caption max-w-[120px] truncate" style={{ color: ts.textSecondary }}>{currentTrack.name}</span>

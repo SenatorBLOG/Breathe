@@ -53,10 +53,11 @@ function Avatar({ name, src, size = 36 }: { name: string; src?: string | null; s
 }
 
 function RankBadge({ rank }: { rank: number }) {
+  const ts = useThemeStyles();
   const medals: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' };
-  if (medals[rank]) return <span style={{ fontSize: 22 }}>{medals[rank]}</span>;
+  if (medals[rank]) return <span style={{ fontSize: 22, lineHeight: 1, flexShrink: 0 }}>{medals[rank]}</span>;
   return (
-    <span style={{ fontSize: 12, fontWeight: 700, color: '#4A7AAA', width: 22, textAlign: 'center' }}>
+    <span style={{ fontSize: 12, fontWeight: 700, color: ts.textMuted, width: 22, textAlign: 'center', flexShrink: 0 }}>
       #{rank}
     </span>
   );
@@ -115,20 +116,26 @@ export default function LeaderboardPage() {
 
           {/* Tabs */}
           <div className="flex gap-2 p-1 rounded-2xl" style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}>
-            {TABS.map(t => (
-              <button
-                key={t.id}
-                onClick={() => setTab(t.id)}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl t-caption font-medium transition-all"
-                style={{
-                  background: tab === t.id ? ts.btnGradient : 'transparent',
-                  color: tab === t.id ? '#fff' : ts.textMuted,
-                }}
-              >
-                <span>{t.emoji}</span>
-                <span>{t.label}</span>
-              </button>
-            ))}
+            {TABS.map(t => {
+              const active = tab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setTab(t.id)}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl t-caption font-medium transition-all"
+                  style={{
+                    background: active ? ts.btnGradient : 'transparent',
+                    color: active ? '#fff' : ts.textMuted,
+                    boxShadow: active ? ts.btnShadow : 'none',
+                  }}
+                  onMouseEnter={e => { if (!active) e.currentTarget.style.color = ts.textSecondary; }}
+                  onMouseLeave={e => { if (!active) e.currentTarget.style.color = ts.textMuted; }}
+                >
+                  <span>{t.emoji}</span>
+                  <span>{t.label}</span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Sub-label */}
@@ -138,22 +145,48 @@ export default function LeaderboardPage() {
 
           {/* List */}
           {loading ? <Skeleton /> : data.length === 0 ? (
-            <div className="flex flex-col items-center gap-3 py-16 text-center">
-              <span className="text-4xl opacity-30">🌫</span>
-              <p className="t-body" style={{ color: ts.textMuted }}>No data yet</p>
+            <div className="flex flex-col items-center gap-4 py-20 text-center rounded-2xl"
+              style={{
+                background: ts.cardBg,
+                border: `1px dashed ${ts.border}`,
+              }}>
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl"
+                style={{ background: `${ts.accent}15`, border: `1px solid ${ts.accent}25` }}>
+                🌫
+              </div>
+              <div className="flex flex-col gap-1 max-w-[260px]">
+                <p className="t-body font-medium" style={{ color: ts.textPrimary }}>No data yet</p>
+                <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
+                  Be the first to log a session this week — your name could appear right here.
+                </p>
+              </div>
             </div>
           ) : (
             <div className="flex flex-col gap-2">
+              <style>{`
+                @keyframes lbRowIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+              `}</style>
               {data.map((entry, idx) => {
                 const isTop3 = entry.rank <= 3;
                 return (
                   <div
                     key={entry._id ?? idx}
-                    className="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all"
+                    className="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200"
                     style={{
                       background: isTop3 ? `${ts.accent}0E` : ts.cardBg,
                       border: `1px solid ${isTop3 ? ts.accent + '28' : ts.border}`,
                       boxShadow: isTop3 ? `0 0 18px ${ts.accent}0A` : 'none',
+                      animation: `lbRowIn 0.35s ease forwards`,
+                      animationDelay: `${Math.min(idx, 12) * 30}ms`,
+                      opacity: 0,
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.transform = 'translateX(2px)';
+                      e.currentTarget.style.borderColor = isTop3 ? `${ts.accent}55` : ts.borderHover;
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.transform = 'translateX(0)';
+                      e.currentTarget.style.borderColor = isTop3 ? `${ts.accent}28` : ts.border;
                     }}
                   >
                     <RankBadge rank={entry.rank} />

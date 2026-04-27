@@ -820,7 +820,7 @@ export default function CommunityPage() {
               <button
                 onClick={() => setActiveTag(null)}
                 className="flex-shrink-0 px-3 py-1.5 rounded-xl t-label border transition-all"
-                style={{ backgroundColor: 'rgba(0,212,255,0.10)', borderColor: 'rgba(0,212,255,0.35)', color: '#00D4FF' }}>
+                style={{ backgroundColor: `${ts.accent}1A`, borderColor: `${ts.accent}59`, color: ts.accentLight }}>
                 ✕ #{activeTag}
               </button>
             )}
@@ -828,9 +828,9 @@ export default function CommunityPage() {
               <button key={c} onClick={() => setCategory(c)}
                 className="flex-shrink-0 px-3 py-1.5 rounded-xl t-label border transition-all"
                 style={{
-                  backgroundColor: category === c ? 'rgba(0,212,255,0.10)' : ts.cardBg,
-                  borderColor: category === c ? 'rgba(0,212,255,0.35)' : ts.border,
-                  color: category === c ? '#00D4FF' : ts.textMuted,
+                  backgroundColor: category === c ? `${ts.accent}1A` : ts.cardBg,
+                  borderColor: category === c ? `${ts.accent}59` : ts.border,
+                  color: category === c ? ts.accentLight : ts.textMuted,
                 }}>
                 {t(`community.categories.${c}`, c)}
               </button>
@@ -847,7 +847,7 @@ export default function CommunityPage() {
                 {activeTag && (
                   <button onClick={() => setActiveTag(null)}
                     className="px-3 py-1.5 rounded-xl t-label border transition-all"
-                    style={{ backgroundColor: 'rgba(0,212,255,0.10)', borderColor: 'rgba(0,212,255,0.35)', color: '#00D4FF' }}>
+                    style={{ backgroundColor: `${ts.accent}1A`, borderColor: `${ts.accent}59`, color: ts.accentLight }}>
                     ✕ #{activeTag}
                   </button>
                 )}
@@ -855,9 +855,9 @@ export default function CommunityPage() {
                   <button key={c} onClick={() => setCategory(c)}
                     className="px-3 py-1.5 rounded-xl t-label border transition-all"
                     style={{
-                      backgroundColor: category === c ? 'rgba(0,212,255,0.10)' : ts.cardBg,
-                      borderColor: category === c ? 'rgba(0,212,255,0.35)' : ts.border,
-                      color: category === c ? '#00D4FF' : ts.textMuted,
+                      backgroundColor: category === c ? `${ts.accent}1A` : ts.cardBg,
+                      borderColor: category === c ? `${ts.accent}59` : ts.border,
+                      color: category === c ? ts.accentLight : ts.textMuted,
                     }}>
                     {t(`community.categories.${c}`, c)}
                   </button>

@@ -351,7 +351,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="bg-[#0B1628]/60 border rounded-2xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-6" style={{ borderColor: ts.border }}>
+              <div className="border rounded-2xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-6" style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}>
                 <QuoteBlock text="The breath is the bridge which connects life to consciousness." author="Thich Nhat Hanh" />
                 <QuoteBlock text="Almost everything will work again if you unplug it for a few minutes — including you." author="Anne Lamott" />
               </div>

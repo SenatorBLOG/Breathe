@@ -34,8 +34,8 @@ export default function AICoachButton({ variant = 'floating' }: AICoachButtonPro
           <button 
             onClick={() => setOpen(true)}
             className="coach-hint-btn flex items-center gap-2.5 px-6 py-2.5 rounded-full t-caption text-white font-bold uppercase tracking-[0.15em] transition-all hover:scale-105 active:scale-95 shadow-xl"
-            style={{ 
-              background: `linear-gradient(135deg, ${ts.accent}, #4AE8A0)`,
+            style={{
+              background: `linear-gradient(135deg, ${ts.accent}, ${ts.accentLight})`,
               boxShadow: `0 10px 30px ${ts.accent}40`
             }}
           >
@@ -58,8 +58,8 @@ export default function AICoachButton({ variant = 'floating' }: AICoachButtonPro
     <>
       <style>{`
         @keyframes pulseGlow {
-          0%, 100% { box-shadow: 0 0 20px rgba(0,0,0,0.2); transform: scale(1); }
-          50% { box-shadow: 0 0 40px ${ts.accent}50; transform: scale(1.02); }
+          0%, 100% { box-shadow: 0 8px 24px ${ts.accent}33; transform: scale(1); }
+          50%      { box-shadow: 0 12px 40px ${ts.accent}55; transform: scale(1.03); }
         }
         .animate-pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
       `}</style>

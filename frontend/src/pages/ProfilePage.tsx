@@ -882,7 +882,7 @@ export default function ProfilePage() {
                     <div className="grid grid-cols-3 gap-3">
                       <div className="flex flex-col gap-0.5">
                         <div className="flex items-center gap-1.5 mb-1">
-                          <Moon size={10} style={{ color: '#7AC4FF' }} />
+                          <Moon size={10} style={{ color: ts.accentLight }} />
                           <p className="t-label" style={{ color: ts.textMuted }}>Sleep</p>
                         </div>
                         <p className="t-subheading font-semibold tabular-nums" style={{ color: avgSleep7 ? ts.textPrimary : ts.textDim }}>

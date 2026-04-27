@@ -283,10 +283,10 @@ export default function AmbientSoundPlayer({ inline = false }: AmbientSoundPlaye
               onClick={() => toggle(s.id)}
               className="flex flex-col items-center gap-1 py-2.5 rounded-xl border t-label transition-all"
               style={{
-                background: active === s.id ? `rgba(58,130,247,0.14)` : 'rgba(10,18,36,0.55)',
-                borderColor: active === s.id ? `rgba(58,130,247,0.45)` : 'rgba(30,51,88,0.5)',
-                color: active === s.id ? '#7AC4FF' : 'rgba(74,96,128,0.65)',
-                boxShadow: active === s.id ? '0 0 12px rgba(58,130,247,0.2)' : 'none',
+                background: active === s.id ? `${ts.accent}18` : ts.cardBgHover,
+                borderColor: active === s.id ? ts.borderHover : ts.border,
+                color: active === s.id ? ts.accentLight : ts.textMuted,
+                boxShadow: active === s.id ? `0 0 12px ${ts.accent}22` : 'none',
               }}
             >
               {s.icon}
@@ -296,14 +296,14 @@ export default function AmbientSoundPlayer({ inline = false }: AmbientSoundPlaye
         </div>
         {active && (
           <div className="flex items-center gap-2 px-0.5 pt-0.5">
-            <Volume2 size={14} style={{ color: 'rgba(74,96,128,0.55)', flexShrink: 0 }} />
+            <Volume2 size={14} style={{ color: ts.textDim, flexShrink: 0 }} />
             <input
               type="range" min={0} max={1} step={0.01} value={volume}
               onChange={e => setVolume(Number(e.target.value))}
               className="flex-1"
-              style={{ accentColor: '#3A82F7' }}
+              style={{ accentColor: ts.accent }}
             />
-            <span className="t-label tabular-nums w-7 text-right" style={{ color: 'rgba(74,96,128,0.55)' }}>
+            <span className="t-label tabular-nums w-7 text-right" style={{ color: ts.textDim }}>
               {Math.round(volume * 100)}%
             </span>
           </div>
@@ -335,7 +335,7 @@ export default function AmbientSoundPlayer({ inline = false }: AmbientSoundPlaye
           className="absolute left-0 right-0 z-50 rounded-2xl p-3 flex flex-col gap-2"
           style={{
             bottom: 'calc(100% + 8px)',
-            background: 'rgba(6,12,26,0.96)',
+            background: ts.cardBg,
             border: `1px solid ${ts.borderHover}`,
             backdropFilter: 'blur(20px)',
             boxShadow: '0 -8px 32px rgba(0,0,0,0.5)',

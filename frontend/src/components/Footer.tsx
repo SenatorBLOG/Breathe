@@ -130,6 +130,8 @@ export default function Footer() {
                 aria-label="Breathe on Instagram"
                 className="transition-all duration-200 hover:scale-110"
                 style={{ color: ts.textMuted }}
+                onMouseEnter={e => (e.currentTarget.style.color = ts.accentLight)}
+                onMouseLeave={e => (e.currentTarget.style.color = ts.textMuted)}
               >
                 <FaInstagram size={15} />
               </a>
@@ -140,6 +142,8 @@ export default function Footer() {
                 aria-label="Breathe on GitHub"
                 className="transition-all duration-200 hover:scale-110"
                 style={{ color: ts.textMuted }}
+                onMouseEnter={e => (e.currentTarget.style.color = ts.accentLight)}
+                onMouseLeave={e => (e.currentTarget.style.color = ts.textMuted)}
               >
                 <FaGithub size={15} />
               </a>
@@ -148,6 +152,8 @@ export default function Footer() {
                 aria-label="Email support"
                 className="transition-all duration-200 hover:scale-110"
                 style={{ color: ts.textMuted }}
+                onMouseEnter={e => (e.currentTarget.style.color = ts.accentLight)}
+                onMouseLeave={e => (e.currentTarget.style.color = ts.textMuted)}
               >
                 <FaEnvelope size={15} />
               </a>

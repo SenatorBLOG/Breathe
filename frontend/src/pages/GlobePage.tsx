@@ -178,7 +178,7 @@ export default function GlobePage() {
           alignItems:     'center',
           justifyContent: 'space-between',
           flexShrink:     0,
-          background:     'rgba(6,18,42,0.72)',
+          background:     ts.navBg,
           backdropFilter: 'blur(14px)',
           borderBottom:   `1px solid ${ts.border}`,
           zIndex:         5,

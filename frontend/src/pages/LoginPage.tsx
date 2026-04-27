@@ -101,7 +101,7 @@ function LoginPageInner() {
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-full flex-shrink-0"
                   style={{
-                    background: 'radial-gradient(circle at 35% 35%, #7AC4FF, #1A5FCC 65%, #0A1A3F)',
+                    background: `radial-gradient(circle at 35% 35%, ${ts.accentLight}, ${ts.accent} 65%, ${ts.cardBgHover})`,
                     animation: 'orbPulse 4s ease-in-out infinite',
                   }} />
                 <div>

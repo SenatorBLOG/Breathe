@@ -44,7 +44,7 @@ function MLRecommendationCard({ rec, loading }: { rec: MLRec | null; loading: bo
         position:     'relative',
         borderRadius: 20,
         padding:      '20px 24px',
-        background:   `linear-gradient(135deg, ${ts.cardBg}, rgba(10,20,50,0.6))`,
+        background:   `linear-gradient(135deg, ${ts.cardBg}, ${ts.cardBgHover})`,
         border:       `1px solid ${meta ? meta.color + '44' : ts.border}`,
         boxShadow:    meta ? `0 0 32px ${meta.glow}, inset 0 1px 0 rgba(255,255,255,0.06)` : 'none',
         overflow:     'hidden',

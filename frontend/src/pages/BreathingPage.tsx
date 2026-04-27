@@ -3,6 +3,7 @@ import NavBar from '../components/NavBar';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../contexts/ThemeContext';
 import { useBreathingGuidance } from '../hooks/useBreathingGuidance';
 import { type GuidanceMode, type VoiceGender } from '../components/GuidancePicker';
 import AmbientSoundPlayer from '../components/AmbientSoundPlayer';
@@ -34,11 +35,14 @@ function StatPill({ icon, label, value, dim = false }: {
 }) {
   const ts = useThemeStyles();
   return (
-    <div className={`flex items-center gap-2 px-3 py-2 rounded-2xl backdrop-blur-sm border transition-all duration-500 ${
-      dim
-        ? "bg-[#060C1A]/35 border-[#1E3358]/20 opacity-35"
-        : "bg-[#060C1A]/65 border-[#1E3358]/60 shadow-[0_0_20px_rgba(0,0,0,0.4)]"
-    }`}>
+    <div
+      className="flex items-center gap-2 px-3 py-2 rounded-2xl backdrop-blur-sm border transition-all duration-500"
+      style={{
+        backgroundColor: ts.cardBg,
+        borderColor: ts.border,
+        opacity: dim ? 0.35 : 1,
+        boxShadow: dim ? 'none' : '0 0 20px rgba(0,0,0,0.18)',
+      }}>
       <span style={{ color: ts.accent }}>{icon}</span>
       <div className="flex flex-col leading-none">
         <span className="t-body sm:text-base font-medium tabular-nums" style={{ color: ts.textSecondary }}>
@@ -242,6 +246,7 @@ function StatRing({ value, max, unit, label, color, glow }: {
 export default function BreathingPage() {
   const { t, i18n } = useTranslation();
   const ts = useThemeStyles();
+  const { theme } = useTheme();
   const [isActive, setIsActive] = useState(false);
   const [guidanceMode, setGuidanceMode] = useState<GuidanceMode>(
     () => (localStorage.getItem('breathe_guidance_mode') as GuidanceMode) || 'silent'
@@ -446,7 +451,9 @@ export default function BreathingPage() {
       />
       <ThemeBackground />
       <VideoBackground videoFiles={videos} isActive={isActive} targetOpacity={0.55} playbackRate={1} crossfadeSeconds={2.0} pauseBetweenVideos={1.8} brightness={1.05} phase={phase} desiredPlaySeconds={desiredPlaySeconds} maxSpeed={1.2} />
-      <div className="fixed inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.72) 100%)" }} />
+      {theme !== 'day' && (
+        <div className="fixed inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.72) 100%)" }} />
+      )}
 
       <div className="relative z-50"><NavBar /></div>
 
@@ -493,7 +500,7 @@ export default function BreathingPage() {
           onClick={() => setSettingsOpen(true)}
           className="w-full max-w-sm flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-200 active:scale-[0.98] hover:opacity-80"
           style={{
-            background: 'rgba(4,8,18,0.70)',
+            background: ts.cardBg,
             border: `1px solid ${ts.border}`,
             backdropFilter: 'blur(20px)',
             boxShadow: '0 4px 24px rgba(0,0,0,0.28)',
@@ -518,33 +525,33 @@ export default function BreathingPage() {
       </section>
 
       {/* ── Settings bottom sheet ──────────────────────────────────────────────── */}
+      {/* Backdrop — conditional */}
       {settingsOpen && (
-        <>
-          {/* backdrop */}
-          <div
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
-            style={{ animation: 'fadeIn 0.18s ease' }}
-            onClick={() => setSettingsOpen(false)}
-          />
-          {/* sheet */}
-          <div
-            className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-4 pb-4 sm:items-center sm:inset-0 sm:pb-0"
-            style={{ pointerEvents: 'none' }}
-          >
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+          style={{ animation: 'fadeIn 0.18s ease' }}
+          onClick={() => setSettingsOpen(false)}
+        />
+      )}
+      {/* Sheet — always mounted so AmbientSoundPlayer audio context survives close */}
+      <div
+        className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-4 pb-4 sm:items-center sm:inset-0 sm:pb-0"
+        style={{ pointerEvents: 'none', display: settingsOpen ? 'flex' : 'none' }}
+      >
             <div
               className="w-full max-w-sm rounded-3xl overflow-hidden"
               style={{
                 pointerEvents: 'auto',
-                background: 'rgba(4,8,18,0.97)',
-                border: `1px solid ${ts.border}`,
+                background: ts.cardBg,
+                border: `1px solid ${ts.borderHover}`,
                 backdropFilter: 'blur(40px)',
-                boxShadow: `0 -8px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04)`,
+                boxShadow: `0 -8px 60px rgba(0,0,0,0.25), inset 0 1px 0 ${ts.border}`,
                 animation: 'slideUp 0.26s cubic-bezier(0.22,1,0.36,1)',
               }}
             >
               {/* drag handle */}
               <div className="flex justify-center pt-3 pb-1 sm:hidden">
-                <div className="w-9 h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.09)' }} />
+                <div className="w-9 h-1 rounded-full" style={{ background: ts.border }} />
               </div>
 
               {/* header */}
@@ -555,7 +562,7 @@ export default function BreathingPage() {
                 <button
                   onClick={() => setSettingsOpen(false)}
                   className="flex items-center justify-center w-7 h-7 rounded-full transition-opacity hover:opacity-60"
-                  style={{ background: 'rgba(255,255,255,0.06)', color: ts.textMuted }}
+                  style={{ background: ts.cardBgHover, color: ts.textMuted }}
                 >
                   <X size={13} />
                 </button>
@@ -579,7 +586,7 @@ export default function BreathingPage() {
                         disabled={disabled}
                         className="flex-1 flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition-all duration-200 disabled:opacity-25"
                         style={{
-                          background: active ? `${gm.color}12` : 'rgba(255,255,255,0.025)',
+                          background: active ? `${gm.color}18` : ts.cardBgHover,
                           borderColor: active ? `${gm.color}45` : ts.border,
                           boxShadow: active ? `0 0 20px ${gm.glow}, inset 0 1px 0 rgba(255,255,255,0.05)` : 'none',
                         }}
@@ -605,7 +612,7 @@ export default function BreathingPage() {
                         onClick={() => handleGuidanceChange('voice', g)}
                         className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl border t-label transition-all"
                         style={{
-                          background: voiceGender === g ? `${ts.accentLight}15` : 'rgba(255,255,255,0.02)',
+                          background: voiceGender === g ? `${ts.accentLight}18` : ts.cardBgHover,
                           borderColor: voiceGender === g ? `${ts.accentLight}55` : ts.border,
                           color: voiceGender === g ? ts.accentLight : ts.textMuted,
                         }}
@@ -650,9 +657,7 @@ export default function BreathingPage() {
                 </div>
               </div>
             </div>
-          </div>
-        </>
-      )}
+      </div>
 
       <section className="relative z-10 backdrop-blur-sm border-t py-14 px-4 sm:px-6"
         style={{ background: `${ts.pageBg}E6`, borderColor: ts.border }}>

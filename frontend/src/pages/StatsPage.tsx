@@ -60,11 +60,14 @@ function ChartCard({ title, sub, children, className = '' }: {
 }) {
   const ts = useThemeStyles();
   return (
-    <div className={`flex flex-col gap-3 rounded-2xl p-5 ${className}`}
+    <div className={`flex flex-col gap-3 rounded-2xl p-5 transition-all duration-300 ${className}`}
       style={{
         backgroundColor: ts.cardBg,
         border: `1px solid ${ts.border}`,
-      }}>
+      }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = ts.borderHover; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = ts.border; }}
+    >
       <div>
         <h3 className="t-body font-medium" style={{ color: ts.textPrimary }}>{title}</h3>
         {sub && <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>{sub}</p>}
@@ -79,15 +82,28 @@ function MilestoneBadge({ icon, label, value, glow }: {
   icon: React.ReactNode; label: string; value: string; glow: string;
 }) {
   const ts = useThemeStyles();
+  // Derive a brighter variant of the glow color for the icon container.
+  // Robust against any incoming alpha value: bump rgba(...,a) → ~2× alpha.
+  const iconBg = glow.replace(/rgba\(([^)]+),\s*([\d.]+)\)/, (_m, c, a) =>
+    `rgba(${c},${Math.min(0.5, Number(a) * 1.9)})`
+  );
   return (
-    <div className="flex flex-col items-center gap-2 px-4 py-4 rounded-2xl text-center"
+    <div className="flex flex-col items-center gap-2 px-4 py-4 rounded-2xl text-center transition-all duration-300"
       style={{
         backgroundColor: ts.cardBg,
         border: `1px solid ${ts.border}`,
         boxShadow: `0 0 20px ${glow}`,
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = 'translateY(-2px)';
+        e.currentTarget.style.borderColor = ts.borderHover;
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.borderColor = ts.border;
       }}>
       <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-        style={{ background: `${glow.replace('0.08', '0.15')}` }}>
+        style={{ background: iconBg }}>
         {icon}
       </div>
       <p className="t-heading font-medium tabular-nums leading-none" style={{ color: ts.textSecondary }}>

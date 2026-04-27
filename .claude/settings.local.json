@@ -55,7 +55,20 @@
       "Bash(magick --version)",
       "Bash(convert --version)",
       "Bash(ls .git/MERGE_HEAD .git/CHERRY_PICK_HEAD .git/REBASE_HEAD)",
-      "Bash(cat .git/MERGE_MSG)"
+      "Bash(cat .git/MERGE_MSG)",
+      "Bash(winget show:*)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('main:', d.get\\('main'\\)\\); print\\('scripts:', list\\(d.get\\('scripts',{}\\).keys\\(\\)\\)\\)\")",
+      "Bash(npx claude-mem:*)",
+      "Read(//c/Users/Mikhail Senatorov/.claude/plugins/marketplaces/thedotmack/**)",
+      "Bash(bun run:*)",
+      "Bash(kill %1)",
+      "Bash(wait)",
+      "Bash(ls -d .worktrees)",
+      "Bash(ls -d worktrees)",
+      "Bash(grep -i \"worktree\" .gitignore)",
+      "Bash(grep -i \"worktree.*director\" CLAUDE.md)",
+      "WebFetch(domain:example.com)",
+      "mcp__plugin_claude-mem_mcp-search__smart_search"
     ]
   }
 }
