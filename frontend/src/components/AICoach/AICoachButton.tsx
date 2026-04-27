@@ -1,6 +1,7 @@
 // src/components/AICoach/AICoachButton.tsx
 import React, { useState } from 'react';
 import { Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from "../../hooks/useThemeStyles";
 import AICoachModal from './AICoachModal';
 
@@ -10,6 +11,7 @@ interface AICoachButtonProps {
 
 export default function AICoachButton({ variant = 'floating' }: AICoachButtonProps) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   // ── Вариант для главной (под сферой) ───────────────────────────────────────
@@ -40,7 +42,7 @@ export default function AICoachButton({ variant = 'floating' }: AICoachButtonPro
             }}
           >
             <Sparkles size={12} />
-            Спросить Коуча
+            {t('coach.askButton')}
           </button>
         )}
 
@@ -82,11 +84,12 @@ export default function AICoachButton({ variant = 'floating' }: AICoachButtonPro
         >
           <div className="w-full max-w-md shadow-2xl relative">
             {/* Кнопка закрытия для мобилок сверху модалки */}
-            <button 
+            <button
               onClick={() => setOpen(false)}
               className="absolute -top-12 right-0 p-2 text-white/50 hover:text-white sm:hidden"
+              aria-label={t('common.close', 'Close')}
             >
-              Закрыть
+              {t('common.close', 'Close')}
             </button>
             <AICoachModal onClose={() => setOpen(false)} />
           </div>

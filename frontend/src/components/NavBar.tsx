@@ -68,7 +68,7 @@ export default function NavBar() {
         .nav-link:hover span { width: 100% !important; }
       `}</style>
 
-      <nav className="sticky top-0 z-50 w-full transition-all duration-300"
+      <nav aria-label="Main navigation" className="sticky top-0 z-50 w-full transition-all duration-300"
         style={{
           background: scrolled ? `${ts.navBg}` : `${ts.navBg}B0`,
           backdropFilter: 'blur(12px)',
@@ -128,6 +128,7 @@ export default function NavBar() {
               <>
                 <button onClick={() => navigate('/profile')}
                   data-tour="nav-profile"
+                  aria-label="Open profile menu"
                   className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   {(user?.avatar || user?.picture)

@@ -260,6 +260,7 @@
     "notMedical": "Not medical advice",
     "messagesLeft": "left",
     "tryTechnique": "Try",
+    "askButton": "Ask the Coach",
     "suggestions": {
       "sleep": "I can't sleep, mind racing",
       "stress": "Stressed before a big meeting",
@@ -275,6 +276,16 @@
       "comebackHours": "h for more coaching.",
       "createAccount": "Create a free account for 10 messages per day."
     }
+  },
+  "statsCards": {
+    "sessions7d": "Sessions · last 7 days",
+    "consistency": "Consistency · % of active days",
+    "avgTime7d": "Average time · last 7 days",
+    "bestDay": "Best day · {{avg}}m on average",
+    "positiveMood": "Positive mood · all time",
+    "totalEntries": "Total entries",
+    "totalCount": "{{count}} total",
+    "activity28d": "Activity · last 28 days"
   },
   "profile": {
     "title": "Health Integrations",

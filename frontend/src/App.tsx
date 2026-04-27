@@ -82,9 +82,9 @@ function AnimatedRoutes() {
         <Route path="/"             element={<PageWrapper><HomePage /></PageWrapper>} />
         <Route path="/home-page"    element={<Navigate to="/" replace />} />
         <Route path="/breathing"    element={<PageWrapper><BreathingPage /></PageWrapper>} />
-        <Route path="/sessions"     element={<Navigate to="/profile" replace />} />
+        <Route path="/sessions"     element={<Navigate to="/profile?tab=sessions" replace />} />
         <Route path="/sessions/new" element={<PageWrapper><NewSessionPage /></PageWrapper>} />
-        <Route path="/statistics"   element={<Navigate to="/profile" replace />} />
+        <Route path="/statistics"   element={<Navigate to="/profile?tab=progress" replace />} />
         <Route path="/faq"           element={<PageWrapper><FAQPage /></PageWrapper>} />
         <Route path="/community"          element={<PageWrapper><CommunityPage /></PageWrapper>} />
         <Route path="/community/post/:id" element={<PageWrapper><CommunityPostPage /></PageWrapper>} />

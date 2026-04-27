@@ -260,6 +260,7 @@
     "notMedical": "No es consejo médico",
     "messagesLeft": "restantes",
     "tryTechnique": "Probar",
+    "askButton": "Preguntar al coach",
     "suggestions": {
       "sleep": "No puedo dormir, mente activa",
       "stress": "Estrés antes de una reunión",
@@ -275,6 +276,16 @@
       "comebackHours": "h para más sesiones.",
       "createAccount": "Crea una cuenta gratuita para 10 mensajes al día."
     }
+  },
+  "statsCards": {
+    "sessions7d": "Sesiones · últimos 7 días",
+    "consistency": "Constancia · % de días activos",
+    "avgTime7d": "Tiempo promedio · 7 días",
+    "bestDay": "Mejor día · promedio {{avg}}m",
+    "positiveMood": "Ánimo positivo · total",
+    "totalEntries": "Total de registros",
+    "totalCount": "{{count}} en total",
+    "activity28d": "Actividad · 28 días"
   },
   "profile": {
     "title": "Integraciones de salud",

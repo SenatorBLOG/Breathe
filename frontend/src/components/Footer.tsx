@@ -13,6 +13,7 @@ export default function Footer() {
 
   return (
     <footer
+      aria-label="Site footer"
       className="relative w-full border-t backdrop-blur-md overflow-hidden"
       style={{ borderColor: ts.border, background: `${ts.navBg}CC` }}
     >
@@ -124,7 +125,7 @@ export default function Footer() {
             {/* Social */}
             <div className="flex items-center gap-4 mt-3">
               <a
-                href="https://instagram.com/"
+                href="https://instagram.com/breatheonline.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Breathe on Instagram"
@@ -148,7 +149,7 @@ export default function Footer() {
                 <FaGithub size={15} />
               </a>
               <a
-                href="mailto:support@breatheapp.com"
+                href="mailto:support@breatheonline.app"
                 aria-label="Email support"
                 className="transition-all duration-200 hover:scale-110"
                 style={{ color: ts.textMuted }}
@@ -177,9 +178,9 @@ export default function Footer() {
             </Link>
 
             <div className="flex gap-4">
-              <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Breathe on Instagram" style={{ color: ts.textMuted }}><FaInstagram size={14} /></a>
+              <a href="https://instagram.com/breatheonline.app/" target="_blank" rel="noopener noreferrer" aria-label="Breathe on Instagram" style={{ color: ts.textMuted }}><FaInstagram size={14} /></a>
               <a href="https://github.com/SenatorBLOG/" target="_blank" rel="noopener noreferrer" aria-label="Breathe on GitHub" style={{ color: ts.textMuted }}><FaGithub size={14} /></a>
-              <a href="mailto:support@breatheapp.com" aria-label="Email support" style={{ color: ts.textMuted }}><FaEnvelope size={14} /></a>
+              <a href="mailto:support@breatheonline.app" aria-label="Email support" style={{ color: ts.textMuted }}><FaEnvelope size={14} /></a>
             </div>
           </div>
 

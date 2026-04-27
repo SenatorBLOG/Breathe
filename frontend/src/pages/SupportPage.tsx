@@ -207,10 +207,10 @@ export default function SupportPage() {
                     {/* Name + Email */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="flex flex-col gap-1.5">
-                        <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                        <label htmlFor="support-name" className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                           Your name
                         </label>
-                        <input value={name} onChange={e => setName(e.target.value)}
+                        <input id="support-name" name="name" autoComplete="name" value={name} onChange={e => setName(e.target.value)}
                           placeholder="Alex"
                           className="rounded-xl px-4 py-2.5 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                           style={{
@@ -220,10 +220,10 @@ export default function SupportPage() {
                           }} />
                       </div>
                       <div className="flex flex-col gap-1.5">
-                        <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                        <label htmlFor="support-email" className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                           Email address
                         </label>
-                        <input value={email} onChange={e => setEmail(e.target.value)}
+                        <input id="support-email" name="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)}
                           type="email" placeholder="you@email.com"
                           className="rounded-xl px-4 py-2.5 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                           style={{
@@ -236,10 +236,10 @@ export default function SupportPage() {
 
                     {/* Message */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      <label htmlFor="support-message" className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                         Message
                       </label>
-                      <textarea value={message} onChange={e => setMessage(e.target.value)}
+                      <textarea id="support-message" name="message" value={message} onChange={e => setMessage(e.target.value)}
                         rows={5} maxLength={1000}
                         placeholder="Describe your issue or question in detail…"
                         className="rounded-xl px-4 py-3 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors resize-none leading-relaxed"

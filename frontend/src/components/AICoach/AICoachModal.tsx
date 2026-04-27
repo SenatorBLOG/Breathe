@@ -43,6 +43,7 @@ const TypingIndicator = () => {
 
 const CoachBubble = ({ message, isLatest, onTry }: { message: Message; isLatest: boolean; onTry: (t: Technique) => void }) => {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   // Имитация печати для последнего сообщения
   const [displayed, setDisplayed] = useState(isLatest ? "" : message.text);
   
@@ -75,7 +76,7 @@ const CoachBubble = ({ message, isLatest, onTry }: { message: Message; isLatest:
             className="flex items-center gap-2 px-4 py-2 rounded-xl t-caption font-bold text-white self-start transition-all hover:scale-105 active:scale-95 shadow-lg"
             style={{ background: ts.accent }}
           >
-            ✦ Попробовать {message.technique.label} <ChevronRight size={12} />
+            ✦ {t('coach.tryTechnique')} {message.technique.label} <ChevronRight size={12} />
           </button>
         )}
       </div>
@@ -88,8 +89,8 @@ const CoachBubble = ({ message, isLatest, onTry }: { message: Message; isLatest:
 export default function AICoachModal({ onClose }: { onClose: () => void }) {
   const ts = useThemeStyles();
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  
+  const { t, i18n } = useTranslation();
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -113,7 +114,7 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
 
     try {
       const history = messages.map(m => ({ role: m.role === 'coach' ? 'model' : 'user', text: m.text }));
-      const { data } = await api.post('/coach/message', { message: userMsg, history });
+      const { data } = await api.post('/coach/message', { message: userMsg, history, language: i18n.language.slice(0, 2) });
       
       setMessages(prev => [...prev, {
         id: Date.now() + '_c',
@@ -179,8 +180,10 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
           <div className="p-3 rounded-xl border flex items-center gap-3" style={{ borderColor: '#ff4d4d30', backgroundColor: '#ff4d4d10' }}>
             <ShieldAlert className="text-[#ff4d4d]" size={18} />
             <div className="t-label leading-tight" style={{ color: ts.textPrimary }}>
-              <p className="font-bold uppercase tracking-tighter">Лимит достигнут</p>
-              <p className="opacity-60">Попробуйте снова через {limitData.hoursUntilReset}ч или создайте аккаунт.</p>
+              <p className="font-bold uppercase tracking-tighter">{t('coach.limit.usedAuth')}</p>
+              <p className="opacity-60">
+                {t('coach.limit.comeback')} {limitData.hoursUntilReset}{t('coach.limit.comebackHours')} {t('coach.limit.createAccount')}
+              </p>
             </div>
           </div>
         ) : (
@@ -189,7 +192,7 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend(input)}
-              placeholder="Спроси о медитации..."
+              placeholder={t('coach.placeholder')}
               className="w-full bg-transparent border-2 rounded-2xl px-4 py-3 t-body transition-all focus:outline-none"
               style={{ borderColor: ts.border, color: ts.textPrimary }}
             />

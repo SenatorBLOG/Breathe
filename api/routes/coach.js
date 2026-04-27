@@ -12,7 +12,7 @@ if (!process.env.GEMINI_API_KEY) {
   console.log('✅ GEMINI_API_KEY loaded, length:', process.env.GEMINI_API_KEY.length);
 }
 
-const SYSTEM_PROMPT = `You are an expert breathing and meditation coach for the Breathe app (breatheonline.app).
+const BASE_SYSTEM_PROMPT = `You are an expert breathing and meditation coach for the Breathe app (breatheonline.app).
 
 Your role:
 1. ANALYZE the user's current state — stress, sleep issues, anxiety, low energy, panic, focus problems.
@@ -31,13 +31,26 @@ Rules:
 - Max 120 words total
 - Warm, expert, conversational tone
 - Never diagnose medical conditions
-- Always include the technique name so frontend can detect it
-- Respond in the same language the user writes in`;
+- Always include the technique name so frontend can detect it`;
+
+// Per-language overrides. The UI language wins over the user's typing language —
+// users expect the assistant to speak the language their UI is set to.
+const LANG_RULES = {
+  en: 'Respond in English regardless of the language the user writes in.',
+  ru: 'Отвечайте ТОЛЬКО на русском языке, независимо от языка пользователя. Используйте ВЕЖЛИВУЮ форму обращения «Вы» (с большой буквы), НИКОГДА не «ты». Тон — уважительный, профессиональный.',
+  es: 'Responde SOLO en español, independientemente del idioma en que escriba el usuario. Usa el tratamiento formal "usted" (no "tú"). Tono respetuoso y profesional.',
+};
+
+function buildSystemPrompt(language) {
+  const rule = LANG_RULES[language] || LANG_RULES.en;
+  return `${BASE_SYSTEM_PROMPT}\n\nLanguage:\n- ${rule}`;
+}
 
 // ─── POST /api/coach/message ──────────────────────────────────────────────────
 router.post('/message', optionalAuth, rateLimit, async (req, res) => {
   try {
-    const { message, history = [] } = req.body;
+    const { message, history = [], language = 'en' } = req.body;
+    const lang = ['en', 'ru', 'es'].includes(language) ? language : 'en';
 
     if (!message || message.trim().length === 0)
       return res.status(400).json({ error: 'Message is required' });
@@ -69,7 +82,7 @@ router.post('/message', optionalAuth, rateLimit, async (req, res) => {
 
     const body = {
       systemInstruction: {
-        parts: [{ text: SYSTEM_PROMPT }],
+        parts: [{ text: buildSystemPrompt(lang) }],
       },
       contents,
       generationConfig: {

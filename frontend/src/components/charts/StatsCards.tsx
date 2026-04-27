@@ -1,5 +1,6 @@
 // src/components/charts/StatsCards.tsx
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../../api';
 import StatCard from './StatCard';
 import { ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
@@ -97,6 +98,7 @@ function Spark({ data, color, type = 'line' }: { data: {name:string;value:number
 // ─── Main Component ───────────────────────────────────────────────────────────
 const StatsCards = () => {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [sessions, setSessions] = useState<RawSession[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -193,7 +195,7 @@ const StatsCards = () => {
       <StatCard
         value={String(totalSess7)}
         subValue={<Delta pct={sessPct} />}
-        label="Сессии · за 7 дней"
+        label={t('statsCards.sessions7d')}
         accent={`${ts.accent}15`}
       >
         <Spark data={miniSessions} color={ts.accent} type="area" />
@@ -202,7 +204,7 @@ const StatsCards = () => {
       {/* 2 — Consistency */}
       <StatCard
         value={`${consistency}%`}
-        label="Стабильность · % активных дней"
+        label={t('statsCards.consistency')}
         accent={`${ts.accentLight}15`}
       >
         <Spark data={miniConsistency} color={ts.accentLight} />
@@ -212,7 +214,7 @@ const StatsCards = () => {
       <StatCard
         value={formatDuration(avgSess7)}
         subValue={<Delta pct={avgPct} />}
-        label="Среднее время · 7 дней"
+        label={t('statsCards.avgTime7d')}
         accent={`${ts.accent}15`}
       >
         <Spark data={miniAvg} color={ts.accent} type="area" />
@@ -221,7 +223,7 @@ const StatsCards = () => {
       {/* 4 — Best day */}
       <StatCard
         value={bestWeekday.avg > 0 ? bestWeekday.name : '—'}
-        label={`Лучший день · в среднем ${bestWeekday.avg}м`}
+        label={t('statsCards.bestDay', { avg: bestWeekday.avg })}
         accent={`${ts.accentLight}10`}
       >
         <div className="flex flex-col justify-center gap-1.5 pt-1">
@@ -256,7 +258,7 @@ const StatsCards = () => {
       {/* 5 — Mood breakdown */}
       <StatCard
         value={moodStats.total > 0 ? `${moodStats.positivePct}%` : '—'}
-        label="Позитивный настрой · всего"
+        label={t('statsCards.positiveMood')}
         accent={`${ts.accent}08`}
       >
         <div className="flex flex-col justify-center gap-2 pt-2">
@@ -275,7 +277,7 @@ const StatsCards = () => {
             </div>
           ))}
           <div className="flex justify-between pt-1.5 border-t mt-1" style={{ borderColor: `${ts.border}30` }}>
-            <span className="t-label" style={{ color: ts.textDim }}>Всего записей</span>
+            <span className="t-label" style={{ color: ts.textDim }}>{t('statsCards.totalEntries')}</span>
             <span className="t-label font-bold tabular-nums" style={{ color: ts.accentLight }}>{moodStats.total}</span>
           </div>
         </div>
@@ -283,8 +285,8 @@ const StatsCards = () => {
 
       {/* 6 — Heatmap */}
       <StatCard
-        value={`${sessions.length} всего`}
-        label="Активность · 28 дней"
+        value={t('statsCards.totalCount', { count: sessions.length })}
+        label={t('statsCards.activity28d')}
         accent={`${ts.accent}10`}
       >
         <div className="flex flex-col gap-1 w-full pt-1">
