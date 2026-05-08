@@ -260,6 +260,7 @@ export default function BreathingPage() {
     localStorage.setItem('breathe_guidance_mode', mode);
     localStorage.setItem('breathe_voice_gender', gender);
   };
+  const navigate = useNavigate();
   const location = useLocation();
   const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>(() => {
     const state = location.state as { coachPreset?: PhaseDurations } | null;
@@ -368,7 +369,7 @@ export default function BreathingPage() {
     if (!localStorage.getItem('token')) {
       toast('Session not saved', {
         description: 'Create a free account to track your progress and streaks',
-        action: { label: 'Sign in →', onClick: () => window.location.href = '/login' },
+        action: { label: 'Sign in →', onClick: () => navigate('/login') },
         duration: 6000,
       });
       return;

@@ -58,19 +58,28 @@ export default function AICoachButton({ variant = 'floating' }: AICoachButtonPro
   // ── Плавающий вариант (для остальных страниц) ──────────────────────────────
   return (
     <>
+      {/*
+        pulseGlow previously animated box-shadow, which forces Paint on every
+        frame. Replaced with filter:drop-shadow (GPU-composited) + opacity so
+        the browser never leaves the Composite step.
+
+        Background uses btnGradient (starts #1A5FCC) instead of accent
+        (#3A82F7) — white text on #1A5FCC achieves 5.7:1 contrast ratio,
+        satisfying WCAG AA (requires 4.5:1 for normal text).
+      */}
       <style>{`
         @keyframes pulseGlow {
-          0%, 100% { box-shadow: 0 8px 24px ${ts.accent}33; transform: scale(1); }
-          50%      { box-shadow: 0 12px 40px ${ts.accent}55; transform: scale(1.03); }
+          0%, 100% { filter: drop-shadow(0 6px 12px ${ts.accent}44); transform: scale(1);    opacity: 1;    }
+          50%      { filter: drop-shadow(0 8px 24px  ${ts.accent}88); transform: scale(1.03); opacity: 0.95; }
         }
-        .animate-pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
+        .animate-pulse-glow { animation: pulseGlow 4s ease-in-out infinite; will-change: transform, filter, opacity; }
       `}</style>
 
       <button
         onClick={() => setOpen(true)}
         aria-label="Open AI Coach"
         className="fixed bottom-24 right-6 z-40 flex items-center justify-center w-14 h-14 sm:w-auto sm:px-5 rounded-2xl sm:rounded-full text-white shadow-2xl transition-all hover:-translate-y-1 active:scale-90 animate-pulse-glow"
-        style={{ background: ts.accent }}
+        style={{ background: ts.btnGradient }}
       >
         <Sparkles size={20} className="sm:mr-2" />
         <span className="hidden sm:inline t-caption font-bold uppercase tracking-wider">AI Coach</span>

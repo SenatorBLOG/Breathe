@@ -9,6 +9,7 @@ import { AuthContext } from '../components/contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Sparkles, Share2, Trash2, CheckCircle2, Circle, ArrowRight, Zap } from 'lucide-react';
+import PageSEO from '../components/PageSEO';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Challenge {
@@ -383,6 +384,11 @@ export default function ChallengesPage() {
 
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="Breathing Challenges | Breathe"
+        description="Join daily and weekly breathing challenges. Build consistency, earn achievements, and grow with the Breathe community."
+        canonical="/challenges"
+      />
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">

@@ -48,7 +48,7 @@
          FAVICON
     ═══════════════════════════════════════════════════ -->
     <link rel="icon" href="/favicon.ico?v=3" />
-    <link rel="apple-touch-icon" sizes="180x180"      href="/apple-touch-icon.webp" />
+    <link rel="apple-touch-icon" sizes="180x180"      href="/apple-touch-icon.png" />
     <link rel="manifest"         href="/site.webmanifest" />
     <meta name="theme-color" content="#010814" />
     <meta name="apple-mobile-web-app-capable"          content="yes" />
@@ -57,10 +57,18 @@
     <meta name="mobile-web-app-capable"                content="yes" />
 
     <!-- ═══════════════════════════════════════════════════
-         FONTS
+         PRECONNECT — critical third-party origins
+         (keeps connection setup off the critical path)
     ═══════════════════════════════════════════════════ -->
+    <!-- Jamendo API: music library fetches begin on /music-library -->
+    <link rel="preconnect" href="https://api.jamendo.com" />
+    <!-- Google Fonts: Montserrat is used site-wide -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- ═══════════════════════════════════════════════════
+         FONTS
+    ═══════════════════════════════════════════════════ -->
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap"
           onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" /></noscript>
@@ -145,20 +153,48 @@
          Replace G-XXXXXXXXXX with your actual Measurement ID
          from analytics.google.com
     ═══════════════════════════════════════════════════ -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PBVKQHYMB9"></script>
+    <!-- GA4: load after page is interactive to avoid TBT contribution -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-PBVKQHYMB9', {
-        page_title: document.title,
-        page_location: window.location.href,
-      });
+      gtag('config', 'G-PBVKQHYMB9', { page_title: document.title, page_location: window.location.href });
+      // Defer the GTM script until the browser is idle so it doesn't
+      // compete with first paint. Falls back to DOMContentLoaded on
+      // browsers that don't support requestIdleCallback.
+      (function() {
+        function loadGTM() {
+          var s = document.createElement('script');
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PBVKQHYMB9';
+          s.async = true;
+          document.head.appendChild(s);
+        }
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadGTM, { timeout: 4000 });
+        } else {
+          window.addEventListener('DOMContentLoaded', loadGTM);
+        }
+      })();
     </script>
 
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <style>
+        body { margin: 0; background: #010814; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: ui-sans-serif, system-ui, sans-serif; }
+        .ns { text-align: center; color: #B8D9FF; padding: 32px; }
+        .ns h1 { font-size: 24px; font-weight: 300; margin: 0 0 12px; color: #fff; }
+        .ns p  { font-size: 14px; color: #4A7AAA; max-width: 360px; line-height: 1.6; margin: 0 auto 24px; }
+        .ns a  { display: inline-block; padding: 12px 32px; border-radius: 999px; background: linear-gradient(135deg,#1A5FCC,#3A82F7); color: #fff; text-decoration: none; font-size: 14px; }
+      </style>
+      <div class="ns">
+        <div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#7AC4FF,#3A82F7 70%);margin:0 auto 24px"></div>
+        <h1>Breathe needs JavaScript</h1>
+        <p>This app uses JavaScript for guided breathing animations and session tracking. Please enable JavaScript to get started.</p>
+        <a href="https://enable-javascript.com/" target="_blank" rel="noopener">How to enable JavaScript →</a>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

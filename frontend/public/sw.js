@@ -1,19 +1,16 @@
-const CACHE_NAME = 'breathe-v4';
+const CACHE_NAME = 'breathe-v5';
 const OFFLINE_URL = '/breathing';
 
-// Assets to cache immediately on install
+// Assets to cache immediately on install.
+// All background images are .webp (converted from .jpg in May 2026).
+// Icons are .webp (see site.webmanifest).
 const PRECACHE = [
   '/',
   '/breathing',
-  '/home-page',
   '/index.html',
-  '/Background_Night.jpg',
-  '/Background_Day.jpg',
-  '/Background_Nature.jpg',
-  '/icons/Lotus_png.png',
-  '/icons/Spiral_png.png',
-  '/icons/Waves_png.png',
-  '/icons/Constellation_png.png',
+  '/Background_Night.webp',
+  '/Background_Day.webp',
+  '/Background_Nature.webp',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
 ];

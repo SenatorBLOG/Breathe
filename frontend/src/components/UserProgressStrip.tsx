@@ -123,7 +123,10 @@ export default function UserProgressStrip() {
         const today = new Date().toDateString();
         setHasToday(r.data.some(s => new Date(s.sessionDate).toDateString() === today));
       })
-      .catch(() => {})
+      .catch(() => {
+        // Sessions unavailable — show zero stats rather than crashing.
+        // This is expected on first load / network hiccup.
+      })
       .finally(() => setLoading(false));
   }, [isAuthenticated]);
 

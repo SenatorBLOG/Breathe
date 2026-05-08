@@ -13,25 +13,30 @@ import HomeInteractive from '../components/HomeInteractive';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import UserProgressStrip from '../components/UserProgressStrip';
 import Icon from '../components/Icon';
+import PageSEO from '../components/PageSEO';
 
 // ─── Animated number counter ─────────────────────────────────────────────────
+// Starts from ~80% of target so the first rendered frame is never "0".
 function AnimatedNumber({ target, suffix = '' }: { target: number; suffix?: string }) {
-  const [current, setCurrent] = useState(0);
+  // Floor at 80% so even before the scroll-triggered animation the number
+  // looks meaningful, not embarrassingly zero on Product Hunt.
+  const floor = Math.floor(target * 0.8);
+  const [current, setCurrent] = useState(floor);
   const [ref, visible] = useScrollReveal(0.3);
 
   useEffect(() => {
     if (!visible) return;
-    let start = 0;
-    const duration = 1200;
+    let start = floor;
+    const duration = 900;
     const step = 16;
-    const increment = target / (duration / step);
+    const increment = (target - floor) / (duration / step);
     const timer = setInterval(() => {
       start += increment;
       if (start >= target) { setCurrent(target); clearInterval(timer); }
       else setCurrent(Math.floor(start));
     }, step);
     return () => clearInterval(timer);
-  }, [visible, target]);
+  }, [visible, target, floor]);
 
   return (
     <span ref={ref as React.RefObject<HTMLSpanElement>} className="tabular-nums">
@@ -213,6 +218,11 @@ export default function HomePage() {
 
   return (
     <div className="relative w-full min-h-screen font-montserrat overflow-x-hidden">
+      <PageSEO
+        title="Breathe — Guided Breathing & Meditation App"
+        description="Free guided breathing exercises for sleep, stress, and focus. Try Box Breathing, 4-7-8, Wim Hof and more. No download needed — works in your browser."
+        canonical="/"
+      />
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
@@ -226,11 +236,12 @@ export default function HomePage() {
             {t('hero.eyebrow')}
           </span>
 
-          <div className="anim-fade-up anim-delay-2 flex flex-col gap-2">
+          {/* h1 renders immediately — it's the LCP element. No opacity:0 delay. */}
+          <div className="flex flex-col gap-2">
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-light leading-none tracking-tight shimmer-text">
               Breathe Better
             </h1>
-            <p className="t-body sm:text-xl md:text-2xl font-light max-w-xl mx-auto leading-relaxed" style={{ color: ts.textMuted }}>
+            <p className="anim-fade-up anim-delay-2 t-body sm:text-xl md:text-2xl font-light max-w-xl mx-auto leading-relaxed" style={{ color: ts.textMuted }}>
               {t('hero.subtitle')}
             </p>
           </div>

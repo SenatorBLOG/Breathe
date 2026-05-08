@@ -188,7 +188,8 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
           </div>
         ) : (
           <div className="relative flex items-center gap-2">
-            <input 
+            <input
+              type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend(input)}

@@ -349,6 +349,7 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
           {/* Input */}
           <div className="flex gap-2 mt-1">
             <input
+              type="text"
               value={text}
               onChange={e => setText(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
@@ -658,7 +659,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
           {/* Tags */}
           <div className="flex flex-col gap-2">
             <div className="flex gap-2">
-              <input value={tagInput} onChange={e => setTagInput(e.target.value)}
+              <input type="text" value={tagInput} onChange={e => setTagInput(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTag(); } }}
                 placeholder="Add tag (enter to add)"
                 maxLength={30}

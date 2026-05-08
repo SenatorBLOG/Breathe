@@ -22,6 +22,7 @@ import { useThemeStyles } from '../hooks/useThemeStyles';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine,
 } from 'recharts';
+import PageSEO from '../components/PageSEO';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Session {
@@ -143,8 +144,12 @@ export function StatsSection() {
   const { data: health, loading: healthLoading } = useHealthData();
 
   useEffect(() => {
-    api.get('/sessions').then(r => setSessions(r.data)).catch(() => {});
-    api.get('/nlp/insights').then(r => setNlp(r.data)).catch(() => {});
+    api.get('/sessions').then(r => setSessions(r.data)).catch(() => {
+      // Sessions failed to load — user sees empty stats; no toast needed (could be unauthenticated)
+    });
+    api.get('/nlp/insights').then(r => setNlp(r.data)).catch(() => {
+      // NLP insights are optional — gracefully absent is fine
+    });
   }, []);
 
   // Derived numbers
@@ -531,6 +536,12 @@ export function StatsSection() {
 export default function StatsPage() {
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="Progress & Stats | Breathe"
+        description="Explore your breathing journey — mood trends, calmness scores, weekly streaks, and detailed session analytics."
+        canonical="/statistics"
+        noIndex
+      />
       <ThemeBackground />
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />

@@ -13,6 +13,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useThemeStyles } from "../hooks/useThemeStyles";
 import ThemeBackground from "../components/ThemeBackground";
+import PageSEO from "../components/PageSEO";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface NLPData {
@@ -962,7 +963,7 @@ export function SessionsSection() {
               <div className="flex items-center gap-2 flex-wrap">
                 <div className="relative flex-1 min-w-48">
                   <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: ts.textMuted }} />
-                  <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t("sessions.search")}
+                  <input type="search" value={search} onChange={e => setSearch(e.target.value)} placeholder={t("sessions.search")}
                     className="w-full pl-8 pr-8 py-2 rounded-xl t-caption outline-none transition-colors"
                     style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}`, color: ts.textPrimary }} />
                   {search && (
@@ -1109,6 +1110,11 @@ export function SessionsSection() {
 export default function SessionsPage() {
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="Session History | Breathe"
+        description="Review your past breathing sessions, track your progress, and see your meditation stats over time."
+        canonical="/sessions"
+      />
       <ThemeBackground />
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />

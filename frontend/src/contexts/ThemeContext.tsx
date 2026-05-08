@@ -45,7 +45,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             return;
           }
         } catch (err) {
-          console.log('Failed to load theme from profile, using localStorage');
+          // Theme profile fetch failed — silently fall through to localStorage.
+          // This is expected when user is not authenticated or API is slow.
         }
       }
       

@@ -8,7 +8,11 @@ Disallow: /sessions
 Disallow: /new-session
 Disallow: /onboarding
 Disallow: /data-consent
-Disallow: /signup
+# /signup and /login are public pages (discoverable via links).
+# They carry <meta name="robots" content="noindex,nofollow"> so Google
+# can crawl them (confirming they exist) but won't index them.
+# Listing them as Disallow causes GSC to report "Discovered – blocked
+# by robots.txt" warnings for every internal link pointing to them.
 
 # API — handled by backend
 Disallow: /api/

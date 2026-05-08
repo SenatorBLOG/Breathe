@@ -41,6 +41,8 @@ const MusicLibrary         = lazy(() => import('./components/AudioPlayer/MusicLi
 
 import { HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider } from './contexts/ThemeContext';
+import ErrorBoundary from './components/ErrorBoundary';
+import PageLoader from './components/PageLoader';
 import AICoachButton from './components/AICoach/AICoachButton';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import PWAInstallBanner from './components/PWAInstallBanner';
@@ -122,9 +124,10 @@ export default function App() {
       <ThemeProvider>
       <AuthProvider>
         <MusicProvider>
+          <ErrorBoundary>
           <div className="min-h-screen">
             <ScrollToTop />
-            <Suspense fallback={null}>
+            <Suspense fallback={<PageLoader />}>
               <AnimatedRoutes />
             </Suspense>
             <AICoachButton variant="floating" />
@@ -135,6 +138,7 @@ export default function App() {
             <ChallengeNudge />
             <OnboardingTour />
           </div>
+          </ErrorBoundary>
         </MusicProvider>
       </AuthProvider>
       </ThemeProvider>

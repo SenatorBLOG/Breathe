@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 import api from '../api';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import Icon from '../components/Icon';
+import PageSEO from '../components/PageSEO';
 
 type TabType = 'time' | 'weekly' | 'streak';
 
@@ -98,6 +99,11 @@ export default function LeaderboardPage() {
 
   return (
     <div className="relative min-h-screen font-montserrat overflow-x-hidden">
+      <PageSEO
+        title="Leaderboard | Breathe"
+        description="See the top meditators on Breathe. Compete on total practice time, weekly sessions, and longest streaks."
+        canonical="/leaderboard"
+      />
       <ThemeBackground />
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />

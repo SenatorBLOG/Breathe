@@ -11,12 +11,15 @@
 :root[data-theme="night"],
 :root[data-theme="nature"] { color-scheme: dark; }
 
-/* Глобальные переходы для мягкой смены темы */
+/* Глобальные переходы для мягкой смены темы.
+   Only composite-safe properties (background-color, border-color, color).
+   box-shadow is removed — it triggers Paint on every element during
+   theme switches, causing Layout Thrashing and high TBT.
+   Components that need shadow transitions opt-in individually. */
 *, *::before, *::after {
-  transition: background-color var(--transition-speed) var(--transition-timing), 
-              border-color var(--transition-speed) var(--transition-timing), 
-              color var(--transition-speed) var(--transition-timing),
-              box-shadow var(--transition-speed) var(--transition-timing);
+  transition: background-color var(--transition-speed) var(--transition-timing),
+              border-color var(--transition-speed) var(--transition-timing),
+              color var(--transition-speed) var(--transition-timing);
 }
 
 /* ══ Page background ══════════════════════════════════════════════════════════ */

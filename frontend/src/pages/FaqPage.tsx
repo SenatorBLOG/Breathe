@@ -260,6 +260,7 @@ export default function FAQPage() {
           <div className="relative w-full max-w-md mt-2">
             <Search size={13} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: ts.textDim }} />
             <input
+              type="search"
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder={t("faq.search")}

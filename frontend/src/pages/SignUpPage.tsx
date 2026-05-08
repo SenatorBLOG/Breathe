@@ -1,6 +1,7 @@
 // src/pages/SignUpPage.tsx
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { AuthContext } from '../components/contexts/AuthContext';
 import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 import { syncGoalFromProfile } from '../utils/mlDefaults';
@@ -104,6 +105,9 @@ function SignUpPageInner() {
 
   return (
     <div className="relative min-h-screen font-montserrat overflow-x-hidden">
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">

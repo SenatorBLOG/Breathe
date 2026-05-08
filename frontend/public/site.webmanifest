@@ -9,8 +9,10 @@
   "orientation": "portrait-primary",
   "categories": ["health", "lifestyle", "wellness"],
   "icons": [
-    { "src": "/icons/icon-192.webp", "sizes": "192x192", "type": "image/webp", "purpose": "any maskable" },
-    { "src": "/icons/icon-512.webp", "sizes": "512x512", "type": "image/webp", "purpose": "any maskable" }
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
     {
@@ -18,14 +20,14 @@
       "short_name": "Breathe",
       "description": "Start a breathing session",
       "url": "/breathing",
-      "icons": [{ "src": "/icons/icon-192.webp", "sizes": "192x192" }]
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Sleep Story",
       "short_name": "Story",
       "description": "Generate an AI sleep story",
       "url": "/sleep/story",
-      "icons": [{ "src": "/icons/icon-192.webp", "sizes": "192x192" }]
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

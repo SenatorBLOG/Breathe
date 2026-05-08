@@ -7,6 +7,7 @@ import api from '../api';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { Brain, ChevronDown, ChevronUp, BookOpen, Sparkles, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import PageSEO from '../components/PageSEO';
 
 interface NLPData {
   sentiment: 'positive' | 'neutral' | 'negative';
@@ -261,6 +262,12 @@ export default function JournalPage() {
 
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="Breathing Journal | Breathe"
+        description="Reflect on your breathing sessions with AI-powered journal insights. Track mood patterns, themes, and emotional trends over time."
+        canonical="/journal"
+        noIndex
+      />
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">

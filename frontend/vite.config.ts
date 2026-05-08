@@ -1,18 +1,41 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import mkcert from 'vite-plugin-mkcert';
 import cesium from 'vite-plugin-cesium';
 import path from 'path';
 
+/**
+ * vite-plugin-cesium unconditionally injects:
+ *   <link rel="stylesheet" href="/cesium/Widgets/widgets.css">
+ *   <script src="/cesium/Cesium.js"></script>
+ * into index.html — making them render-blocking on EVERY page.
+ * CesiumGlobe.tsx already loads these on-demand via a dynamic script/link
+ * loader (only when the user switches to the Cesium globe style on /globe).
+ * This plugin strips the injected tags from the final HTML so Cesium
+ * is never eagerly fetched, saving ~1.7 MB on every page load.
+ */
+function removeCesiumHtmlInjection(): Plugin {
+  return {
+    name: 'remove-cesium-html-injection',
+    enforce: 'post',
+    transformIndexHtml(html) {
+      return html
+        .replace(/<link[^>]+cesium\/Widgets\/widgets\.css[^>]*>\s*/gi, '')
+        .replace(/<script[^>]+cesium\/Cesium\.js[^>]*><\/script>\s*/gi, '');
+    },
+  };
+}
+
 export default defineConfig({
   plugins: [
     react(),
     mkcert(),
-    // vite-plugin-cesium copies Cesium static assets to /public/cesium.
-    // We do NOT inject a global <script> tag — CesiumGlobe.tsx loads
-    // Cesium.js on-demand via a dynamic script loader so it only downloads
-    // on the /globe route.
+    // Copies Cesium static assets to /public/cesium at build time.
+    // CesiumGlobe.tsx loads Cesium.js on-demand — only when the user
+    // switches to the Cesium globe style on /globe.
     cesium({ rebuildCesium: false }),
+    // Must run AFTER cesium() so it can strip the script/link tags it injects.
+    removeCesiumHtmlInjection(),
   ],
   base: '/', // критически важно для Vercel
   build: {

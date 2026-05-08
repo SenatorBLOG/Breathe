@@ -8,6 +8,7 @@ import api from '../api';
 import { Send, Mail, MessageCircle, BookOpen, Users, CheckCircle, Bug, Lightbulb, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import PageSEO from '../components/PageSEO';
 
 // ─── Ad slot ──────────────────────────────────────────────────────────────────
 function AdSlot({ className = '' }: { className?: string }) {
@@ -108,6 +109,11 @@ export default function SupportPage() {
 
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="Support | Breathe"
+        description="Get help with Breathe. Browse FAQs, report a bug, or send us a message — we're here to help."
+        canonical="/support"
+      />
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
@@ -210,7 +216,7 @@ export default function SupportPage() {
                         <label htmlFor="support-name" className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                           Your name
                         </label>
-                        <input id="support-name" name="name" autoComplete="name" value={name} onChange={e => setName(e.target.value)}
+                        <input type="text" id="support-name" name="name" autoComplete="name" value={name} onChange={e => setName(e.target.value)}
                           placeholder="Alex"
                           className="rounded-xl px-4 py-2.5 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                           style={{

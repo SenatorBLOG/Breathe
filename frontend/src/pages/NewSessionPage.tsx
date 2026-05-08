@@ -15,6 +15,7 @@ import { useThemeStyles } from '../hooks/useThemeStyles';
 import ThemeBackground from '../components/ThemeBackground';
 import Icon from '../components/Icon';
 import { Moon, Target, Wind } from 'lucide-react';
+import PageSEO from '../components/PageSEO';
 
 // ── ML recommendation types ───────────────────────────────────────────────────
 interface MLRec {
@@ -294,6 +295,12 @@ export default function NewSessionPage() {
 
   return (
     <div className="relative min-h-screen font-montserrat overflow-x-hidden">
+      <PageSEO
+        title="Log Session | Breathe"
+        description="Record a new breathing or meditation session. Log duration, mood, focus level, and notes to track your progress."
+        canonical="/sessions/new"
+        noIndex
+      />
       <ThemeBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">

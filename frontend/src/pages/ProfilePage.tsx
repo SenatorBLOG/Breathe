@@ -34,6 +34,7 @@ import { AuthContext } from '../components/contexts/AuthContext';
 import ChallengesSection from '../components/ChallengesSection';
 import { SessionsSection } from './SessionPage';
 import { StatsSection } from './StatsPage';
+import PageSEO from '../components/PageSEO';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const GOALS = [
@@ -437,7 +438,9 @@ export default function ProfilePage() {
         }
         if (data.achievements) setEarnedAchievements(data.achievements);
       })
-      .catch(() => {})
+      .catch(() => {
+        toast.error('Could not load profile — please refresh.');
+      })
       .finally(() => setLoadingProfile(false));
   }, []);
 
@@ -549,6 +552,12 @@ export default function ProfilePage() {
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="Profile | Breathe"
+        description="Manage your Breathe profile, track your streaks, view achievements, and customize your meditation experience."
+        canonical="/profile"
+        noIndex
+      />
       <ThemeBackground />
       <div className="relative z-10 flex flex-col min-h-screen">
         <NavBar />
@@ -659,6 +668,7 @@ export default function ProfilePage() {
               {/* Display name */}
               <Section label="Display Name">
                 <input
+                  type="text"
                   value={nickname}
                   onChange={e => setNickname(e.target.value.slice(0, 30))}
                   placeholder={user?.name || user?.email?.split('@')[0] || 'Your nickname'}
