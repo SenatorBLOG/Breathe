@@ -162,8 +162,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ── Mobile ── */}
-        <div className="flex sm:hidden flex-col gap-6">
+        {/* ── Mobile ── (aria-hidden: desktop block above already exposes all links to AT) */}
+        <div className="flex sm:hidden flex-col gap-6" aria-hidden="true">
 
           {/* Top */}
           <div className="flex items-center justify-between">

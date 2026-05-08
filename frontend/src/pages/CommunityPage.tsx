@@ -869,14 +869,27 @@ export default function CommunityPage() {
               {loading && page === 1 ? (
                 <ListSkeleton count={4} />
               ) : posts.length === 0 ? (
-                <div className="flex flex-col items-center gap-4 py-20 text-center">
-                  <span className="text-4xl opacity-30">🌊</span>
-                  <p className="t-body" style={{ color: ts.textMuted }}>{t("community.noPostsYet")}</p>
-                  <button onClick={handleCreate}
-                    className="px-6 py-2.5 rounded-full t-body text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)]"
-                    style={{ background: ts.btnGradient }}>
-                    Write a post →
-                  </button>
+                <div className="flex flex-col items-center gap-5 py-20 text-center max-w-sm mx-auto">
+                  <span className="text-5xl">🌊</span>
+                  <div className="flex flex-col gap-2">
+                    <p className="t-subheading font-semibold" style={{ color: ts.textPrimary }}>
+                      The community is just getting started
+                    </p>
+                    <p className="t-body" style={{ color: ts.textMuted }}>
+                      Share a breathing tip, a session reflection, or just say hello.
+                      Your post could be the spark that gets the conversation going.
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-2 items-center w-full">
+                    <button onClick={handleCreate}
+                      className="w-full px-6 py-2.5 rounded-full t-body text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)]"
+                      style={{ background: ts.btnGradient }}>
+                      ✍️ Write the first post
+                    </button>
+                    <p className="t-caption" style={{ color: ts.textDim }}>
+                      Be the first to share — it takes 30 seconds
+                    </p>
+                  </div>
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">

@@ -14,6 +14,7 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 import UserProgressStrip from '../components/UserProgressStrip';
 import Icon from '../components/Icon';
 import PageSEO from '../components/PageSEO';
+import { APP_STATS } from '../config/appStats';
 
 // ─── Animated number counter ─────────────────────────────────────────────────
 // Starts from ~80% of target so the first rendered frame is never "0".
@@ -277,14 +278,14 @@ export default function HomePage() {
                style={{ borderColor: ts.border }}>
             <div className="flex flex-col items-center gap-1">
               <span className="text-2xl sm:text-3xl font-semibold" style={{ color: ts.textSecondary }}>
-                <AnimatedNumber target={50000} suffix="+" />
+                <AnimatedNumber target={APP_STATS.SESSIONS_COUNT} suffix={APP_STATS.SESSIONS_SUFFIX} />
               </span>
               <span className="t-label sm:text-xs tracking-widest uppercase" style={{ color: ts.textMuted }}>{t("hero.stats.sessions")}</span>
             </div>
             <div className="w-px h-8" style={{ backgroundColor: ts.border }} />
             <div className="flex flex-col items-center gap-1">
               <span className="text-2xl sm:text-3xl font-semibold" style={{ color: ts.textSecondary }}>
-                <AnimatedNumber target={12} />
+                <AnimatedNumber target={APP_STATS.TECHNIQUES_COUNT} />
               </span>
               <span className="t-label sm:text-xs tracking-widest uppercase" style={{ color: ts.textMuted }}>{t("hero.stats.techniques")}</span>
             </div>

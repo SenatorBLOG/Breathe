@@ -100,6 +100,7 @@ function AnimatedRoutes() {
         <Route path="/profile"               element={<PageWrapper><ProfilePage /></PageWrapper>} />
         <Route path="/data-consent"           element={<PageWrapper><DataConsentPage /></PageWrapper>} />
         <Route path="/music-library" element={<PageWrapper><MusicLibrary /></PageWrapper>} />
+        <Route path="/sounds"        element={<Navigate to="/music-library" replace />} />
         <Route path="/onboarding"   element={<PageWrapper><OnboardingPage /></PageWrapper>} />
         <Route path="/globe"         element={<PageWrapper><GlobePage /></PageWrapper>} />
         <Route path="/sleep/what-is-sleep-apnea"        element={<PageWrapper><SleepApneaPage /></PageWrapper>} />

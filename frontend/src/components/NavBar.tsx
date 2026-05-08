@@ -163,6 +163,9 @@ export default function NavBar() {
           {/* Language switcher — desktop only */}
           <div className="hidden md:flex relative">
             <button onClick={() => setLangOpen(v => !v)}
+              aria-label={`Switch language — current: ${i18n.language.slice(0,2).toUpperCase()}`}
+              aria-expanded={langOpen}
+              aria-haspopup="listbox"
               className="flex items-center gap-1 px-2 py-1.5 rounded-lg transition-colors t-caption"
               style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}>
               <Globe size={12} />

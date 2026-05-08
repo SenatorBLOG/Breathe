@@ -1,33 +1,55 @@
 /**
  * PageLoader — full-screen skeleton shown while lazy pages download.
  *
- * Replaces `fallback={null}` in App.tsx Suspense so users never see
- * a black screen during route transitions. Matches the app's dark
- * background so there's zero flash of white/wrong colour.
+ * Reads the persisted theme from localStorage so the background colour
+ * matches the user's theme before React has hydrated. Prevents a jarring
+ * black flash on the Celestial (day) or Nature themes.
  */
+
+const THEME_BG: Record<string, string> = {
+  night:  '#010814',
+  day:    '#F5F0E8',
+  nature: '#0A1A0E',
+};
+
+const THEME_ORB: Record<string, [string, string]> = {
+  // [core, edge]
+  night:  ['#7AC4FF', '#3A82F7'],
+  day:    ['#E8C060', '#9E6800'],
+  nature: ['#4AE8A0', '#2ECC71'],
+};
+
+function getTheme(): string {
+  try { return localStorage.getItem('breathe_theme') ?? 'night'; } catch { return 'night'; }
+}
+
 export default function PageLoader() {
+  const theme = getTheme();
+  const bg = THEME_BG[theme] ?? THEME_BG.night;
+  const [core, edge] = THEME_ORB[theme] ?? THEME_ORB.night;
+
   return (
     <div
       aria-label="Loading page…"
       role="status"
       style={{
         minHeight: '100vh',
-        background: '#010814',
+        background: bg,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         gap: 20,
+        transition: 'background 0.3s',
       }}
     >
-      {/* Pulsing orb — matches SoulOrb aesthetic */}
       <div
         style={{
           width: 56,
           height: 56,
           borderRadius: '50%',
-          background: 'radial-gradient(circle at 35% 35%, #7AC4FF, #3A82F7 70%)',
-          boxShadow: '0 0 30px #3A82F744',
+          background: `radial-gradient(circle at 35% 35%, ${core}, ${edge} 70%)`,
+          boxShadow: `0 0 30px ${edge}44`,
           animation: 'pageloader-pulse 1.6s ease-in-out infinite',
         }}
       />

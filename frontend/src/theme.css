@@ -104,7 +104,7 @@ input:focus, textarea:focus, select:focus {
 [data-theme="day"] input:focus,
 [data-theme="day"] textarea:focus,
 [data-theme="day"] select:focus {
-  outline-color: #C8860A !important;
+  outline-color: #8B5E08 !important;
 }
 [data-theme="nature"] input:focus,
 [data-theme="nature"] textarea:focus,

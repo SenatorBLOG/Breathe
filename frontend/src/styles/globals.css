@@ -147,3 +147,21 @@
   letter-spacing: -0.02em;
 }
 
+/* ── Screen-reader only utility ─────────────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── BreathingCircle keyboard focus ring ────────────────────────────────────── */
+.breathing-circle-wrapper [role="button"]:focus-visible {
+  outline: 3px solid rgba(255,255,255,0.85);
+  outline-offset: 6px;
+  border-radius: 9999px;
+}
+

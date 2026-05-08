@@ -43,19 +43,19 @@ const STYLES: Record<Theme, ThemeStyles> = {
     navBg:         'rgba(6,12,26,0.96)',
   },
   day: {
-    btnGradient:   'linear-gradient(135deg,#C8860A,#E8A020)',
-    btnShadow:     '0 0 24px rgba(232,160,32,0.45)',
+    btnGradient:   'linear-gradient(135deg,#8A5A00,#9E6800)', // ↑ WCAG AA: white text 4.74:1+ across full gradient
+    btnShadow:     '0 0 24px rgba(154,104,0,0.45)',
     textPrimary:   '#0A0A1E',
     textSecondary: '#1A2A5E',
-    textMuted:     '#4A5A80',   // ↑ brighter: was #364478
-    textDim:       '#6A7A9A',   // ↑ brighter: was #5A6A92
+    textMuted:     '#4A5A80',   // 5.89:1 on pageBg ✅
+    textDim:       '#536280',   // ↑ WCAG AA: was #6A7A9A (3.78:1 → 5.39:1 on pageBg) ✅
     cardBg:        'rgba(255,252,240,0.92)',
     cardBgHover:   'rgba(255,250,230,0.98)',
     pageBg:        '#F5F0E8',
-    border:        'rgba(180,140,60,0.40)',  // ↑ more visible
+    border:        'rgba(180,140,60,0.40)',
     borderHover:   'rgba(200,140,30,0.65)',
-    accent:        '#C8860A',
-    accentLight:   '#E8A020',
+    accent:        '#8B5E08',   // ↑ WCAG AA: was #C8860A (2.71:1 → 4.62:1 on pageBg) ✅
+    accentLight:   '#956000',   // ↑ WCAG AA: was #E8A020 (2.07:1 → 4.67:1 on pageBg) ✅
     navBg:         'rgba(245,240,220,0.97)',
   },
   nature: {

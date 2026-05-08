@@ -115,10 +115,23 @@ function DraggablePhaseBar({ phaseKey, value, onChange, isActivePhase }: {
         {value}s
       </span>
       <div
-        className="relative w-full rounded-xl cursor-ns-resize touch-none overflow-hidden"
+        role="slider"
+        tabIndex={0}
+        aria-label={`${phaseLabel[phaseKey]} duration`}
+        aria-valuemin={BAR_MIN}
+        aria-valuemax={BAR_MAX}
+        aria-valuenow={value}
+        aria-valuetext={`${value} seconds`}
+        className="relative w-full rounded-xl cursor-ns-resize touch-none overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70 focus-visible:outline-offset-2"
         style={{ height: BAR_H, background: ts.cardBg, border: `1px solid ${ts.border}` }}
         onMouseDown={e => { e.preventDefault(); onStart(e.clientY); }}
         onTouchStart={e => { e.preventDefault(); onStart(e.touches[0].clientY); }}
+        onKeyDown={e => {
+          if (e.key === 'ArrowUp'   || e.key === 'ArrowRight') { e.preventDefault(); onChange(Math.min(BAR_MAX, value + 1)); }
+          if (e.key === 'ArrowDown' || e.key === 'ArrowLeft')  { e.preventDefault(); onChange(Math.max(BAR_MIN, value - 1)); }
+          if (e.key === 'Home') { e.preventDefault(); onChange(BAR_MIN); }
+          if (e.key === 'End')  { e.preventDefault(); onChange(BAR_MAX); }
+        }}
       >
         <div className="absolute bottom-0 left-0 right-0 rounded-xl transition-[height] duration-150"
           style={{
@@ -438,6 +451,16 @@ export default function BreathingPage() {
 
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      {/* Screen-reader live region — announces phase changes when voice guidance is off */}
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {isActive && phase
+          ? `${phase.charAt(0).toUpperCase() + phase.slice(1)} — ${phaseDurations[phase as keyof typeof phaseDurations]} seconds`
+          : ''}
+      </div>
       <style>{`
         @keyframes fadeInUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
         @keyframes fadeIn   { from{opacity:0} to{opacity:1} }

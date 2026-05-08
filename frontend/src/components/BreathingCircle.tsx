@@ -98,13 +98,18 @@ export function BreathingCircle({
   const sizePx = `${size}px`;
 
   return (
-    <div className="relative flex items-center justify-center" style={{ width: sizePx, height: sizePx }}>
+    <div className="relative flex items-center justify-center breathing-circle-wrapper" style={{ width: sizePx, height: sizePx }}>
       <motion.div
         animate={controls}
         initial={{ scale: 1 }}
         whileHover={{ scale: isActive ? undefined : 1.03, filter: "brightness(1.06)" }}
         whileTap={{ scale: 0.97, filter: "brightness(1.15)" }}
         onClick={onToggle}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle?.(); } }}
+        tabIndex={0}
+        role="button"
+        aria-label={isActive ? `Pause breathing session — currently ${phase} phase` : 'Start breathing session'}
+        aria-pressed={isActive}
         style={{
           width: sizePx,
           height: sizePx,
@@ -114,6 +119,7 @@ export function BreathingCircle({
           alignItems: "center",
           justifyContent: "center",
           willChange: "transform",
+          outline: "none",
           // Градиент теперь строится на цветах темы
           background: `
             radial-gradient(
