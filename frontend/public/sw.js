@@ -1,4 +1,4 @@
-const CACHE_NAME = 'breathe-v5';
+const CACHE_NAME = 'breathe-v6';
 const OFFLINE_URL = '/breathing';
 
 // Assets to cache immediately on install.
@@ -49,6 +49,11 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') return;
   if (url.pathname.startsWith('/api/')) return;
+
+  // Skip ALL external origins — let the browser handle CDN/API requests directly.
+  // The SW must not intercept them: CSP blocks SW-internal fetches to external domains,
+  // which would cause map tiles, fonts, analytics, and auth calls to silently fail.
+  if (url.hostname !== self.location.hostname) return;
 
   // Images and fonts: cache-first (exclude favicons — they must always be fresh)
   if (
