@@ -1,6 +1,7 @@
 // src/components/BreathingCircle.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { useThemeStyles } from "../hooks/useThemeStyles";
 
 export type Phase = "inhale" | "hold" | "exhale" | "pause";
@@ -36,6 +37,7 @@ export function BreathingCircle({
   glowIntensity = 1,
 }: BreathingCircleProps) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const controls = useAnimation();
   const [phase, setPhase] = useState<Phase>("inhale");
   const timeoutRef = useRef<number | null>(null);
@@ -91,10 +93,6 @@ export function BreathingCircle({
     // Добавляем ts в зависимости, чтобы анимация обновилась при смене темы
   }, [isActive, phaseDurations, glowIntensity, minScale, maxScale, ts.accent]);
 
-  const LABEL: Record<Phase, string> = {
-    inhale: "Inhale", hold: "Hold", exhale: "Exhale", pause: "Pause",
-  };
-
   const sizePx = `${size}px`;
 
   return (
@@ -108,7 +106,13 @@ export function BreathingCircle({
         onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle?.(); } }}
         tabIndex={0}
         role="button"
-        aria-label={isActive ? `Pause breathing session — currently ${phase} phase` : 'Start breathing session'}
+        aria-label={isActive
+          ? t('breathing.pauseSessionAria', {
+              phase: phase === 'pause'
+                ? t('breathing.pause_phase')
+                : t(`breathing.phaseLabels.${phase}`),
+            })
+          : t('breathing.startSessionAria')}
         aria-pressed={isActive}
         style={{
           width: sizePx,
@@ -141,14 +145,18 @@ export function BreathingCircle({
             textShadow: `0 10px 36px ${ts.accent}4D`,
             lineHeight: 1,
           }}>
-            {isActive ? LABEL[phase] : "Start"}
+            {isActive
+              ? phase === "pause"
+                ? t("breathing.pause_phase")
+                : t(`breathing.phaseLabels.${phase}`)
+              : t("breathing.start")}
           </div>
           <div style={{
             color: "rgba(255,255,255,0.8)", // Подпись тоже белая/прозрачная
             marginTop: 8,
             fontSize: "clamp(11px, 1.5vw, 18px)",
           }}>
-            {isActive ? `${Math.round(phaseDurations[phase])}s` : "Tap to begin"}
+            {isActive ? `${Math.round(phaseDurations[phase])}s` : t("breathing.tapToBegin")}
           </div>
         </div>
       </motion.div>

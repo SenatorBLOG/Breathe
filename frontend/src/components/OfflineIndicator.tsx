@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // `navigator.onLine` can be unreliable (some browsers / automation environments
 // report `false` even when the network is fine). To avoid showing a misleading
@@ -15,6 +16,7 @@ async function probeOnline(): Promise<boolean> {
 }
 
 export default function OfflineIndicator() {
+  const { t } = useTranslation();
   const [offline, setOffline] = useState(false);
 
   useEffect(() => {
@@ -50,7 +52,7 @@ export default function OfflineIndicator() {
       style={{ background: '#FF9A5C', color: '#010814' }}
     >
       <span aria-hidden>📵</span>
-      <span>You're offline — breathing still works</span>
+      <span>{t('common.offlineBanner')}</span>
     </div>
   );
 }

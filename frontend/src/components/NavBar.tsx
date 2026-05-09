@@ -68,7 +68,7 @@ export default function NavBar() {
         .nav-link:hover span { width: 100% !important; }
       `}</style>
 
-      <nav aria-label="Main navigation" className="sticky top-0 z-50 w-full transition-all duration-300"
+      <nav aria-label={t('common.mainNavigation')} className="sticky top-0 z-50 w-full transition-all duration-300"
         style={{
           background: scrolled ? `${ts.navBg}` : `${ts.navBg}B0`,
           backdropFilter: 'blur(12px)',
@@ -98,7 +98,7 @@ export default function NavBar() {
           <div className="hidden md:flex items-center gap-6">
             <NavLink to="/">{t("nav.home")}</NavLink>
             <NavLink to="/breathing">{t("nav.meditate")}</NavLink>
-            <NavLink to="/globe">{t("nav.globe", "Globe")}</NavLink>
+            <NavLink to="/globe">{t("nav.globe")}</NavLink>
             <NavLink to="/music-library">{t("nav.sounds")}</NavLink>
             <NavLink to="/community" dataTour="nav-community">{t("nav.community")}</NavLink>
             {!isAuthenticated && (
@@ -128,7 +128,7 @@ export default function NavBar() {
               <>
                 <button onClick={() => navigate('/profile')}
                   data-tour="nav-profile"
-                  aria-label="Open profile menu"
+                  aria-label={t('common.openProfileMenu')}
                   className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   {(user?.avatar || user?.picture)
@@ -155,7 +155,7 @@ export default function NavBar() {
           <button onClick={toggleTheme}
             className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-colors t-caption"
             style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}
-            title={`Switch theme (current: ${THEME_META[theme].label})`}>
+            title={t('common.switchTheme', { current: THEME_META[theme].label })}>
             <span className="t-body">{THEME_META[theme].icon}</span>
             <span className="t-caption">{THEME_META[theme].label}</span>
           </button>
@@ -163,7 +163,7 @@ export default function NavBar() {
           {/* Language switcher — desktop only */}
           <div className="hidden md:flex relative">
             <button onClick={() => setLangOpen(v => !v)}
-              aria-label={`Switch language — current: ${i18n.language.slice(0,2).toUpperCase()}`}
+              aria-label={t('common.switchLanguage', { current: i18n.language.slice(0,2).toUpperCase() })}
               aria-expanded={langOpen}
               aria-haspopup="listbox"
               className="flex items-center gap-1 px-2 py-1.5 rounded-lg transition-colors t-caption"
@@ -192,7 +192,7 @@ export default function NavBar() {
           <button onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden p-1 transition-colors"
             style={{ color: ts.textMuted }}
-            aria-label="Toggle menu">
+            aria-label={t('common.toggleMenu')}>
             {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>

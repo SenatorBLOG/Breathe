@@ -4,7 +4,8 @@
  * Reads the persisted theme from localStorage so the background colour
  * matches the user's theme before React has hydrated. Prevents a jarring
  * black flash on the Celestial (day) or Nature themes.
- */
+*/
+import { useTranslation } from 'react-i18next';
 
 const THEME_BG: Record<string, string> = {
   night:  '#010814',
@@ -24,13 +25,14 @@ function getTheme(): string {
 }
 
 export default function PageLoader() {
+  const { t } = useTranslation();
   const theme = getTheme();
   const bg = THEME_BG[theme] ?? THEME_BG.night;
   const [core, edge] = THEME_ORB[theme] ?? THEME_ORB.night;
 
   return (
     <div
-      aria-label="Loading page…"
+      aria-label={t('common.loadingPage')}
       role="status"
       style={{
         minHeight: '100vh',

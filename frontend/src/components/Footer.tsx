@@ -13,7 +13,7 @@ export default function Footer() {
 
   return (
     <footer
-      aria-label="Site footer"
+      aria-label={t("footer.siteFooter")}
       className="relative w-full border-t backdrop-blur-md overflow-hidden"
       style={{ borderColor: ts.border, background: `${ts.navBg}CC` }}
     >
@@ -68,7 +68,7 @@ export default function Footer() {
               className="t-label"
               style={{ color: ts.textMuted }}
             >
-              Navigate
+              {t("footer.navigate")}
             </span>
 
             {[
@@ -100,7 +100,7 @@ export default function Footer() {
               className="t-label"
               style={{ color: ts.textMuted }}
             >
-              Support
+              {t("footer.support")}
             </span>
 
             {[
@@ -128,7 +128,7 @@ export default function Footer() {
                 href="https://instagram.com/breatheonline.app/"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Breathe on Instagram"
+                aria-label={t("footer.instagram")}
                 className="transition-all duration-200 hover:scale-110"
                 style={{ color: ts.textMuted }}
                 onMouseEnter={e => (e.currentTarget.style.color = ts.accentLight)}
@@ -140,7 +140,7 @@ export default function Footer() {
                 href="https://github.com/SenatorBLOG/"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Breathe on GitHub"
+                aria-label={t("footer.github")}
                 className="transition-all duration-200 hover:scale-110"
                 style={{ color: ts.textMuted }}
                 onMouseEnter={e => (e.currentTarget.style.color = ts.accentLight)}
@@ -150,7 +150,7 @@ export default function Footer() {
               </a>
               <a
                 href="mailto:support@breatheonline.app"
-                aria-label="Email support"
+                aria-label={t("footer.emailSupport")}
                 className="transition-all duration-200 hover:scale-110"
                 style={{ color: ts.textMuted }}
                 onMouseEnter={e => (e.currentTarget.style.color = ts.accentLight)}
@@ -178,9 +178,9 @@ export default function Footer() {
             </Link>
 
             <div className="flex gap-4">
-              <a href="https://instagram.com/breatheonline.app/" target="_blank" rel="noopener noreferrer" aria-label="Breathe on Instagram" style={{ color: ts.textMuted }}><FaInstagram size={14} /></a>
-              <a href="https://github.com/SenatorBLOG/" target="_blank" rel="noopener noreferrer" aria-label="Breathe on GitHub" style={{ color: ts.textMuted }}><FaGithub size={14} /></a>
-              <a href="mailto:support@breatheonline.app" aria-label="Email support" style={{ color: ts.textMuted }}><FaEnvelope size={14} /></a>
+              <a href="https://instagram.com/breatheonline.app/" target="_blank" rel="noopener noreferrer" aria-label={t("footer.instagram")} style={{ color: ts.textMuted }}><FaInstagram size={14} /></a>
+              <a href="https://github.com/SenatorBLOG/" target="_blank" rel="noopener noreferrer" aria-label={t("footer.github")} style={{ color: ts.textMuted }}><FaGithub size={14} /></a>
+              <a href="mailto:support@breatheonline.app" aria-label={t("footer.emailSupport")} style={{ color: ts.textMuted }}><FaEnvelope size={14} /></a>
             </div>
           </div>
 

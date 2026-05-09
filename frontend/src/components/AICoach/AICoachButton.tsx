@@ -77,12 +77,12 @@ export default function AICoachButton({ variant = 'floating' }: AICoachButtonPro
 
       <button
         onClick={() => setOpen(true)}
-        aria-label="Open AI Coach"
+        aria-label={t('coach.openButton')}
         className="fixed bottom-24 right-6 z-40 flex items-center justify-center w-14 h-14 sm:w-auto sm:px-5 rounded-2xl sm:rounded-full text-white shadow-2xl transition-all hover:-translate-y-1 active:scale-90 animate-pulse-glow"
         style={{ background: ts.btnGradient }}
       >
         <Sparkles size={20} className="sm:mr-2" />
-        <span className="hidden sm:inline t-caption font-bold uppercase tracking-wider">AI Coach</span>
+        <span className="hidden sm:inline t-caption font-bold uppercase tracking-wider">{t('coach.shortLabel')}</span>
       </button>
 
       {open && (

@@ -2,17 +2,10 @@
 // Shows once per day, 25s after page load, not on /profile.
 import React, { useEffect, useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { AuthContext } from './contexts/AuthContext';
 import { Trophy, Flame, Zap, Moon, Wind } from 'lucide-react';
-
-const MESSAGES: { icon: React.ReactNode; text: string; sub: string }[] = [
-  { icon: <Trophy size={20} color="#F59E0B" />, text: 'Ready for a 7-day breathing challenge?', sub: 'Build a lasting habit in one week' },
-  { icon: <Flame size={20} color="#F97316" />, text: 'Day streaks keep your calm consistent', sub: 'Start a challenge in your profile' },
-  { icon: <Zap size={20} color="#FACC15" />, text: 'Earn your first badge this week', sub: '7-day Box Breathing — beginner friendly' },
-  { icon: <Moon size={20} color="#818CF8" />, text: 'Sleep challenge: 7 nights of 4-7-8', sub: 'Users report falling asleep 40% faster' },
-  { icon: <Wind size={20} color="#A78BFA" />, text: 'Challenge yourself to breathe daily', sub: 'Your profile has 6 challenges waiting' },
-];
 
 const COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
 const DELAY_MS    = 25_000;               // show after 25s on page
@@ -22,10 +15,19 @@ const SKIP_PATHS = ['/profile', '/login', '/signup', '/onboarding'];
 
 export default function ChallengeNudge() {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const { isAuthenticated } = useContext(AuthContext);
   const location = useLocation();
   const [visible, setVisible] = useState(false);
-  const [msg] = useState(() => MESSAGES[Math.floor(Math.random() * MESSAGES.length)]);
+  const [messageIndex] = useState(() => Math.floor(Math.random() * 5));
+  const messages = [
+    { icon: <Trophy size={20} color="#F59E0B" />, text: t('challengeNudge.messages.0.text'), sub: t('challengeNudge.messages.0.sub') },
+    { icon: <Flame size={20} color="#F97316" />, text: t('challengeNudge.messages.1.text'), sub: t('challengeNudge.messages.1.sub') },
+    { icon: <Zap size={20} color="#FACC15" />, text: t('challengeNudge.messages.2.text'), sub: t('challengeNudge.messages.2.sub') },
+    { icon: <Moon size={20} color="#818CF8" />, text: t('challengeNudge.messages.3.text'), sub: t('challengeNudge.messages.3.sub') },
+    { icon: <Wind size={20} color="#A78BFA" />, text: t('challengeNudge.messages.4.text'), sub: t('challengeNudge.messages.4.sub') },
+  ];
+  const msg = messages[messageIndex];
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -81,7 +83,7 @@ export default function ChallengeNudge() {
           className="inline-flex items-center gap-1 mt-2 t-label font-medium px-3 py-1.5 rounded-lg text-white transition-all hover:scale-105"
           style={{ background: ts.btnGradient }}
         >
-          View challenges →
+          {t('common.viewChallenges')} →
         </Link>
       </div>
 
@@ -89,7 +91,7 @@ export default function ChallengeNudge() {
         onClick={() => setVisible(false)}
         className="flex-shrink-0 t-caption leading-none mt-0.5 hover:opacity-80 transition-opacity"
         style={{ color: ts.textDim }}
-        aria-label="Dismiss"
+        aria-label={t('common.dismiss')}
       >
         ✕
       </button>

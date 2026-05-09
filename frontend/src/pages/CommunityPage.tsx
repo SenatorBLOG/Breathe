@@ -152,6 +152,7 @@ function ConfirmDialog({ title, body, confirmLabel, danger, onConfirm, onCancel 
   onConfirm: () => void; onCancel: () => void;
 }) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center p-4"
       style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)' }}
@@ -162,7 +163,7 @@ function ConfirmDialog({ title, body, confirmLabel, danger, onConfirm, onCancel 
         <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{body}</p>
         <div className="flex gap-2 justify-end">
           <button onClick={onCancel} className="px-4 py-2 rounded-xl t-caption transition-colors"
-            style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}>Cancel</button>
+            style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}>{t('common.cancel')}</button>
           <button onClick={onConfirm} className="px-4 py-2 rounded-xl t-caption font-medium text-white transition-all hover:opacity-90"
             style={{ background: danger ? '#EF4444' : ts.btnGradient }}>{confirmLabel}</button>
         </div>
@@ -279,6 +280,7 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
   postId: string; commentCount: number; isLoggedIn: boolean; onLoginRequired: () => void;
 }) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
@@ -292,9 +294,9 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
     try {
       const { data } = await api.get(`/posts/${postId}/comments`);
       setComments(data);
-    } catch { toast.error('Failed to load comments'); }
+    } catch { toast.error(t('community.failedLoadComments')); }
     finally { setLoading(false); }
-  }, [postId]);
+  }, [postId, t]);
 
   const toggle = () => {
     if (!open) load();
@@ -309,7 +311,7 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
       const { data } = await api.post(`/posts/${postId}/comments`, { text });
       setComments(c => [...c, data]);
       setText('');
-    } catch { toast.error('Failed to post comment'); }
+    } catch { toast.error(t('community.failedPostComment')); }
     finally { setSending(false); }
   };
 
@@ -317,7 +319,7 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
     try {
       await api.delete(`/posts/${postId}/comments/${id}`);
       setComments(c => c.filter(x => x._id !== id));
-    } catch { toast.error('Failed to delete'); }
+    } catch { toast.error(t('common.error')); }
   };
 
   const likeComment = async (id: string) => {
@@ -334,13 +336,13 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
         className="flex items-center gap-1.5 t-caption transition-colors"
         style={{ color: ts.textMuted }}>
         <MessageCircle size={12} />
-        {commentCount > 0 ? `${commentCount} comment${commentCount !== 1 ? 's' : ''}` : 'Add comment'}
+        {commentCount > 0 ? t('community.commentCount', { count: commentCount }) : t('community.addComment')}
         <ChevronDown size={10} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
         <div className="mt-3 flex flex-col gap-3">
-          {loading && <p className="t-caption" style={{ color: ts.textDim }}>Loading…</p>}
+          {loading && <p className="t-caption" style={{ color: ts.textDim }}>{t('common.loading')}</p>}
           {comments.map(c => (
             <CommentRow key={c._id} comment={c} postId={postId}
               currentUserId={currentUserId} onDelete={deleteComment} onLike={likeComment} />
@@ -353,7 +355,7 @@ function CommentSection({ postId, commentCount, isLoggedIn, onLoginRequired }: {
               value={text}
               onChange={e => setText(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
-              placeholder={isLoggedIn ? 'Write a comment…' : 'Sign in to comment'}
+              placeholder={isLoggedIn ? t('community.writeComment') : t('community.signInToComment')}
               readOnly={!isLoggedIn}
               onClick={() => { if (!isLoggedIn) onLoginRequired(); }}
               maxLength={300}
@@ -416,8 +418,8 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete, 
     setDialog(null);
     try {
       await api.post(`/posts/${post._id}/report`);
-      toast.success('Report submitted. Thank you.');
-    } catch { toast.error('Could not submit report. Try again.'); }
+      toast.success(t('community.reportSubmitted'));
+    } catch { toast.error(t('community.reportFailed')); }
   };
 
   const confirmBlock = async () => {
@@ -425,26 +427,26 @@ function PostCard({ post, isLoggedIn, currentUserId, onLoginRequired, onDelete, 
     try {
       await api.post(`/users/${post.author._id}/block`);
       onBlock(post.author._id);
-      toast.success(`${post.author.name || 'User'} blocked.`);
-    } catch { toast.error('Could not block user. Try again.'); }
+      toast.success(t('community.userBlocked', { name: post.author.name || t('community.user') }));
+    } catch { toast.error(t('community.blockFailed')); }
   };
 
   return (
     <>
       {dialog === 'report' && (
         <ConfirmDialog
-          title="Report this post?"
-          body="We'll review it and take action if it violates our community guidelines."
-          confirmLabel="Submit report"
+          title={t('community.reportTitle')}
+          body={t('community.reportBody')}
+          confirmLabel={t('community.submitReport')}
           onConfirm={confirmReport}
           onCancel={() => setDialog(null)}
         />
       )}
       {dialog === 'block' && (
         <ConfirmDialog
-          title={`Block ${post.author.name || 'this user'}?`}
-          body="You won't see their posts or content anymore. You can unblock anytime."
-          confirmLabel="Block"
+          title={t('community.blockTitle', { name: post.author.name || t('community.thisUser') })}
+          body={t('community.blockBody')}
+          confirmLabel={t('community.block')}
           danger
           onConfirm={confirmBlock}
           onCancel={() => setDialog(null)}
@@ -591,8 +593,8 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
       const { data } = await api.post('/posts', { text, category, tags });
       onCreated(data);
       onClose();
-      toast.success('Post published!');
-    } catch { toast.error('Failed to post'); }
+      toast.success(t('community.postPublished'));
+    } catch { toast.error(t('community.failedPost')); }
     finally { setSending(false); }
   };
 
@@ -616,14 +618,14 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
             </div>
             <div>
               <p className="t-body font-medium leading-none" style={{ color: ts.textSecondary }}>
-                Share with the community
+                {t('community.shareWithCommunity')}
               </p>
               <p className="t-caption mt-0.5" style={{ color: ts.textDim }}>
-                Your experience helps others
+                {t('community.experienceHelps')}
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="transition-colors p-1" style={{ color: ts.textMuted }}>
+          <button onClick={onClose} className="transition-colors p-1" style={{ color: ts.textMuted }} aria-label={t('common.close')}>
             <X size={15} />
           </button>
         </div>
@@ -640,7 +642,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
                 }}>
                 <span className={`t-body ${category === c ? '' : 'opacity-50'}`}>{CAT_ICONS[c]}</span>
                 <span className={`t-label ${category === c ? '' : ''}`} style={{ color: category === c ? ts.textSecondary : ts.textMuted }}>
-                  {c}
+                  {t(`community.categories.${c}`)}
                 </span>
               </button>
             ))}
@@ -753,7 +755,7 @@ export default function CommunityPage() {
       await api.delete(`/posts/${id}`);
       setPosts(prev => prev.filter(p => p._id !== id));
       toast.success('Post deleted');
-    } catch { toast.error('Failed to delete'); }
+    } catch { toast.error(t('common.error')); }
   };
 
   const onBlock = (authorId: string) => {
@@ -769,8 +771,8 @@ export default function CommunityPage() {
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
       <PageSEO
-        title="Breathing Community — Share Your Journey"
-        description="Join thousands of people sharing their breathwork journey. Read posts, share experiences, and stay motivated with the Breathe community."
+        title={t('community.seoTitle')}
+        description={t('community.seoDescription')}
         canonical="/community"
       />
       <style>{`
@@ -800,9 +802,9 @@ export default function CommunityPage() {
 
         {/* Header */}
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-6 pb-2">
-          <p className="t-label mb-1" style={{ color: ts.textMuted }}>Breathe · Community</p>
+          <p className="t-label mb-1" style={{ color: ts.textMuted }}>{t('community.brand')}</p>
           <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
-            Community
+            {t('community.title')}
           </h1>
           <p className="t-caption mt-1" style={{ color: ts.textMuted }}>
             {t("community.subtitle")}

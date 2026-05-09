@@ -4,6 +4,7 @@
  */
 import { useState, useEffect, useCallback, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import NavBar from '../components/NavBar';
 import PageSEO from '../components/PageSEO';
 import { AuthContext } from '../components/contexts/AuthContext';
@@ -23,6 +24,7 @@ interface GlobeStats {
 }
 
 export default function GlobePage() {
+  const { t } = useTranslation();
   const { isAuthenticated, user } = useContext(AuthContext);
 
   const [pins,            setPins]            = useState<GlobePin[]>([]);
@@ -48,7 +50,7 @@ export default function GlobePage() {
           setStats(statsRes.data);
         }
       } catch {
-        if (!cancelled) toast.error('Failed to load globe data.');
+        if (!cancelled) toast.error(t('globe.failedLoad'));
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -72,7 +74,7 @@ export default function GlobePage() {
       const res = await api.post<{ likeCount: number }>(`/globe/${id}/like`);
       setPins(prev => prev.map(p => p._id === id ? { ...p, likeCount: res.data.likeCount } : p));
       setSelectedPin(prev => prev?._id === id ? { ...prev, likeCount: res.data.likeCount } : prev);
-    } catch { toast.error('Failed to like pin.'); }
+    } catch { toast.error(t('globe.failedLike')); }
   }, []);
 
   const handleDelete = useCallback(async (id: string) => {
@@ -81,8 +83,8 @@ export default function GlobePage() {
       setPins(prev => prev.filter(p => p._id !== id));
       setSelectedPin(null);
       setStats(prev => prev ? { ...prev, totalPins: Math.max(0, prev.totalPins - 1) } : prev);
-      toast.success('Pin deleted.');
-    } catch { toast.error('Failed to delete pin.'); }
+      toast.success(t('globe.pinDeleted'));
+    } catch { toast.error(t('globe.failedDelete')); }
   }, []);
 
   const handleAddPin = useCallback(async (data: {
@@ -95,9 +97,9 @@ export default function GlobePage() {
       setPickedLatLng(null);
       setAddPinMode(false);
       setStats(prev => prev ? { ...prev, totalPins: prev.totalPins + 1 } : prev);
-      toast.success('Your meditation spot has been pinned! 📍');
+      toast.success(t('globe.pinned'));
     } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error ?? 'Failed to add pin.';
+      const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error ?? t('globe.failedAddPin');
       toast.error(msg);
     }
   }, []);
@@ -108,10 +110,10 @@ export default function GlobePage() {
   }, []);
 
   const toggleAddPinMode = useCallback(() => {
-    if (!isAuthenticated) { toast.error('Sign in to pin your meditation spot.'); return; }
+    if (!isAuthenticated) { toast.error(t('globe.signInToPin')); return; }
     setAddPinMode(m => !m);
     setPickedLatLng(null);
-  }, [isAuthenticated]);
+  }, [isAuthenticated, t]);
 
   return (
     <div style={{
@@ -124,8 +126,8 @@ export default function GlobePage() {
       overflow:        'hidden',
     }}>
       <PageSEO
-        title="Breathe Together — Global Meditation Community Map"
-        description="See meditators around the world. Discover and share meditation spots, connect with the global breathing community."
+        title={t('globe.seoTitle')}
+        description={t('globe.seoDescription')}
         canonical="/globe"
       />
 
@@ -147,7 +149,7 @@ export default function GlobePage() {
         {/* Page title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           <span style={{ fontSize: 18 }}>🌍</span>
-          <span style={{ fontWeight: 700, fontSize: 15, color: '#00d4ff' }}>Breathe Together</span>
+          <span style={{ fontWeight: 700, fontSize: 15, color: '#00d4ff' }}>{t('globe.brand')}</span>
           {stats && (
             <span style={{
               fontSize:     11,
@@ -183,7 +185,7 @@ export default function GlobePage() {
               transition:   'all 0.18s',
             }}
           >
-            {addPinMode ? '✕ Cancel' : '+ Pin Spot'}
+            {addPinMode ? `✕ ${t('globe.cancel')}` : `+ ${t('globe.pinSpot')}`}
           </motion.button>
 
           <motion.button
@@ -259,7 +261,7 @@ export default function GlobePage() {
                 boxShadow:    '0 0 28px #00d4ff44',
                 animation:    'pageloader-pulse 1.6s ease-in-out infinite',
               }} />
-              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13 }}>Loading spots…</div>
+              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13 }}>{t('globe.loadingSpots')}</div>
             </motion.div>
           )}
         </AnimatePresence>

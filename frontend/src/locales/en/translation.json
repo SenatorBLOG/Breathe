@@ -4,6 +4,7 @@
     "meditate": "Meditate",
     "sounds": "Sounds",
     "community": "Community",
+    "globe": "Globe",
     "sessions": "Sessions",
     "progress": "Progress",
     "learn": "Learn",
@@ -48,6 +49,9 @@
     "pause": "Pause",
     "resume": "Resume",
     "stop": "Stop",
+    "startSessionAria": "Start breathing session",
+    "pauseSessionAria": "Pause breathing session - currently {{phase}} phase",
+    "tapToBegin": "Tap to begin",
     "pattern": "Breathing pattern",
     "dragHint": "Drag bars up · down to adjust · 1–10 seconds",
     "presets": "Quick presets",
@@ -92,6 +96,31 @@
   "community": {
     "title": "Community",
     "subtitle": "Share your journey with fellow meditators",
+    "seoTitle": "Breathing Community — Share Your Journey",
+    "seoDescription": "Join thousands of people sharing their breathwork journey. Read posts, share experiences, and stay motivated with the Breathe community.",
+    "brand": "Breathe · Community",
+    "commentCount": "{{count}} comments",
+    "addComment": "Add comment",
+    "writeComment": "Write a comment…",
+    "signInToComment": "Sign in to comment",
+    "failedLoadComments": "Failed to load comments",
+    "failedPostComment": "Failed to post comment",
+    "reportSubmitted": "Report submitted. Thank you.",
+    "reportFailed": "Could not submit report. Try again.",
+    "userBlocked": "{{name}} blocked.",
+    "blockFailed": "Could not block user. Try again.",
+    "reportTitle": "Report this post?",
+    "reportBody": "We'll review it and take action if it violates our community guidelines.",
+    "submitReport": "Submit report",
+    "blockTitle": "Block {{name}}?",
+    "blockBody": "You won't see their posts or content anymore. You can unblock anytime.",
+    "block": "Block",
+    "postPublished": "Post published!",
+    "failedPost": "Failed to post",
+    "shareWithCommunity": "Share with the community",
+    "experienceHelps": "Your experience helps others",
+    "user": "User",
+    "thisUser": "this user",
     "post": "Post",
     "askCommunity": "Ask community",
     "noPostsYet": "No posts yet — be the first to share!",
@@ -113,6 +142,21 @@
     "joinBreathe": "Join Breathe",
     "joinDesc": "Create an account to post, comment, and track your meditation journey.",
     "signUpFree": "Sign up free"
+  },
+  "globe": {
+    "seoTitle": "Breathe Together — Global Meditation Community Map",
+    "seoDescription": "See meditators around the world. Discover and share meditation spots, connect with the global breathing community.",
+    "brand": "Breathe Together",
+    "failedLoad": "Failed to load globe data.",
+    "failedLike": "Failed to like pin.",
+    "pinDeleted": "Pin deleted.",
+    "failedDelete": "Failed to delete pin.",
+    "pinned": "Your meditation spot has been pinned! 📍",
+    "failedAddPin": "Failed to add pin.",
+    "signInToPin": "Sign in to pin your meditation spot.",
+    "cancel": "Cancel",
+    "pinSpot": "Pin Spot",
+    "loadingSpots": "Loading spots…"
   },
   "sessions": {
     "title": "My Sessions",
@@ -157,6 +201,44 @@
       "peaceful": "Peaceful",
       "anxious": "Anxious",
       "refreshed": "Refreshed"
+    },
+    "feedback": {
+      "sessionComplete": "Session complete",
+      "aiCoachHint": "Your data trains your personal AI coach",
+      "skip": "Skip",
+      "back": "Back",
+      "continue": "Continue",
+      "save": "Save & close",
+      "moodShiftTitle": "How did your mood shift?",
+      "moodShiftHint": "Rate before & after to track your progress",
+      "feelingsTitle": "How do you feel right now?",
+      "feelingsHint": "Pick all that apply",
+      "qualityTitle": "Session quality",
+      "qualityHint": "Quick ratings help your AI coach personalise your sessions",
+      "notesTitle": "Any thoughts?",
+      "notesOptional": "(optional)",
+      "notesPlaceholder": "How did this session feel? Any observations…",
+      "aiTrainHint": "Your feedback trains your personal AI breathing coach.",
+      "better": "better",
+      "worse": "worse",
+      "noChange": "no change",
+      "before": "Before",
+      "after": "After",
+      "metrics": {
+        "focusLevel": "Focus level",
+        "calmness": "Calmness",
+        "breathDepth": "Breath depth",
+        "stressLevel": "Stress level",
+        "distractions": "Distractions",
+        "noiseLevel": "Noise level"
+      },
+      "moods": {
+        "rough": "Rough",
+        "meh": "Meh",
+        "okay": "Okay",
+        "good": "Good",
+        "amazing": "Amazing"
+      }
     }
   },
   "stats": {
@@ -246,6 +328,10 @@
     "contact": "Contact Us",
     "privacy": "Privacy Policy",
     "rights": "All rights reserved",
+    "siteFooter": "Site footer",
+    "instagram": "Breathe on Instagram",
+    "github": "Breathe on GitHub",
+    "emailSupport": "Email support",
     "newsletter": {
       "title": "Weekly Calm",
       "desc": "Get one mindfulness tip delivered every Sunday.",
@@ -261,6 +347,8 @@
     "messagesLeft": "left",
     "tryTechnique": "Try",
     "askButton": "Ask the Coach",
+    "openButton": "Open AI Coach",
+    "shortLabel": "AI Coach",
     "suggestions": {
       "sleep": "I can't sleep, mind racing",
       "stress": "Stressed before a big meeting",
@@ -276,6 +364,30 @@
       "comebackHours": "h for more coaching.",
       "createAccount": "Create a free account for 10 messages per day."
     }
+  },
+  "challengeNudge": {
+    "messages": [
+      {
+        "text": "Ready for a 7-day breathing challenge?",
+        "sub": "Build a lasting habit in one week"
+      },
+      {
+        "text": "Day streaks keep your calm consistent",
+        "sub": "Start a challenge in your profile"
+      },
+      {
+        "text": "Earn your first badge this week",
+        "sub": "7-day Box Breathing — beginner friendly"
+      },
+      {
+        "text": "Sleep challenge: 7 nights of 4-7-8",
+        "sub": "Users report falling asleep 40% faster"
+      },
+      {
+        "text": "Challenge yourself to breathe daily",
+        "sub": "Your profile has 6 challenges waiting"
+      }
+    ]
   },
   "statsCards": {
     "sessions7d": "Sessions · last 7 days",
@@ -317,12 +429,32 @@
     "delete": "Delete",
     "close": "Close",
     "back": "Back",
-    "next": "Next →",
+    "next": "Next",
+    "previous": "Previous",
     "or": "or",
     "free": "Free",
     "noAccountNeeded": "No account needed",
     "noDownload": "No download",
-    "advertisement": "Advertisement"
+    "advertisement": "Advertisement",
+    "loadingPage": "Loading page…",
+    "offlineBanner": "You're offline — breathing still works",
+    "viewChallenges": "View challenges",
+    "dismiss": "Dismiss",
+    "previousPage": "Go to previous page",
+    "nextPage": "Go to next page",
+    "morePages": "More pages",
+    "sidebarTitle": "Sidebar",
+    "sidebarDescription": "Displays the mobile sidebar.",
+    "toggleSidebar": "Toggle sidebar",
+    "previousSlide": "Previous slide",
+    "nextSlide": "Next slide",
+    "backToTop": "Back to top",
+    "pagination": "Pagination",
+    "mainNavigation": "Main navigation",
+    "openProfileMenu": "Open profile menu",
+    "switchTheme": "Switch theme (current: {{current}})",
+    "switchLanguage": "Switch language (current: {{current}})",
+    "toggleMenu": "Toggle menu"
   },
   "home": {
     "exploreMindfulness": "Explore Mindfulness",

@@ -4,6 +4,7 @@
     "meditate": "Meditar",
     "sounds": "Sonidos",
     "community": "Comunidad",
+    "globe": "Globo",
     "sessions": "Sesiones",
     "progress": "Progreso",
     "learn": "Aprender",
@@ -48,6 +49,9 @@
     "pause": "Pausar",
     "resume": "Continuar",
     "stop": "Detener",
+    "startSessionAria": "Iniciar sesión de respiración",
+    "pauseSessionAria": "Pausar la sesión de respiración - fase actual {{phase}}",
+    "tapToBegin": "Toca para comenzar",
     "pattern": "Patrón de respiración",
     "dragHint": "Arrastra las barras arriba · abajo · 1–10 segundos",
     "presets": "Ajustes rápidos",
@@ -92,6 +96,31 @@
   "community": {
     "title": "Comunidad",
     "subtitle": "Comparte tu viaje con otros meditadores",
+    "seoTitle": "Comunidad de respiración — comparte tu viaje",
+    "seoDescription": "Únete a miles de personas que comparten su viaje de breathwork. Lee publicaciones, comparte experiencias y mantente motivado con la comunidad de Breathe.",
+    "brand": "Breathe · Comunidad",
+    "commentCount": "{{count}} comentarios",
+    "addComment": "Añadir comentario",
+    "writeComment": "Escribe un comentario…",
+    "signInToComment": "Inicia sesión para comentar",
+    "failedLoadComments": "No se pudieron cargar los comentarios",
+    "failedPostComment": "No se pudo publicar el comentario",
+    "reportSubmitted": "Reporte enviado. Gracias.",
+    "reportFailed": "No se pudo enviar el reporte. Inténtalo de nuevo.",
+    "userBlocked": "{{name}} bloqueado.",
+    "blockFailed": "No se pudo bloquear al usuario. Inténtalo de nuevo.",
+    "reportTitle": "¿Reportar esta publicación?",
+    "reportBody": "La revisaremos y tomaremos medidas si viola nuestras normas de la comunidad.",
+    "submitReport": "Enviar reporte",
+    "blockTitle": "¿Bloquear a {{name}}?",
+    "blockBody": "No verás más sus publicaciones ni contenido. Puedes desbloquearlo en cualquier momento.",
+    "block": "Bloquear",
+    "postPublished": "¡Publicación publicada!",
+    "failedPost": "No se pudo publicar",
+    "shareWithCommunity": "Comparte con la comunidad",
+    "experienceHelps": "Tu experiencia ayuda a otros",
+    "user": "Usuario",
+    "thisUser": "este usuario",
     "post": "Publicar",
     "askCommunity": "Preguntar a la comunidad",
     "noPostsYet": "Aún no hay publicaciones — ¡sé el primero!",
@@ -113,6 +142,21 @@
     "joinBreathe": "Únete a Breathe",
     "joinDesc": "Crea una cuenta para publicar, comentar y registrar tu práctica.",
     "signUpFree": "Registro gratuito"
+  },
+  "globe": {
+    "seoTitle": "Breathe Together — mapa global de la comunidad",
+    "seoDescription": "Mira dónde meditan personas de todo el mundo. Descubre y comparte lugares de práctica y conéctate con la comunidad global de Breathe.",
+    "brand": "Breathe Together",
+    "failedLoad": "No se pudieron cargar los datos del mapa.",
+    "failedLike": "No se pudo dar like.",
+    "pinDeleted": "Pin eliminado.",
+    "failedDelete": "No se pudo eliminar el pin.",
+    "pinned": "¡Tu lugar de meditación ha sido fijado! 📍",
+    "failedAddPin": "No se pudo añadir el pin.",
+    "signInToPin": "Inicia sesión para fijar tu lugar de meditación.",
+    "cancel": "Cancelar",
+    "pinSpot": "Fijar lugar",
+    "loadingSpots": "Cargando lugares…"
   },
   "sessions": {
     "title": "Mis sesiones",
@@ -157,6 +201,44 @@
       "peaceful": "En paz",
       "anxious": "Ansioso",
       "refreshed": "Renovado"
+    },
+    "feedback": {
+      "sessionComplete": "Sesión completa",
+      "aiCoachHint": "Tus datos entrenan a tu coach de IA personal",
+      "skip": "Omitir",
+      "back": "Atrás",
+      "continue": "Continuar",
+      "save": "Guardar",
+      "moodShiftTitle": "¿Cómo cambió tu estado de ánimo?",
+      "moodShiftHint": "Valora antes y después para ver tu progreso",
+      "feelingsTitle": "¿Cómo te sientes ahora?",
+      "feelingsHint": "Selecciona todo lo que aplique",
+      "qualityTitle": "Calidad de sesión",
+      "qualityHint": "Las valoraciones ayudan a tu coach IA a personalizar tus sesiones",
+      "notesTitle": "¿Algún pensamiento?",
+      "notesOptional": "(opcional)",
+      "notesPlaceholder": "¿Cómo se sintió esta sesión? Cualquier observación…",
+      "aiTrainHint": "Tu feedback entrena a tu coach de respiración IA.",
+      "better": "mejor",
+      "worse": "peor",
+      "noChange": "sin cambios",
+      "before": "Antes",
+      "after": "Después",
+      "metrics": {
+        "focusLevel": "Nivel de enfoque",
+        "calmness": "Calma",
+        "breathDepth": "Profundidad de respiración",
+        "stressLevel": "Nivel de estrés",
+        "distractions": "Distracciones",
+        "noiseLevel": "Nivel de ruido"
+      },
+      "moods": {
+        "rough": "Mal",
+        "meh": "Regular",
+        "okay": "Bien",
+        "good": "Bueno",
+        "amazing": "Increíble"
+      }
     }
   },
   "stats": {
@@ -246,6 +328,10 @@
     "contact": "Contacto",
     "privacy": "Política de privacidad",
     "rights": "Todos los derechos reservados",
+    "siteFooter": "Pie de página del sitio",
+    "instagram": "Breathe en Instagram",
+    "github": "Breathe en GitHub",
+    "emailSupport": "Enviar correo a soporte",
     "newsletter": {
       "title": "Calma Semanal",
       "desc": "Un consejo de mindfulness cada domingo.",
@@ -261,6 +347,8 @@
     "messagesLeft": "restantes",
     "tryTechnique": "Probar",
     "askButton": "Preguntar al coach",
+    "openButton": "Abrir entrenador IA",
+    "shortLabel": "Entrenador IA",
     "suggestions": {
       "sleep": "No puedo dormir, mente activa",
       "stress": "Estrés antes de una reunión",
@@ -276,6 +364,30 @@
       "comebackHours": "h para más sesiones.",
       "createAccount": "Crea una cuenta gratuita para 10 mensajes al día."
     }
+  },
+  "challengeNudge": {
+    "messages": [
+      {
+        "text": "¿Listo para un desafío de respiración de 7 días?",
+        "sub": "Crea un hábito duradero en una semana"
+      },
+      {
+        "text": "Las rachas diarias mantienen tu calma constante",
+        "sub": "Empieza un desafío en tu perfil"
+      },
+      {
+        "text": "Gana tu primera insignia esta semana",
+        "sub": "Respiración cuadrada de 7 días — apto para principiantes"
+      },
+      {
+        "text": "Desafío de sueño: 7 noches de 4-7-8",
+        "sub": "Los usuarios reportan dormirse 40% más rápido"
+      },
+      {
+        "text": "Rétate a respirar cada día",
+        "sub": "Tu perfil tiene 6 desafíos esperando"
+      }
+    ]
   },
   "statsCards": {
     "sessions7d": "Sesiones · últimos 7 días",
@@ -317,12 +429,32 @@
     "delete": "Eliminar",
     "close": "Cerrar",
     "back": "Atrás",
-    "next": "Siguiente →",
+    "next": "Siguiente",
+    "previous": "Anterior",
     "or": "o",
     "free": "Gratis",
     "noAccountNeeded": "Sin cuenta",
     "noDownload": "Sin descarga",
-    "advertisement": "Publicidad"
+    "advertisement": "Publicidad",
+    "loadingPage": "Cargando página…",
+    "offlineBanner": "Estás desconectado — respirar sigue funcionando",
+    "viewChallenges": "Ver desafíos",
+    "dismiss": "Descartar",
+    "previousPage": "Ir a la página anterior",
+    "nextPage": "Ir a la página siguiente",
+    "morePages": "Más páginas",
+    "sidebarTitle": "Barra lateral",
+    "sidebarDescription": "Muestra la barra lateral móvil.",
+    "toggleSidebar": "Alternar barra lateral",
+    "previousSlide": "Diapositiva anterior",
+    "nextSlide": "Diapositiva siguiente",
+    "backToTop": "Volver arriba",
+    "pagination": "Paginación",
+    "mainNavigation": "Navegación principal",
+    "openProfileMenu": "Abrir menú de perfil",
+    "switchTheme": "Cambiar tema (actual: {{current}})",
+    "switchLanguage": "Cambiar idioma (actual: {{current}})",
+    "toggleMenu": "Alternar menú"
   },
   "home": {
     "exploreMindfulness": "Explorar el Mindfulness",
