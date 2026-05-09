@@ -4,30 +4,30 @@
   <!-- ── Core ──────────────────────────────────────────────────────────── -->
   <url>
     <loc>https://breatheonline.app/</loc>
-    <lastmod>2026-04-07</lastmod>
+    <lastmod>2026-05-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
     <loc>https://breatheonline.app/breathing</loc>
-    <lastmod>2026-03-21</lastmod>
+    <lastmod>2026-05-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>
 
   <url>
     <loc>https://breatheonline.app/community</loc>
-    <lastmod>2026-03-21</lastmod>
+    <lastmod>2026-05-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
 
   <url>
     <loc>https://breatheonline.app/globe</loc>
-    <lastmod>2026-03-21</lastmod>
+    <lastmod>2026-05-07</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
+    <priority>0.80</priority>
   </url>
 
   <url>

@@ -2,7 +2,7 @@
   "name": "Breathe — Guided Breathing & Meditation",
   "short_name": "Breathe",
   "description": "Guided breathing for sleep, anxiety and focus",
-  "start_url": "/breathing",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#010814",
   "theme_color": "#010814",
