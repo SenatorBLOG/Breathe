@@ -176,21 +176,21 @@ export function StatsSection() {
   // Dynamic insight based on data
   const insights = [
     sessions.length >= 5 && avgMoodDelta !== null && avgMoodDelta > 0
-      ? { icon: <Waves size={20} color="#38BDF8" />, title: 'Mood is improving', desc: `Across your last ${sessions.length} sessions your mood lifted by +${avgMoodDelta.toFixed(1)} on average. Keep the rhythm going.` }
-      : { icon: <Leaf size={20} color="#4ADE80" />, title: 'Getting started', desc: 'Complete 5 sessions to unlock your first mood trend insights.' },
+      ? { icon: <Waves size={20} color="#38BDF8" />, title: t('stats.insightCards.moodImproving'), desc: t('stats.insightCards.moodImprovingDesc', { count: sessions.length, delta: avgMoodDelta.toFixed(1) }) }
+      : { icon: <Leaf size={20} color="#4ADE80" />, title: t('stats.insightCards.gettingStarted'), desc: t('stats.insightCards.gettingStartedDesc') },
     totalMins >= 60
-      ? { icon: <Timer size={20} color="#A78BFA" />, title: `${Math.floor(totalMins / 60)}h+ of mindfulness`, desc: 'Consistent short sessions beat occasional long ones. You\'re building real habits.' }
-      : { icon: <Timer size={20} color="#A78BFA" />, title: 'Building the habit', desc: 'Just a few minutes daily is enough to rewire your stress response. Every session counts.' },
+      ? { icon: <Timer size={20} color="#A78BFA" />, title: t('stats.insightCards.hoursTitle', { hours: Math.floor(totalMins / 60) }), desc: t('stats.insightCards.hoursDesc') }
+      : { icon: <Timer size={20} color="#A78BFA" />, title: t('stats.insightCards.buildingHabit'), desc: t('stats.insightCards.buildingHabitDesc') },
     streak >= 3
-      ? { icon: <Flame size={20} color="#F97316" />, title: `${streak}-day streak`, desc: 'Streaks build momentum. Your nervous system is learning to shift faster each day.' }
-      : { icon: <Calendar size={20} color="#7AC4FF" />, title: 'Daily practice', desc: 'Meditate 3 days in a row to ignite your first streak and unlock deeper pattern insights.' },
+      ? { icon: <Flame size={20} color="#F97316" />, title: t('stats.insightCards.streakTitle', { streak }), desc: t('stats.insightCards.streakDesc') }
+      : { icon: <Calendar size={20} color="#7AC4FF" />, title: t('stats.insightCards.dailyPractice'), desc: t('stats.insightCards.dailyPracticeDesc') },
     health.recoveryScore !== null
       ? health.recoveryScore >= 75
-        ? { icon: <Zap size={20} color="#FACC15" />, title: 'Great recovery today', desc: `Recovery ${health.recoveryScore}/100 — ideal for an energising Wim Hof session.` }
+        ? { icon: <Zap size={20} color="#FACC15" />, title: t('stats.insightCards.greatRecovery'), desc: t('stats.insightCards.greatRecoveryDesc', { score: health.recoveryScore }) }
         : health.recoveryScore >= 50
-        ? { icon: <Waves size={20} color="#38BDF8" />, title: 'Moderate recovery', desc: `Recovery ${health.recoveryScore}/100 — Box or Coherent Breathing recommended today.` }
-        : { icon: <Heart size={20} color="#60A5FA" />, title: 'Rest & restore', desc: `Recovery ${health.recoveryScore}/100 — try 4-7-8 to support your nervous system.` }
-      : { icon: <Brain size={20} color="#C084FC" />, title: 'AI coach learning', desc: 'Every session you log trains your personal recommendation engine.' },
+        ? { icon: <Waves size={20} color="#38BDF8" />, title: t('stats.insightCards.moderateRecovery'), desc: t('stats.insightCards.moderateRecoveryDesc', { score: health.recoveryScore }) }
+        : { icon: <Heart size={20} color="#60A5FA" />, title: t('stats.insightCards.restRestore'), desc: t('stats.insightCards.restRestoreDesc', { score: health.recoveryScore }) }
+      : { icon: <Brain size={20} color="#C084FC" />, title: t('stats.insightCards.aiLearning'), desc: t('stats.insightCards.aiLearningDesc') },
   ];
 
   return (
@@ -202,17 +202,17 @@ export function StatsSection() {
 
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-8 pb-4">
           <p className="t-label mb-2" style={{ color: ts.textMuted }}>
-            Breathe · Analytics
+            {t('stats.brand')}
           </p>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
-                Your Progress
+                {t('stats.title')}
               </h1>
               <p className="t-caption mt-1 max-w-md" style={{ color: ts.textMuted }}>
                 {sessions.length > 0
-                  ? `${sessions.length} sessions recorded · ${totalMins} minutes of mindfulness · your data is training your AI coach`
-                  : 'Start meditating to unlock your personal analytics'}
+                  ? t('stats.sessionsDesc', { count: sessions.length, mins: totalMins })
+                  : t('stats.unlockAnalytics')}
               </p>
             </div>
             <Link
@@ -220,7 +220,7 @@ export function StatsSection() {
               className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white t-body font-medium tracking-wide transition-all hover:shadow-[0_0_24px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 self-start sm:self-auto"
               style={{ background: ts.btnGradient }}
             >
-              Meditate now <ArrowRight size={14} />
+              {t('stats.meditateNow')} <ArrowRight size={14} />
             </Link>
           </div>
         </header>
@@ -247,7 +247,7 @@ export function StatsSection() {
                   <div className="flex items-center gap-1.5">
                     <Moon size={12} style={{ color: ts.accent }} />
                     <p className="t-label" style={{ color: ts.textMuted }}>
-                      Avg sleep 7d
+                      {t('stats.avgSleep7d')}
                     </p>
                   </div>
                   <p className="t-heading font-medium tabular-nums" style={{ color: ts.textPrimary }}>
@@ -269,14 +269,14 @@ export function StatsSection() {
                   <div className="flex items-center gap-1.5">
                     <Activity size={12} style={{ color: ts.accent }} />
                     <p className="t-label" style={{ color: ts.textMuted }}>
-                      Avg HRV 7d
+                      {t('stats.avgHRV7d')}
                     </p>
                   </div>
                   <p className="t-heading font-medium tabular-nums" style={{ color: ts.textPrimary }}>
                     {health.avgHRV7d}ms
                   </p>
                   <p className="t-caption" style={{ color: ts.textMuted }}>
-                    heart rate variability
+                    {t('stats.heartRateVariability')}
                   </p>
                 </div>
               )}
@@ -289,14 +289,14 @@ export function StatsSection() {
                   <div className="flex items-center gap-1.5">
                     <Heart size={12} style={{ color: '#FF8A8A' }} />
                     <p className="t-label" style={{ color: ts.textMuted }}>
-                      Resting HR
+                      {t('stats.restingHR')}
                     </p>
                   </div>
                   <p className="t-heading font-medium tabular-nums" style={{ color: ts.textPrimary }}>
                     {health.restingHR} bpm
                   </p>
                   <p className="t-caption" style={{ color: ts.textMuted }}>
-                    last recorded
+                    {t('stats.lastRecorded')}
                   </p>
                 </div>
               )}
@@ -309,7 +309,7 @@ export function StatsSection() {
                   <div className="flex items-center gap-1.5">
                     <Sparkles size={12} style={{ color: ts.accent }} />
                     <p className="t-label" style={{ color: ts.textMuted }}>
-                      Recovery
+                      {t('stats.recovery')}
                     </p>
                   </div>
                   <p className="t-heading font-medium tabular-nums" style={{ color: ts.textPrimary }}>
@@ -327,10 +327,10 @@ export function StatsSection() {
               <div className="sm:col-span-4 flex items-center justify-between px-1">
                 <p className="t-caption" style={{ color: ts.textMuted }}>
                   <Watch size={9} className="inline mr-1" />
-                  Data from: {health.sources.map(s => s === 'apple_health' ? 'Apple Health' : s === 'google_fit' ? 'Google Fit' : 'Fitbit').join(', ')}
+                  {health.sources.map(s => s === 'apple_health' ? t('stats.appleHealth') : s === 'google_fit' ? t('stats.googleFit') : t('stats.fitbit')).join(', ')}
                 </p>
                 <Link to="/profile?tab=devices" className="t-caption hover:underline" style={{ color: ts.accent }}>
-                  Manage integrations →
+                  {t('stats.manageIntegrations')}
                 </Link>
               </div>
             </div>
@@ -344,10 +344,10 @@ export function StatsSection() {
             }}>
             <div className="mb-3">
               <h3 className="t-body font-medium" style={{ color: ts.textPrimary }}>
-                Key metrics
+                {t('stats.keyMetrics')}
               </h3>
               <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>
-                Averages across all your sessions
+                {t('stats.averagesAll')}
               </p>
             </div>
             <StatsCards />
@@ -358,28 +358,28 @@ export function StatsSection() {
 
           {/* Weekly + Annual charts */}
           <div className="grid grid-cols-1 gap-5">
-            <ChartCard title={t("stats.weeklyActivity")} sub="Sessions and minutes per day this week">
+            <ChartCard title={t("stats.weeklyActivity")} sub={t('stats.weeklyActivitySub')}>
               <WeeklyActivityChart />
             </ChartCard>
-            <ChartCard title={t("stats.annualProgress")} sub="Your meditation journey across the year">
+            <ChartCard title={t("stats.annualProgress")} sub={t('stats.annualProgressSub')}>
               <AnnualProgressChart />
             </ChartCard>
           </div>
 
           {/* Mood + Monthly side by side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <ChartCard title={t("stats.moodTracking")} sub="How your mood shifts after each session">
+            <ChartCard title={t("stats.moodTracking")} sub={t('stats.moodTrackingSub')}>
               <MoodTrackingGrid />
             </ChartCard>
-            <ChartCard title={t("stats.monthlyOverview")} sub="Session frequency across the current month">
+            <ChartCard title={t("stats.monthlyOverview")} sub={t('stats.monthlyOverviewSub')}>
               <MonthlyActivityChart />
             </ChartCard>
           </div>
 
           {/* HRV Correlation */}
           <ChartCard
-            title="HRV & Meditation Correlation"
-            sub="How your breathing practice affects heart rate variability over 30 days"
+            title={t('stats.hrvTitle')}
+            sub={t('stats.hrvSub')}
           >
             <HRVCorrelation
               hrv={health.hrv}
@@ -393,7 +393,7 @@ export function StatsSection() {
             <div className="flex items-center gap-2 mb-1">
               <Sparkles size={12} style={{ color: ts.accent }} />
               <p className="t-label" style={{ color: ts.textMuted }}>
-                Insights
+                {t('stats.insights')}
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -408,22 +408,22 @@ export function StatsSection() {
                 <div className="flex items-center gap-2">
                   <Brain size={12} style={{ color: ts.accent }} />
                   <p className="t-label" style={{ color: ts.textMuted }}>
-                    Emotional Intelligence
+                    {t('stats.emotionalIntelligence')}
                   </p>
                 </div>
                 <Link to="/journal" className="t-caption hover:underline flex items-center gap-1" style={{ color: ts.accent }}>
-                  View journal <ArrowRight size={11} />
+                  {t('stats.viewJournal')} <ArrowRight size={11} />
                 </Link>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Score timeline chart */}
                 {nlp.timeline.length > 1 && (
-                  <ChartCard title="Emotional score" sub="Sentiment across your recent sessions (−1 negative → +1 positive)">
+                  <ChartCard title={t('stats.emotionalScore')} sub={t('stats.emotionalScoreSub')}>
                     <ResponsiveContainer width="100%" height={140}>
-                      <LineChart data={nlp.timeline.map(t => ({
-                        date: new Date(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-                        score: t.score,
+                      <LineChart data={nlp.timeline.map(entry => ({
+                        date: new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                        score: entry.score,
                       }))}>
                         <XAxis dataKey="date" tick={{ fontSize: 10, fill: ts.textMuted }} axisLine={false} tickLine={false} />
                         <YAxis domain={[-1, 1]} tick={{ fontSize: 10, fill: ts.textMuted }} axisLine={false} tickLine={false} width={28} />
@@ -432,7 +432,7 @@ export function StatsSection() {
                           contentStyle={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}`, borderRadius: 12, fontSize: 11 }}
                           labelStyle={{ color: ts.textSecondary }}
                           itemStyle={{ color: ts.accent }}
-                          formatter={(v: number) => [v.toFixed(2), 'Score']}
+                          formatter={(v: number) => [v.toFixed(2), t('sessions.card.score')]}
                         />
                         <Line
                           type="monotone" dataKey="score"
@@ -450,9 +450,9 @@ export function StatsSection() {
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}
                 >
                   <div>
-                    <h3 className="t-body font-medium" style={{ color: ts.textPrimary }}>Recurring themes</h3>
+                    <h3 className="t-body font-medium" style={{ color: ts.textPrimary }}>{t('stats.recurringThemes')}</h3>
                     <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>
-                      Based on {nlp.totalAnalyzed} analyzed sessions
+                      {t('stats.basedOn', { count: nlp.totalAnalyzed })}
                     </p>
                   </div>
 
@@ -472,7 +472,7 @@ export function StatsSection() {
 
                   <div>
                     <p className="t-label mb-1.5" style={{ color: ts.textMuted }}>
-                      Sentiment split
+                      {t('stats.sentimentSplit')}
                     </p>
                     <div className="flex h-2 rounded-full overflow-hidden gap-0.5">
                       {nlp.sentimentDist.positive > 0 && (
@@ -486,9 +486,9 @@ export function StatsSection() {
                       )}
                     </div>
                     <div className="flex gap-3 mt-1.5">
-                      <span className="t-caption" style={{ color: ts.accent }}>● Positive {nlp.sentimentDist.positive}</span>
-                      <span className="t-caption" style={{ color: '#7AAEC8' }}>● Neutral {nlp.sentimentDist.neutral}</span>
-                      <span className="t-caption" style={{ color: '#FF8A8A' }}>● Difficult {nlp.sentimentDist.negative}</span>
+                      <span className="t-caption" style={{ color: ts.accent }}>{t('stats.sentimentPositive', { count: nlp.sentimentDist.positive })}</span>
+                      <span className="t-caption" style={{ color: '#7AAEC8' }}>{t('stats.sentimentNeutral', { count: nlp.sentimentDist.neutral })}</span>
+                      <span className="t-caption" style={{ color: '#FF8A8A' }}>{t('stats.sentimentDifficult', { count: nlp.sentimentDist.negative })}</span>
                     </div>
                   </div>
                 </div>
@@ -510,9 +510,9 @@ export function StatsSection() {
               <Trophy size={22} style={{ color: ts.accent }} />
               <p className="t-caption font-medium" style={{ color: ts.textSecondary }}>
                 {sessions.length === 0
-                  ? 'Start your first session'
-                  : streak >= 7 ? `${streak} days strong!`
-                  : 'Keep the streak alive'}
+                  ? t('stats.startFirst')
+                  : streak >= 7 ? t('stats.daysStrong', { streak })
+                  : t('stats.keepStreak')}
               </p>
               <Link to="/breathing"
                 className="w-full py-2 rounded-xl t-caption font-medium tracking-wide transition-all hover:shadow-[0_0_16px_rgba(58,130,247,0.4)]"

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTranslation } from 'react-i18next';
 
 export default function PWAInstallBanner() {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [prompt, setPrompt] = useState<any>(null);
   const [dismissed, setDismissed] = useState(
     () => localStorage.getItem('breathe_pwa_dismissed') === 'true'
@@ -40,10 +42,10 @@ export default function PWAInstallBanner() {
       <span className="text-2xl flex-shrink-0">📱</span>
       <div className="flex-1 min-w-0">
         <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>
-          Add Breathe to home screen
+          {t('pwa.addToHome')}
         </p>
         <p className="t-label" style={{ color: ts.textMuted }}>
-          Works offline · No app store needed
+          {t('pwa.worksOffline')}
         </p>
       </div>
       <div className="flex gap-1.5 flex-shrink-0">
@@ -52,7 +54,7 @@ export default function PWAInstallBanner() {
           className="px-3 py-1.5 rounded-xl t-label text-white font-medium"
           style={{ background: ts.btnGradient }}
         >
-          Install
+          {t('pwa.install')}
         </button>
         <button
           onClick={dismiss}

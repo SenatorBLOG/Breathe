@@ -74,6 +74,7 @@ function sentimentColor(s: string | undefined, accent: string) {
 
 function JournalEntryCard({ session }: { session: Session }) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const nlp = session.nlp;
   const date = new Date(session.sessionDate);
@@ -126,7 +127,7 @@ function JournalEntryCard({ session }: { session: Session }) {
           </p>
           {/* Score bar */}
           <div className="flex items-center gap-3">
-            <span className="t-label flex-shrink-0" style={{ color: ts.textMuted }}>Score</span>
+            <span className="t-label flex-shrink-0" style={{ color: ts.textMuted }}>{t('sessions.card.score')}</span>
             <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-white/10">
               <div className="h-full rounded-full" style={{
                 width: `${((nlp.score + 1) / 2) * 100}%`,
@@ -141,33 +142,33 @@ function JournalEntryCard({ session }: { session: Session }) {
           {/* Themes */}
           {nlp.themes.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
-              {nlp.themes.map(t => (
-                <span key={t} className="t-caption px-2 py-0.5 rounded-full capitalize"
-                  style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}>{t}</span>
+              {nlp.themes.map(thm => (
+                <span key={thm} className="t-caption px-2 py-0.5 rounded-full capitalize"
+                  style={{ backgroundColor: `${ts.accent}18`, color: ts.accent }}>{thm}</span>
               ))}
               <span className="t-caption px-2 py-0.5 rounded-full"
-                style={{ backgroundColor: ts.border, color: ts.textMuted }}>intensity {nlp.intensity}/10</span>
+                style={{ backgroundColor: ts.border, color: ts.textMuted }}>{t('sessions.card.intensity', { value: nlp.intensity })}</span>
             </div>
           )}
           {/* Technique */}
           {nlp.suggestedTechnique && (
             <div className="flex items-center justify-between">
               <p className="t-caption" style={{ color: ts.textMuted }}>
-                Try: <span className="font-medium" style={{ color: ts.textSecondary }}>
+                {t('sessions.card.try')} <span className="font-medium" style={{ color: ts.textSecondary }}>
                   {TECHNIQUE_LABELS[nlp.suggestedTechnique] ?? nlp.suggestedTechnique}
                 </span>
               </p>
               <Link to={TECHNIQUE_LINKS[nlp.suggestedTechnique] ?? '/breathing'}
                 className="flex items-center gap-1 t-caption font-medium hover:opacity-80"
                 style={{ color: ts.accent }}>
-                Try it <ArrowRight size={11} />
+                {t('sessions.card.tryIt')} <ArrowRight size={11} />
               </Link>
             </div>
           )}
           {/* Full notes */}
           {session.notes && (
             <div className="rounded-xl p-3" style={{ backgroundColor: `${ts.border}40` }}>
-              <p className="t-label mb-1.5" style={{ color: ts.textMuted }}>Notes</p>
+              <p className="t-label mb-1.5" style={{ color: ts.textMuted }}>{t('sessions.card.notes')}</p>
               <p className="t-caption leading-relaxed whitespace-pre-wrap" style={{ color: ts.textSecondary }}>
                 {session.notes}
               </p>
@@ -233,6 +234,7 @@ function ScoreRow({ label, value, color }: { label: string; value: number; color
 // ─── Session card ─────────────────────────────────────────────────────────────
 function SessionCard({ session, onDelete }: { session: Session; onDelete: (id: string) => void }) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const delta = session.moodAfter - session.moodBefore;
   const deltaCol = delta > 0 ? ts.accent : delta < 0 ? "#FF8A8A" : ts.textDim;
@@ -272,19 +274,19 @@ function SessionCard({ session, onDelete }: { session: Session; onDelete: (id: s
       {expanded && (
         <div className="px-4 pb-4 flex flex-col gap-3 border-t pt-3" style={{ borderColor: `${ts.border}50` }}>
           <div className="flex flex-col gap-1.5">
-            <ScoreRow label="Focus"    value={session.focusLevel}     color={ts.accent} />
-            <ScoreRow label="Calmness" value={session.calmnessScore}  color={ts.accentLight} />
-            <ScoreRow label="Breath"   value={session.breathingDepth} color={ts.accent} />
-            <ScoreRow label="Stress"   value={session.stressLevel}    color="#FF8A8A" />
+            <ScoreRow label={t('sessions.card.focus')}    value={session.focusLevel}     color={ts.accent} />
+            <ScoreRow label={t('sessions.card.calmness')} value={session.calmnessScore}  color={ts.accentLight} />
+            <ScoreRow label={t('sessions.card.breath')}   value={session.breathingDepth} color={ts.accent} />
+            <ScoreRow label={t('sessions.card.stress')}   value={session.stressLevel}    color="#FF8A8A" />
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="t-caption" style={{ color: ts.textMuted }}>Distractions:</span>
+            <span className="t-caption" style={{ color: ts.textMuted }}>{t('sessions.card.distractions')}</span>
             <div className="flex gap-1">
               {Array.from({ length: Math.min(session.distractionCount, 10) }).map((_, i) => (
                 <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#FF8A8A]/40" />
               ))}
-              {session.distractionCount === 0 && <span className="t-caption" style={{ color: ts.textDim }}>none</span>}
+              {session.distractionCount === 0 && <span className="t-caption" style={{ color: ts.textDim }}>{t('sessions.card.none')}</span>}
             </div>
             {session.distractionCount > 10 && (
               <span className="t-caption" style={{ color: ts.textDim }}>+{session.distractionCount - 10}</span>
@@ -301,7 +303,7 @@ function SessionCard({ session, onDelete }: { session: Session; onDelete: (id: s
           <button onClick={() => onDelete(session._id)}
             className="self-end flex items-center gap-1.5 t-caption hover:text-[#FF8A8A] transition-colors"
             style={{ color: ts.textMuted }}>
-            <Trash2 size={11} /> Delete
+            <Trash2 size={11} /> {t('sessions.card.delete')}
           </button>
         </div>
       )}
@@ -401,8 +403,8 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
             <Brain size={13} className="text-white" />
           </div>
           <div>
-            <p className="t-body font-medium leading-none" style={{ color: ts.textPrimary }}>Log a session</p>
-            <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>Your data trains your personal AI coach</p>
+            <p className="t-body font-medium leading-none" style={{ color: ts.textPrimary }}>{t('sessions.logSessionTitle')}</p>
+            <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>{t('sessions.feedback.aiCoachHint')}</p>
           </div>
         </div>
         <button onClick={onClose} className="transition-colors p-1" style={{ color: ts.textMuted }}>
@@ -430,27 +432,27 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         {step === 0 && (
           <>
             <div className="flex flex-col gap-1.5">
-              <label className="t-label" style={{ color: ts.textDim }}>Date & time</label>
+              <label className="t-label" style={{ color: ts.textDim }}>{t('sessions.dateTime')}</label>
               <input type="datetime-local" value={form.sessionDate}
                 onChange={e => set("sessionDate", e.target.value)}
                 className={inputCls} style={inputStyle} />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col gap-1.5">
-                <label className="t-label" style={{ color: ts.textDim }}>Duration (min)</label>
+                <label className="t-label" style={{ color: ts.textDim }}>{t('sessions.durationMin')}</label>
                 <input type="number" min={1} max={120} value={form.sessionLength}
                   onChange={e => set("sessionLength", Number(e.target.value))}
                   className={inputCls} style={inputStyle} />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="t-label" style={{ color: ts.textDim }}>Cycles</label>
+                <label className="t-label" style={{ color: ts.textDim }}>{t('sessions.cyclesLabel')}</label>
                 <input type="number" min={0} max={200} value={form.cycles}
                   onChange={e => set("cycles", Number(e.target.value))}
                   className={inputCls} style={inputStyle} />
               </div>
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="t-label" style={{ color: ts.textDim }}>Noise level</label>
+              <label className="t-label" style={{ color: ts.textDim }}>{t('sessions.noiseLevelLabel')}</label>
               <div className="flex gap-2">
                 {NOISE_OPTS.map(n => (
                   <button key={n} type="button" onClick={() => set("noiseLevel", n)}
@@ -471,16 +473,16 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         {/* Step 1 — mood shift */}
         {step === 1 && (
           <div className="flex flex-col gap-4">
-            <p className="t-caption" style={{ color: ts.textMuted }}>How did your mood shift during this session?</p>
-            {(["Before", "After"] as const).map((label, i) => {
-              const key = i === 0 ? "moodBefore" : "moodAfter" as const;
-              const val = form[key];
+            <p className="t-caption" style={{ color: ts.textMuted }}>{t('sessions.moodShiftQuestion')}</p>
+            {(["moodBefore", "moodAfter"] as const).map((moodKey, i) => {
+              const val = form[moodKey];
               const color = i === 0 ? ts.textDim : ts.accent;
+              const label = i === 0 ? t('sessions.feedback.before') : t('sessions.feedback.after');
               return (
-                <div key={label} className="flex items-center gap-3">
+                <div key={moodKey} className="flex items-center gap-3">
                   <span className="t-label w-12 flex-shrink-0" style={{ color: ts.textMuted }}>{label}</span>
                   <input type="range" min={1} max={10} step={1} value={val}
-                    onChange={e => set(key, Number(e.target.value))}
+                    onChange={e => set(moodKey, Number(e.target.value))}
                     className="flex-1 appearance-none h-1.5 rounded-full cursor-pointer"
                     style={{ background: `linear-gradient(to right, ${color} ${(val-1)/9*100}%, ${ts.border}80 ${(val-1)/9*100}%)`, accentColor: color }} />
                   <span className="t-caption tabular-nums w-5 text-right flex-shrink-0" style={{ color }}>{val}</span>
@@ -490,7 +492,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
             <div className="flex items-center justify-center">
               <span className="t-caption px-3 py-1 rounded-full border tabular-nums"
                 style={{ color: moodDeltaColor, borderColor: `${moodDeltaColor}33`, background: `${moodDeltaColor}0D` }}>
-                {moodDelta > 0 ? `+${moodDelta} better` : moodDelta < 0 ? `${moodDelta} worse` : "no change"}
+                {moodDelta > 0 ? `+${moodDelta} ${t('sessions.feedback.better')}` : moodDelta < 0 ? `${moodDelta} ${t('sessions.feedback.worse')}` : t('sessions.feedback.noChange')}
               </span>
             </div>
           </div>
@@ -499,7 +501,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         {/* Step 2 — feelings grid */}
         {step === 2 && (
           <div className="flex flex-col gap-3">
-            <p className="t-caption" style={{ color: ts.textMuted }}>How did you feel after? Pick all that apply.</p>
+            <p className="t-caption" style={{ color: ts.textMuted }}>{t('sessions.feelingsQuestion')}</p>
             <div className="grid grid-cols-4 gap-2">
               {FEELINGS.map(f => {
                 const on = feelings.includes(f);
@@ -523,10 +525,10 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
         {step === 3 && (
           <div className="flex flex-col gap-3">
             {[
-              { label: "Focus",    key: "focusLevel" as const,    color: ts.accent },
-              { label: "Calmness", key: "calmnessScore" as const, color: ts.accentLight },
-              { label: "Breath",   key: "breathingDepth" as const,color: ts.accent },
-              { label: "Stress",   key: "stressLevel" as const,   color: "#FF8A8A" },
+              { label: t('sessions.focus'),    key: "focusLevel" as const,    color: ts.accent },
+              { label: t('sessions.calmness'), key: "calmnessScore" as const, color: ts.accentLight },
+              { label: t('sessions.breath'),   key: "breathingDepth" as const,color: ts.accent },
+              { label: t('sessions.stress'),   key: "stressLevel" as const,   color: "#FF8A8A" },
             ].map(({ label, key, color }) => (
               <div key={key} className="flex flex-col gap-1">
                 <span className="t-label" style={{ color: ts.textDim }}>{label}</span>
@@ -534,9 +536,9 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
               </div>
             ))}
             <div className="flex flex-col gap-1 mt-1">
-              <span className="t-label" style={{ color: ts.textDim }}>Notes (optional)</span>
+              <span className="t-label" style={{ color: ts.textDim }}>{t('sessions.notesLabel')}</span>
               <textarea value={form.notes} onChange={e => set("notes", e.target.value)} rows={2}
-                placeholder="Any observations…"
+                placeholder={t('sessions.notesPlaceholder')}
                 className={`${inputCls} resize-none`} style={inputStyle} />
             </div>
           </div>
@@ -549,7 +551,7 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
           <button onClick={() => setStep(s => s - 1)}
             className="px-4 py-2 rounded-xl t-caption transition-all"
             style={{ color: ts.textMuted, border: `1px solid ${ts.border}` }}>
-            Back
+            {t('sessions.feedback.back')}
           </button>
         )}
         <div className="flex-1" />
@@ -557,13 +559,13 @@ function AddSessionPanel({ onAdd, onClose }: { onAdd: (s: Omit<Session, "_id">) 
           <button onClick={() => setStep(s => s + 1)}
             className="px-6 py-2 rounded-xl t-caption text-white font-medium tracking-wide hover:scale-105 active:scale-95 transition-all"
             style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
-            Continue →
+            {t('sessions.continueBtn')} →
           </button>
         ) : (
           <button onClick={handleSave}
             className="px-6 py-2 rounded-xl t-caption text-white font-medium tracking-wide hover:scale-105 active:scale-95 transition-all"
             style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
-            Save session ✓
+            {t('sessions.saveSession')} ✓
           </button>
         )}
       </div>
@@ -593,7 +595,7 @@ export function SessionsSection() {
     if (!localStorage.getItem("token")) { navigate("/login"); return; }
     api.get("/sessions")
       .then(r => setSessions(r.data))
-      .catch(() => toast.error("Failed to load sessions"))
+      .catch(() => toast.error(t('sessions.toastFailedLoad')))
       .finally(() => setLoading(false));
   }, [navigate]);
 
@@ -601,17 +603,17 @@ export function SessionsSection() {
     try {
       await api.delete(`/sessions/${id}`);
       setSessions(s => s.filter(x => x._id !== id));
-      toast.success("Session deleted");
-    } catch { toast.error("Failed to delete"); }
+      toast.success(t('sessions.toastDeleted'));
+    } catch { toast.error(t('sessions.toastFailedDelete')); }
   };
 
   const handleDeleteAll = async () => {
-    if (!window.confirm("Delete ALL sessions? This cannot be undone.")) return;
+    if (!window.confirm(t('sessions.toastDeleteAllConfirm'))) return;
     try {
       await api.delete("/sessions");
       setSessions([]);
-      toast.success("All sessions deleted");
-    } catch { toast.error("Failed to delete"); }
+      toast.success(t('sessions.toastAllDeleted'));
+    } catch { toast.error(t('sessions.toastFailedDelete')); }
   };
 
   const handleAdd = async (data: Omit<Session, "_id">) => {
@@ -619,8 +621,8 @@ export function SessionsSection() {
       const res = await api.post("/sessions", data);
       setSessions(s => [res.data, ...s]);
       setShowAdd(false);
-      toast.success("Session saved");
-    } catch { toast.error("Failed to save session"); }
+      toast.success(t('sessions.toastSaved'));
+    } catch { toast.error(t('sessions.toastFailedSave')); }
   };
 
   const toggleSort = (key: SortKey) => {
@@ -686,7 +688,7 @@ export function SessionsSection() {
     const themeCounts: Record<string, number> = {};
     journalSessions.forEach(s => {
       if (s.nlp!.sentiment) sentimentDist[s.nlp!.sentiment]++;
-      (s.nlp!.themes ?? []).forEach(t => { themeCounts[t] = (themeCounts[t] || 0) + 1; });
+      (s.nlp!.themes ?? []).forEach(theme => { themeCounts[theme] = (themeCounts[theme] || 0) + 1; });
     });
     const topThemes = Object.entries(themeCounts)
       .sort((a, b) => b[1] - a[1]).slice(0, 5)
@@ -716,8 +718,8 @@ export function SessionsSection() {
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-6 pb-2">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <p className="t-label mb-1" style={{ color: ts.textMuted }}>Breathe · History</p>
-              <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>My Sessions</h1>
+              <p className="t-label mb-1" style={{ color: ts.textMuted }}>{t('sessions.brand')}</p>
+              <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>{t('sessions.title')}</h1>
             </div>
             {activeTab === "sessions" && (
               <button
@@ -744,7 +746,7 @@ export function SessionsSection() {
                   boxShadow: activeTab === tab ? `0 1px 4px rgba(0,0,0,0.2)` : 'none',
                 }}
               >
-                {tab === "journal" ? `Journal${journalSessions.length ? ` · ${journalSessions.length}` : ""}` : "Sessions"}
+                {tab === "journal" ? `${t('sessions.tabJournal')}${journalSessions.length ? ` · ${journalSessions.length}` : ""}` : t('sessions.tabSessions')}
               </button>
             ))}
           </div>
@@ -759,30 +761,30 @@ export function SessionsSection() {
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                 <div className="flex items-center gap-2">
                   <Brain size={13} style={{ color: ts.accent }} />
-                  <p className="t-label" style={{ color: ts.textMuted }}>Emotional overview</p>
+                  <p className="t-label" style={{ color: ts.textMuted }}>{t('sessions.journal.emotionalOverview')}</p>
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
                     <p className="t-heading font-light tabular-nums" style={{ color: ts.textPrimary }}>{journalSessions.length}</p>
-                    <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>analyzed</p>
+                    <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>{t('sessions.journal.analyzed')}</p>
                   </div>
                   <div>
                     <p className="t-body font-medium" style={{
                       color: journalStats.avgScore > 0.2
                         ? ts.accent : journalStats.avgScore < -0.2 ? '#FF8A8A' : '#7AAEC8'
                     }}>
-                      {journalStats.avgScore > 0.2 ? 'Generally positive' : journalStats.avgScore < -0.2 ? 'Challenging' : 'Balanced'}
+                      {journalStats.avgScore > 0.2 ? t('sessions.journal.generallyPositive') : journalStats.avgScore < -0.2 ? t('sessions.journal.challenging') : t('sessions.journal.balanced')}
                     </p>
-                    <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>overall mood</p>
+                    <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>{t('sessions.journal.overallMood')}</p>
                   </div>
                   <div>
                     <p className="t-heading font-light tabular-nums" style={{ color: ts.accent }}>{journalStats.sentimentDist.positive}</p>
-                    <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>positive</p>
+                    <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>{t('sessions.journal.positive')}</p>
                   </div>
                 </div>
                 {journalStats.topThemes.length > 0 && (
                   <div>
-                    <p className="t-label mb-2" style={{ color: ts.textMuted }}>Recurring themes</p>
+                    <p className="t-label mb-2" style={{ color: ts.textMuted }}>{t('sessions.journal.recurringThemes')}</p>
                     <div className="flex flex-wrap gap-1.5">
                       {journalStats.topThemes.map(({ theme, count }) => (
                         <span key={theme} className="t-caption px-2.5 py-1 rounded-full capitalize"
@@ -806,9 +808,9 @@ export function SessionsSection() {
                     )}
                   </div>
                   <div className="flex gap-4 mt-1.5">
-                    <span className="t-caption" style={{ color: ts.accent }}>● Positive {journalStats.sentimentDist.positive}</span>
-                    <span className="t-caption" style={{ color: '#7AAEC8' }}>● Neutral {journalStats.sentimentDist.neutral}</span>
-                    <span className="t-caption" style={{ color: '#FF8A8A' }}>● Difficult {journalStats.sentimentDist.negative}</span>
+                    <span className="t-caption" style={{ color: ts.accent }}>{t('sessions.journal.sentimentPositive', { count: journalStats.sentimentDist.positive })}</span>
+                    <span className="t-caption" style={{ color: '#7AAEC8' }}>{t('sessions.journal.sentimentNeutral', { count: journalStats.sentimentDist.neutral })}</span>
+                    <span className="t-caption" style={{ color: '#FF8A8A' }}>{t('sessions.journal.sentimentDifficult', { count: journalStats.sentimentDist.negative })}</span>
                   </div>
                 </div>
               </div>
@@ -820,15 +822,15 @@ export function SessionsSection() {
                 style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                 <BookOpen size={34} style={{ color: ts.textDim }} />
                 <div>
-                  <p className="t-body font-medium mb-1" style={{ color: ts.textSecondary }}>Journal is empty</p>
+                  <p className="t-body font-medium mb-1" style={{ color: ts.textSecondary }}>{t('sessions.journal.empty')}</p>
                   <p className="t-caption max-w-xs" style={{ color: ts.textMuted }}>
-                    Add notes to your breathing sessions. AI will analyze your emotions and suggest techniques.
+                    {t('sessions.journal.emptyDesc')}
                   </p>
                 </div>
                 <Link to="/breathing"
                   className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white t-body font-medium hover:scale-105 transition-all"
                   style={{ background: ts.btnGradient }}>
-                  Start a session <ArrowRight size={14} />
+                  {t('sessions.journal.startSession')} <ArrowRight size={14} />
                 </Link>
               </div>
             )}
@@ -840,7 +842,7 @@ export function SessionsSection() {
                   <p className="t-caption font-medium tracking-wide" style={{ color: ts.textMuted }}>{month}</p>
                   <div className="flex-1 h-px" style={{ backgroundColor: ts.border }} />
                   <span className="t-caption" style={{ color: ts.textDim }}>
-                    {journalGroups.get(month)!.length} {journalGroups.get(month)!.length === 1 ? 'entry' : 'entries'}
+                    {journalGroups.get(month)!.length} {journalGroups.get(month)!.length === 1 ? t('sessions.journal.entry') : t('sessions.journal.entries')}
                   </span>
                 </div>
                 {journalGroups.get(month)!.map(s => <JournalEntryCard key={s._id} session={s} />)}
@@ -851,7 +853,7 @@ export function SessionsSection() {
               <div className="flex items-start gap-2 px-4 py-3 rounded-xl" style={{ backgroundColor: `${ts.accent}0A` }}>
                 <Sparkles size={12} style={{ color: ts.accent }} className="mt-0.5 flex-shrink-0" />
                 <p className="t-caption" style={{ color: ts.textMuted }}>
-                  The more you journal, the better the AI understands your emotional patterns.
+                  {t('sessions.journal.footerHint')}
                 </p>
               </div>
             )}
@@ -866,26 +868,26 @@ export function SessionsSection() {
             {/* LEFT sidebar */}
             <aside className="hidden lg:flex flex-col gap-4 w-56 flex-shrink-0 pt-4">
               <div className="flex flex-col gap-2">
-                <p className="t-label px-1 mb-1" style={{ color: ts.textDim }}>Overview</p>
+                <p className="t-label px-1 mb-1" style={{ color: ts.textDim }}>{t('sessions.overview')}</p>
                 <SummaryCard icon={<Timer size={14} />}      label={t("sessions.totalMinutes")} value={`${totalMins}m`} />
                 <SummaryCard icon={<Wind size={14} />}       label={t("sessions.totalCycles")}  value={String(totalCycles)} />
                 <SummaryCard icon={<Flame size={14} />}      label={t("sessions.sessions")}     value={String(sessions.length)} />
-                <SummaryCard icon={<TrendingUp size={14} />} label="Avg mood shift"
+                <SummaryCard icon={<TrendingUp size={14} />} label={t('sessions.avgMoodShift')}
                   value={typeof avgMoodDelta === "string" && avgMoodDelta !== "—" && Number(avgMoodDelta) > 0 ? `+${avgMoodDelta}` : String(avgMoodDelta)} />
               </div>
 
               {/* Filters */}
               <div className="flex flex-col gap-2 rounded-2xl p-4 border"
                 style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}>
-                <p className="t-label mb-1" style={{ color: ts.textDim }}>Filters</p>
+                <p className="t-label mb-1" style={{ color: ts.textDim }}>{t('sessions.filters')}</p>
                 <div className="flex flex-col gap-1.5">
-                  <label className="t-caption" style={{ color: ts.textMuted }}>Min cycles: {minCycles}</label>
+                  <label className="t-caption" style={{ color: ts.textMuted }}>{t('sessions.minCycles')}: {minCycles}</label>
                   <input type="range" min={0} max={20} value={minCycles} onChange={e => setMinCycles(Number(e.target.value))}
                     className="w-full appearance-none h-1.5 rounded-full cursor-pointer"
                     style={{ background: `linear-gradient(to right, ${ts.accent} ${minCycles/20*100}%, ${ts.border}80 ${minCycles/20*100}%)`, accentColor: ts.accent }} />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="t-caption" style={{ color: ts.textMuted }}>Min duration: {minDuration}m</label>
+                  <label className="t-caption" style={{ color: ts.textMuted }}>{t('sessions.minDuration')}: {minDuration}m</label>
                   <input type="range" min={0} max={60} value={minDuration} onChange={e => setMinDuration(Number(e.target.value))}
                     className="w-full appearance-none h-1.5 rounded-full cursor-pointer"
                     style={{ background: `linear-gradient(to right, ${ts.accentLight} ${minDuration/60*100}%, ${ts.border}80 ${minDuration/60*100}%)`, accentColor: ts.accentLight }} />
@@ -893,7 +895,7 @@ export function SessionsSection() {
                 {(minCycles > 0 || minDuration > 0) && (
                   <button onClick={() => { setMinCycles(0); setMinDuration(0); }}
                     className="t-caption hover:underline self-end mt-1" style={{ color: ts.accent }}>
-                    Reset filters
+                    {t('sessions.resetFilters')}
                   </button>
                 )}
               </div>
@@ -904,10 +906,10 @@ export function SessionsSection() {
               <div className="rounded-2xl border p-4" style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}>
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles size={11} style={{ color: ts.accent }} />
-                  <p className="t-label" style={{ color: ts.textMuted }}>AI coach</p>
+                  <p className="t-label" style={{ color: ts.textMuted }}>{t('sessions.aiCoachLabel')}</p>
                 </div>
                 <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
-                  Your session history is used to personalise breathing pattern recommendations.
+                  {t('sessions.aiCoachHint')}
                 </p>
               </div>
 
@@ -920,9 +922,9 @@ export function SessionsSection() {
                   <ArrowRight size={11} style={{ color: ts.accent }} />
                 </div>
                 <div>
-                  <p className="t-caption font-semibold" style={{ color: ts.accentLight }}>Challenges</p>
+                  <p className="t-caption font-semibold" style={{ color: ts.accentLight }}>{t('sessions.challengesLabel')}</p>
                   <p className="t-caption mt-0.5 leading-relaxed" style={{ color: ts.textMuted }}>
-                    7 & 21-day streaks to build habits and earn badges
+                    {t('sessions.challengesHint')}
                   </p>
                 </div>
               </Link>
@@ -931,7 +933,7 @@ export function SessionsSection() {
                 <button onClick={handleDeleteAll}
                   className="flex items-center gap-1.5 t-caption hover:text-[#FF8A8A] transition-colors px-1"
                   style={{ color: ts.textMuted }}>
-                  <Trash2 size={11} /> Delete all sessions
+                  <Trash2 size={11} /> {t('sessions.deleteAll')}
                 </button>
               )}
             </aside>
@@ -946,8 +948,8 @@ export function SessionsSection() {
                 <div className="flex items-center gap-2.5">
                   <span className="t-heading">🏆</span>
                   <div>
-                    <p className="t-caption font-semibold" style={{ color: ts.accentLight }}>Breathing Challenges</p>
-                    <p className="t-caption" style={{ color: ts.textMuted }}>7 & 21-day streaks · earn badges</p>
+                    <p className="t-caption font-semibold" style={{ color: ts.accentLight }}>{t('sessions.breathingChallenges')}</p>
+                    <p className="t-caption" style={{ color: ts.textMuted }}>{t('sessions.breathingChallengesHint')}</p>
                   </div>
                 </div>
                 <ArrowRight size={13} style={{ color: ts.accent }} />
@@ -992,7 +994,7 @@ export function SessionsSection() {
                 <button onClick={() => setFilterOpen(v => !v)}
                   className="lg:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl t-caption border transition-all"
                   style={{ color: ts.textMuted, borderColor: ts.border }}>
-                  <SlidersHorizontal size={11} /> Filters
+                  <SlidersHorizontal size={11} /> {t('sessions.filters')}
                 </button>
               </div>
 
@@ -1002,8 +1004,8 @@ export function SessionsSection() {
                   style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}>
                   <div className="grid grid-cols-2 gap-4">
                     {[
-                      { label: `Min cycles: ${minCycles}`,   val: minCycles,   max: 20, setFn: setMinCycles,   color: ts.accent },
-                      { label: `Min duration: ${minDuration}m`, val: minDuration, max: 60, setFn: setMinDuration, color: ts.accentLight },
+                      { label: `${t('sessions.minCycles')}: ${minCycles}`,   val: minCycles,   max: 20, setFn: setMinCycles,   color: ts.accent },
+                      { label: `${t('sessions.minDuration')}: ${minDuration}m`, val: minDuration, max: 60, setFn: setMinDuration, color: ts.accentLight },
                     ].map(({ label, val, max, setFn, color }) => (
                       <div key={label} className="flex flex-col gap-1.5">
                         <label className="t-caption" style={{ color: ts.textMuted }}>{label}</label>
@@ -1018,9 +1020,9 @@ export function SessionsSection() {
 
               {/* Status */}
               <p className="t-caption tracking-wide" style={{ color: ts.textMuted }}>
-                {loading ? "Loading…" : `${filtered.length} of ${sessions.length} sessions`}
-                {(minCycles > 0 || minDuration > 0 || search) ? " · filtered" : ""}
-                {totalPages > 1 ? ` · page ${page}/${totalPages}` : ""}
+                {loading ? t('sessions.statusLoading') : t('sessions.statusCount', { filtered: filtered.length, total: sessions.length })}
+                {(minCycles > 0 || minDuration > 0 || search) ? ` · ${t('sessions.statusFiltered')}` : ""}
+                {totalPages > 1 ? ` · ${t('sessions.statusPage', { page, total: totalPages })}` : ""}
               </p>
 
               {/* Session list */}
@@ -1035,13 +1037,13 @@ export function SessionsSection() {
                 <div className="flex flex-col items-center gap-4 py-20">
                   <Calendar size={32} style={{ color: ts.textDim }} />
                   <p className="t-body" style={{ color: ts.textMuted }}>
-                    {sessions.length === 0 ? "No sessions yet — start meditating!" : "No sessions match your filters"}
+                    {sessions.length === 0 ? t('sessions.noSessions') : t('sessions.noMatchFilters')}
                   </p>
                   {sessions.length === 0 && (
                     <Link to="/breathing"
                       className="px-6 py-2.5 rounded-full text-white t-caption font-medium hover:scale-105 transition-all"
                       style={{ background: ts.btnGradient }}>
-                      Start meditating →
+                      {t('sessions.startMeditating')}
                     </Link>
                   )}
                 </div>
@@ -1064,7 +1066,7 @@ export function SessionsSection() {
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl t-caption border transition-all disabled:opacity-30"
                     style={{ color: ts.textMuted, borderColor: ts.border }}
                   >
-                    <ChevronUp size={12} style={{ transform: 'rotate(-90deg)' }} /> Prev
+                    <ChevronUp size={12} style={{ transform: 'rotate(-90deg)' }} /> {t('sessions.prevPage')}
                   </button>
 
                   <div className="flex items-center gap-1">
@@ -1090,7 +1092,7 @@ export function SessionsSection() {
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl t-caption border transition-all disabled:opacity-30"
                     style={{ color: ts.textMuted, borderColor: ts.border }}
                   >
-                    Next <ChevronDown size={12} style={{ transform: 'rotate(-90deg)' }} />
+                    {t('sessions.nextPage')} <ChevronDown size={12} style={{ transform: 'rotate(-90deg)' }} />
                   </button>
                 </div>
               )}

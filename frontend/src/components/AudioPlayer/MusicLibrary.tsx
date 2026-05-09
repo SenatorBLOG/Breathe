@@ -1,6 +1,7 @@
 // src/components/AudioPlayer/MusicLibrary.tsx
 import { useEffect, useState, useMemo } from "react";
 import { useMusic } from "../contexts/MusicContext";
+import { useTranslation } from "react-i18next";
 import { Search, RefreshCw, Music2, Headphones, Radio, ListMusic, Sparkles, Play, Pause } from "lucide-react";
 import NavBar from "../NavBar";
 import Footer from "../Footer";
@@ -30,15 +31,6 @@ const GENRE_ICONS: Record<Genre, React.ReactNode> = {
   relaxation: <Music2 size={13} />,
   chillout:   <ListMusic size={13} />,
   lounge:     <Music2 size={13} />,
-};
-
-const GENRE_LABELS: Record<Genre, string> = {
-  all:        "Everything",
-  meditation: "Meditation",
-  ambient:    "Ambient",
-  relaxation: "Relaxation",
-  chillout:   "Chill Out",
-  lounge:     "Lounge",
 };
 
 // ─── Ad placeholder ───────────────────────────────────────────────────────────
@@ -200,6 +192,16 @@ function TrackCard({
 export function MusicLibrary() {
   const { tracks, loadTracks, playTrack, currentTrack, isPlaying, isLoading, togglePlayPause } = useMusic();
   const ts = useThemeStyles();
+  const { t } = useTranslation();
+
+  const GENRE_LABELS: Record<Genre, string> = {
+    all:        t('music.genreLabels.all'),
+    meditation: t('music.genreLabels.meditation'),
+    ambient:    t('music.genreLabels.ambient'),
+    relaxation: t('music.genreLabels.relaxation'),
+    chillout:   t('music.genreLabels.chillout'),
+    lounge:     t('music.genreLabels.lounge'),
+  };
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<Genre>("all");
@@ -249,8 +251,8 @@ export function MusicLibrary() {
         <header className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-6 pb-3">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <p className="t-label tracking-[0.3em] uppercase" style={{ color: ts.textMuted }}>Breathe · Sounds</p>
-              <h1 className="text-2xl sm:text-3xl font-light" style={{ color: ts.textPrimary }}>Music Library</h1>
+              <p className="t-label tracking-[0.3em] uppercase" style={{ color: ts.textMuted }}>{t('music.brand')}</p>
+              <h1 className="text-2xl sm:text-3xl font-light" style={{ color: ts.textPrimary }}>{t('music.title')}</h1>
             </div>
 
             {/* Search */}
@@ -260,7 +262,7 @@ export function MusicLibrary() {
                 type="search"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search tracks, artists, tags…"
+                placeholder={t('music.searchPlaceholder')}
                 className="w-full pl-9 pr-10 py-2.5 rounded-xl t-caption outline-none transition-colors"
                 style={{
                   backgroundColor: ts.cardBg,
@@ -292,7 +294,7 @@ export function MusicLibrary() {
                   className="t-label tracking-[0.25em] uppercase mb-2.5 px-1"
                   style={{ color: ts.textDim }}
                 >
-                  Genre
+                  {t('music.genre')}
                 </p>
                 {GENRES.map(g => (
                   <SideItem
@@ -314,7 +316,7 @@ export function MusicLibrary() {
                 style={{ color: ts.textMuted, borderColor: ts.border }}
               >
                 <RefreshCw size={10} className={isLoading ? "animate-spin" : ""} />
-                Refresh tracks
+                {t('music.refreshTracks')}
               </button>
 
               <AdSlot label="Ad · 160×600 half-page" className="flex-1 min-h-48" />
@@ -344,8 +346,8 @@ export function MusicLibrary() {
               <div className="flex items-center justify-between">
                 <span className="t-label tracking-wide" style={{ color: ts.textMuted }}>
                   {isLoading
-                    ? "Loading…"
-                    : `${filteredTracks.length} track${filteredTracks.length !== 1 ? "s" : ""}${selectedGenre !== "all" ? ` · ${GENRE_LABELS[selectedGenre]}` : ""}`
+                    ? t('music.loading')
+                    : `${t('music.trackCount', { count: filteredTracks.length })}${selectedGenre !== "all" ? ` · ${GENRE_LABELS[selectedGenre]}` : ""}`
                   }
                 </span>
                 {!isLoading && (
@@ -354,7 +356,7 @@ export function MusicLibrary() {
                     className="flex items-center gap-1.5 t-label transition-colors lg:hidden"
                     style={{ color: ts.textMuted }}
                   >
-                    <RefreshCw size={10} /> Refresh
+                    <RefreshCw size={10} /> {t('music.refresh')}
                   </button>
                 )}
               </div>
@@ -375,14 +377,14 @@ export function MusicLibrary() {
                 ) : filteredTracks.length === 0 ? (
                   <div className="flex flex-col items-center gap-3 py-20">
                     <Music2 size={28} style={{ color: ts.textDim }} />
-                    <p className="t-body" style={{ color: ts.textMuted }}>No tracks found</p>
+                    <p className="t-body" style={{ color: ts.textMuted }}>{t('music.noTracks')}</p>
                     {searchQuery && (
                       <button
                         onClick={() => setSearchQuery("")}
                         className="t-caption hover:underline"
                         style={{ color: ts.accent }}
                       >
-                        Clear search
+                        {t('music.clearSearch')}
                       </button>
                     )}
                   </div>

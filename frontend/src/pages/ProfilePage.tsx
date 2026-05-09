@@ -1,6 +1,7 @@
 // src/pages/ProfilePage.tsx
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
@@ -394,6 +395,7 @@ function HealthInsight({ integrations }: { integrations: IntegrationStatus[] }) 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ProfilePage() {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const location = useLocation();
   const { user, updateUser } = useContext(AuthContext);
 
@@ -567,10 +569,10 @@ export default function ProfilePage() {
           {/* Page header */}
           <div>
             <p className="t-label mb-1" style={{ color: ts.textMuted }}>
-              Breathe · Profile
+              {t('profile.brand')}
             </p>
             <h1 className="text-2xl sm:text-3xl font-medium tracking-wide" style={{ color: ts.textPrimary }}>
-              My Account
+              {t('profile.myAccount')}
             </h1>
           </div>
 
@@ -642,21 +644,21 @@ export default function ProfilePage() {
           {/* Tab switcher */}
           <div className="flex flex-wrap rounded-xl overflow-hidden" style={{ border: `1px solid ${ts.border}` }}>
             {([
-              { id: 'profile'    as const, label: 'Profile' },
-              { id: 'sessions'   as const, label: 'Sessions' },
-              { id: 'progress'   as const, label: 'Progress' },
-              { id: 'challenges' as const, label: 'Challenges' },
-              { id: 'devices'    as const, label: 'Devices' },
-            ]).map(t => (
-              <button key={t.id} onClick={() => setTab(t.id)}
+              { id: 'profile'    as const, label: t('profile.tabs.profile') },
+              { id: 'sessions'   as const, label: t('profile.tabs.sessions') },
+              { id: 'progress'   as const, label: t('profile.tabs.progress') },
+              { id: 'challenges' as const, label: t('profile.tabs.challenges') },
+              { id: 'devices'    as const, label: t('profile.tabs.devices') },
+            ]).map(tb => (
+              <button key={tb.id} onClick={() => setTab(tb.id)}
                 className="flex-1 py-3 t-caption font-medium transition-all"
                 style={{
-                  background: tab === t.id ? ts.btnGradient : ts.cardBg,
-                  color: tab === t.id ? '#fff' : ts.textSecondary,
+                  background: tab === tb.id ? ts.btnGradient : ts.cardBg,
+                  color: tab === tb.id ? '#fff' : ts.textSecondary,
                   minWidth: '20%',
                   borderRight: `1px solid ${ts.border}`,
                 }}>
-                {t.label}
+                {tb.label}
               </button>
             ))}
           </div>
@@ -666,7 +668,7 @@ export default function ProfilePage() {
             <div className="flex flex-col gap-4">
 
               {/* Display name */}
-              <Section label="Display Name">
+              <Section label={t('profile.displayName')}>
                 <input
                   type="text"
                   value={nickname}
@@ -680,16 +682,16 @@ export default function ProfilePage() {
                   }}
                 />
                 <p className="t-caption" style={{ color: ts.textDim }}>
-                  Shown in community posts and leaderboards · max 30 chars
+                  {t('profile.displayNameHint')}
                 </p>
               </Section>
 
               {/* Body data */}
-              <Section label="Body Data">
+              <Section label={t('profile.bodyData')}>
                 <div className="grid grid-cols-2 gap-3">
-                  <NumberField label="Height" unit="cm" min={50} max={300}
+                  <NumberField label={t('profile.height')} unit="cm" min={50} max={300}
                     value={body.heightCm} onChange={v => setBody(b => ({ ...b, heightCm: v }))} />
-                  <NumberField label="Weight" unit="kg" min={20} max={500}
+                  <NumberField label={t('profile.weight')} unit="kg" min={20} max={500}
                     value={body.weightKg} onChange={v => setBody(b => ({ ...b, weightKg: v }))} />
                 </div>
 
@@ -704,43 +706,43 @@ export default function ProfilePage() {
                   </div>
                 )}
 
-                <NumberField label="Age" unit="years" min={1} max={120}
+                <NumberField label={t('profile.age')} unit="years" min={1} max={120}
                   value={body.age} onChange={v => setBody(b => ({ ...b, age: v }))} />
               </Section>
 
               {/* Gender */}
-              <Section label="Gender">
+              <Section label={t('profile.gender')}>
                 <div className="flex flex-wrap gap-2">
                   {GENDERS.map(g => (
                     <PillButton key={g.value} ts={ts}
                       active={body.gender === g.value}
                       onClick={() => setBody(b => ({ ...b, gender: b.gender === g.value ? '' : g.value }))}>
-                      {g.label}
+                      {t(`profile.genders.${g.value}`)}
                     </PillButton>
                   ))}
                 </div>
               </Section>
 
               {/* Goal */}
-              <Section label="My Goal">
+              <Section label={t('profile.myGoal')}>
                 <div className="flex flex-wrap gap-2">
                   {GOALS.map(g => (
                     <PillButton key={g.value} ts={ts}
                       active={body.goal === g.value}
                       onClick={() => setBody(b => ({ ...b, goal: b.goal === g.value ? '' : g.value }))}>
-                      {g.icon} {g.label}
+                      {g.icon} {t(`profile.goals.${g.value}`)}
                     </PillButton>
                   ))}
                 </div>
               </Section>
 
               {/* Daily reminder */}
-              <Section label="Daily Reminder">
+              <Section label={t('profile.dailyReminder')}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="t-body" style={{ color: ts.textSecondary }}>Email reminder</p>
+                    <p className="t-body" style={{ color: ts.textSecondary }}>{t('profile.emailReminder')}</p>
                     <p className="t-caption mt-0.5" style={{ color: ts.textDim }}>
-                      We'll nudge you if you haven't meditated that day
+                      {t('profile.reminderHint')}
                     </p>
                   </div>
                   <button
@@ -758,7 +760,7 @@ export default function ProfilePage() {
 
                 {reminderEnabled && (
                   <div className="flex items-center gap-3 mt-1">
-                    <p className="t-caption flex-shrink-0" style={{ color: ts.textMuted }}>Send at (UTC)</p>
+                    <p className="t-caption flex-shrink-0" style={{ color: ts.textMuted }}>{t('profile.sendAt')}</p>
                     <div className="flex items-center gap-1 px-3 py-2 rounded-xl flex-1"
                       style={{ background: ts.cardBgHover, border: `1px solid ${ts.border}` }}>
                       <input
@@ -780,11 +782,10 @@ export default function ProfilePage() {
               <div className="px-4 py-3 rounded-xl"
                 style={{ background: `${ts.accent}0D`, border: `1px solid ${ts.border}` }}>
                 <p className="t-caption uppercase tracking-widest font-semibold mb-2" style={{ color: ts.accentLight }}>
-                  How we use this
+                  {t('profile.howWeUse')}
                 </p>
                 <p className="t-body leading-relaxed" style={{ color: ts.textMuted }}>
-                  Your age, height and weight help calibrate optimal breathing rates and session lengths.
-                  Your goal determines which techniques the AI coach recommends first — and shapes your daily insight cards.
+                  {t('profile.howWeUseText')}
                 </p>
               </div>
 
@@ -793,7 +794,7 @@ export default function ProfilePage() {
                 className="flex items-center justify-center gap-2 py-3.5 rounded-xl t-body font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
                 style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}>
                 {saving ? <RefreshCw size={14} className="animate-spin" /> : <Save size={14} />}
-                {saving ? 'Saving…' : 'Save changes'}
+                {saving ? t('profile.saving') : t('profile.saveChanges')}
               </button>
 
               {/* Quick nav */}
@@ -801,16 +802,16 @@ export default function ProfilePage() {
                 <Link to="/sessions" className="flex items-center justify-between p-4 rounded-2xl transition-all"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   <div>
-                    <p className="t-body font-medium" style={{ color: ts.textPrimary }}>My Sessions</p>
-                    <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>Breathing history</p>
+                    <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{t('profile.mySessions')}</p>
+                    <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>{t('profile.breathingHistory')}</p>
                   </div>
                   <ChevronRight size={14} style={{ color: ts.textDim }} />
                 </Link>
                 <Link to="/statistics" className="flex items-center justify-between p-4 rounded-2xl transition-all"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   <div>
-                    <p className="t-body font-medium" style={{ color: ts.textPrimary }}>Progress</p>
-                    <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>Charts & insights</p>
+                    <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{t('profile.progress')}</p>
+                    <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>{t('profile.chartsInsights')}</p>
                   </div>
                   <ChevronRight size={14} style={{ color: ts.textDim }} />
                 </Link>
@@ -830,7 +831,7 @@ export default function ProfilePage() {
                 </button>
               </div>
               {/* Achievements */}
-              <Section label={`Achievements · ${earnedAchievements.length}/${ALL_ACHIEVEMENTS.length}`}>
+              <Section label={`${t('profile.achievementsLabel')} · ${earnedAchievements.length}/${ALL_ACHIEVEMENTS.length}`}>
                 <div className="grid grid-cols-4 gap-2">
                   {ALL_ACHIEVEMENTS.map(a => {
                     const earned = earnedAchievements.find(e => e.id === a.id);
@@ -886,7 +887,7 @@ export default function ProfilePage() {
                   <div className="rounded-2xl p-4"
                     style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                     <div className="flex items-center justify-between mb-3">
-                      <p className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>Health overview · last 7 days</p>
+                      <p className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>{t('profile.healthOverview')}</p>
                       {integrations.length > 0 && <HealthInsight integrations={integrations} />}
                     </div>
                     <div className="grid grid-cols-3 gap-3">
@@ -899,7 +900,7 @@ export default function ProfilePage() {
                           {avgSleep7 ? fmtDur(avgSleep7) : '—'}
                         </p>
                         <p className="t-label" style={{ color: avgSleep7 && avgSleep7 >= 420 ? ts.accent : avgSleep7 && avgSleep7 >= 300 ? '#FFD97D' : ts.textDim }}>
-                          {avgSleep7 ? (avgSleep7 >= 420 ? 'good' : avgSleep7 >= 300 ? 'fair' : 'poor') : 'no data'}
+                          {avgSleep7 ? (avgSleep7 >= 420 ? t('profile.good') : avgSleep7 >= 300 ? t('profile.fair') : t('profile.poor')) : t('profile.noData')}
                         </p>
                       </div>
                       <div className="flex flex-col gap-0.5">
@@ -911,7 +912,7 @@ export default function ProfilePage() {
                           {avgHRV7 ? `${avgHRV7} ms` : '—'}
                         </p>
                         <p className="t-label" style={{ color: ts.textDim }}>
-                          {avgHRV7 ? (avgHRV7 >= 60 ? 'great' : avgHRV7 >= 40 ? 'good' : 'low') : 'no data'}
+                          {avgHRV7 ? (avgHRV7 >= 60 ? t('profile.great') : avgHRV7 >= 40 ? t('profile.good') : t('profile.low')) : t('profile.noData')}
                         </p>
                       </div>
                       <div className="flex flex-col gap-0.5">
@@ -923,7 +924,7 @@ export default function ProfilePage() {
                           {restingHR ? `${restingHR} bpm` : '—'}
                         </p>
                         <p className="t-label" style={{ color: ts.textDim }}>
-                          {restingHR ? (restingHR < 60 ? 'excellent' : restingHR < 70 ? 'good' : 'average') : 'no data'}
+                          {restingHR ? (restingHR < 60 ? t('profile.excellent') : restingHR < 70 ? t('profile.good') : t('profile.average')) : t('profile.noData')}
                         </p>
                       </div>
                     </div>
@@ -933,13 +934,13 @@ export default function ProfilePage() {
                 {/* ── Sources ── */}
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between px-1">
-                    <p className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>Sources</p>
+                    <p className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>{t('profile.sources')}</p>
                     <div className="flex items-center gap-3">
                       {integrations.some(i => i.connected) && (
                         <button onClick={sync} disabled={syncing}
                           className="flex items-center gap-1 t-label disabled:opacity-40 hover:underline"
                           style={{ color: ts.accent }}>
-                          <RefreshCw size={9} className={syncing ? 'animate-spin' : ''} /> Sync all
+                          <RefreshCw size={9} className={syncing ? 'animate-spin' : ''} /> {t('profile.syncAll')}
                         </button>
                       )}
                       <Link to="/data-consent" className="t-label hover:underline" style={{ color: ts.textDim }}>Privacy</Link>
@@ -958,7 +959,7 @@ export default function ProfilePage() {
                         connected={!!fitbit?.connected}
                         sublabel={fitbit?.connected ? `Synced ${fitbit.lastSyncAt ? timeAgo(fitbit.lastSyncAt) : 'never'} · sleep · HRV · HR` : 'Wearable — sleep stages, HRV, heart rate'}
                         onAction={fitbit?.connected ? () => disconnect('fitbit') : () => connect('fitbit')}
-                        actionLabel={fitbit?.connected ? 'Disconnect' : 'Connect'}
+                        actionLabel={fitbit?.connected ? t('profile.disconnect') : t('profile.connect')}
                       >
                         {fitbit?.connected && (() => {
                           const s = fitbit.data?.sleep?.slice(-7) ?? [];
@@ -980,7 +981,7 @@ export default function ProfilePage() {
                         connected={!!googleFit?.connected}
                         sublabel={googleFit?.connected ? `Synced ${googleFit.lastSyncAt ? timeAgo(googleFit.lastSyncAt) : 'never'} · sleep · HR` : 'Android / Wear OS — sleep duration, heart rate'}
                         onAction={googleFit?.connected ? () => disconnect('google_fit') : () => connect('google-fit')}
-                        actionLabel={googleFit?.connected ? 'Disconnect' : 'Connect'}
+                        actionLabel={googleFit?.connected ? t('profile.disconnect') : t('profile.connect')}
                       >
                         {googleFit?.connected && (() => {
                           const s = googleFit.data?.sleep?.slice(-7) ?? [];

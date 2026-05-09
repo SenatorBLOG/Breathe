@@ -3,6 +3,7 @@ import React from 'react';
 import { Card } from './ui/card';
 import { Clock, Target, Calendar } from 'lucide-react';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTranslation } from 'react-i18next';
 
 interface SessionStatsProps {
   currentSession: {
@@ -18,6 +19,7 @@ interface SessionStatsProps {
 
 export function SessionStats({ currentSession, totalStats }: SessionStatsProps) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -51,7 +53,7 @@ export function SessionStats({ currentSession, totalStats }: SessionStatsProps) 
               className="t-label sm:text-xs whitespace-nowrap"
               style={{ color: ts.textMuted }}
             >
-              Session Time
+              {t('sessionStats.sessionTime')}
             </p>
             <p
               className="t-body sm:text-base font-semibold"
@@ -87,7 +89,7 @@ export function SessionStats({ currentSession, totalStats }: SessionStatsProps) 
               className="t-label sm:text-xs whitespace-nowrap"
               style={{ color: ts.textMuted }}
             >
-              Breath Cycles
+              {t('sessionStats.breathCycles')}
             </p>
             <p
               className="t-body sm:text-base font-semibold"
@@ -123,13 +125,13 @@ export function SessionStats({ currentSession, totalStats }: SessionStatsProps) 
               className="t-label sm:text-xs whitespace-nowrap"
               style={{ color: ts.textMuted }}
             >
-              Daily Streak
+              {t('sessionStats.dailyStreak')}
             </p>
             <p
               className="t-body sm:text-base font-semibold"
               style={{ color: ts.textPrimary }}
             >
-              {totalStats.streak} days
+              {totalStats.streak} {t('sessionStats.days')}
             </p>
           </div>
         </div>

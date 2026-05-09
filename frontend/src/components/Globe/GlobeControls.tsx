@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import type { GlobePin } from './useGlobe';
 import { resolveMapUrl, type ResolvedPlace } from '../../utils/resolveMapUrl';
@@ -109,6 +110,7 @@ export default function GlobeControls({
   pickedLatLng,
 }: GlobeControlsProps) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [form, setForm] = useState<typeof DEFAULT_FORM>(DEFAULT_FORM);
   const [latInput, setLatInput] = useState('');
   const [lngInput, setLngInput] = useState('');
@@ -242,10 +244,10 @@ export default function GlobeControls({
       {stats && (
         <div style={{ ...sectionStyle, marginBottom: 12 }}>
           <div style={{ fontSize: 13, color: ts.textSecondary, fontWeight: 600 }}>
-            🌍 {stats.totalPins.toLocaleString()} meditation spot{stats.totalPins !== 1 ? 's' : ''}
+            🌍 {stats.totalPins.toLocaleString()} {stats.totalPins !== 1 ? t('globe.controls.meditationSpots') : t('globe.controls.meditationSpot')}
           </div>
           <div style={{ fontSize: 11, color: ts.textMuted, marginTop: 2 }}>
-            across {stats.countries} countr{stats.countries !== 1 ? 'ies' : 'y'}
+            {stats.countries !== 1 ? t('globe.controls.acrossCountries', { count: stats.countries }) : t('globe.controls.acrossCountry', { count: stats.countries })}
           </div>
         </div>
       )}
@@ -291,7 +293,7 @@ export default function GlobeControls({
       <div style={sectionStyle}>
         {!isAuthenticated && (
           <div style={{ fontSize: 12, color: ts.textMuted, textAlign: 'center' }}>
-            <div style={{ marginBottom: 6 }}>🗺️ Want to pin your meditation spot?</div>
+            <div style={{ marginBottom: 6 }}>{t('globe.controls.wantToPin')}</div>
             <Link
               to="/login"
               style={{
@@ -300,14 +302,14 @@ export default function GlobeControls({
                 textDecoration: 'none',
               }}
             >
-              Sign in to add your spot →
+              {t('globe.controls.signInToAdd')}
             </Link>
           </div>
         )}
 
         {isAuthenticated && !addPinMode && (
           <button onClick={onToggleAddPin} style={btnPrimary}>
-            + Add your spot
+            {t('globe.controls.addYourSpot')}
           </button>
         )}
 
@@ -317,7 +319,7 @@ export default function GlobeControls({
 
               {/* ── Map URL import ─────────────────────────────────────────── */}
               <div style={{ marginBottom: 12 }}>
-                <label style={labelStyle}>🔗 Import from Google Maps (optional)</label>
+                <label style={labelStyle}>{t('globe.controls.importFromMaps')}</label>
                 <div style={{ display: 'flex', gap: 6 }}>
                   <input
                     value={mapUrl}
@@ -348,7 +350,7 @@ export default function GlobeControls({
                         }, 0);
                       }
                     }}
-                    placeholder="Paste Google Maps link…"
+                    placeholder={t('globe.controls.pasteMapsLink')}
                     style={{ ...inputStyle, flex: 1, fontSize: 11 }}
                   />
                   <button
@@ -368,7 +370,7 @@ export default function GlobeControls({
                       whiteSpace:   'nowrap',
                     }}
                   >
-                    {urlLoading ? '…' : 'Go'}
+                    {urlLoading ? '…' : t('globe.controls.go')}
                   </button>
                 </div>
 
@@ -403,7 +405,7 @@ export default function GlobeControls({
                         </p>
                       )}
                       <p style={{ fontSize: 10, color: ts.textSecondary, margin: '3px 0 0' }}>
-                        ✓ Fields pre-filled below
+                        {t('globe.controls.fieldsPreFilled')}
                       </p>
                     </div>
                   </div>
@@ -416,12 +418,12 @@ export default function GlobeControls({
               {/* Lat / Lng editable inputs */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
                 <div>
-                  <label style={labelStyle}>Latitude (-90 to 90)</label>
+                  <label style={labelStyle}>{t('globe.controls.latitude')}</label>
                   <input
                     type="number"
                     value={latInput}
                     onChange={e => setLatInput(e.target.value)}
-                    placeholder="e.g. 48.86"
+                    placeholder={t('globe.controls.latPlaceholder')}
                     step="0.0001"
                     min="-90"
                     max="90"
@@ -429,12 +431,12 @@ export default function GlobeControls({
                   />
                 </div>
                 <div>
-                  <label style={labelStyle}>Longitude (-180 to 180)</label>
+                  <label style={labelStyle}>{t('globe.controls.longitude')}</label>
                   <input
                     type="number"
                     value={lngInput}
                     onChange={e => setLngInput(e.target.value)}
-                    placeholder="e.g. 2.35"
+                    placeholder={t('globe.controls.lngPlaceholder')}
                     step="0.0001"
                     min="-180"
                     max="180"
@@ -445,11 +447,11 @@ export default function GlobeControls({
 
               {/* City */}
               <div style={{ marginBottom: 8 }}>
-                <label style={labelStyle}>City</label>
+                <label style={labelStyle}>{t('globe.controls.cityLabel')}</label>
                 <input
                   value={form.city}
                   onChange={e => handleFormChange('city', e.target.value)}
-                  placeholder="e.g. Tokyo"
+                  placeholder={t('globe.controls.cityPlaceholder')}
                   style={inputStyle}
                   maxLength={100}
                 />
@@ -457,11 +459,11 @@ export default function GlobeControls({
 
               {/* Country */}
               <div style={{ marginBottom: 8 }}>
-                <label style={labelStyle}>Country</label>
+                <label style={labelStyle}>{t('globe.controls.countryLabel')}</label>
                 <input
                   value={form.country}
                   onChange={e => handleFormChange('country', e.target.value)}
-                  placeholder="e.g. Japan"
+                  placeholder={t('globe.controls.countryPlaceholder')}
                   style={inputStyle}
                   maxLength={100}
                 />
@@ -469,11 +471,11 @@ export default function GlobeControls({
 
               {/* Title */}
               <div style={{ marginBottom: 8 }}>
-                <label style={labelStyle}>Title (max 80 chars)</label>
+                <label style={labelStyle}>{t('globe.controls.titleLabel')}</label>
                 <input
                   value={form.title}
                   onChange={e => handleFormChange('title', e.target.value)}
-                  placeholder="Meditation spot"
+                  placeholder={t('globe.controls.titleDefaultValue')}
                   style={inputStyle}
                   maxLength={80}
                 />
@@ -481,11 +483,11 @@ export default function GlobeControls({
 
               {/* Note */}
               <div style={{ marginBottom: 8 }}>
-                <label style={labelStyle}>Note (max 300 chars)</label>
+                <label style={labelStyle}>{t('globe.controls.noteLabel')}</label>
                 <textarea
                   value={form.note}
                   onChange={e => handleFormChange('note', e.target.value)}
-                  placeholder="Share your experience..."
+                  placeholder={t('globe.controls.noteShare')}
                   style={{ ...inputStyle, resize: 'vertical', minHeight: 60 }}
                   maxLength={300}
                 />
@@ -493,7 +495,7 @@ export default function GlobeControls({
 
               {/* Technique */}
               <div style={{ marginBottom: 8 }}>
-                <label style={labelStyle}>Technique</label>
+                <label style={labelStyle}>{t('globe.controls.technique')}</label>
                 <select
                   value={form.technique}
                   onChange={e => handleFormChange('technique', e.target.value)}
@@ -507,7 +509,7 @@ export default function GlobeControls({
 
               {/* Session Link */}
               <div style={{ marginBottom: 8 }}>
-                <label style={labelStyle}>Session link (optional)</label>
+                <label style={labelStyle}>{t('globe.controls.sessionLink')}</label>
                 <input
                   value={form.sessionLink}
                   onChange={e => handleFormChange('sessionLink', e.target.value)}
@@ -519,7 +521,7 @@ export default function GlobeControls({
 
               {/* Photo upload */}
               <div style={{ marginBottom: 8 }}>
-                <label style={labelStyle}>Photo (optional)</label>
+                <label style={labelStyle}>{t('globe.controls.photo')}</label>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -592,16 +594,16 @@ export default function GlobeControls({
                       background: ts.cardBgHover,
                     }}
                   >
-                    {photoLoading ? 'Processing…' : '+ Upload photo'}
+                    {photoLoading ? t('globe.controls.processing') : t('globe.controls.uploadPhoto')}
                   </button>
                 )}
               </div>
 
               <button type="submit" style={btnPrimary}>
-                📍 Drop pin
+                {t('globe.controls.dropPin')}
               </button>
               <button type="button" onClick={onToggleAddPin} style={btnSecondary}>
-                Cancel
+                {t('globe.controls.cancel')}
               </button>
             </form>
           </div>
@@ -621,7 +623,7 @@ export default function GlobeControls({
             }}
           >
             <div style={{ fontSize: 12, color: ts.textMuted }}>
-              📍 {[selectedPin.city, selectedPin.country].filter(Boolean).join(', ') || 'Unknown location'}
+              📍 {[selectedPin.city, selectedPin.country].filter(Boolean).join(', ') || t('globe.controls.unknownLocation')}
             </div>
             <button
               onClick={onClose}
@@ -753,7 +755,7 @@ export default function GlobeControls({
                   cursor:       'pointer',
                 }}
               >
-                🗑 Delete
+                🗑 {t('globe.spotCard.delete')}
               </button>
             )}
           </div>

@@ -3,6 +3,7 @@
  * Shows selected pin detail OR a recent-spots feed.
  */
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import type { GlobePin } from './useGlobe';
 import SpotCard from './SpotCard';
 
@@ -30,6 +31,7 @@ export default function SpotSidebar({
   open, onClose, pins, selectedPin, stats,
   currentUserId, onPinClick, onLike, onDelete, onClosePin,
 }: Props) {
+  const { t } = useTranslation();
   const recentPins = [...pins].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   ).slice(0, 20);
@@ -67,11 +69,11 @@ export default function SpotSidebar({
             flexShrink:     0,
           }}>
             <div style={{ fontSize: 14, fontWeight: 600, color: '#e8eaf0' }}>
-              {selectedPin ? 'Meditation Spot' : 'Recent Spots'}
+              {selectedPin ? t('globe.sidebar.meditationSpot') : t('globe.sidebar.recentSpots')}
             </div>
             <button
               onClick={onClose}
-              aria-label="Close sidebar"
+              aria-label={t('globe.sidebar.closeSidebar')}
               style={{
                 background: 'none',
                 border:     'none',
@@ -95,8 +97,8 @@ export default function SpotSidebar({
               flexShrink:    0,
             }}>
               {[
-                { label: 'Spots',     value: stats.totalPins },
-                { label: 'Countries', value: stats.countries },
+                { label: t('globe.sidebar.spots'),     value: stats.totalPins },
+                { label: t('globe.sidebar.countries'), value: stats.countries },
               ].map(s => (
                 <div key={s.label} style={{
                   flex:           1,
@@ -130,7 +132,7 @@ export default function SpotSidebar({
                 lineHeight: 1.7,
               }}>
                 <div style={{ fontSize: 28, marginBottom: 10 }}>🌍</div>
-                No spots yet.<br />Be the first to pin your practice!
+                {t('globe.sidebar.noSpots')}<br />{t('globe.sidebar.bePinFirst')}
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -150,7 +152,7 @@ export default function SpotSidebar({
                     onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
                   >
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#e8eaf0', marginBottom: 2 }}>
-                      {pin.title || 'Meditation Spot'}
+                      {pin.title || t('globe.sidebar.defaultTitle')}
                     </div>
                     <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>
                       @{pin.username} · {[pin.city, pin.country].filter(Boolean).join(', ')}

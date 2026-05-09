@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Flame, Tag, Users, Bot } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import api from '../../api';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 
@@ -55,6 +56,7 @@ export default function CommunitySidebar({ onTagClick }: {
   onTagClick: (tag: string) => void;
 }) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [data, setData] = useState<SidebarData | null>(null);
 
   useEffect(() => {
@@ -67,10 +69,10 @@ export default function CommunitySidebar({ onTagClick }: {
     <aside className="hidden lg:flex flex-col gap-4 w-56 flex-shrink-0">
 
       {/* Popular topics */}
-      <SidebarBlock title="Hot topics" icon={<Flame size={13} />}>
+      <SidebarBlock title={t('community.sidebar.hotTopics')} icon={<Flame size={13} />}>
         {data ? (
           data.popularPosts.length === 0 ? (
-            <p className="t-caption" style={{ color: ts.textDim }}>No posts yet this week</p>
+            <p className="t-caption" style={{ color: ts.textDim }}>{t('community.sidebar.noPostsThisWeek')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {data.popularPosts.map(p => (
@@ -92,10 +94,10 @@ export default function CommunitySidebar({ onTagClick }: {
       </SidebarBlock>
 
       {/* Top tags */}
-      <SidebarBlock title="Top tags" icon={<Tag size={13} />}>
+      <SidebarBlock title={t('community.sidebar.topTags')} icon={<Tag size={13} />}>
         {data ? (
           data.topTags.length === 0 ? (
-            <p className="t-caption" style={{ color: ts.textDim }}>No tags yet</p>
+            <p className="t-caption" style={{ color: ts.textDim }}>{t('community.sidebar.noTags')}</p>
           ) : (
             <div className="flex flex-wrap gap-1.5">
               {data.topTags.map(tag => {
@@ -122,10 +124,10 @@ export default function CommunitySidebar({ onTagClick }: {
       </SidebarBlock>
 
       {/* Active users */}
-      <SidebarBlock title="Active this week" icon={<Users size={13} />}>
+      <SidebarBlock title={t('community.sidebar.activeThisWeek')} icon={<Users size={13} />}>
         {data ? (
           data.topUsers.length === 0 ? (
-            <p className="t-caption" style={{ color: ts.textDim }}>No activity yet</p>
+            <p className="t-caption" style={{ color: ts.textDim }}>{t('community.sidebar.noActivity')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {data.topUsers.map(u => (
@@ -138,7 +140,7 @@ export default function CommunitySidebar({ onTagClick }: {
                     <span className="t-caption truncate" style={{ color: ts.textSecondary }}>{u.name}</span>
                   </div>
                   <span className="t-label flex-shrink-0" style={{ color: ts.textDim }}>
-                    {u.postCount} post{u.postCount !== 1 ? 's' : ''}
+                    {t(u.postCount !== 1 ? 'community.sidebar.posts' : 'community.sidebar.post', { count: u.postCount })}
                   </span>
                 </div>
               ))}
@@ -163,16 +165,16 @@ export default function CommunitySidebar({ onTagClick }: {
         <div className="flex items-center gap-2">
           <Bot size={13} style={{ color: ts.accent }} />
           <p className="t-label uppercase tracking-widest font-semibold" style={{ color: ts.textSecondary }}>
-            AI Coach
+            {t('community.sidebar.aiCoachTitle')}
           </p>
         </div>
         <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
-          Get personalized breathing guidance from your AI coach.
+          {t('community.sidebar.aiCoachDesc')}
         </p>
         <Link to="/coach"
           className="t-caption font-medium transition-opacity hover:opacity-70"
           style={{ color: ts.accent }}>
-          Open coach →
+          {t('community.sidebar.openCoach')}
         </Link>
       </div>
 

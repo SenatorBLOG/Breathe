@@ -22,7 +22,7 @@ interface Props {
 
 export default function GuidancePicker({ mode, voiceGender, onChange }: Props) {
   const ts  = useThemeStyles();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const ref  = useRef<HTMLDivElement>(null);
 
@@ -76,7 +76,7 @@ export default function GuidancePicker({ mode, voiceGender, onChange }: Props) {
         }}
       >
         <span>{MODE_ICONS[mode]}</span>
-        <span>{MODE_LABELS[mode]}</span>
+        <span>{mode === 'silent' ? t('breathing.guidance.visual') : mode === 'vibration' ? t('breathing.guidance.vibration') : t('breathing.guidance.voice')}</span>
         <span style={{ opacity: 0.5, fontSize: 9 }}>▾</span>
       </button>
 
@@ -95,7 +95,7 @@ export default function GuidancePicker({ mode, voiceGender, onChange }: Props) {
 
           <div className="p-3 flex flex-col gap-1">
             <p className="t-label uppercase tracking-widest px-1 mb-1" style={{ color: ts.textDim }}>
-              Guidance mode
+              {t('breathing.guidance.title')}
             </p>
 
             {/* Mode options */}
@@ -126,13 +126,13 @@ export default function GuidancePicker({ mode, voiceGender, onChange }: Props) {
                   <span className="t-body">{MODE_ICONS[m]}</span>
                   <div>
                     <p className="t-caption font-medium" style={{ color: active ? ts.textPrimary : ts.textMuted }}>
-                      {MODE_LABELS[m]}
+                      {m === 'silent' ? t('breathing.guidance.visual') : m === 'vibration' ? t('breathing.guidance.vibration') : t('breathing.guidance.voice')}
                     </p>
                     {m === 'vibration' && !vibrationSupported && (
-                      <p className="t-label" style={{ color: ts.textDim }}>Android only</p>
+                      <p className="t-label" style={{ color: ts.textDim }}>{t('breathing.guidance.androidOnly')}</p>
                     )}
                     {m === 'voice' && !voiceSupported && (
-                      <p className="t-label" style={{ color: ts.textDim }}>Not supported</p>
+                      <p className="t-label" style={{ color: ts.textDim }}>{t('breathing.guidance.notSupported')}</p>
                     )}
                   </div>
                 </button>
@@ -143,7 +143,7 @@ export default function GuidancePicker({ mode, voiceGender, onChange }: Props) {
             {mode === 'voice' && voiceSupported && (
               <div className="mt-1 pt-2 border-t flex flex-col gap-2" style={{ borderColor: ts.border }}>
                 <p className="t-label uppercase tracking-widest px-1" style={{ color: ts.textDim }}>
-                  Voice style
+                  {t('breathing.guidance.voiceStyle')}
                 </p>
                 <div className="flex gap-2">
                   {(['female', 'male'] as VoiceGender[]).map(g => (
@@ -158,11 +158,11 @@ export default function GuidancePicker({ mode, voiceGender, onChange }: Props) {
                       }}
                     >
                       <span className="t-body">{g === 'female' ? '👩' : '👨'}</span>
-                      <span>{g === 'female' ? 'Female' : 'Male'}</span>
+                      <span>{g === 'female' ? t('breathing.female') : t('breathing.male')}</span>
                     </button>
                   ))}
                 </div>
-                <p className="t-label text-center" style={{ color: ts.textDim }}>▶ Tap to preview</p>
+                <p className="t-label text-center" style={{ color: ts.textDim }}>▶ {t('breathing.guidance.tapToPreview')}</p>
               </div>
             )}
 
@@ -171,7 +171,7 @@ export default function GuidancePicker({ mode, voiceGender, onChange }: Props) {
               className="mt-2 w-full py-2 rounded-xl t-caption font-medium text-white"
               style={{ background: ts.btnGradient }}
             >
-              Done
+              {t('breathing.guidance.done')}
             </button>
           </div>
         </div>

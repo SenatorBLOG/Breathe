@@ -1,6 +1,7 @@
 // src/pages/LeaderboardPage.tsx
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
@@ -21,12 +22,6 @@ interface Entry {
   sessions?: number;
   streak?: number;
 }
-
-const TABS: { id: TabType; label: string; emoji: string; sub: string }[] = [
-  { id: 'time',   label: 'All time',    emoji: '🏆', sub: 'Total practice minutes' },
-  { id: 'weekly', label: 'This week',   emoji: '📅', sub: 'Minutes practised this week' },
-  { id: 'streak', label: 'Streaks',     emoji: '🔥', sub: 'Current consecutive days' },
-];
 
 function fmtMins(m: number) {
   if (m < 60) return `${m}m`;
@@ -83,9 +78,16 @@ function Skeleton() {
 
 export default function LeaderboardPage() {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [tab, setTab]       = useState<TabType>('time');
   const [data, setData]     = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const TABS: { id: TabType; label: string; emoji: string; sub: string }[] = [
+    { id: 'time',   label: t('leaderboard.tabs.allTime'),  emoji: '🏆', sub: t('leaderboard.tabSubs.time') },
+    { id: 'weekly', label: t('leaderboard.tabs.thisWeek'), emoji: '📅', sub: t('leaderboard.tabSubs.weekly') },
+    { id: 'streak', label: t('leaderboard.tabs.streaks'),  emoji: '🔥', sub: t('leaderboard.tabSubs.streak') },
+  ];
 
   useEffect(() => {
     setLoading(true);
@@ -95,13 +97,13 @@ export default function LeaderboardPage() {
       .finally(() => setLoading(false));
   }, [tab]);
 
-  const current = TABS.find(t => t.id === tab)!;
+  const current = TABS.find(tb => tb.id === tab)!;
 
   return (
     <div className="relative min-h-screen font-montserrat overflow-x-hidden">
       <PageSEO
-        title="Leaderboard | Breathe"
-        description="See the top meditators on Breathe. Compete on total practice time, weekly sessions, and longest streaks."
+        title={t('leaderboard.seoTitle')}
+        description={t('leaderboard.seoDescription')}
         canonical="/leaderboard"
       />
       <ThemeBackground />
@@ -113,21 +115,21 @@ export default function LeaderboardPage() {
           {/* Header */}
           <div className="flex flex-col gap-1">
             <h1 className="text-2xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
-              🏆 Leaderboard
+              🏆 {t('leaderboard.title')}
             </h1>
             <p className="t-caption" style={{ color: ts.textMuted }}>
-              Top 50 practitioners worldwide
+              {t('leaderboard.subtitle')}
             </p>
           </div>
 
           {/* Tabs */}
           <div className="flex gap-2 p-1 rounded-2xl" style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}>
-            {TABS.map(t => {
-              const active = tab === t.id;
+            {TABS.map(tb => {
+              const active = tab === tb.id;
               return (
                 <button
-                  key={t.id}
-                  onClick={() => setTab(t.id)}
+                  key={tb.id}
+                  onClick={() => setTab(tb.id)}
                   className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl t-caption font-medium transition-all"
                   style={{
                     background: active ? ts.btnGradient : 'transparent',
@@ -137,8 +139,8 @@ export default function LeaderboardPage() {
                   onMouseEnter={e => { if (!active) e.currentTarget.style.color = ts.textSecondary; }}
                   onMouseLeave={e => { if (!active) e.currentTarget.style.color = ts.textMuted; }}
                 >
-                  <span>{t.emoji}</span>
-                  <span>{t.label}</span>
+                  <span>{tb.emoji}</span>
+                  <span>{tb.label}</span>
                 </button>
               );
             })}
@@ -161,9 +163,9 @@ export default function LeaderboardPage() {
                 🌫
               </div>
               <div className="flex flex-col gap-1 max-w-[260px]">
-                <p className="t-body font-medium" style={{ color: ts.textPrimary }}>No data yet</p>
+                <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{t('leaderboard.noData')}</p>
                 <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
-                  Be the first to log a session this week — your name could appear right here.
+                  {t('leaderboard.noDataDesc')}
                 </p>
               </div>
             </div>
@@ -208,7 +210,7 @@ export default function LeaderboardPage() {
                       </p>
                       {(tab === 'time' || tab === 'weekly') && entry.sessions != null && (
                         <p className="t-label" style={{ color: ts.textDim }}>
-                          {entry.sessions} session{entry.sessions !== 1 ? 's' : ''}
+                          {t('leaderboard.sessionCount', { count: entry.sessions })}
                         </p>
                       )}
                     </div>
@@ -234,14 +236,14 @@ export default function LeaderboardPage() {
           {/* CTA */}
           <div className="flex flex-col items-center gap-3 py-4 text-center border-t" style={{ borderColor: `${ts.border}50` }}>
             <p className="t-caption" style={{ color: ts.textMuted }}>
-              Practice more to climb the ranks
+              {t('leaderboard.cta')}
             </p>
             <Link
               to="/breathing"
               className="px-8 py-3 rounded-xl t-body font-medium text-white transition-all hover:opacity-90"
               style={{ background: ts.btnGradient }}
             >
-              <Icon name="1.blow" size={16} className="inline-block mr-1" /> Start a session
+              <Icon name="1.blow" size={16} className="inline-block mr-1" /> {t('leaderboard.startSession')}
             </Link>
           </div>
 

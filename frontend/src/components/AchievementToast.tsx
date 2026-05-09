@@ -3,6 +3,7 @@
 import React from 'react';
 import { toast } from 'sonner';
 import { THEME_STYLES } from '../hooks/useThemeStyles';
+import i18n from '../i18n';
 
 interface Achievement { id: string; icon: React.ReactNode; title: string; desc: string; }
 
@@ -22,7 +23,7 @@ export function showAchievements(list: Achievement[], theme: 'night' | 'day' | '
           <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36 }}>{a.icon}</span>
           <div>
             <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: ts.textMuted }}>
-              Achievement unlocked!
+              {i18n.t('achievement.unlocked')}
             </p>
             <p style={{ margin: '2px 0 0', fontSize: 14, color: ts.textPrimary, fontWeight: 600 }}>
               {a.title}
@@ -61,7 +62,7 @@ export function AchievementBadge({ achievement, earned, earnedAt }: {
       </span>
       {earned && earnedAt && (
         <span style={{ fontSize: 9, color: 'rgba(128,128,128,0.6)', textAlign: 'center' }}>
-          {new Date(earnedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+          {new Date(earnedAt).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
         </span>
       )}
     </div>

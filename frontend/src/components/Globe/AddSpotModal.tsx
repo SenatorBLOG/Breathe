@@ -4,6 +4,7 @@
  */
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 const TECHNIQUES = ['box', '4-7-8', 'wim-hof', 'coherent', 'belly', 'alternate', 'other'];
 
@@ -28,6 +29,7 @@ interface Props {
 }
 
 export default function AddSpotModal({ open, lat, lng, onSubmit, onCancel }: Props) {
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     city: '', country: '', title: '', note: '',
     technique: 'box', sessionLink: '', photoUrl: '',
@@ -99,7 +101,7 @@ export default function AddSpotModal({ open, lat, lng, onSubmit, onCancel }: Pro
             }}
           >
             <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 4 }}>
-              📍 Pin Your Spot
+              {t('globe.addModal.title')}
             </div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginBottom: 18 }}>
               {lat.toFixed(4)}°, {lng.toFixed(4)}°
@@ -108,13 +110,13 @@ export default function AddSpotModal({ open, lat, lng, onSubmit, onCancel }: Pro
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <input
-                  placeholder="City"
+                  placeholder={t('globe.addModal.cityPlaceholder')}
                   value={form.city}
                   onChange={set('city')}
                   style={inputStyle}
                 />
                 <input
-                  placeholder="Country"
+                  placeholder={t('globe.addModal.countryPlaceholder')}
                   value={form.country}
                   onChange={set('country')}
                   style={inputStyle}
@@ -122,7 +124,7 @@ export default function AddSpotModal({ open, lat, lng, onSubmit, onCancel }: Pro
               </div>
 
               <input
-                placeholder="Title (e.g. Morning ritual on Copacabana)"
+                placeholder={t('globe.addModal.titlePlaceholder')}
                 value={form.title}
                 onChange={set('title')}
                 required
@@ -142,7 +144,7 @@ export default function AddSpotModal({ open, lat, lng, onSubmit, onCancel }: Pro
               </select>
 
               <textarea
-                placeholder="Share what this place means to you… (optional)"
+                placeholder={t('globe.addModal.notePlaceholder')}
                 value={form.note}
                 onChange={set('note')}
                 rows={3}
@@ -150,7 +152,7 @@ export default function AddSpotModal({ open, lat, lng, onSubmit, onCancel }: Pro
               />
 
               <input
-                placeholder="Photo URL (optional)"
+                placeholder={t('globe.addModal.photoPlaceholder')}
                 value={form.photoUrl}
                 onChange={set('photoUrl')}
                 style={inputStyle}
@@ -171,7 +173,7 @@ export default function AddSpotModal({ open, lat, lng, onSubmit, onCancel }: Pro
                     cursor:       'pointer',
                   }}
                 >
-                  Cancel
+                  {t('globe.addModal.cancel')}
                 </button>
                 <button
                   type="submit"
@@ -189,7 +191,7 @@ export default function AddSpotModal({ open, lat, lng, onSubmit, onCancel }: Pro
                     opacity:       saving ? 0.7 : 1,
                   }}
                 >
-                  {saving ? 'Pinning…' : 'Pin this spot ✨'}
+                  {saving ? t('globe.addModal.pinning') : t('globe.addModal.submit')}
                 </button>
               </div>
             </form>

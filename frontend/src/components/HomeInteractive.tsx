@@ -1,6 +1,7 @@
 // src/components/HomeInteractive.tsx
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { AuthContext } from './contexts/AuthContext';
 import { Lock } from 'lucide-react';
@@ -9,84 +10,12 @@ import { Lock } from 'lucide-react';
 type Tag        = 'stress' | 'shallow' | 'deep';
 type ResultType = 'stress' | 'shallow' | 'natural';
 
-// ─── Quiz data ────────────────────────────────────────────────────────────────
-const QUESTIONS = [
-  {
-    q:    'Where do you breathe from?',
-    opts: [
-      { label: 'Chest',    tag: 'shallow' as Tag },
-      { label: 'Belly',    tag: 'deep'    as Tag },
-      { label: 'Not sure', tag: 'stress'  as Tag },
-    ],
-  },
-  {
-    q:    'Do you breathe through your mouth?',
-    opts: [
-      { label: 'Often',     tag: 'shallow' as Tag },
-      { label: 'Sometimes', tag: 'stress'  as Tag },
-      { label: 'Rarely',    tag: 'deep'    as Tag },
-    ],
-  },
-  {
-    q:    'How do you feel at bedtime?',
-    opts: [
-      { label: 'Racing thoughts', tag: 'stress'  as Tag },
-      { label: 'A bit restless',  tag: 'shallow' as Tag },
-      { label: 'Calm',            tag: 'deep'    as Tag },
-    ],
-  },
-  {
-    q:    'Do you sigh or yawn a lot?',
-    opts: [
-      { label: 'Yes, constantly', tag: 'stress'  as Tag },
-      { label: 'Sometimes',       tag: 'shallow' as Tag },
-      { label: 'Not really',      tag: 'deep'    as Tag },
-    ],
-  },
-  {
-    q:    'Energy by midday?',
-    opts: [
-      { label: 'Exhausted',    tag: 'stress'  as Tag },
-      { label: 'A bit tired',  tag: 'shallow' as Tag },
-      { label: 'Still going',  tag: 'deep'    as Tag },
-    ],
-  },
-];
-
-const RESULTS: Record<ResultType, {
-  emoji: string; title: string; desc: string;
-  color: string; technique: string; techniqueLink: string;
-}> = {
-  stress: {
-    emoji: '😰', title: 'Stress Breather', color: '#FF8A8A',
-    desc: 'Your nervous system is running hot. Short breath holds and slow exhales will rebalance it fast.',
-    technique: '4-7-8 Breathing', techniqueLink: '/breathing/4-7-8',
-  },
-  shallow: {
-    emoji: '🌀', title: 'Shallow Breather', color: '#FFD97D',
-    desc: "You're using only the top of your lungs. Belly breathing unlocks more oxygen and calm.",
-    technique: 'Belly Breathing', techniqueLink: '/breathing',
-  },
-  natural: {
-    emoji: '🌊', title: 'Natural Breather', color: '#4AE8A0',
-    desc: 'You have solid breathing instincts. Coherent breathing will take you to the next level.',
-    technique: 'Coherent Breathing', techniqueLink: '/breathing',
-  },
-};
-
-const PLANS: Record<ResultType, string[]> = {
-  stress:  ['Day 1–2: Reset your baseline with 4-7-8', 'Day 3–5: Box breathing for daytime calm', 'Day 6–7: Lock in the evening wind-down'],
-  shallow: ['Day 1–2: Belly breathing foundation',     'Day 3–5: Expand to coherent breathing',  'Day 6–7: Full diaphragm activation habit'],
-  natural: ['Day 1–2: Establish 5.5 BPM resonance',   'Day 3–5: HRV tracking + Wim Hof boost',  'Day 6–7: Lock in your peak-performance routine'],
-};
-
 // ─── Blurred plan card ────────────────────────────────────────────────────────
-function BlurredPlan({ lines, ts }: { lines: string[]; ts: ReturnType<typeof useThemeStyles> }) {
+function BlurredPlan({ lines, ts, unlockLabel }: { lines: string[]; ts: ReturnType<typeof useThemeStyles>; unlockLabel: string }) {
   return (
     <div className="relative w-full rounded-2xl overflow-hidden" style={{ border: `1px solid ${ts.border}` }}>
       <div className="blur-sm pointer-events-none select-none p-4 flex flex-col gap-2"
         style={{ backgroundColor: ts.cardBg }}>
-        <p className="t-caption font-medium" style={{ color: ts.textMuted }}>Your 7-day plan:</p>
         {lines.map((line, i) => (
           <p key={i} className="t-caption" style={{ color: ts.textSecondary }}>→ {line}</p>
         ))}
@@ -95,7 +24,7 @@ function BlurredPlan({ lines, ts }: { lines: string[]; ts: ReturnType<typeof use
         style={{ backdropFilter: 'blur(2px)', backgroundColor: `${ts.cardBg}70` }}>
         <Lock size={14} style={{ color: ts.textMuted }} />
         <p className="t-caption text-center px-4" style={{ color: ts.textMuted }}>
-          Free account required to unlock
+          {unlockLabel}
         </p>
       </div>
     </div>
@@ -105,9 +34,50 @@ function BlurredPlan({ lines, ts }: { lines: string[]; ts: ReturnType<typeof use
 // ─── Quiz ─────────────────────────────────────────────────────────────────────
 function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
   const { isAuthenticated } = useContext(AuthContext);
+  const { t } = useTranslation();
   const [answers, setAnswers]       = useState<(Tag | null)[]>(Array(5).fill(null));
   const [step, setStep]             = useState(0);
   const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
+
+  const QUESTIONS = [
+    { q: t('homeQuiz.questions.q1'), opts: [
+      { label: t('homeQuiz.questions.q1o1'), tag: 'shallow' as Tag },
+      { label: t('homeQuiz.questions.q1o2'), tag: 'deep'    as Tag },
+      { label: t('homeQuiz.questions.q1o3'), tag: 'stress'  as Tag },
+    ]},
+    { q: t('homeQuiz.questions.q2'), opts: [
+      { label: t('homeQuiz.questions.q2o1'), tag: 'shallow' as Tag },
+      { label: t('homeQuiz.questions.q2o2'), tag: 'stress'  as Tag },
+      { label: t('homeQuiz.questions.q2o3'), tag: 'deep'    as Tag },
+    ]},
+    { q: t('homeQuiz.questions.q3'), opts: [
+      { label: t('homeQuiz.questions.q3o1'), tag: 'stress'  as Tag },
+      { label: t('homeQuiz.questions.q3o2'), tag: 'shallow' as Tag },
+      { label: t('homeQuiz.questions.q3o3'), tag: 'deep'    as Tag },
+    ]},
+    { q: t('homeQuiz.questions.q4'), opts: [
+      { label: t('homeQuiz.questions.q4o1'), tag: 'stress'  as Tag },
+      { label: t('homeQuiz.questions.q4o2'), tag: 'shallow' as Tag },
+      { label: t('homeQuiz.questions.q4o3'), tag: 'deep'    as Tag },
+    ]},
+    { q: t('homeQuiz.questions.q5'), opts: [
+      { label: t('homeQuiz.questions.q5o1'), tag: 'stress'  as Tag },
+      { label: t('homeQuiz.questions.q5o2'), tag: 'shallow' as Tag },
+      { label: t('homeQuiz.questions.q5o3'), tag: 'deep'    as Tag },
+    ]},
+  ];
+
+  const RESULTS: Record<ResultType, { emoji: string; title: string; desc: string; color: string; technique: string; techniqueLink: string }> = {
+    stress:  { emoji: '😰', color: '#FF8A8A', techniqueLink: '/breathing/4-7-8', title: t('homeQuiz.results.stress.title'), desc: t('homeQuiz.results.stress.desc'), technique: t('homeQuiz.results.stress.technique') },
+    shallow: { emoji: '🌀', color: '#FFD97D', techniqueLink: '/breathing',        title: t('homeQuiz.results.shallow.title'), desc: t('homeQuiz.results.shallow.desc'), technique: t('homeQuiz.results.shallow.technique') },
+    natural: { emoji: '🌊', color: '#4AE8A0', techniqueLink: '/breathing',        title: t('homeQuiz.results.natural.title'), desc: t('homeQuiz.results.natural.desc'), technique: t('homeQuiz.results.natural.technique') },
+  };
+
+  const PLANS: Record<ResultType, string[]> = {
+    stress:  t('homeQuiz.plans.stress',  { returnObjects: true }) as string[],
+    shallow: t('homeQuiz.plans.shallow', { returnObjects: true }) as string[],
+    natural: t('homeQuiz.plans.natural', { returnObjects: true }) as string[],
+  };
 
   const handleNext = () => {
     if (selectedOpt === null) return;
@@ -146,9 +116,9 @@ function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
         {isAuthenticated ? (
           <div className="w-full flex flex-col gap-2 p-4 rounded-xl"
             style={{ background: ts.cardBgHover, border: `1px solid ${ts.borderHover}` }}>
-            <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>Your 7-day plan:</p>
-            {plan.map(day => (
-              <div key={day} className="flex items-start gap-2">
+            <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>{t('homeQuiz.sevenDayPlan')}</p>
+            {plan.map((day, i) => (
+              <div key={i} className="flex items-start gap-2">
                 <span style={{ color: result.color }}>→</span>
                 <span className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>{day}</span>
               </div>
@@ -156,11 +126,11 @@ function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
             <Link to={result.techniqueLink}
               className="flex items-center justify-center py-2.5 rounded-xl text-white t-caption font-medium mt-2 transition-all hover:scale-[1.02]"
               style={{ background: ts.btnGradient }}>
-              Start {result.technique} →
+              {t('homeQuiz.startTechnique', { technique: result.technique })}
             </Link>
           </div>
         ) : (
-          <BlurredPlan lines={plan} ts={ts} />
+          <BlurredPlan lines={plan} ts={ts} unlockLabel={t('homeQuiz.unlockPlan')} />
         )}
 
         {!isAuthenticated && (
@@ -170,18 +140,18 @@ function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
               className="w-full py-3 rounded-xl t-body font-medium tracking-wide text-white text-center transition-all hover:scale-[1.02] active:scale-[0.98]"
               style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
             >
-              Unlock my plan — free →
+              {t('homeQuiz.unlockBtn')}
             </Link>
-            <p className="t-caption" style={{ color: ts.textDim }}>No credit card · 30 seconds</p>
+            <p className="t-caption" style={{ color: ts.textDim }}>{t('homeQuiz.noCard')}</p>
           </>
         )}
 
         <Link to={result.techniqueLink} className="t-caption hover:underline" style={{ color: ts.accent }}>
-          {isAuthenticated ? `Open ${result.technique} →` : `Or try ${result.technique} without account →`}
+          {isAuthenticated ? t('homeQuiz.openTechnique', { technique: result.technique }) : t('homeQuiz.tryWithout', { technique: result.technique })}
         </Link>
 
         <button onClick={handleReset} className="t-caption hover:underline mt-1" style={{ color: ts.textDim }}>
-          Retake quiz
+          {t('homeQuiz.retake')}
         </button>
       </div>
     );
@@ -201,7 +171,7 @@ function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
 
       <div>
         <p className="t-label mb-1" style={{ color: ts.textMuted }}>
-          Question {step + 1} of {QUESTIONS.length}
+          {t('homeQuiz.questionOf', { current: step + 1, total: QUESTIONS.length })}
         </p>
         <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{q.q}</p>
       </div>
@@ -230,7 +200,7 @@ function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
           className="px-6 py-2.5 rounded-xl t-body font-medium text-white tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-30"
           style={{ background: ts.btnGradient }}
         >
-          {step < 4 ? 'Next →' : 'See my result →'}
+          {step < 4 ? t('homeQuiz.next') : t('homeQuiz.seeResult')}
         </button>
       </div>
     </div>

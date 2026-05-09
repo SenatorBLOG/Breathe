@@ -3,6 +3,7 @@
  * Shows pin details, like button, and owner delete.
  */
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import type { GlobePin } from './useGlobe';
 
 const PIN_COLORS: Record<string, string> = {
@@ -25,9 +26,10 @@ interface Props {
 }
 
 export default function SpotCard({ pin, currentUserId, onLike, onDelete, onClose }: Props) {
+  const { t, i18n } = useTranslation();
   const color      = pinColor(pin.technique);
   const isOwner    = !!(currentUserId && (pin.userId === currentUserId));
-  const dateString = new Date(pin.createdAt).toLocaleDateString(undefined, {
+  const dateString = new Date(pin.createdAt).toLocaleDateString(i18n.language, {
     month: 'short', day: 'numeric', year: 'numeric',
   });
 
@@ -49,7 +51,7 @@ export default function SpotCard({ pin, currentUserId, onLike, onDelete, onClose
       {/* Close */}
       <button
         onClick={onClose}
-        aria-label="Close spot"
+        aria-label={t('globe.spotCard.closeSpot')}
         style={{
           position:   'absolute',
           top:        10,
@@ -81,7 +83,7 @@ export default function SpotCard({ pin, currentUserId, onLike, onDelete, onClose
 
       {/* Title */}
       <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4, lineHeight: 1.3 }}>
-        {pin.title || 'Meditation Spot'}
+        {pin.title || t('globe.spotCard.defaultTitle')}
       </div>
 
       {/* Location */}
@@ -130,7 +132,7 @@ export default function SpotCard({ pin, currentUserId, onLike, onDelete, onClose
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <button
             onClick={() => onLike(pin._id)}
-            title="Like"
+            title={t('globe.spotCard.like')}
             style={{
               background:   'none',
               border:       '1px solid rgba(255,255,255,0.15)',
@@ -149,7 +151,7 @@ export default function SpotCard({ pin, currentUserId, onLike, onDelete, onClose
           {isOwner && (
             <button
               onClick={() => onDelete(pin._id)}
-              title="Delete"
+              title={t('globe.spotCard.delete')}
               style={{
                 background:   'none',
                 border:       '1px solid rgba(255,80,80,0.3)',

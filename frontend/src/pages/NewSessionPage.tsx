@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMlDefaults } from '../utils/mlDefaults';
+import { useTranslation } from 'react-i18next';
 import NavBar from "../components/NavBar";
 import api from "../api";
 import { toast } from "sonner";
@@ -35,6 +36,7 @@ const TECHNIQUE_META: Record<string, { icon: React.ReactNode; label: string; des
 function MLRecommendationCard({ rec, loading }: { rec: MLRec | null; loading: boolean }) {
   const ts = useThemeStyles();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const meta = rec ? (TECHNIQUE_META[rec.recommendedTechnique] ?? TECHNIQUE_META.breathing) : null;
   const pct  = rec ? Math.round(rec.confidence * 100) : 0;
@@ -89,12 +91,12 @@ function MLRecommendationCard({ rec, loading }: { rec: MLRec | null; loading: bo
             boxShadow:  meta ? `0 0 6px ${meta.color}` : 'none',
             animation:  loading ? 'none' : 'pulse 2s infinite',
           }} />
-          AI Recommendation
+          {t('newSession.aiRec')}
         </span>
 
         {loading && (
           <span style={{ fontSize: 11, color: ts.textMuted, marginLeft: 'auto' }}>
-            Analysing…
+            {t('common.loading')}
           </span>
         )}
       </div>
@@ -143,7 +145,7 @@ function MLRecommendationCard({ rec, loading }: { rec: MLRec | null; loading: bo
           {/* Confidence bar */}
           <div style={{ marginBottom: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-              <span style={{ fontSize: 11, color: ts.textMuted }}>Confidence</span>
+              <span style={{ fontSize: 11, color: ts.textMuted }}>{t('newSession.confidence')}</span>
               <span style={{ fontSize: 11, fontWeight: 700, color: meta.color }}>{pct}%</span>
             </div>
             <div style={{
@@ -205,7 +207,7 @@ function MLRecommendationCard({ rec, loading }: { rec: MLRec | null; loading: bo
             onMouseEnter={e => (e.currentTarget.style.background = `linear-gradient(135deg, ${meta.color}55, ${meta.color}77)`)}
             onMouseLeave={e => (e.currentTarget.style.background = `linear-gradient(135deg, ${meta.color}33, ${meta.color}55)`)}
           >
-            Start {meta.label} →
+            {t('challenges.start')} {meta.label} →
           </button>
         </>
       )}
@@ -221,6 +223,7 @@ function MLRecommendationCard({ rec, loading }: { rec: MLRec | null; loading: bo
 export default function NewSessionPage() {
   const navigate = useNavigate();
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const token = localStorage.getItem('token');
 
   // Seed form with user's goal-based ML defaults (stress level + time of day)
@@ -308,14 +311,14 @@ export default function NewSessionPage() {
 
         <div className="flex-1 px-4 sm:px-6 lg:px-[157px] py-12">
           <h1 className="text-3xl sm:text-4xl font-light mb-8" style={{ color: ts.textPrimary }}>
-            Record New Meditation Session
+            {t('newSession.title')}
           </h1>
 
           <form onSubmit={handleSubmit} className="max-w-3xl space-y-8">
             {/* Date */}
             <div>
               <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
-                Session Date
+                {t('newSession.date')}
               </Label>
               <Input
                 type="date"
@@ -333,7 +336,7 @@ export default function NewSessionPage() {
             {/* Time of Day */}
             <div>
               <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
-                Time of Day
+                {t('newSession.timeOfDay')}
               </Label>
               <Select value={formData.timeOfDay} onValueChange={(value: string) => setFormData({ ...formData, timeOfDay: value })}>
                 <SelectTrigger className="rounded-xl px-4 py-3 t-body outline-none focus:border-[#2A5499] transition-colors"
@@ -345,10 +348,10 @@ export default function NewSessionPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Morning">Morning</SelectItem>
-                  <SelectItem value="Afternoon">Afternoon</SelectItem>
-                  <SelectItem value="Evening">Evening</SelectItem>
-                  <SelectItem value="Night">Night</SelectItem>
+                  <SelectItem value="Morning">{t('newSession.morning')}</SelectItem>
+                  <SelectItem value="Afternoon">{t('newSession.afternoon')}</SelectItem>
+                  <SelectItem value="Evening">{t('newSession.evening')}</SelectItem>
+                  <SelectItem value="Night">{t('newSession.night')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -356,7 +359,7 @@ export default function NewSessionPage() {
             {/* Session Length */}
             <div>
               <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
-                Session Length: {formData.sessionLength} minutes
+                {t('newSession.length')}: {formData.sessionLength} {t('newSession.minutes')}
               </Label>
               <Slider
                 value={[formData.sessionLength]}
@@ -371,7 +374,7 @@ export default function NewSessionPage() {
             {/* Cycles */}
             <div>
               <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
-                Number of Cycles: {formData.cycles}
+                {t('newSession.cyclesCount')}: {formData.cycles}
               </Label>
               <Slider
                 value={[formData.cycles]}
@@ -386,7 +389,7 @@ export default function NewSessionPage() {
             {/* Mood Before */}
             <div>
               <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
-                Mood Before: {formData.moodBefore}/10
+                {t('newSession.moodBefore')}: {formData.moodBefore}/10
               </Label>
               <Slider
                 value={[formData.moodBefore]}
@@ -401,7 +404,7 @@ export default function NewSessionPage() {
             {/* Mood After */}
             <div>
               <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
-                Mood After: {formData.moodAfter}/10
+                {t('newSession.moodAfter')}: {formData.moodAfter}/10
               </Label>
               <Slider
                 value={[formData.moodAfter]}
@@ -416,7 +419,7 @@ export default function NewSessionPage() {
             {/* Focus Level */}
             <div>
               <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
-                Focus Level: {formData.focusLevel}/10
+                {t('newSession.focusLevel')}: {formData.focusLevel}/10
               </Label>
               <Slider
                 value={[formData.focusLevel]}
@@ -431,7 +434,7 @@ export default function NewSessionPage() {
             {/* Stress Level */}
             <div>
               <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
-                Stress Level: {formData.stressLevel}/10
+                {t('newSession.stressLevel')}: {formData.stressLevel}/10
               </Label>
               <Slider
                 value={[formData.stressLevel]}
@@ -446,7 +449,7 @@ export default function NewSessionPage() {
             {/* Breathing Depth */}
             <div>
               <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
-                Breathing Depth: {formData.breathingDepth}/10
+                {t('newSession.breathDepth')}: {formData.breathingDepth}/10
               </Label>
               <Slider
                 value={[formData.breathingDepth]}
@@ -461,7 +464,7 @@ export default function NewSessionPage() {
             {/* Calmness Score */}
             <div>
               <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
-                Calmness Score: {formData.calmnessScore}/10
+                {t('newSession.calmness')}: {formData.calmnessScore}/10
               </Label>
               <Slider
                 value={[formData.calmnessScore]}
@@ -476,7 +479,7 @@ export default function NewSessionPage() {
             {/* Distraction Count */}
             <div>
               <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
-                Distraction Count: {formData.distractionCount}
+                {t('newSession.distractions')}: {formData.distractionCount}
               </Label>
               <Slider
                 value={[formData.distractionCount]}
@@ -491,7 +494,7 @@ export default function NewSessionPage() {
             {/* Noise Level */}
             <div>
               <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
-                Noise Level
+                {t('newSession.noiseLevel')}
               </Label>
               <Select value={formData.noiseLevel} onValueChange={(value: string) => setFormData({ ...formData, noiseLevel: value })}>
                 <SelectTrigger className="rounded-xl px-4 py-3 t-body outline-none focus:border-[#2A5499] transition-colors"
@@ -503,10 +506,10 @@ export default function NewSessionPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Silent">Silent</SelectItem>
-                  <SelectItem value="Quiet">Quiet</SelectItem>
-                  <SelectItem value="Moderate">Moderate</SelectItem>
-                  <SelectItem value="Noisy">Noisy</SelectItem>
+                  <SelectItem value="Silent">{t('sessions.noise.silent')}</SelectItem>
+                  <SelectItem value="Quiet">{t('sessions.noise.quiet')}</SelectItem>
+                  <SelectItem value="Moderate">{t('sessions.noise.moderate')}</SelectItem>
+                  <SelectItem value="Noisy">{t('sessions.noise.noisy')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -514,12 +517,12 @@ export default function NewSessionPage() {
             {/* Notes */}
             <div>
               <Label className="t-body font-medium mb-2 block" style={{ color: ts.textSecondary }}>
-                Notes (Optional)
+                {t('newSession.notes')}
               </Label>
               <Textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                placeholder="Any thoughts or observations from this session..."
+                placeholder={t('newSession.notesPlaceholder')}
                 className="rounded-xl px-4 py-3 t-body min-h-[120px] outline-none focus:border-[#2A5499] transition-colors resize-none"
                 style={{
                   backgroundColor: ts.cardBg,
@@ -542,7 +545,7 @@ export default function NewSessionPage() {
                 className="px-5 py-2.5 rounded-full text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] disabled:opacity-50"
                 style={{ background: ts.btnGradient }}
               >
-                Save Session
+                {t('newSession.save')}
               </button>
               <button
                 type="button"
@@ -553,7 +556,7 @@ export default function NewSessionPage() {
                   color: ts.accent,
                 }}
               >
-                Cancel
+                {t('common.cancel')}
               </button>
             </div>
           </form>

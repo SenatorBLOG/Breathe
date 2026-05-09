@@ -4,6 +4,7 @@ import api from '../api';
 import { toast } from 'sonner';
 import { RefreshCw, ChevronRight, Upload } from 'lucide-react';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTranslation } from 'react-i18next';
 
 interface HealthSummary {
   sleepDays: number;
@@ -65,6 +66,7 @@ interface Props { onImported?: (summary: HealthSummary) => void; }
 
 export default function AppleHealthImport({ onImported }: Props) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [step, setStep]       = useState<'idle' | 'parsing' | 'done' | 'error'>('idle');
   const [summary, setSummary] = useState<HealthSummary | null>(null);
   const [error, setError]     = useState('');
@@ -73,13 +75,13 @@ export default function AppleHealthImport({ onImported }: Props) {
 
   const processFile = useCallback(async (file: File) => {
     if (!file.name.endsWith('.xml')) {
-      toast.error('Please upload export.xml from Apple Health');
+      toast.error(t('appleHealth.uploadError'));
       return;
     }
     setStep('parsing');
     try {
       const { sleep, hrv, heartRate } = await parseAppleHealthExport(file);
-      if (!sleep.length && !hrv.length) throw new Error('No health data found in file');
+      if (!sleep.length && !hrv.length) throw new Error(t('appleHealth.noData'));
       await api.post('/integrations/apple-health', { sleep, hrv, heartRate });
       const sum: HealthSummary = {
         sleepDays: sleep.length,
@@ -91,7 +93,7 @@ export default function AppleHealthImport({ onImported }: Props) {
       setSummary(sum);
       setStep('done');
       onImported?.(sum);
-      toast.success(`Apple Health imported · ${sleep.length} days`);
+      toast.success(`${t('appleHealth.title')} ${t('appleHealth.imported', { days: sleep.length })}`);
     } catch (err: any) {
       setError(err.message ?? 'Failed to parse');
       setStep('error');
@@ -114,23 +116,23 @@ export default function AppleHealthImport({ onImported }: Props) {
           🍎
         </div>
         <div className="flex-1 min-w-0">
-          <p className="t-body font-medium leading-tight" style={{ color: ts.textPrimary }}>Apple Health</p>
+          <p className="t-body font-medium leading-tight" style={{ color: ts.textPrimary }}>{t('appleHealth.title')}</p>
           <p className="t-label mt-0.5" style={{ color: step === 'done' ? ts.accent : ts.textMuted }}>
             {step === 'done' && summary
-              ? `Imported · ${summary.sleepDays} days · ${summary.avgHRV ? summary.avgHRV + ' ms HRV' : fmtDur(summary.avgSleep) + ' avg sleep'}`
-              : 'iPhone — sleep, HRV, heart rate via export.xml'}
+              ? `${t('appleHealth.imported', { days: summary.sleepDays })} · ${summary.avgHRV ? t('appleHealth.importedWithHRV', { hrv: summary.avgHRV }) : t('appleHealth.importedWithSleep', { sleep: fmtDur(summary.avgSleep) })}`
+              : t('appleHealth.subtitle')}
           </p>
         </div>
 
         {step === 'parsing' ? (
           <div className="flex items-center gap-1.5 px-3 py-1.5 t-label" style={{ color: ts.textMuted }}>
-            <RefreshCw size={11} className="animate-spin" /> Processing…
+            <RefreshCw size={11} className="animate-spin" /> {t('appleHealth.processing')}
           </div>
         ) : step === 'done' ? (
           <button onClick={() => { setStep('idle'); setSummary(null); }}
             className="px-3 py-1.5 rounded-xl t-label border transition-all"
             style={{ color: ts.textMuted, borderColor: ts.border }}>
-            Re-import
+            {t('appleHealth.reimport')}
           </button>
         ) : (
           <button
@@ -138,7 +140,7 @@ export default function AppleHealthImport({ onImported }: Props) {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-label font-medium flex-shrink-0 transition-all hover:scale-105"
             style={{ color: '#fff', background: ts.btnGradient }}
           >
-            <Upload size={10} /> Import
+            <Upload size={10} /> {t('appleHealth.import')}
           </button>
         )}
         <input ref={inputRef} type="file" accept=".xml" className="hidden"
@@ -151,7 +153,7 @@ export default function AppleHealthImport({ onImported }: Props) {
           style={{ background: 'rgba(255,138,138,0.08)', border: '1px solid rgba(255,138,138,0.2)' }}>
           <p className="t-caption" style={{ color: '#FF8A8A' }}>{error}</p>
           <button onClick={() => { setStep('idle'); setError(''); }} className="t-label hover:underline ml-3" style={{ color: ts.accent }}>
-            Retry
+            {t('appleHealth.retry')}
           </button>
         </div>
       )}
@@ -163,11 +165,11 @@ export default function AppleHealthImport({ onImported }: Props) {
             className="flex items-center gap-1 t-label hover:underline"
             style={{ color: ts.textDim }}>
             <ChevronRight size={9} style={{ transform: showHow ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }} />
-            How to export from iPhone
+            {t('appleHealth.howToExport')}
           </button>
           {showHow && (
             <div className="mt-2 flex flex-col gap-1 pl-3">
-              {['Open Health app → tap your avatar (top right)', 'Scroll down → "Export All Health Data"', 'Extract the archive → upload export.xml here'].map((s, i) => (
+              {[t('appleHealth.step1'), t('appleHealth.step2'), t('appleHealth.step3')].map((s, i) => (
                 <p key={i} className="t-label" style={{ color: ts.textMuted }}>{i + 1}. {s}</p>
               ))}
             </div>

@@ -175,11 +175,11 @@ function PresetPill({ name, pattern, onApply, current }: {
   );
 }
 
-// ─── Guidance meta ────────────────────────────────────────────────────────────
-const GUIDANCE_META: Record<GuidanceMode, { icon: React.ReactNode; label: string; color: string; glow: string }> = {
-  silent:    { icon: <VolumeX size={18} />,  label: 'Silent',  color: '#4A9EFF', glow: 'rgba(74,158,255,0.3)'   },
-  vibration: { icon: <Vibrate size={18} />,  label: 'Vibrate', color: '#4AE8A0', glow: 'rgba(74,232,160,0.3)'  },
-  voice:     { icon: <Mic size={18} />,      label: 'Voice',   color: '#7AC4FF', glow: 'rgba(122,196,255,0.3)' },
+// ─── Guidance meta (labels resolved via hook inside component) ────────────────
+const GUIDANCE_META_STATIC: Record<GuidanceMode, { icon: React.ReactNode; color: string; glow: string; tKey: string }> = {
+  silent:    { icon: <VolumeX size={18} />,  color: '#4A9EFF', glow: 'rgba(74,158,255,0.3)',   tKey: 'breathing.guidance.visual'    },
+  vibration: { icon: <Vibrate size={18} />,  color: '#4AE8A0', glow: 'rgba(74,232,160,0.3)',  tKey: 'breathing.guidance.vibration' },
+  voice:     { icon: <Mic size={18} />,      color: '#7AC4FF', glow: 'rgba(122,196,255,0.3)', tKey: 'breathing.guidance.voice'     },
 };
 
 // ─── Stat ring (SVG arc progress, theme-aware) ───────────────────────────────
@@ -487,7 +487,7 @@ export default function BreathingPage() {
       >
         <div className={`flex gap-3 transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-30"}`}>
           <div className="stat-in" style={{ animationDelay: "0.1s", opacity: 0 }}>
-            <StatPill icon={<Timer size={12} />} label="Session" value={fmtTime(currentDuration)} dim={!isActive} />
+            <StatPill icon={<Timer size={12} />} label={t('breathing.session')} value={fmtTime(currentDuration)} dim={!isActive} />
           </div>
           <div className="stat-in" style={{ animationDelay: "0.2s", opacity: 0 }}>
             <StatPill icon={<Wind size={12} />} label={t("breathing.cycles")} value={String(cycles)} dim={!isActive} />
@@ -513,9 +513,9 @@ export default function BreathingPage() {
           style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
         >
           {isActive ? (
-            <><svg width="12" height="14" viewBox="0 0 12 14" fill="white"><rect x="0" y="0" width="4" height="14" rx="1.5"/><rect x="8" y="0" width="4" height="14" rx="1.5"/></svg>Pause</>
+            <><svg width="12" height="14" viewBox="0 0 12 14" fill="white"><rect x="0" y="0" width="4" height="14" rx="1.5"/><rect x="8" y="0" width="4" height="14" rx="1.5"/></svg>{t('breathing.pause')}</>
           ) : (
-            <><svg width="11" height="13" viewBox="0 0 12 14" fill="white"><path d="M1 1l10 6L1 13V1z"/></svg>{cycles > 0 ? 'Resume' : 'Start'}</>
+            <><svg width="11" height="13" viewBox="0 0 12 14" fill="white"><path d="M1 1l10 6L1 13V1z"/></svg>{cycles > 0 ? t('breathing.resume') : t('breathing.start')}</>
           )}
         </button>
 
@@ -533,13 +533,13 @@ export default function BreathingPage() {
           <Settings size={14} style={{ color: ts.textMuted, flexShrink: 0 }} />
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <span className="t-label uppercase tracking-[0.18em]" style={{ color: ts.textMuted }}>
-              {GUIDANCE_META[guidanceMode].label}
+              {GUIDANCE_META_STATIC[guidanceMode].label}
             </span>
             {totalStats.streak > 0 && (
               <>
                 <span style={{ color: ts.textDim, fontSize: 10 }}>·</span>
                 <span className="t-label font-semibold" style={{ color: ts.accent }}>
-                  {totalStats.streak}d streak
+                  {totalStats.streak} {t('breathing.dStreak')}
                 </span>
               </>
             )}
@@ -581,7 +581,7 @@ export default function BreathingPage() {
               {/* header */}
               <div className="flex items-center justify-between px-5 pt-4 pb-3.5">
                 <span className="t-label uppercase tracking-[0.22em] font-semibold" style={{ color: ts.textMuted }}>
-                  Session Settings
+                  {t('breathing.sessionSettings')}
                 </span>
                 <button
                   onClick={() => setSettingsOpen(false)}
@@ -596,10 +596,10 @@ export default function BreathingPage() {
 
               {/* guidance */}
               <div className="px-5 pt-4 pb-3">
-                <p className="t-label uppercase tracking-[0.22em] mb-3" style={{ color: ts.textDim }}>Guidance</p>
+                <p className="t-label uppercase tracking-[0.22em] mb-3" style={{ color: ts.textDim }}>{t('breathing.guidanceSection')}</p>
                 <div className="flex gap-2">
                   {(['silent', 'vibration', 'voice'] as GuidanceMode[]).map(m => {
-                    const gm = GUIDANCE_META[m];
+                    const gm = GUIDANCE_META_STATIC[m];
                     const active = guidanceMode === m;
                     const disabled = (m === 'vibration' && !('vibrate' in navigator)) ||
                                      (m === 'voice' && !('speechSynthesis' in window));
@@ -618,7 +618,7 @@ export default function BreathingPage() {
                         <span style={{ color: active ? gm.color : ts.textMuted }}>{gm.icon}</span>
                         <span className="t-label font-semibold uppercase tracking-[0.07em]"
                           style={{ color: active ? gm.color : ts.textMuted }}>
-                          {gm.label}
+                          {t(gm.tKey)}
                         </span>
                         {active && (
                           <div className="w-1 h-1 rounded-full"
@@ -642,7 +642,7 @@ export default function BreathingPage() {
                         }}
                       >
                         <User size={16} />
-                        <span>{g === 'female' ? 'Female' : 'Male'}</span>
+                        <span>{g === 'female' ? t('breathing.female') : t('breathing.male')}</span>
                       </button>
                     ))}
                   </div>
@@ -653,7 +653,7 @@ export default function BreathingPage() {
 
               {/* ambient */}
               <div className="px-5 py-4">
-                <p className="t-label uppercase tracking-[0.22em] mb-3" style={{ color: ts.textDim }}>Ambient</p>
+                <p className="t-label uppercase tracking-[0.22em] mb-3" style={{ color: ts.textDim }}>{t('breathing.ambientSection')}</p>
                 <AmbientSoundPlayer inline />
               </div>
 
@@ -661,7 +661,7 @@ export default function BreathingPage() {
 
               {/* stat rings */}
               <div className="px-5 pb-7 pt-4">
-                <p className="t-label uppercase tracking-[0.22em] mb-5" style={{ color: ts.textDim }}>Your Progress</p>
+                <p className="t-label uppercase tracking-[0.22em] mb-5" style={{ color: ts.textDim }}>{t('breathing.yourProgress')}</p>
                 <div className="flex items-start justify-around">
                   <StatRing
                     value={totalStats.streak} max={30} unit="days"
@@ -687,11 +687,11 @@ export default function BreathingPage() {
         style={{ background: `${ts.pageBg}E6`, borderColor: ts.border }}>
         <div className="max-w-2xl mx-auto flex flex-col items-center gap-10">
           <div className="text-center">
-            <p className="t-label tracking-[0.3em] uppercase mb-2" style={{ color: ts.textDim }}>Breathing pattern</p>
+            <p className="t-label tracking-[0.3em] uppercase mb-2" style={{ color: ts.textDim }}>{t('breathing.pattern')}</p>
             <h2 className="t-heading sm:text-2xl font-light tracking-wide mb-1" style={{ color: ts.accentLight }}>
               {phaseDurations.inhale}–{phaseDurations.hold}–{phaseDurations.exhale}–{phaseDurations.pause}
             </h2>
-            <p className="t-caption" style={{ color: ts.textDim }}>Drag bars up · down to adjust · 1–10 seconds</p>
+            <p className="t-caption" style={{ color: ts.textDim }}>{t('breathing.dragHint')}</p>
           </div>
 
           <div className="w-full flex items-end gap-4 sm:gap-6 px-2" style={{ height: BAR_H + 56 }}>
@@ -705,7 +705,7 @@ export default function BreathingPage() {
           <div className="w-full h-px" style={{ backgroundColor: ts.border }} />
 
           <div className="flex flex-col items-center gap-3 w-full">
-            <p className="t-label tracking-[0.3em] uppercase" style={{ color: ts.textDim }}>Quick presets</p>
+            <p className="t-label tracking-[0.3em] uppercase" style={{ color: ts.textDim }}>{t('breathing.presets')}</p>
             <div className="flex flex-wrap justify-center gap-2">
               {presets.map(p => (
                 <PresetPill key={p.name} name={p.name} pattern={p.pattern} onApply={setPhaseDurations} current={phaseDurations} />
@@ -771,12 +771,12 @@ export default function BreathingPage() {
                       onClick={() => { setPhaseDurations(pattern); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                       className="flex-1 py-1.5 rounded-xl t-caption font-semibold transition-all hover:opacity-90 active:scale-95"
                       style={{ background: ts.btnGradient, color: '#fff' }}
-                    >Apply</button>
+                    >{t('breathing.apply')}</button>
                     <Link
                       to={href}
                       className="t-caption font-medium hover:opacity-80 transition-opacity whitespace-nowrap"
                       style={{ color: ts.textSecondary }}
-                    >Read guide →</Link>
+                    >{t('breathing.readGuide')} →</Link>
                   </div>
                 </div>
               );

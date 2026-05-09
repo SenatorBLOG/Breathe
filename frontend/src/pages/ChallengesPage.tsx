@@ -8,6 +8,7 @@ import { useThemeStyles } from '../hooks/useThemeStyles';
 import { AuthContext } from '../components/contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { Sparkles, Share2, Trash2, CheckCircle2, Circle, ArrowRight, Zap } from 'lucide-react';
 import PageSEO from '../components/PageSEO';
 
@@ -58,8 +59,8 @@ const DIFF_COLORS: Record<string, string> = {
   advanced:     '#FF8A8A',
 };
 
-function diffLabel(d: string) {
-  return d === 'beginner' ? '★ Beginner' : d === 'intermediate' ? '★★ Intermediate' : '★★★ Advanced';
+function diffLabel(d: string, t: (k: string) => string) {
+  return d === 'beginner' ? `★ ${t('challenges.difficulty.beginner')}` : d === 'intermediate' ? `★★ ${t('challenges.difficulty.intermediate')}` : `★★★ ${t('challenges.difficulty.advanced')}`;
 }
 
 function fmtDate(iso: string) {
@@ -109,6 +110,7 @@ function ChallengeCard({
   alreadyJoined: boolean;
 }) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   return (
     <div
       className="flex flex-col gap-3 rounded-2xl p-5 transition-all duration-200"
@@ -124,7 +126,7 @@ function ChallengeCard({
           className="t-label px-2 py-0.5 rounded-full"
           style={{ backgroundColor: `${DIFF_COLORS[challenge.difficulty]}18`, color: DIFF_COLORS[challenge.difficulty] }}
         >
-          {diffLabel(challenge.difficulty)}
+          {diffLabel(challenge.difficulty, t)}
         </span>
       </div>
 
@@ -136,16 +138,16 @@ function ChallengeCard({
       </div>
 
       <div className="flex flex-wrap gap-1">
-        {challenge.tags.map(t => (
-          <span key={t} className="t-label px-1.5 py-0.5 rounded capitalize"
-            style={{ backgroundColor: ts.border, color: ts.textMuted }}>{t}</span>
+        {challenge.tags.map(tag => (
+          <span key={tag} className="t-label px-1.5 py-0.5 rounded capitalize"
+            style={{ backgroundColor: ts.border, color: ts.textMuted }}>{tag}</span>
         ))}
       </div>
 
       <div className="flex items-center justify-between mt-1">
         <span className="t-caption" style={{ color: ts.textDim }}>{challenge.badge.emoji} {challenge.badge.label}</span>
         {alreadyJoined ? (
-          <span className="t-caption font-medium" style={{ color: ts.accent }}>In progress ✓</span>
+          <span className="t-caption font-medium" style={{ color: ts.accent }}>{t('challenges.inProgress')} ✓</span>
         ) : (
           <button
             onClick={() => onJoin(challenge.slug)}
@@ -153,7 +155,7 @@ function ChallengeCard({
             className="flex items-center gap-1 px-4 py-1.5 rounded-xl t-caption font-medium text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-40"
             style={{ background: ts.btnGradient }}
           >
-            Start <ArrowRight size={11} />
+            {t('challenges.start')} <ArrowRight size={11} />
           </button>
         )}
       </div>
@@ -171,6 +173,7 @@ function ActiveCard({
   checkingIn: boolean;
 }) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const done = uc.completedDays.length;
   const total = uc.challenge.duration;
   const pct = Math.round((done / total) * 100);
@@ -183,35 +186,28 @@ function ActiveCard({
       className="rounded-2xl p-5 flex flex-col gap-4"
       style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.borderHover}`, boxShadow: `0 0 24px ${ts.accent}08` }}
     >
-      {/* Header */}
       <div className="flex items-start gap-3">
         <span className="text-2xl flex-shrink-0">{uc.challenge.icon}</span>
         <div className="flex-1 min-w-0">
           <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{uc.challenge.title}</p>
           <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>
-            Day {done} of {total} · started {fmtDate(uc.startedAt)}
+            {t('challenges.dayOf', { done, total })} · {t('challenges.started')} {fmtDate(uc.startedAt)}
           </p>
         </div>
         <span className="t-caption font-medium tabular-nums flex-shrink-0" style={{ color: ts.accent }}>{pct}%</span>
       </div>
 
-      {/* Progress bar */}
       <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: ts.border }}>
-        <div
-          className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${pct}%`, background: ts.btnGradient }}
-        />
+        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: ts.btnGradient }} />
       </div>
 
-      {/* Day dots */}
       <DayDots total={total} done={done} />
 
-      {/* CTA */}
       {checkedInToday ? (
         <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl"
           style={{ backgroundColor: `${ts.accent}12`, border: `1px solid ${ts.accent}25` }}>
           <CheckCircle2 size={14} style={{ color: ts.accent }} />
-          <p className="t-caption font-medium" style={{ color: ts.accent }}>Today's session complete!</p>
+          <p className="t-caption font-medium" style={{ color: ts.accent }}>{t('challenges.todayComplete')}</p>
         </div>
       ) : (
         <div className="flex flex-col gap-2">
@@ -221,7 +217,7 @@ function ActiveCard({
             style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
           >
             <Zap size={13} />
-            Today: Start your session →
+            {t('challenges.todayStart')} →
           </Link>
           <button
             onClick={() => onCheckin(uc._id)}
@@ -229,18 +225,17 @@ function ActiveCard({
             className="py-2 rounded-xl t-caption border transition-all hover:opacity-80 disabled:opacity-30"
             style={{ borderColor: ts.border, color: ts.textMuted }}
           >
-            Mark today as complete manually
+            {t('challenges.markComplete')}
           </button>
         </div>
       )}
 
-      {/* Abandon */}
       <button
         onClick={() => onAbandon(uc._id)}
         className="flex items-center gap-1.5 t-label self-end hover:text-[#FF8A8A] transition-colors"
         style={{ color: ts.textDim }}
       >
-        <Trash2 size={10} /> Abandon challenge
+        <Trash2 size={10} /> {t('challenges.abandon')}
       </button>
     </div>
   );
@@ -249,6 +244,7 @@ function ActiveCard({
 // ─── Completed badge card ─────────────────────────────────────────────────────
 function BadgeCard({ uc }: { uc: UserChallenge }) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
 
   const share = async () => {
     const text = `Just completed the ${uc.challenge.title} challenge! ${uc.badge?.emoji} breatheonline.app/challenges`;
@@ -279,7 +275,7 @@ function BadgeCard({ uc }: { uc: UserChallenge }) {
             {uc.challenge.title}
           </p>
           <p className="t-label mt-0.5" style={{ color: ts.textDim }}>
-            Earned {uc.badge?.earnedAt ? fmtDate(uc.badge.earnedAt) : ''}
+            {t('challenges.earned')} {uc.badge?.earnedAt ? fmtDate(uc.badge.earnedAt) : ''}
           </p>
         </div>
       </div>
@@ -288,7 +284,7 @@ function BadgeCard({ uc }: { uc: UserChallenge }) {
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-caption border transition-all hover:opacity-80"
         style={{ borderColor: ts.border, color: ts.textSecondary }}
       >
-        <Share2 size={11} /> Share
+        <Share2 size={11} /> {t('challenges.share')}
       </button>
     </div>
   );
@@ -299,6 +295,7 @@ type Tab = 'available' | 'my' | 'completed';
 
 export default function ChallengesPage() {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const { isAuthenticated } = useContext(AuthContext);
 
   const [challenges,      setChallenges]      = useState<Challenge[]>([]);
@@ -334,11 +331,11 @@ export default function ChallengesPage() {
   const completed     = userChallenges.filter(uc => !!uc.completedAt);
 
   const handleJoin = async (slug: string) => {
-    if (!isAuthenticated) { toast.error('Sign in to join a challenge'); return; }
+    if (!isAuthenticated) { toast.error(t('challenges.signInToTrack')); return; }
     setJoining(slug);
     try {
       await api.post(`/challenges/${slug}/join`);
-      toast.success('Challenge started! Complete daily sessions to progress.');
+      toast.success(t('challenges.todayComplete'));
       await load();
       setActiveTab('my');
     } catch (err: any) {
@@ -353,9 +350,9 @@ export default function ChallengesPage() {
     try {
       const { data } = await api.post(`/challenges/${id}/checkin`);
       if (data.completed) {
-        toast.success(`🎉 Challenge complete! You earned ${data.userChallenge.badge?.emoji} ${data.userChallenge.badge?.label}`);
+        toast.success(`🎉 ${data.userChallenge.badge?.emoji} ${data.userChallenge.badge?.label}`);
       } else {
-        toast.success('Day checked in! Keep going.');
+        toast.success(t('challenges.todayComplete'));
       }
       await load();
     } catch (err: any) {
@@ -366,10 +363,10 @@ export default function ChallengesPage() {
   };
 
   const handleAbandon = async (id: string) => {
-    if (!window.confirm('Abandon this challenge? Your progress will be lost.')) return;
+    if (!window.confirm(t('challenges.confirmAbandon'))) return;
     try {
       await api.delete(`/challenges/${id}`);
-      toast('Challenge abandoned');
+      toast(t('challenges.abandon'));
       await load();
     } catch {
       toast.error('Failed to abandon');
@@ -377,9 +374,9 @@ export default function ChallengesPage() {
   };
 
   const tabs: { id: Tab; label: string }[] = [
-    { id: 'available', label: 'Available' },
-    { id: 'my',        label: `My Challenges${active.length ? ` · ${active.length}` : ''}` },
-    { id: 'completed', label: `Completed${completed.length ? ` · ${completed.length}` : ''}` },
+    { id: 'available', label: t('challenges.available') },
+    { id: 'my',        label: `${t('challenges.myChallenges')}${active.length ? ` · ${active.length}` : ''}` },
+    { id: 'completed', label: `${t('challenges.completed')}${completed.length ? ` · ${completed.length}` : ''}` },
   ];
 
   return (
@@ -397,13 +394,13 @@ export default function ChallengesPage() {
         {/* Header */}
         <header className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-10 pb-4">
           <p className="t-label mb-2" style={{ color: ts.textMuted }}>
-            Breathe · Challenges
+            {t('challenges.brand')}
           </p>
           <h1 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
-            Breathing Challenges
+            {t('challenges.title')}
           </h1>
           <p className="t-caption mt-1" style={{ color: ts.textMuted }}>
-            7 and 21-day streaks to build lasting habits and earn badges
+            {t('challenges.subtitle')}
           </p>
 
           {/* Tabs */}
@@ -451,7 +448,7 @@ export default function ChallengesPage() {
                     <Sparkles size={16} style={{ color: ts.accent }} className="flex-shrink-0" />
                     <div>
                       <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>
-                        AI recommends: {recommendation.challenge.icon} {recommendation.challenge.title}
+                        {t('challenges.aiRecommends')}: {recommendation.challenge.icon} {recommendation.challenge.title}
                       </p>
                       <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>
                         {recommendation.reason}
@@ -464,7 +461,7 @@ export default function ChallengesPage() {
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl t-caption font-medium text-white transition-all hover:scale-105 disabled:opacity-40 flex-shrink-0"
                     style={{ background: ts.btnGradient }}
                   >
-                    {activeSlugs.has(recommendation.slug) ? 'In progress ✓' : 'Start this →'}
+                    {activeSlugs.has(recommendation.slug) ? `${t('challenges.inProgress')} ✓` : `${t('challenges.startThis')} →`}
                   </button>
                 </div>
               )}
@@ -474,8 +471,8 @@ export default function ChallengesPage() {
                   style={{ backgroundColor: `${ts.accent}0A`, border: `1px solid ${ts.accent}20` }}>
                   <Sparkles size={13} style={{ color: ts.accent }} />
                   <p className="t-caption" style={{ color: ts.textMuted }}>
-                    <Link to="/login" className="font-medium hover:underline" style={{ color: ts.accent }}>Sign in</Link>
-                    {' '}to join challenges and track your progress
+                    <Link to="/login" className="font-medium hover:underline" style={{ color: ts.accent }}>{t('challenges.signInLink')}</Link>
+                    {' '}{t('challenges.signInToJoin')}
                   </p>
                 </div>
               )}
@@ -500,11 +497,11 @@ export default function ChallengesPage() {
             <>
               {!isAuthenticated ? (
                 <div className="flex flex-col items-center gap-4 py-16 text-center">
-                  <p className="t-body" style={{ color: ts.textSecondary }}>Sign in to track your challenges</p>
+                  <p className="t-body" style={{ color: ts.textSecondary }}>{t('challenges.signInToTrack')}</p>
                   <Link to="/login"
                     className="px-6 py-2.5 rounded-full text-white t-body font-medium hover:scale-105 transition-all"
                     style={{ background: ts.btnGradient }}>
-                    Sign in →
+                    {t('challenges.signInLink')} →
                   </Link>
                 </div>
               ) : active.length === 0 ? (
@@ -512,13 +509,13 @@ export default function ChallengesPage() {
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   <Circle size={36} style={{ color: ts.textDim }} />
                   <div>
-                    <p className="t-body font-medium mb-1" style={{ color: ts.textSecondary }}>No active challenges</p>
-                    <p className="t-caption" style={{ color: ts.textMuted }}>Pick one from Available to get started</p>
+                    <p className="t-body font-medium mb-1" style={{ color: ts.textSecondary }}>{t('challenges.noActive')}</p>
+                    <p className="t-caption" style={{ color: ts.textMuted }}>{t('challenges.pickOne')}</p>
                   </div>
                   <button onClick={() => setActiveTab('available')}
                     className="flex items-center gap-2 px-5 py-2 rounded-full text-white t-caption font-medium hover:scale-105 transition-all"
                     style={{ background: ts.btnGradient }}>
-                    Browse challenges <ArrowRight size={12} />
+                    {t('challenges.browseAll')} <ArrowRight size={12} />
                   </button>
                 </div>
               ) : (
@@ -542,11 +539,11 @@ export default function ChallengesPage() {
             <>
               {!isAuthenticated ? (
                 <div className="flex flex-col items-center gap-4 py-16 text-center">
-                  <p className="t-body" style={{ color: ts.textSecondary }}>Sign in to see your badges</p>
+                  <p className="t-body" style={{ color: ts.textSecondary }}>{t('challenges.signInBadges')}</p>
                   <Link to="/login"
                     className="px-6 py-2.5 rounded-full text-white t-body font-medium hover:scale-105 transition-all"
                     style={{ background: ts.btnGradient }}>
-                    Sign in →
+                    {t('challenges.signInLink')} →
                   </Link>
                 </div>
               ) : completed.length === 0 ? (
@@ -554,14 +551,14 @@ export default function ChallengesPage() {
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}>
                   <span className="text-4xl">🏆</span>
                   <div>
-                    <p className="t-body font-medium mb-1" style={{ color: ts.textSecondary }}>No badges yet</p>
-                    <p className="t-caption" style={{ color: ts.textMuted }}>Complete a challenge to earn your first badge</p>
+                    <p className="t-body font-medium mb-1" style={{ color: ts.textSecondary }}>{t('challenges.noBadges')}</p>
+                    <p className="t-caption" style={{ color: ts.textMuted }}>{t('challenges.earnFirst')}</p>
                   </div>
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
                   <p className="t-caption font-medium" style={{ color: ts.textMuted }}>
-                    {completed.length} badge{completed.length !== 1 ? 's' : ''} earned
+                    {completed.length} {t('challenges.badgesEarned')}
                   </p>
                   {completed.map(uc => <BadgeCard key={uc._id} uc={uc} />)}
                 </div>
