@@ -115,7 +115,7 @@ export default function GlobePage() {
 
   return (
     <div style={{
-      minHeight:       '100vh',
+      height:          '100vh',
       background:      '#080c1e',
       color:           '#e8eaf0',
       display:         'flex',

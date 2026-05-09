@@ -175,7 +175,7 @@ export default function MapView({
   return (
     <div
       ref={containerRef}
-      style={{ width: '100%', height: '100%' }}
+      style={{ position: 'absolute', inset: 0 }}
     />
   );
 }
