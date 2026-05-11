@@ -652,6 +652,12 @@
     "meditationSessions_one": "{{count}} sesión de meditación",
     "meditationSessions_other": "{{count}} sesiones de meditación"
   },
+  "notFound": {
+    "title": "Esta página se perdió en la corriente.",
+    "subtitle": "La página que buscas no existe o ha sido movida.",
+    "goHome": "← Volver al inicio",
+    "startBreathing": "Empezar a respirar →"
+  },
   "ambient": {
     "label": "Ambiente",
     "soundLabel": "Sonido ambiental",

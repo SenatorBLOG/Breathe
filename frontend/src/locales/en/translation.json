@@ -1330,6 +1330,12 @@
     "meditationSessions_one": "{{count}} meditation session",
     "meditationSessions_other": "{{count}} meditation sessions"
   },
+  "notFound": {
+    "title": "This page got lost in the current.",
+    "subtitle": "The page you're looking for doesn't exist or has been moved.",
+    "goHome": "← Back to Home",
+    "startBreathing": "Start Breathing →"
+  },
   "ambient": {
     "label": "Ambient",
     "soundLabel": "Ambient sound",
