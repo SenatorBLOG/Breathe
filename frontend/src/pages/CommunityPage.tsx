@@ -650,7 +650,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
 
           {/* Text */}
           <textarea value={text} onChange={e => setText(e.target.value)} rows={4} maxLength={600}
-            placeholder="Share your experience, ask a question, or post a tip…"
+            placeholder={t('community.postPlaceholder')}
             className="w-full comm-input rounded-xl px-4 py-3 t-caption outline-none transition-colors leading-relaxed resize-none"
             style={{
               backgroundColor: ts.cardBg,
@@ -663,7 +663,7 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
             <div className="flex gap-2">
               <input type="text" value={tagInput} onChange={e => setTagInput(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTag(); } }}
-                placeholder="Add tag (enter to add)"
+                placeholder={t('community.tagPlaceholder')}
                 maxLength={30}
                 className="flex-1 comm-input rounded-xl px-3 py-2 t-caption outline-none transition-colors"
                 style={{
@@ -741,7 +741,7 @@ export default function CommunityPage() {
       const { data } = await api.get(`/posts?${params}`);
       setPosts(pg === 1 ? data.posts : prev => [...prev, ...data.posts]);
       setTotalPages(data.pages);
-    } catch { toast.error('Failed to load posts'); }
+    } catch { toast.error(t('community.failedLoadPosts')); }
     finally { setLoading(false); }
   }, []);
 
@@ -754,7 +754,7 @@ export default function CommunityPage() {
     try {
       await api.delete(`/posts/${id}`);
       setPosts(prev => prev.filter(p => p._id !== id));
-      toast.success('Post deleted');
+      toast.success(t('community.postDeleted'));
     } catch { toast.error(t('common.error')); }
   };
 

@@ -25,11 +25,11 @@ interface MLRec {
   probabilities: Record<string, number>;
 }
 
-const TECHNIQUE_META: Record<string, { icon: React.ReactNode; label: string; desc: string; color: string; glow: string; link: string }> = {
-  breathing:   { icon: '1.blow', label: 'Breathing Exercise', desc: 'Rhythmic breath control to calm your nervous system', color: '#4A9EFF', glow: 'rgba(74,158,255,0.25)', link: '/breathing' },
-  sleep:       { icon: <Moon size={22} color="#7AC4FF" />, label: 'Sleep Meditation',   desc: 'Gentle body scan to ease into deep, restful sleep',   color: '#7AC4FF', glow: 'rgba(122,196,255,0.25)', link: '/sleep' },
-  focus:       { icon: <Target size={22} color="#4AE8A0" />, label: 'Focus Session',      desc: 'Sharpen attention and enter a clear mental state',     color: '#4AE8A0', glow: 'rgba(74,232,160,0.25)', link: '/breathing' },
-  relaxation:  { icon: <Wind size={22} color="#C084FC" />, label: 'Deep Relaxation',    desc: 'Progressive release of tension from head to toe',     color: '#C084FC', glow: 'rgba(192,132,252,0.25)', link: '/breathing' },
+const TECHNIQUE_META: Record<string, { icon: React.ReactNode; labelKey: string; descKey: string; color: string; glow: string; link: string }> = {
+  breathing:   { icon: '1.blow',                             labelKey: 'newSession.techniques.breathingLabel', descKey: 'newSession.techniques.breathingDesc',  color: '#4A9EFF', glow: 'rgba(74,158,255,0.25)',   link: '/breathing' },
+  sleep:       { icon: <Moon size={22} color="#7AC4FF" />,   labelKey: 'newSession.techniques.sleepLabel',     descKey: 'newSession.techniques.sleepDesc',      color: '#7AC4FF', glow: 'rgba(122,196,255,0.25)', link: '/sleep'     },
+  focus:       { icon: <Target size={22} color="#4AE8A0" />, labelKey: 'newSession.techniques.focusLabel',     descKey: 'newSession.techniques.focusDesc',      color: '#4AE8A0', glow: 'rgba(74,232,160,0.25)',  link: '/breathing' },
+  relaxation:  { icon: <Wind size={22} color="#C084FC" />,   labelKey: 'newSession.techniques.relaxationLabel',descKey: 'newSession.techniques.relaxationDesc', color: '#C084FC', glow: 'rgba(192,132,252,0.25)', link: '/breathing' },
 };
 
 // ── AI recommendation card ────────────────────────────────────────────────────
@@ -134,10 +134,10 @@ function MLRecommendationCard({ rec, loading }: { rec: MLRec | null; loading: bo
             </div>
             <div>
               <div style={{ fontSize: 20, fontWeight: 700, color: ts.textPrimary, lineHeight: 1.2 }}>
-                {meta.label}
+                {t(meta.labelKey)}
               </div>
               <div style={{ fontSize: 12, color: ts.textMuted, marginTop: 3 }}>
-                {meta.desc}
+                {t(meta.descKey)}
               </div>
             </div>
           </div>
@@ -180,7 +180,7 @@ function MLRecommendationCard({ rec, loading }: { rec: MLRec | null; loading: bo
                     border: `1px solid ${ts.border}`,
                     borderRadius: 20, padding: '2px 9px',
                   }}>
-                    {m.icon} {m.label} · {Math.round(prob * 100)}%
+                    {m.icon} {t(m.labelKey)} · {Math.round(prob * 100)}%
                   </span>
                 );
               })}
@@ -207,7 +207,7 @@ function MLRecommendationCard({ rec, loading }: { rec: MLRec | null; loading: bo
             onMouseEnter={e => (e.currentTarget.style.background = `linear-gradient(135deg, ${meta.color}55, ${meta.color}77)`)}
             onMouseLeave={e => (e.currentTarget.style.background = `linear-gradient(135deg, ${meta.color}33, ${meta.color}55)`)}
           >
-            {t('challenges.start')} {meta.label} →
+            {t('challenges.start')} {t(meta.labelKey)} →
           </button>
         </>
       )}
@@ -287,10 +287,10 @@ export default function NewSessionPage() {
     setLoading(true);
     try {
       await api.post('/sessions', formData);
-      toast.success('Session saved');
+      toast.success(t('sessions.toastSaved'));
       navigate('/sessions');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to save session');
+      setError(err.response?.data?.error || t('sessions.toastFailedSave'));
     } finally {
       setLoading(false);
     }
@@ -299,8 +299,8 @@ export default function NewSessionPage() {
   return (
     <div className="relative min-h-screen font-montserrat overflow-x-hidden">
       <PageSEO
-        title="Log Session | Breathe"
-        description="Record a new breathing or meditation session. Log duration, mood, focus level, and notes to track your progress."
+        title={t('newSession.seoTitle')}
+        description={t('newSession.seoDesc')}
         canonical="/sessions/new"
         noIndex
       />

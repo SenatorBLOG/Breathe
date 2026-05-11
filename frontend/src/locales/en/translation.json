@@ -90,6 +90,39 @@
       "energy": "Energizing",
       "energyDesc": "Short sharp cycles boost alertness in under two minutes."
     },
+    "notSaved": "Session not saved",
+    "notSavedDesc": "Create a free account to track your progress and streaks",
+    "sessionSaved": "Session saved",
+    "failedToSave": "Failed to save session",
+    "basedOnNotes": "Based on your notes: try {{technique}}",
+    "seoTitle": "Guided Breathing Exercises — Box, 4-7-8, Wim Hof & More",
+    "seoDesc": "Free guided breathing sessions for sleep, stress relief, and focus. Try Box Breathing, 4-7-8, Wim Hof Method and more. No download needed — works in your browser.",
+    "presetNames": {
+      "box": "Box",
+      "478": "4-7-8",
+      "calm": "Calm",
+      "energize": "Energize",
+      "wimHof": "Wim Hof",
+      "belly": "Belly",
+      "alternate": "Alternate"
+    },
+    "cards": {
+      "box": {
+        "title": "Box Breathing",
+        "tag": "Focus & Calm",
+        "desc": "Equal phases retrain your nervous system for stress resilience. Trusted by Navy SEALs and elite athletes."
+      },
+      "sleep": {
+        "title": "4-7-8 for Sleep",
+        "tag": "Deep Sleep",
+        "desc": "Long hold + slow exhale activates your parasympathetic system. One of the most effective natural sleep aids."
+      },
+      "energy": {
+        "title": "Energizing",
+        "tag": "Boost Energy",
+        "desc": "Short sharp cycles flood your body with oxygen and sharpen alertness in under two minutes."
+      }
+    },
     "guidance": {
       "title": "Guidance mode",
       "visual": "Visual",
@@ -168,7 +201,13 @@
       "aiCoachTitle": "AI Coach",
       "aiCoachDesc": "Get personalized breathing guidance from your AI coach.",
       "openCoach": "Open coach →"
-    }
+    },
+    "postPlaceholder": "Share your experience, ask a question, or post a tip…",
+    "tagPlaceholder": "Add tag (enter to add)",
+    "joinConversation": "Join the conversation",
+    "goToCommunity": "Go to Community",
+    "failedLoadPosts": "Failed to load posts",
+    "postDeleted": "Post deleted"
   },
   "globe": {
     "seoTitle": "Breathe Together — Global Meditation Community Map",
@@ -473,6 +512,7 @@
     }
   },
   "faq": {
+    "badge": "Help & FAQ",
     "title": "How can we help?",
     "subtitle": "Everything you need to know about breathing techniques, the app, and your account.",
     "search": "Search questions…",
@@ -483,7 +523,11 @@
     "stillQuestions": "Still have questions?",
     "cantFind": "Can't find what you're looking for? We're happy to help.",
     "askCommunity": "Ask community",
-    "contactUs": "Contact us"
+    "contactUs": "Contact us",
+    "questionCount_one": "{{count}} question",
+    "questionCount_other": "{{count}} questions",
+    "searchResults_one": "1 result for \"{{term}}\"",
+    "searchResults_other": "{{count}} results for \"{{term}}\""
   },
   "support": {
     "title": "We're here to help",
@@ -504,6 +548,29 @@
       "feedback": "Feedback",
       "account": "Account issue",
       "other": "Other"
+    },
+    "topic": "Topic",
+    "thanksName": "Thanks {{name}}.",
+    "namePlaceholder": "Alex",
+    "emailPlaceholder": "you@email.com",
+    "messagePlaceholder": "Describe your issue or question in detail…",
+    "badge": "Support",
+    "quickLinks": {
+      "faqTitle": "Browse FAQ",
+      "faqDesc": "Most questions are already answered in our help center.",
+      "faqLabel": "Open FAQ",
+      "communityTitle": "Ask the community",
+      "communityDesc": "Fellow meditators often have the fastest answers.",
+      "communityLabel": "Go to community",
+      "responseTitle": "Response time",
+      "responseDesc": "We reply within 24 hours on weekdays. Usually much faster.",
+      "responseLabel": "Send a message",
+      "emailTitle": "Email us directly",
+      "emailDesc": "Prefer email? Reach us any time.",
+      "faqDescMobile": "Most questions already answered.",
+      "communityTitleMobile": "Community",
+      "communityDescMobile": "Ask fellow meditators.",
+      "communityLabelMobile": "Open community"
     }
   },
   "auth": {
@@ -526,13 +593,46 @@
     "welcomeBack": "Welcome back.",
     "sessionsWaiting": "Your sessions are waiting.",
     "beginJourney": "Begin your breathing journey.",
-    "freeForever": "Free forever. No credit card.",
+    "freeForever": "Free forever. No credit card. Just you, your breath, and a path to calm.",
     "features": {
       "guided": "Guided breathing sessions",
       "track": "Track mood & progress over time",
       "sounds": "Sleep sounds & ambient music",
       "community": "Community of meditators"
-    }
+    },
+    "yourSessions": "Your sessions",
+    "areWaiting": "are waiting.",
+    "namePlaceholder": "Alex",
+    "passwordHint": "Min. 6 characters",
+    "emailPlaceholder": "you@example.com",
+    "mindfulApp": "Mindful breathing app",
+    "streakAlive": "Your streak is still alive",
+    "progressSaved": "Progress saved from last time",
+    "communityPosts": "Community posts to catch up on",
+    "createOneFree": "Create one free →",
+    "continueWithGoogle": "Continue with Google",
+    "beginYour": "Begin your",
+    "breathingWord": "breathing",
+    "journeyDot": "journey.",
+    "signInArrow": "Sign in →",
+    "orSignUpWith": "or sign up with",
+    "resultStress": "😰 Your Stress Breather result is saved",
+    "resultShallow": "🌀 Your Shallow Breather result is saved",
+    "resultNatural": "🌊 Your Natural Breather result is saved",
+    "resultStressCalc": "📊 Your stress score ({{score}}/100) is saved",
+    "createToUnlock": "Create your account to unlock your 7-day plan",
+    "createAccountHeading": "Create account",
+    "welcomeToBreathe": "Welcome to Breathe",
+    "googleLoginFailed": "Google login failed",
+    "invalidCredentials": "Invalid email or password",
+    "googleSignUpSuccess": "Signed up with Google! Welcome to Breathe",
+    "googleSignUpFailed": "Google sign up failed",
+    "acceptTermsError": "Please accept the terms to continue",
+    "accountCreated": "Account created! Welcome to Breathe 🌊",
+    "failedCreateAccount": "Failed to create account",
+    "strengthWeak": "Weak",
+    "strengthFair": "Fair",
+    "strengthStrong": "Strong"
   },
   "footer": {
     "tagline": "Mindful breathing for sleep, focus & calm. Find your rhythm.",
@@ -682,7 +782,80 @@
     "great": "great",
     "low": "low",
     "average": "average",
-    "excellent": "excellent"
+    "excellent": "excellent",
+    "breathingChallenges": "Breathing Challenges",
+    "challengeSubtitle": "7 & 21-day streaks · earn badges",
+    "sleepLabel": "Sleep",
+    "privacyLink": "Privacy",
+    "loadFailed": "Could not load profile — please refresh.",
+    "savedSuccess": "Profile saved",
+    "failedSave": "Failed to save",
+    "connectionFailed": "Connection failed. Please try again.",
+    "disconnected": "Disconnected",
+    "failedDisconnect": "Failed to disconnect",
+    "syncedSuccess": "Synced successfully",
+    "syncFailed": "Sync failed",
+    "integConnected": "{{integ}} connected! Tap Sync to load your data.",
+    "bmi": {
+      "underweight": "Underweight",
+      "normal": "Normal",
+      "overweight": "Overweight",
+      "obese": "Obese"
+    }
+  },
+  "moodGrid": {
+    "breakdownTitle": "Mood breakdown · all sessions",
+    "avgMoodTitle": "Average mood score",
+    "uniqueTitle": "Unique mood scores logged",
+    "entries_one": "{{count}} entry",
+    "entries_other": "{{count}} entries",
+    "mostCommon": "Most common: {{value}}/10 ({{count}}×)",
+    "of10": "of 10 possible",
+    "positive": "Positive",
+    "neutral": "Neutral",
+    "tough": "Tough"
+  },
+  "dataConsent": {
+    "seoTitle": "Connect Heart Rate Monitor — Breathe",
+    "heroTitle": "Measure your calm",
+    "heroSubtitle": "Connect your heart rate monitor to see exactly how meditation changes your body — in real time.",
+    "demoLabel": "Live example — 8 min Box Breathing session",
+    "demoBefore": "Before",
+    "demoDuring": "During",
+    "demoAfter": "After",
+    "calmScore": "Calm Score",
+    "whatWeTrack": "What we track during your session",
+    "hrTitle": "Heart Rate (BPM)",
+    "hrDesc": "We measure your heart rate before, during, and after each session. A drop of 10–30 bpm is a reliable sign your nervous system has shifted into rest mode.",
+    "hrExample": "Your HR dropped from 88 to 64 bpm — a 27% reduction in 8 minutes",
+    "hrvTitle": "Heart Rate Variability (HRV)",
+    "hrvDesc": "HRV is the variation between heartbeats — a higher HRV means your body is calm and adaptable. It's the single best real-time indicator of stress reduction.",
+    "hrvExample": "HRV improved from 42ms to 67ms — your recovery index is now optimal",
+    "calmTitle": "Calm Score",
+    "calmDesc": "We combine HR change, HRV improvement, and session duration into a single Calm Score. Track it over time to see your meditation practice get stronger.",
+    "calmExample": "7-day average Calm Score: +28. Up 40% from last week 🌊",
+    "aiTitle": "AI Technique Matching",
+    "aiDesc": "Your biometrics tell us which techniques work best for you personally. If 4-7-8 consistently gives you a better Calm Score than Box Breathing, we'll recommend it more.",
+    "aiExample": "Based on 14 sessions: 4-7-8 is 2.3× more effective for your nervous system",
+    "dataFlowTitle": "How your data flows",
+    "flowWatch": "Your watch/device",
+    "flowWatchDesc": "Heart rate via Bluetooth LE — never leaves your device without permission",
+    "flowBrowser": "Your browser",
+    "flowBrowserDesc": "Processed locally first — we only send aggregated session summaries",
+    "flowServer": "Breathe servers",
+    "flowServerDesc": "Encrypted, stored under your account — never sold, never shared",
+    "flowAI": "Your AI Coach",
+    "flowAIDesc": "Uses your patterns to improve recommendations — only accessible to you",
+    "privacyTitle": "Our privacy promise",
+    "privacy1": "Your heart rate data is never sold to third parties",
+    "privacy2": "You can delete all biometric data at any time from your profile",
+    "privacy3": "Data is encrypted in transit and at rest",
+    "privacy4": "We never share individual readings — only you see your data",
+    "privacy5": "You can disconnect your device and revoke access at any time",
+    "privacy6": "Breathe is not a medical device — this is for personal wellness only",
+    "consentText": "I understand that Breathe will use my heart rate data to calculate my Calm Score and improve breathing recommendations. I can revoke this permission at any time.",
+    "connectBtn": "Connect heart rate monitor →",
+    "skipLink": "Skip for now — use Breathe without biometrics"
   },
   "userProgress": {
     "signInTeaser": "Sign in to track your streak, total practice time, and milestones",
@@ -802,6 +975,68 @@
       "progressDesc": "View streaks, session history, and breathing stats to keep your practice consistent and rewarding.",
       "communityTitle": "Join the Community",
       "communityDesc": "Share your journey, ask questions, and celebrate milestones with meditators from around the world."
+    },
+    "breatherQuiz": "What kind of breather are you?",
+    "fiveQuestions": "5 questions · free · instant result",
+    "sleepGuides": "🌙 Sleep guides",
+    "scienceBacked": "Science-backed · AI-powered",
+    "aiSleepStory": "AI Sleep Story",
+    "aiSleepDesc": "Personalized narrative to drift off",
+    "beginSessionEmoji": "🌬 Begin Session",
+    "sleepLinks": {
+      "why": "Why Sleep is So Important",
+      "whySub": "5 min read",
+      "apnea": "What is Sleep Apnea?",
+      "apneaSub": "6 min read",
+      "breathwork": "Breathwork for Deep Sleep",
+      "breathworkSub": "Practice",
+      "slow": "Why Slow Breathing Calms You",
+      "slowSub": "Science"
+    },
+    "quotes": {
+      "thich": "The breath is the bridge which connects life to consciousness.",
+      "thichAuthor": "Thich Nhat Hanh",
+      "anne": "Almost everything will work again if you unplug it for a few minutes — including you.",
+      "anneAuthor": "Anne Lamott"
+    }
+  },
+  "journal": {
+    "eyebrow": "Breathe · Emotional Journal",
+    "title": "Your Journal",
+    "sessionCount": "{{count}} sessions analyzed · AI-powered emotional intelligence",
+    "addNotes": "Add notes to your sessions to unlock emotional insights",
+    "newSession": "New session",
+    "emotionalScore": "Emotional score",
+    "intensity": "intensity {{value}}/10",
+    "recommendedTechnique": "Recommended technique:",
+    "tryIt": "Try it",
+    "yourNotes": "Your notes",
+    "generallyPositive": "Generally positive",
+    "challengingPeriod": "Challenging period",
+    "balanced": "Balanced",
+    "thirtyDay": "30-day overview",
+    "analyzed": "analyzed",
+    "overallMood": "overall mood",
+    "positiveSessions": "positive sessions",
+    "recurringThemes": "Recurring themes",
+    "sentimentDist": "Sentiment distribution",
+    "positiveLabel": "● Positive",
+    "neutralLabel": "● Neutral",
+    "difficultLabel": "● Difficult",
+    "empty": "Your journal is empty",
+    "emptyDesc": "Add notes to your breathing sessions. The AI will analyze your emotions and suggest techniques.",
+    "startSession": "Start a session",
+    "moodDelta": "+{{delta}} mood",
+    "entries_one": "{{count}} entry",
+    "entries_other": "{{count}} entries",
+    "tip": "The more you journal, the better the AI understands your emotional patterns and can recommend the right technique at the right time.",
+    "techniqueLabels": {
+      "box-breathing": "Box Breathing",
+      "4-7-8": "4-7-8 Breathing",
+      "wim-hof": "Wim Hof Method",
+      "coherent": "Coherent Breathing",
+      "belly": "Belly Breathing",
+      "morning-ritual": "Morning Ritual"
     }
   },
   "onboarding": {
@@ -882,7 +1117,11 @@
     "retry": "Retry",
     "startFirst": "Start your first challenge",
     "habitDesc": "Build a daily breathing habit in 7 or 21 days. Complete sessions to earn badges.",
-    "popularPicks": "Popular picks"
+    "popularPicks": "Popular picks",
+    "copiedToClipboard": "Copied to clipboard!",
+    "failedJoin": "Failed to join",
+    "failedCheckin": "Check-in failed",
+    "failedAbandon": "Failed to abandon"
   },
   "newSession": {
     "title": "Record New Meditation Session",
@@ -908,7 +1147,19 @@
     "evening": "Evening",
     "night": "Night",
     "minutes": "minutes",
-    "cyclesUnit": "cycles"
+    "cyclesUnit": "cycles",
+    "techniques": {
+      "breathingLabel": "Breathing Exercise",
+      "breathingDesc": "Rhythmic breath control to calm your nervous system",
+      "sleepLabel": "Sleep Meditation",
+      "sleepDesc": "Gentle body scan to ease into deep, restful sleep",
+      "focusLabel": "Focus Session",
+      "focusDesc": "Sharpen attention and enter a clear mental state",
+      "relaxationLabel": "Deep Relaxation",
+      "relaxationDesc": "Progressive release of tension from head to toe"
+    },
+    "seoTitle": "Log Session | Breathe",
+    "seoDesc": "Record a new breathing or meditation session. Log duration, mood, focus level, and notes to track your progress."
   },
   "leaderboard": {
     "title": "Leaderboard",
@@ -1025,6 +1276,68 @@
       "stress": ["Day 1–2: Reset your baseline with 4-7-8", "Day 3–5: Box breathing for daytime calm", "Day 6–7: Lock in the evening wind-down"],
       "shallow": ["Day 1–2: Belly breathing foundation", "Day 3–5: Expand to coherent breathing", "Day 6–7: Full diaphragm activation habit"],
       "natural": ["Day 1–2: Establish 5.5 BPM resonance", "Day 3–5: HRV tracking + Wim Hof boost", "Day 6–7: Lock in your peak-performance routine"]
+    }
+  },
+  "homeStress": {
+    "tabQuiz": "🧪 Breathing Quiz",
+    "tabStress": "📊 Stress Score",
+    "scoreLow": "Low Stress",
+    "scoreBalanced": "Balanced",
+    "scoreModerate": "Moderate Stress",
+    "scoreHigh": "High Stress",
+    "sliderSleep": "Sleep Quality",
+    "sliderAnxiety": "Anxiety Level",
+    "sliderFocus": "Focus",
+    "sliderEnergy": "Energy",
+    "sliderLow": "Low",
+    "sliderHigh": "High",
+    "whatsDriving": "What's driving your score:",
+    "startPlan": "Start your plan →",
+    "getBreathingPlan": "Get my breathing plan →",
+    "freeNoCard": "Free · No card · 30 seconds",
+    "adjustScores": "Adjust scores",
+    "yourStressScore": "Your stress score:",
+    "calculatePlan": "Calculate my plan →",
+    "insightSleepLever": "Sleep is your biggest lever right now",
+    "insightAnxietySpiking": "Anxiety is spiking your baseline stress",
+    "insightLowFocus": "Low focus suggests mental fatigue",
+    "insightLowEnergy": "Morning routine would help energy levels",
+    "insightMaintainBalance": "Maintain your current healthy balance",
+    "insightCoherentBreathing": "Add Coherent Breathing to go deeper",
+    "insightEveningWindDown": "Evening wind-down session recommended",
+    "breakdown": {
+      "highStress": ["Sleep is your biggest lever right now", "Morning breathing routine would reduce cortisol spike", "Evening wind-down with 4-7-8 recommended"],
+      "moderateStress": ["Focus is slightly scattered — try box breathing before work", "Sleep quality can be improved with 4-7-8 before bed", "Consistent morning practice would stabilize energy"],
+      "balanced": ["Your baseline is healthy — coherent breathing to optimize HRV", "Morning ritual would amplify your natural energy", "Track sessions to see trends over time"],
+      "lowStress": ["Excellent baseline — Wim Hof to push performance further", "Your HRV is likely high — connect wearable to confirm", "Focus on maintaining consistency"]
+    }
+  },
+  "charts": {
+    "noDataYet": "No data yet",
+    "noSessionsYet": "No sessions yet",
+    "noActivityYet": "No activity yet",
+    "minutes": "Minutes",
+    "sessions": "Sessions",
+    "noSession": "No session",
+    "noHRVData": "No HRV data yet",
+    "connectSmartwatch": "Connect your smartwatch via the Android app to see how meditation affects your heart rate variability",
+    "onMeditationDays": "On meditation days",
+    "restDays": "Rest days",
+    "difference": "Difference",
+    "avgHRV": "avg HRV",
+    "higherOnMedDays": "higher on med. days",
+    "lowerOnMedDays": "lower on med. days",
+    "meditationSessions_one": "{{count}} meditation session",
+    "meditationSessions_other": "{{count}} meditation sessions"
+  },
+  "ambient": {
+    "label": "Ambient",
+    "soundLabel": "Ambient sound",
+    "sounds": {
+      "rain": "Rain",
+      "ocean": "Ocean",
+      "forest": "Forest",
+      "white": "White noise"
     }
   }
 }

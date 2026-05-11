@@ -247,13 +247,13 @@ export default function FAQPage() {
               color: ts.textMuted,
               borderColor: ts.border,
             }}>
-            Help & FAQ
+            {t('faq.badge')}
           </span>
           <h1 className="text-2xl sm:text-4xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
-            How can we help?
+            {t('faq.title')}
           </h1>
           <p className="t-body max-w-md leading-relaxed" style={{ color: ts.textMuted }}>
-            Everything you need to know about breathing techniques, the app, and your account.
+            {t('faq.subtitle')}
           </p>
 
           {/* Search */}
@@ -287,14 +287,14 @@ export default function FAQPage() {
           {filtered ? (
             <div className="flex flex-col gap-3">
               <p className="t-caption mb-1" style={{ color: ts.textMuted }}>
-                {filtered.length} result{filtered.length !== 1 ? 's' : ''} for "{search}"
+                {t('faq.searchResults', { count: filtered.length, term: search })}
               </p>
               {filtered.length === 0 ? (
                 <div className="text-center py-16">
                   <p className="text-4xl mb-4 opacity-30">🔍</p>
-                  <p className="t-body" style={{ color: ts.textMuted }}>No results found.</p>
+                  <p className="t-body" style={{ color: ts.textMuted }}>{t('faq.noResults')}</p>
                   <p className="t-caption mt-1" style={{ color: ts.textDim }}>
-                    Try a different word, or <button onClick={() => setSearch('')} className="text-[#4A9EFF] hover:underline">browse categories</button>.
+                    {t('faq.tryDifferent')} <button onClick={() => setSearch('')} className="text-[#4A9EFF] hover:underline">{t('faq.browseCategories')}</button>.
                   </p>
                 </div>
               ) : filtered.map((item, i) => (
@@ -359,7 +359,7 @@ export default function FAQPage() {
                     backgroundColor: ts.cardBg,
                     borderColor: ts.border,
                   }}>
-                    {currentCat.items.length} questions
+                    {t('faq.questionCount', { count: currentCat.items.length })}
                   </span>
                 </div>
 
@@ -378,7 +378,7 @@ export default function FAQPage() {
                       {t("faq.stillQuestions")}
                     </p>
                     <p className="t-caption mt-0.5 leading-relaxed" style={{ color: ts.textMuted }}>
-                      Can't find what you're looking for? We're happy to help.
+                      {t('faq.cantFind')}
                     </p>
                   </div>
                   <div className="flex gap-2 flex-shrink-0">

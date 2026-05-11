@@ -56,18 +56,18 @@ function SignUpPageInner() {
         const res = await api.post('/auth/google', { access_token: tokenResponse.access_token });
         login(res.data.token, res.data.user);
         localStorage.setItem('userId', res.data.user?._id ?? '');
-        toast.success('Signed up with Google! Welcome to Breathe');
+        toast.success(t('auth.googleSignUpSuccess'));
         api.get('/auth/me').then(r => syncGoalFromProfile(r.data)).catch(() => {});
         redirectAfterAuth();
       } catch (err: any) {
-        const msg = err.response?.data?.error || 'Google sign up failed';
+        const msg = err.response?.data?.error || t('auth.googleSignUpFailed');
         setError(msg);
         toast.error(msg);
       } finally {
         setLoading(false);
       }
     },
-    onError: () => toast.error('Google sign up failed'),
+    onError: () => toast.error(t('auth.googleSignUpFailed')),
   });
 
   // Password strength
@@ -77,12 +77,12 @@ function SignUpPageInner() {
     /[0-9]/.test(password),
   ];
   const strengthScore = strength.filter(Boolean).length;
-  const strengthLabel = ['', 'Weak', 'Fair', 'Strong'][strengthScore];
+  const strengthLabel = ['', t('auth.strengthWeak'), t('auth.strengthFair'), t('auth.strengthStrong')][strengthScore];
   const strengthColor = ['', '#FF8A8A', '#FFD97D', '#4AE8A0'][strengthScore];
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!agreed) { setError('Please accept the terms to continue'); return; }
+    if (!agreed) { setError(t('auth.acceptTermsError')); return; }
     setLoading(true);
     setError('');
     try {
@@ -91,11 +91,11 @@ function SignUpPageInner() {
       localStorage.setItem('userId', res.data.user?._id ?? '');
       if (ref)   localStorage.setItem('breathe_quiz_result', ref);
       if (score) localStorage.setItem('breathe_stress_score', score);
-      toast.success('Account created! Welcome to Breathe 🌊');
+      toast.success(t('auth.accountCreated'));
       // New users always go through onboarding first
       navigate('/onboarding');
     } catch (err: any) {
-      const msg = err.response?.data?.error || 'Failed to create account';
+      const msg = err.response?.data?.error || t('auth.failedCreateAccount');
       setError(msg);
       toast.error(msg);
     } finally {
@@ -139,23 +139,23 @@ function SignUpPageInner() {
 
               <div className="flex flex-col gap-3">
                 <h1 className="text-4xl xl:text-5xl font-light leading-tight tracking-wide" style={{ color: ts.textPrimary }}>
-                  Begin your<br />
-                  <span style={{ color: ts.accent }}>breathing</span><br />
-                  journey.
+                  {t('auth.beginYour')}<br />
+                  <span style={{ color: ts.accent }}>{t('auth.breathingWord')}</span><br />
+                  {t('auth.journeyDot')}
                 </h1>
                 <p className="t-body leading-relaxed max-w-xs" style={{ color: ts.textDim }}>
-                  Free forever. No credit card. Just you, your breath, and a path to calm.
+                  {t('auth.freeForever')}
                 </p>
               </div>
 
               {/* Feature list */}
               <div className="flex flex-col gap-3">
-                {[
-                  'Guided breathing sessions',
-                  'Track mood & progress over time',
-                  'Sleep sounds & ambient music',
-                  'Community of meditators',
-                ].map(f => (
+                {([
+                  t('auth.features.guided'),
+                  t('auth.features.track'),
+                  t('auth.features.sounds'),
+                  t('auth.features.community'),
+                ] as string[]).map(f => (
                   <div key={f} className="flex items-center gap-3">
                     <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
                       style={{
@@ -171,9 +171,9 @@ function SignUpPageInner() {
 
               <div>
                 <p className="t-caption" style={{ color: ts.textDim }}>
-                  Already have an account?{' '}
+                  {t('auth.alreadyAccount')}{' '}
                   <Link to="/login" className="hover:underline" style={{ color: ts.accent }}>
-                    Sign in →
+                    {t('auth.signInArrow')}
                   </Link>
                 </p>
               </div>
@@ -197,13 +197,13 @@ function SignUpPageInner() {
                     <div className="px-4 py-3 rounded-xl text-center"
                       style={{ background: ts.cardBgHover, border: `1px solid ${ts.borderHover}` }}>
                       <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>
-                        {ref === 'stress'      && '😰 Your Stress Breather result is saved'}
-                        {ref === 'shallow'     && '🌀 Your Shallow Breather result is saved'}
-                        {ref === 'natural'     && '🌊 Your Natural Breather result is saved'}
-                        {ref === 'stress-calc' && `📊 Your stress score (${score}/100) is saved`}
+                        {ref === 'stress'      && t('auth.resultStress')}
+                        {ref === 'shallow'     && t('auth.resultShallow')}
+                        {ref === 'natural'     && t('auth.resultNatural')}
+                        {ref === 'stress-calc' && t('auth.resultStressCalc', { score })}
                       </p>
                       <p className="t-label mt-0.5" style={{ color: ts.textMuted }}>
-                        Create your account to unlock your 7-day plan
+                        {t('auth.createToUnlock')}
                       </p>
                     </div>
                   )}
@@ -211,12 +211,12 @@ function SignUpPageInner() {
                   {/* Header */}
                   <div>
                     <h2 className="t-heading font-medium tracking-wide" style={{ color: ts.textPrimary }}>
-                      Create account
+                      {t('auth.createAccountHeading')}
                     </h2>
                     <p className="t-caption mt-1" style={{ color: ts.textMuted }}>
                       {t("auth.alreadyAccount")}{' '}
                       <Link to="/login" className="hover:underline" style={{ color: ts.accent }}>
-                        Sign in
+                        {t('auth.signIn')}
                       </Link>
                     </p>
                   </div>
@@ -225,12 +225,12 @@ function SignUpPageInner() {
                     {/* Name */}
                     <div className="flex flex-col gap-1.5">
                       <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
-                        Your name
+                        {t('auth.name')}
                       </label>
                       <input
                         value={name}
                         onChange={e => setName(e.target.value)}
-                        placeholder="Alex"
+                        placeholder={t('auth.namePlaceholder')}
                         className="w-full rounded-xl px-4 py-3 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                         style={{
                           backgroundColor: ts.cardBg,
@@ -243,14 +243,14 @@ function SignUpPageInner() {
                     {/* Email */}
                     <div className="flex flex-col gap-1.5">
                       <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
-                        Email address
+                        {t('auth.email')}
                       </label>
                       <input
                         type="email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         required
-                        placeholder="you@example.com"
+                        placeholder={t('auth.emailPlaceholder')}
                         className="w-full rounded-xl px-4 py-3 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                         style={{
                           backgroundColor: ts.cardBg,
@@ -263,7 +263,7 @@ function SignUpPageInner() {
                     {/* Password */}
                     <div className="flex flex-col gap-1.5">
                       <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
-                        Password
+                        {t('auth.password')}
                       </label>
                       <div className="relative">
                         <input
@@ -272,7 +272,7 @@ function SignUpPageInner() {
                           onChange={e => setPassword(e.target.value)}
                           required
                           minLength={6}
-                          placeholder="Min. 6 characters"
+                          placeholder={t('auth.passwordHint')}
                           className="w-full rounded-xl px-4 py-3 pr-10 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                           style={{
                             backgroundColor: ts.cardBg,
@@ -323,7 +323,7 @@ function SignUpPageInner() {
                       <span className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                         {t("auth.termsAgree")}{' '}
                         <Link to="/support" style={{ color: ts.accent }}>{t("auth.terms")}</Link>{' '}
-                        and{' '}
+                        {t('auth.and')}{' '}
                         <Link to="/privacy" style={{ color: ts.accent }}>{t("auth.privacy")}</Link>
                       </span>
                     </label>
@@ -347,7 +347,7 @@ function SignUpPageInner() {
                       className="w-full py-3 rounded-xl t-body font-medium tracking-wide transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.45)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 mt-1"
                       style={{ background: ts.btnGradient }}
                     >
-                      {loading ? 'Creating account…' : t("auth.signUp") + ' →'}
+                      {loading ? t('auth.creatingAccount') : t("auth.signUp") + ' →'}
                     </button>
                   </form>
 
@@ -355,7 +355,7 @@ function SignUpPageInner() {
                   <div className="flex items-center gap-3">
                     <div className="flex-1 h-px" style={{ backgroundColor: ts.border }} />
                     <span className="t-label uppercase tracking-widest" style={{ color: ts.textDim }}>
-                      or sign up with
+                      {t('auth.orSignUpWith')}
                     </span>
                     <div className="flex-1 h-px" style={{ backgroundColor: ts.border }} />
                   </div>
@@ -374,7 +374,7 @@ function SignUpPageInner() {
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
                         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                       </svg>
-                      Continue with Google
+                      {t('auth.continueWithGoogle')}
                     </button>
                   </div>
                 </div>

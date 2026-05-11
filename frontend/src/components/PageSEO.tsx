@@ -12,15 +12,16 @@ const BASE = 'https://breatheonline.app';
 
 export default function PageSEO({ title, description, canonical, noIndex }: Props) {
   const fullTitle = title.includes('Breathe') ? title : `${title} | Breathe`;
-  const url = canonical ? `${BASE}${canonical}` : undefined;
+  // Always derive URL from the canonical prop so crawlers see the correct per-page URL
+  const url = canonical ? `${BASE}${canonical === '/' ? '' : canonical}` : `${BASE}${window.location.pathname}`;
 
   return (
     <Helmet>
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       {noIndex && <meta name="robots" content="noindex, nofollow" />}
-      {url && <link rel="canonical" href={url} />}
-      {url && <meta property="og:url" content={url} />}
+      <link rel="canonical" href={url} />
+      <meta property="og:url" content={url} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
       <meta name="twitter:title" content={fullTitle} />

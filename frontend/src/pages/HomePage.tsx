@@ -240,7 +240,7 @@ export default function HomePage() {
           {/* h1 renders immediately — it's the LCP element. No opacity:0 delay. */}
           <div className="flex flex-col gap-2">
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-light leading-none tracking-tight shimmer-text">
-              Breathe Better
+              {t('hero.title')}
             </h1>
             <p className="anim-fade-up anim-delay-2 t-body sm:text-xl md:text-2xl font-light max-w-xl mx-auto leading-relaxed" style={{ color: ts.textMuted }}>
               {t('hero.subtitle')}
@@ -270,7 +270,7 @@ export default function HomePage() {
                 border: `1px solid ${ts.border}` 
               }}
             >
-              How it works →
+              {t('hero.howItWorks')}
             </Link>
           </div>
 
@@ -330,10 +330,10 @@ export default function HomePage() {
           <div className="flex flex-col items-center gap-5">
             <div className="text-center">
               <h2 className="t-heading sm:text-xl font-medium tracking-wide" style={{ color: ts.textPrimary }}>
-                What kind of breather are you?
+                {t('home.breatherQuiz')}
               </h2>
               <p className="t-caption mt-1" style={{ color: ts.textMuted }}>
-                5 questions · free · instant result
+                {t('home.fiveQuestions')}
               </p>
             </div>
             <HomeInteractive />
@@ -364,8 +364,8 @@ export default function HomePage() {
               </div>
 
               <div className="border rounded-2xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-6" style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}>
-                <QuoteBlock text="The breath is the bridge which connects life to consciousness." author="Thich Nhat Hanh" />
-                <QuoteBlock text="Almost everything will work again if you unplug it for a few minutes — including you." author="Anne Lamott" />
+                <QuoteBlock text={t('home.quotes.thich')} author={t('home.quotes.thichAuthor')} />
+                <QuoteBlock text={t('home.quotes.anne')} author={t('home.quotes.anneAuthor')} />
               </div>
 
               <AdSlot label="Ad · 300×250 medium rectangle" tall />
@@ -386,7 +386,7 @@ export default function HomePage() {
                   className="w-full py-3 rounded-xl t-body font-medium transition-colors text-center tracking-wide"
                   style={{ background: ts.btnGradient }}
                 >
-                  🌬 &nbsp;Begin Session
+                  {t('home.beginSessionEmoji')}
                 </Link>
               </div>
 
@@ -398,10 +398,10 @@ export default function HomePage() {
                 <div className="px-5 pt-5 pb-3 flex items-center justify-between">
                   <div>
                     <p className="t-body font-semibold tracking-wide" style={{ color: ts.textPrimary }}>
-                      🌙 Sleep guides
+                      {t('home.sleepGuides')}
                     </p>
                     <p className="t-caption mt-0.5" style={{ color: ts.textDim }}>
-                      Science-backed · AI-powered
+                      {t('home.scienceBacked')}
                     </p>
                   </div>
                 </div>
@@ -416,10 +416,10 @@ export default function HomePage() {
                   <span className="text-2xl flex-shrink-0">🌙</span>
                   <div className="flex-1 min-w-0">
                     <p className="t-body font-medium leading-snug" style={{ color: ts.accentLight }}>
-                      AI Sleep Story
+                      {t('home.aiSleepStory')}
                     </p>
                     <p className="t-caption mt-0.5 truncate" style={{ color: ts.textDim }}>
-                      Personalized narrative to drift off
+                      {t('home.aiSleepDesc')}
                     </p>
                   </div>
                   <span className="t-caption flex-shrink-0" style={{ color: ts.accent }}>→</span>
@@ -431,10 +431,10 @@ export default function HomePage() {
                 {/* Regular guide list */}
                 <div className="flex flex-col px-4 pb-4 gap-0.5">
                   {[
-                    { icon: '💤', label: 'Why Sleep is So Important',    sub: '5 min read',  href: '/sleep/why-sleep-is-important'   },
-                    { icon: '😮‍💨', label: 'What is Sleep Apnea?',         sub: '6 min read',  href: '/sleep/what-is-sleep-apnea'      },
-                    { icon: '🌊', label: 'Breathwork for Deep Sleep',    sub: 'Practice',    href: '/sleep/breathwork-for-deep-sleep' },
-                    { icon: '⚡', label: 'Why Slow Breathing Calms You', sub: 'Science',     href: '/science/slow-breathing'         },
+                    { icon: '💤', label: t('home.sleepLinks.why'),       sub: t('home.sleepLinks.whySub'),        href: '/sleep/why-sleep-is-important'   },
+                    { icon: '😮‍💨', label: t('home.sleepLinks.apnea'),     sub: t('home.sleepLinks.apneaSub'),      href: '/sleep/what-is-sleep-apnea'      },
+                    { icon: '🌊', label: t('home.sleepLinks.breathwork'), sub: t('home.sleepLinks.breathworkSub'), href: '/sleep/breathwork-for-deep-sleep' },
+                    { icon: '⚡', label: t('home.sleepLinks.slow'),       sub: t('home.sleepLinks.slowSub'),       href: '/science/slow-breathing'         },
                   ].map(({ icon, label, sub, href }) => (
                     <Link key={href} to={href}
                       className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all hover:opacity-90 group"

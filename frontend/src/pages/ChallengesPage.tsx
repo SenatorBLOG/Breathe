@@ -257,7 +257,7 @@ function BadgeCard({ uc }: { uc: UserChallenge }) {
         });
       } else {
         await navigator.clipboard.writeText(text);
-        toast.success('Copied to clipboard!');
+        toast.success(t('challenges.copiedToClipboard'));
       }
     } catch { /* user cancelled */ }
   };
@@ -317,7 +317,7 @@ export default function ChallengesPage() {
         api.get('/challenges/recommend').then(r => setRecommendation(r.data)).catch(() => {});
       }
     } catch (err) {
-      toast.error('Failed to load challenges');
+      toast.error(t('challenges.couldntLoad'));
     } finally {
       setLoading(false);
     }
@@ -339,7 +339,7 @@ export default function ChallengesPage() {
       await load();
       setActiveTab('my');
     } catch (err: any) {
-      toast.error(err?.response?.data?.error ?? 'Failed to join');
+      toast.error(err?.response?.data?.error ?? t('challenges.failedJoin'));
     } finally {
       setJoining(null);
     }
@@ -356,7 +356,7 @@ export default function ChallengesPage() {
       }
       await load();
     } catch (err: any) {
-      toast.error(err?.response?.data?.error ?? 'Check-in failed');
+      toast.error(err?.response?.data?.error ?? t('challenges.failedCheckin'));
     } finally {
       setCheckingIn(null);
     }
@@ -369,7 +369,7 @@ export default function ChallengesPage() {
       toast(t('challenges.abandon'));
       await load();
     } catch {
-      toast.error('Failed to abandon');
+      toast.error(t('challenges.failedAbandon'));
     }
   };
 

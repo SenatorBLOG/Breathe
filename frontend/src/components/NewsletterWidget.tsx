@@ -2,9 +2,11 @@
 import React, { useState } from 'react';
 import api from '../api';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTranslation } from 'react-i18next';
 
 export default function NewsletterWidget() {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
@@ -43,10 +45,10 @@ export default function NewsletterWidget() {
         }}
       >
         <h3 className="t-caption uppercase tracking-widest" style={{ color: ts.textDim }}>
-          Weekly Calm
+          {t('footer.newsletter.title')}
         </h3>
         <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
-          Get one mindfulness tip delivered every Sunday.
+          {t('footer.newsletter.desc')}
         </p>
 
         {status === 'success' ? (
@@ -68,7 +70,7 @@ export default function NewsletterWidget() {
               value={email}
               onChange={e => setEmail(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && subscribe()}
-              placeholder="your@email.com"
+              placeholder={t('footer.newsletter.placeholder')}
               disabled={status === 'loading'}
               className="newsletter-input flex-1 min-w-0 rounded-lg px-3 py-2 t-caption outline-none transition-colors disabled:opacity-50"
               style={{

@@ -441,7 +441,7 @@ export default function ProfilePage() {
         if (data.achievements) setEarnedAchievements(data.achievements);
       })
       .catch(() => {
-        toast.error('Could not load profile — please refresh.');
+        toast.error(t('profile.loadFailed'));
       })
       .finally(() => setLoadingProfile(false));
   }, []);
@@ -471,7 +471,7 @@ export default function ProfilePage() {
     ? (Number(body.weightKg) / Math.pow(Number(body.heightCm) / 100, 2)).toFixed(1)
     : null;
   const bmiLabel = bmi
-    ? Number(bmi) < 18.5 ? 'Underweight' : Number(bmi) < 25 ? 'Normal' : Number(bmi) < 30 ? 'Overweight' : 'Obese'
+    ? Number(bmi) < 18.5 ? t('profile.bmi.underweight') : Number(bmi) < 25 ? t('profile.bmi.normal') : Number(bmi) < 30 ? t('profile.bmi.overweight') : t('profile.bmi.obese')
     : null;
   const bmiColor = bmi
     ? Number(bmi) < 18.5 ? '#FFD97D' : Number(bmi) < 25 ? '#4AE8A0' : Number(bmi) < 30 ? '#FFD97D' : '#FF8A8A'
@@ -495,9 +495,9 @@ export default function ProfilePage() {
       };
       const { data } = await api.patch('/auth/me', payload);
       updateUser({ nickname: data.nickname, avatar: data.avatar });
-      toast.success('Profile saved');
+      toast.success(t('profile.savedSuccess'));
     } catch {
-      toast.error('Failed to save');
+      toast.error(t('profile.failedSave'));
     } finally {
       setSaving(false);
     }
@@ -523,9 +523,9 @@ export default function ProfilePage() {
     const integ  = params.get('integration');
     const status = params.get('status');
     if (integ && status === 'connected')
-      toast.success(`${integ === 'fitbit' ? 'Fitbit' : 'Google Fit'} connected! Tap Sync to load your data.`);
+      toast.success(t('profile.integConnected', { integ: integ === 'fitbit' ? 'Fitbit' : 'Google Fit' }));
     if (integ && status === 'error')
-      toast.error('Connection failed. Please try again.');
+      toast.error(t('profile.connectionFailed'));
     fetchStatus();
   }, [location.search]);
 
@@ -537,13 +537,13 @@ export default function ProfilePage() {
     try {
       await api.delete(`/integrations/${provider}`);
       setIntegrations(prev => prev.filter(i => i.provider !== provider));
-      toast.success('Disconnected');
-    } catch { toast.error('Failed to disconnect'); }
+      toast.success(t('profile.disconnected'));
+    } catch { toast.error(t('profile.failedDisconnect')); }
   };
   const sync = async () => {
     setSyncing(true);
-    try { await api.post('/integrations/sync'); await fetchStatus(); toast.success('Synced successfully'); }
-    catch { toast.error('Sync failed'); } finally { setSyncing(false); }
+    try { await api.post('/integrations/sync'); await fetchStatus(); toast.success(t('profile.syncedSuccess')); }
+    catch { toast.error(t('profile.syncFailed')); } finally { setSyncing(false); }
   };
   const getStatus = (provider: string) => integrations.find(i => i.provider === provider);
 
@@ -823,8 +823,8 @@ export default function ProfilePage() {
                   <div className="flex items-center gap-3">
                     <span className="t-heading">🏆</span>
                     <div className="text-left">
-                      <p className="t-body font-medium" style={{ color: ts.accentLight }}>Breathing Challenges</p>
-                      <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>7 & 21-day streaks · earn badges</p>
+                      <p className="t-body font-medium" style={{ color: ts.accentLight }}>{t('profile.breathingChallenges')}</p>
+                      <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>{t('profile.challengeSubtitle')}</p>
                     </div>
                   </div>
                   <ChevronRight size={14} style={{ color: ts.accent }} />
@@ -894,7 +894,7 @@ export default function ProfilePage() {
                       <div className="flex flex-col gap-0.5">
                         <div className="flex items-center gap-1.5 mb-1">
                           <Moon size={10} style={{ color: ts.accentLight }} />
-                          <p className="t-label" style={{ color: ts.textMuted }}>Sleep</p>
+                          <p className="t-label" style={{ color: ts.textMuted }}>{t('profile.sleepLabel')}</p>
                         </div>
                         <p className="t-subheading font-semibold tabular-nums" style={{ color: avgSleep7 ? ts.textPrimary : ts.textDim }}>
                           {avgSleep7 ? fmtDur(avgSleep7) : '—'}
@@ -943,7 +943,7 @@ export default function ProfilePage() {
                           <RefreshCw size={9} className={syncing ? 'animate-spin' : ''} /> {t('profile.syncAll')}
                         </button>
                       )}
-                      <Link to="/data-consent" className="t-label hover:underline" style={{ color: ts.textDim }}>Privacy</Link>
+                      <Link to="/data-consent" className="t-label hover:underline" style={{ color: ts.textDim }}>{t('profile.privacyLink')}</Link>
                     </div>
                   </div>
 

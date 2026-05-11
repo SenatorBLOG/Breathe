@@ -52,16 +52,16 @@ function LoginPageInner() {
         const res = await api.post('/auth/google', { access_token: tokenResponse.access_token });
         login(res.data.token, res.data.user);
         localStorage.setItem('userId', res.data.user?._id ?? '');
-        toast.success('Welcome to Breathe');
+        toast.success(t('auth.welcomeToBreathe'));
         api.get('/auth/me').then(r => syncGoalFromProfile(r.data)).catch(() => {});
         redirectAfterAuth();
       } catch {
-        toast.error('Google login failed');
+        toast.error(t('auth.googleLoginFailed'));
       } finally {
         setLoading(false);
       }
     },
-    onError: () => toast.error('Google login failed'),
+    onError: () => toast.error(t('auth.googleLoginFailed')),
   });
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -77,7 +77,7 @@ function LoginPageInner() {
       api.get('/auth/me').then(r => syncGoalFromProfile(r.data)).catch(() => {});
       redirectAfterAuth();
     } catch (err: any) {
-      const msg = err.response?.data?.error || 'Invalid email or password';
+      const msg = err.response?.data?.error || t('auth.invalidCredentials');
       setError(msg);
       toast.error(msg);
     } finally {
@@ -111,25 +111,25 @@ function LoginPageInner() {
                 <div>
                   <p className="t-heading font-light tracking-wide" style={{ color: ts.textPrimary }}>Breathe</p>
                   <p className="t-caption tracking-[0.2em] uppercase mt-0.5" style={{ color: ts.textMuted }}>
-                    Mindful breathing app
+                    {t('auth.mindfulApp')}
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-col gap-3">
                 <h1 className="text-4xl xl:text-5xl font-light leading-tight tracking-wide" style={{ color: ts.textPrimary }}>
-                  Welcome back.<br />
-                  <span style={{ color: ts.accent }}>Your sessions</span><br />
-                  are waiting.
+                  {t('auth.welcomeBack')}<br />
+                  <span style={{ color: ts.accent }}>{t('auth.yourSessions')}</span><br />
+                  {t('auth.areWaiting')}
                 </h1>
               </div>
 
               {/* Stats */}
               <div className="flex flex-col gap-3">
                 {[
-                  { icon: <Flame size={18} color="#F97316" />, text: 'Your streak is still alive' },
-                  { icon: <BarChart2 size={18} color="#4A9EFF" />, text: 'Progress saved from last time' },
-                  { icon: <Waves size={18} color="#38BDF8" />, text: 'Community posts to catch up on' },
+                  { icon: <Flame size={18} color="#F97316" />, text: t('auth.streakAlive') },
+                  { icon: <BarChart2 size={18} color="#4A9EFF" />, text: t('auth.progressSaved') },
+                  { icon: <Waves size={18} color="#38BDF8" />, text: t('auth.communityPosts') },
                 ].map(({ icon, text }) => (
                   <div key={text} className="flex items-center gap-3">
                     <span className="flex-shrink-0">{icon}</span>
@@ -140,9 +140,9 @@ function LoginPageInner() {
 
               <div>
                 <p className="t-caption" style={{ color: ts.textMuted }}>
-                  No account?{' '}
+                  {t('auth.noAccount')}{' '}
                   <Link to="/signup" className="hover:underline" style={{ color: ts.accent }}>
-                    Create one free →
+                    {t('auth.createOneFree')}
                   </Link>
                 </p>
               </div>
@@ -164,7 +164,7 @@ function LoginPageInner() {
                   {/* Header */}
                   <div>
                     <h2 className="t-heading font-medium tracking-wide" style={{ color: ts.textPrimary }}>
-                      Sign in
+                      {t('auth.signIn')}
                     </h2>
                     <p className="t-caption mt-1" style={{ color: ts.textMuted }}>
                       {t("auth.noAccount")}{' '}
@@ -178,14 +178,14 @@ function LoginPageInner() {
                     {/* Email */}
                     <div className="flex flex-col gap-1.5">
                       <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
-                        Email
+                        {t('auth.email')}
                       </label>
                       <input
                         type="email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         required
-                        placeholder="you@example.com"
+                        placeholder={t('auth.emailPlaceholder')}
                         className="w-full rounded-xl px-4 py-3 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                         style={{
                           backgroundColor: ts.cardBg,
@@ -199,7 +199,7 @@ function LoginPageInner() {
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center justify-between">
                         <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
-                          Password
+                          {t('auth.password')}
                         </label>
                         <Link to="/forgot-password" className="t-label transition-colors" style={{ color: ts.accent }}>
                           {t("auth.forgotPassword")}
@@ -245,7 +245,7 @@ function LoginPageInner() {
                         {rememberMe && <div className="w-2 h-2 rounded-sm bg-white" />}
                       </div>
                       <span className="t-caption" style={{ color: ts.textMuted }}>
-                        Remember me
+                        {t('auth.rememberMe')}
                       </span>
                     </label>
 
@@ -268,7 +268,7 @@ function LoginPageInner() {
                       className="w-full py-3 rounded-xl t-body font-medium tracking-wide transition-all hover:shadow-[0_0_28px_rgba(58,130,247,0.45)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 mt-1"
                       style={{ background: ts.btnGradient }}
                     >
-                      {loading ? 'Signing in…' : t("auth.signIn") + ' →'}
+                      {loading ? t('auth.signingIn') : t("auth.signIn") + ' →'}
                     </button>
                   </form>
 
@@ -276,7 +276,7 @@ function LoginPageInner() {
                   <div className="flex items-center gap-3">
                     <div className="flex-1 h-px" style={{ backgroundColor: ts.border }} />
                     <span className="t-label uppercase tracking-widest" style={{ color: ts.textDim }}>
-                      or continue with
+                      {t('auth.orContinueWith')}
                     </span>
                     <div className="flex-1 h-px" style={{ backgroundColor: ts.border }} />
                   </div>
@@ -295,7 +295,7 @@ function LoginPageInner() {
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
                         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                       </svg>
-                      Continue with Google
+                      {t('auth.continueWithGoogle')}
                     </button>
                   </div>
                 </div>

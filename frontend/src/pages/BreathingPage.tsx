@@ -356,21 +356,14 @@ export default function BreathingPage() {
     return () => { if (iv) clearInterval(iv); };
   }, [isActive]);
 
-  const TECHNIQUE_LABELS: Record<string, string> = {
-    'box-breathing':  'Box Breathing',
-    '4-7-8':          '4-7-8 Breathing',
-    'wim-hof':        'Wim Hof Method',
-    'coherent':       'Coherent Breathing',
-    'belly':          'Belly Breathing',
-    'morning-ritual': 'Morning Ritual',
-  };
+  const TECHNIQUE_LABELS = t('journal.techniqueLabels', { returnObjects: true }) as Record<string, string>;
 
   const triggerNLPAnalysis = async (sessionId: string) => {
     try {
       const { data } = await api.post(`/nlp/analyze/${sessionId}`);
       if (data?.nlp?.suggestedTechnique) {
         const label = TECHNIQUE_LABELS[data.nlp.suggestedTechnique] ?? data.nlp.suggestedTechnique;
-        toast.info(`Based on your notes: try ${label}`, {
+        toast.info(t('breathing.basedOnNotes', { technique: label }), {
           description: data.nlp.oneLineSummary ?? undefined,
           duration: 8000,
         });
@@ -380,9 +373,9 @@ export default function BreathingPage() {
 
   const saveSession = async (payload: any) => {
     if (!localStorage.getItem('token')) {
-      toast('Session not saved', {
-        description: 'Create a free account to track your progress and streaks',
-        action: { label: 'Sign in →', onClick: () => navigate('/login') },
+      toast(t('breathing.notSaved'), {
+        description: t('breathing.notSavedDesc'),
+        action: { label: t('auth.signInArrow'), onClick: () => navigate('/login') },
         duration: 6000,
       });
       return;
@@ -392,7 +385,7 @@ export default function BreathingPage() {
       if (cid && savedClientIdsRef.current.has(cid)) return;
       if (cid) savedClientIdsRef.current.add(cid);
       const { data } = await api.post("/sessions", payload);
-      toast.success(t("breathing.session") + " saved");
+      toast.success(t('breathing.sessionSaved'));
       setCycles(0); setCurrentDuration(0); fetchStats();
       if (payload.notes?.trim() && data?._id) {
         triggerNLPAnalysis(data._id); // fire-and-forget
@@ -400,7 +393,7 @@ export default function BreathingPage() {
     } catch {
       const cid = payload?.clientId;
       if (cid) savedClientIdsRef.current.delete(cid);
-      toast.error("Failed to save session");
+      toast.error(t('breathing.failedToSave'));
     }
   };
 
@@ -440,13 +433,13 @@ export default function BreathingPage() {
   }, [isActive]);
 
   const presets: { name: string; pattern: PhaseDurations; coachKey?: string }[] = [
-    { name: "Box",       pattern: { inhale: 4, hold: 4, exhale: 4, pause: 4 }, coachKey: "box" },
-    { name: "4-7-8",     pattern: { inhale: 4, hold: 7, exhale: 8, pause: 1 }, coachKey: "4-7-8" },
-    { name: "Calm",      pattern: { inhale: 4, hold: 2, exhale: 6, pause: 2 }, coachKey: "coherent" },
-    { name: "Energize",  pattern: { inhale: 6, hold: 0, exhale: 2, pause: 1 }, coachKey: "wim-hof" },
-    { name: "Wim Hof",   pattern: { inhale: 2, hold: 1, exhale: 2, pause: 1 }, coachKey: "wim-hof" },
-    { name: "Belly",     pattern: { inhale: 4, hold: 0, exhale: 6, pause: 2 }, coachKey: "belly" },
-    { name: "Alternate", pattern: { inhale: 4, hold: 4, exhale: 4, pause: 2 }, coachKey: "alternate" },
+    { name: t('breathing.presetNames.box'),      pattern: { inhale: 4, hold: 4, exhale: 4, pause: 4 }, coachKey: "box" },
+    { name: t('breathing.presetNames.478'),      pattern: { inhale: 4, hold: 7, exhale: 8, pause: 1 }, coachKey: "4-7-8" },
+    { name: t('breathing.presetNames.calm'),     pattern: { inhale: 4, hold: 2, exhale: 6, pause: 2 }, coachKey: "coherent" },
+    { name: t('breathing.presetNames.energize'), pattern: { inhale: 6, hold: 0, exhale: 2, pause: 1 }, coachKey: "wim-hof" },
+    { name: t('breathing.presetNames.wimHof'),   pattern: { inhale: 2, hold: 1, exhale: 2, pause: 1 }, coachKey: "wim-hof" },
+    { name: t('breathing.presetNames.belly'),    pattern: { inhale: 4, hold: 0, exhale: 6, pause: 2 }, coachKey: "belly" },
+    { name: t('breathing.presetNames.alternate'),pattern: { inhale: 4, hold: 4, exhale: 4, pause: 2 }, coachKey: "alternate" },
   ];
 
   return (
@@ -469,8 +462,8 @@ export default function BreathingPage() {
       `}</style>
 
       <PageSEO
-        title="Guided Breathing Exercises — Box, 4-7-8, Wim Hof & More"
-        description="Free guided breathing sessions for sleep, stress relief, and focus. Try Box Breathing, 4-7-8, Wim Hof Method and more. No download needed — works in your browser."
+        title={t('breathing.seoTitle')}
+        description={t('breathing.seoDesc')}
         canonical="/breathing"
       />
       <ThemeBackground />
@@ -707,8 +700,8 @@ export default function BreathingPage() {
           <div className="flex flex-col items-center gap-3 w-full">
             <p className="t-label tracking-[0.3em] uppercase" style={{ color: ts.textDim }}>{t('breathing.presets')}</p>
             <div className="flex flex-wrap justify-center gap-2">
-              {presets.map(p => (
-                <PresetPill key={p.name} name={p.name} pattern={p.pattern} onApply={setPhaseDurations} current={phaseDurations} />
+              {presets.map((p, i) => (
+                <PresetPill key={i} name={p.name} pattern={p.pattern} onApply={setPhaseDurations} current={phaseDurations} />
               ))}
             </div>
           </div>
@@ -716,29 +709,29 @@ export default function BreathingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
             {([
               {
-                icon: <Waves size={22} color="#38BDF8" />, title: 'Box Breathing', tag: 'Focus & Calm',
+                icon: <Waves size={22} color="#38BDF8" />, title: t('breathing.cards.box.title'), tag: t('breathing.cards.box.tag'),
                 pattern: { inhale: 4, hold: 4, exhale: 4, pause: 4 },
-                desc: 'Equal phases retrain your nervous system for stress resilience. Trusted by Navy SEALs and elite athletes.',
+                desc: t('breathing.cards.box.desc'),
                 href: '/breathing/box-breathing',
               },
               {
-                icon: <Moon size={22} color="#818CF8" />, title: '4-7-8 for Sleep', tag: 'Deep Sleep',
+                icon: <Moon size={22} color="#818CF8" />, title: t('breathing.cards.sleep.title'), tag: t('breathing.cards.sleep.tag'),
                 pattern: { inhale: 4, hold: 7, exhale: 8, pause: 1 },
-                desc: 'Long hold + slow exhale activates your parasympathetic system. One of the most effective natural sleep aids.',
+                desc: t('breathing.cards.sleep.desc'),
                 href: '/breathing/4-7-8',
               },
               {
-                icon: <Zap size={22} color="#FACC15" />, title: 'Energizing', tag: 'Boost Energy',
+                icon: <Zap size={22} color="#FACC15" />, title: t('breathing.cards.energy.title'), tag: t('breathing.cards.energy.tag'),
                 pattern: { inhale: 6, hold: 0, exhale: 2, pause: 1 },
-                desc: 'Short sharp cycles flood your body with oxygen and sharpen alertness in under two minutes.',
+                desc: t('breathing.cards.energy.desc'),
                 href: '/breathing/wim-hof',
               },
             ]).map(({ icon, title, tag, pattern, desc, href }) => {
               const nums = [pattern.inhale, pattern.hold, pattern.exhale, pattern.pause];
-              const labels = ['Inhale', 'Hold', 'Exhale', 'Pause'];
+              const labels = [t('breathing.phaseLabels.inhale'), t('breathing.phaseLabels.hold'), t('breathing.phaseLabels.exhale'), t('breathing.pause_phase')];
               return (
                 <div
-                  key={title}
+                  key={href}
                   className="flex flex-col gap-3 p-4 rounded-2xl"
                   style={{ backgroundColor: ts.cardBg, border: `1px solid ${ts.border}` }}
                 >

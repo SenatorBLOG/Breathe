@@ -6,6 +6,7 @@ export default function PWAInstallBanner() {
   const ts = useThemeStyles();
   const { t } = useTranslation();
   const [prompt, setPrompt] = useState<any>(null);
+  const [ready, setReady] = useState(false);
   const [dismissed, setDismissed] = useState(
     () => localStorage.getItem('breathe_pwa_dismissed') === 'true'
   );
@@ -14,12 +15,14 @@ export default function PWAInstallBanner() {
     const handler = (e: any) => {
       e.preventDefault();
       setPrompt(e);
+      // Wait 8 seconds after the browser fires the prompt before showing the banner
+      setTimeout(() => setReady(true), 8000);
     };
     window.addEventListener('beforeinstallprompt', handler);
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
-  if (!prompt || dismissed) return null;
+  if (!prompt || !ready || dismissed) return null;
   if (window.matchMedia('(display-mode: standalone)').matches) return null;
 
   const install = async () => {

@@ -90,6 +90,39 @@
       "energy": "Energizante",
       "energyDesc": "Ciclos cortos e intensos aumentan el estado de alerta en menos de dos minutos."
     },
+    "notSaved": "Sesión no guardada",
+    "notSavedDesc": "Crea una cuenta gratuita para seguir tu progreso y rachas",
+    "sessionSaved": "Sesión guardada",
+    "failedToSave": "Error al guardar la sesión",
+    "basedOnNotes": "Según tus notas: prueba {{technique}}",
+    "seoTitle": "Ejercicios de respiración guiada — Box, 4-7-8, Wim Hof y más",
+    "seoDesc": "Sesiones de respiración guiada gratuitas para dormir, aliviar el estrés y concentrarte. Prueba la respiración Box, 4-7-8, el método Wim Hof y más. Sin descarga — funciona en tu navegador.",
+    "presetNames": {
+      "box": "Box",
+      "478": "4-7-8",
+      "calm": "Calma",
+      "energize": "Energizar",
+      "wimHof": "Wim Hof",
+      "belly": "Abdominal",
+      "alternate": "Alternante"
+    },
+    "cards": {
+      "box": {
+        "title": "Respiración Box",
+        "tag": "Foco y calma",
+        "desc": "Las fases iguales reentrenan tu sistema nervioso para la resiliencia al estrés. Utilizado por los Navy SEALs y atletas de élite."
+      },
+      "sleep": {
+        "title": "4-7-8 para dormir",
+        "tag": "Sueño profundo",
+        "desc": "La retención larga + exhalación lenta activa tu sistema parasimpático. Uno de los auxiliares naturales para dormir más efectivos."
+      },
+      "energy": {
+        "title": "Energizante",
+        "tag": "Aumentar energía",
+        "desc": "Los ciclos cortos e intensos inundan tu cuerpo de oxígeno y agudizan la concentración en menos de dos minutos."
+      }
+    },
     "guidance": {
       "title": "Modo de guía",
       "visual": "Visual",
@@ -168,7 +201,13 @@
       "aiCoachTitle": "Entrenador IA",
       "aiCoachDesc": "Obtén guía personalizada de respiración de tu entrenador IA.",
       "openCoach": "Abrir entrenador →"
-    }
+    },
+    "postPlaceholder": "Comparte tu experiencia, haz una pregunta o da un consejo…",
+    "tagPlaceholder": "Añadir etiqueta (pulsa Enter)",
+    "joinConversation": "Únete a la conversación",
+    "goToCommunity": "Ir a la comunidad",
+    "failedLoadPosts": "No se pudieron cargar las publicaciones",
+    "postDeleted": "Publicación eliminada"
   },
   "globe": {
     "seoTitle": "Breathe Together — mapa global de la comunidad",
@@ -473,6 +512,7 @@
     }
   },
   "faq": {
+    "badge": "Ayuda y FAQ",
     "title": "¿Cómo podemos ayudarte?",
     "subtitle": "Todo lo que necesitas saber sobre técnicas de respiración, la app y tu cuenta.",
     "search": "Buscar preguntas…",
@@ -483,7 +523,11 @@
     "stillQuestions": "¿Sigues teniendo preguntas?",
     "cantFind": "¿No encuentras lo que buscas? Estamos aquí para ayudar.",
     "askCommunity": "Preguntar a la comunidad",
-    "contactUs": "Contáctanos"
+    "contactUs": "Contáctanos",
+    "questionCount_one": "{{count}} pregunta",
+    "questionCount_other": "{{count}} preguntas",
+    "searchResults_one": "1 resultado para «{{term}}»",
+    "searchResults_other": "{{count}} resultados para «{{term}}»"
   },
   "support": {
     "title": "Estamos aquí para ayudar",
@@ -504,6 +548,29 @@
       "feedback": "Comentario",
       "account": "Problema de cuenta",
       "other": "Otro"
+    },
+    "topic": "Tema",
+    "thanksName": "Gracias, {{name}}.",
+    "namePlaceholder": "Alex",
+    "emailPlaceholder": "tu@email.com",
+    "messagePlaceholder": "Describe tu problema o pregunta en detalle…",
+    "badge": "Soporte",
+    "quickLinks": {
+      "faqTitle": "Ver preguntas frecuentes",
+      "faqDesc": "La mayoría de preguntas ya están respondidas en nuestro centro de ayuda.",
+      "faqLabel": "Abrir FAQ",
+      "communityTitle": "Preguntar a la comunidad",
+      "communityDesc": "Los meditadores frecuentemente tienen las respuestas más rápidas.",
+      "communityLabel": "Ir a la comunidad",
+      "responseTitle": "Tiempo de respuesta",
+      "responseDesc": "Respondemos en 24 horas los días laborables. Normalmente mucho antes.",
+      "responseLabel": "Enviar un mensaje",
+      "emailTitle": "Escríbenos directamente",
+      "emailDesc": "¿Prefieres el correo? Escríbenos cuando quieras.",
+      "faqDescMobile": "La mayoría de preguntas ya respondidas.",
+      "communityTitleMobile": "Comunidad",
+      "communityDescMobile": "Pregunta a otros meditadores.",
+      "communityLabelMobile": "Abrir comunidad"
     }
   },
   "auth": {
@@ -526,12 +593,73 @@
     "welcomeBack": "Bienvenido de vuelta.",
     "sessionsWaiting": "Tus sesiones te esperan.",
     "beginJourney": "Comienza tu viaje de respiración.",
-    "freeForever": "Gratis para siempre. Sin tarjeta.",
+    "freeForever": "Gratis para siempre. Sin tarjeta. Solo tú, tu respiración y un camino hacia la calma.",
     "features": {
       "guided": "Sesiones de respiración guiada",
       "track": "Seguimiento del humor y progreso",
       "sounds": "Sonidos para dormir y música ambiental",
       "community": "Comunidad de meditadores"
+    },
+    "yourSessions": "Tus sesiones",
+    "areWaiting": "te esperan.",
+    "namePlaceholder": "Alex",
+    "passwordHint": "Mín. 6 caracteres",
+    "emailPlaceholder": "tú@email.com",
+    "mindfulApp": "App de respiración consciente",
+    "streakAlive": "Tu racha sigue viva",
+    "progressSaved": "Progreso guardado de la última vez",
+    "communityPosts": "Publicaciones de la comunidad para ponerte al día",
+    "createOneFree": "Crear una gratis →",
+    "continueWithGoogle": "Continuar con Google",
+    "beginYour": "Comienza tu",
+    "breathingWord": "respiración",
+    "journeyDot": "viaje.",
+    "signInArrow": "Iniciar sesión →",
+    "orSignUpWith": "o registrarse con",
+    "resultStress": "😰 Tu resultado Respirador de Estrés está guardado",
+    "resultShallow": "🌀 Tu resultado Respirador Superficial está guardado",
+    "resultNatural": "🌊 Tu resultado Respirador Natural está guardado",
+    "resultStressCalc": "📊 Tu puntuación de estrés ({{score}}/100) está guardada",
+    "createToUnlock": "Crea tu cuenta para desbloquear tu plan de 7 días",
+    "createAccountHeading": "Crear cuenta",
+    "welcomeToBreathe": "Bienvenido a Breathe",
+    "googleLoginFailed": "Fallo al iniciar sesión con Google",
+    "invalidCredentials": "Correo o contraseña incorrectos",
+    "googleSignUpSuccess": "¡Registrado con Google! Bienvenido a Breathe",
+    "googleSignUpFailed": "Fallo al registrarse con Google",
+    "acceptTermsError": "Por favor, acepta los términos para continuar",
+    "accountCreated": "¡Cuenta creada! Bienvenido a Breathe 🌊",
+    "failedCreateAccount": "No se pudo crear la cuenta",
+    "strengthWeak": "Débil",
+    "strengthFair": "Regular",
+    "strengthStrong": "Fuerte"
+  },
+  "charts": {
+    "noDataYet": "Sin datos aún",
+    "noSessionsYet": "Sin sesiones aún",
+    "noActivityYet": "Sin actividad aún",
+    "minutes": "Minutos",
+    "sessions": "Sesiones",
+    "noSession": "Sin sesión",
+    "noHRVData": "Sin datos de VFC aún",
+    "connectSmartwatch": "Conecta tu reloj inteligente con la app de Android para ver cómo la meditación afecta tu variabilidad de frecuencia cardíaca",
+    "onMeditationDays": "En días de meditación",
+    "restDays": "Días de descanso",
+    "difference": "Diferencia",
+    "avgHRV": "VFC prom.",
+    "higherOnMedDays": "mayor en días de meditación",
+    "lowerOnMedDays": "menor en días de meditación",
+    "meditationSessions_one": "{{count}} sesión de meditación",
+    "meditationSessions_other": "{{count}} sesiones de meditación"
+  },
+  "ambient": {
+    "label": "Ambiente",
+    "soundLabel": "Sonido ambiental",
+    "sounds": {
+      "rain": "Lluvia",
+      "ocean": "Océano",
+      "forest": "Bosque",
+      "white": "Ruido blanco"
     }
   },
   "footer": {
@@ -682,7 +810,80 @@
     "great": "excelente",
     "low": "bajo",
     "average": "promedio",
-    "excellent": "excelente"
+    "excellent": "excelente",
+    "breathingChallenges": "Desafíos de respiración",
+    "challengeSubtitle": "Rachas de 7 y 21 días · gana insignias",
+    "sleepLabel": "Sueño",
+    "privacyLink": "Privacidad",
+    "loadFailed": "No se pudo cargar el perfil — por favor recarga.",
+    "savedSuccess": "Perfil guardado",
+    "failedSave": "Error al guardar",
+    "connectionFailed": "Error de conexión. Inténtalo de nuevo.",
+    "disconnected": "Desconectado",
+    "failedDisconnect": "No se pudo desconectar",
+    "syncedSuccess": "Sincronizado con éxito",
+    "syncFailed": "Error de sincronización",
+    "integConnected": "{{integ}} conectado. Toca Sincronizar para cargar tus datos.",
+    "bmi": {
+      "underweight": "Bajo peso",
+      "normal": "Normal",
+      "overweight": "Sobrepeso",
+      "obese": "Obesidad"
+    }
+  },
+  "moodGrid": {
+    "breakdownTitle": "Estado de ánimo · todas las sesiones",
+    "avgMoodTitle": "Puntuación de ánimo promedio",
+    "uniqueTitle": "Puntuaciones únicas registradas",
+    "entries_one": "{{count}} entrada",
+    "entries_other": "{{count}} entradas",
+    "mostCommon": "Más común: {{value}}/10 ({{count}}×)",
+    "of10": "de 10 posibles",
+    "positive": "Positivo",
+    "neutral": "Neutral",
+    "tough": "Difícil"
+  },
+  "dataConsent": {
+    "seoTitle": "Conectar monitor de frecuencia cardíaca — Breathe",
+    "heroTitle": "Mide tu calma",
+    "heroSubtitle": "Conecta tu monitor de frecuencia cardíaca para ver exactamente cómo la meditación cambia tu cuerpo — en tiempo real.",
+    "demoLabel": "Ejemplo en vivo — sesión de respiración cuadrada de 8 min",
+    "demoBefore": "Antes",
+    "demoDuring": "Durante",
+    "demoAfter": "Después",
+    "calmScore": "Puntuación de calma",
+    "whatWeTrack": "Qué registramos durante tu sesión",
+    "hrTitle": "Frecuencia cardíaca (LPM)",
+    "hrDesc": "Medimos tu frecuencia cardíaca antes, durante y después de cada sesión. Una caída de 10–30 LPM es una señal confiable de que tu sistema nervioso ha cambiado al modo de descanso.",
+    "hrExample": "Tu FC bajó de 88 a 64 LPM — una reducción del 27% en 8 minutos",
+    "hrvTitle": "Variabilidad de la frecuencia cardíaca (VFC)",
+    "hrvDesc": "La VFC es la variación entre latidos — una VFC más alta significa que tu cuerpo está tranquilo y adaptable. Es el mejor indicador en tiempo real de la reducción del estrés.",
+    "hrvExample": "La VFC mejoró de 42ms a 67ms — tu índice de recuperación ahora es óptimo",
+    "calmTitle": "Puntuación de calma",
+    "calmDesc": "Combinamos el cambio de FC, la mejora de VFC y la duración de la sesión en una Puntuación de calma. Síguelo con el tiempo para ver cómo tu práctica se fortalece.",
+    "calmExample": "Puntuación de calma promedio de 7 días: +28. Subió un 40% desde la semana pasada 🌊",
+    "aiTitle": "Coincidencia de técnicas con IA",
+    "aiDesc": "Tus biométricos nos dicen qué técnicas funcionan mejor para ti. Si 4-7-8 te da mejor Puntuación de calma que la respiración cuadrada, lo recomendaremos más.",
+    "aiExample": "Basado en 14 sesiones: 4-7-8 es 2.3× más efectivo para tu sistema nervioso",
+    "dataFlowTitle": "Cómo fluyen tus datos",
+    "flowWatch": "Tu reloj/dispositivo",
+    "flowWatchDesc": "Frecuencia cardíaca vía Bluetooth LE — nunca sale de tu dispositivo sin permiso",
+    "flowBrowser": "Tu navegador",
+    "flowBrowserDesc": "Procesado localmente primero — solo enviamos resúmenes agregados de sesión",
+    "flowServer": "Servidores de Breathe",
+    "flowServerDesc": "Cifrado, almacenado bajo tu cuenta — nunca vendido, nunca compartido",
+    "flowAI": "Tu entrenador de IA",
+    "flowAIDesc": "Usa tus patrones para mejorar las recomendaciones — solo accesible para ti",
+    "privacyTitle": "Nuestra promesa de privacidad",
+    "privacy1": "Tus datos de frecuencia cardíaca nunca se venden a terceros",
+    "privacy2": "Puedes eliminar todos los datos biométricos en cualquier momento desde tu perfil",
+    "privacy3": "Los datos están cifrados en tránsito y en reposo",
+    "privacy4": "Nunca compartimos lecturas individuales — solo tú ves tus datos",
+    "privacy5": "Puedes desconectar tu dispositivo y revocar el acceso en cualquier momento",
+    "privacy6": "Breathe no es un dispositivo médico — es solo para bienestar personal",
+    "consentText": "Entiendo que Breathe usará mis datos de frecuencia cardíaca para calcular mi Puntuación de calma y mejorar las recomendaciones. Puedo revocar este permiso en cualquier momento.",
+    "connectBtn": "Conectar monitor de frecuencia cardíaca →",
+    "skipLink": "Omitir por ahora — usar Breathe sin biométricos"
   },
   "userProgress": {
     "signInTeaser": "Inicia sesión para rastrear tu racha, tiempo total y logros",
@@ -802,6 +1003,68 @@
       "progressDesc": "Ve tus rachas, historial de sesiones y estadísticas de respiración.",
       "communityTitle": "Únete a la comunidad",
       "communityDesc": "Comparte tu viaje, haz preguntas y celebra logros."
+    },
+    "breatherQuiz": "¿Qué tipo de respirador eres?",
+    "fiveQuestions": "5 preguntas · gratis · resultado inmediato",
+    "sleepGuides": "🌙 Guías de sueño",
+    "scienceBacked": "Respaldo científico · con IA",
+    "aiSleepStory": "Historia de sueño con IA",
+    "aiSleepDesc": "Narrativa personalizada para quedarte dormido",
+    "beginSessionEmoji": "🌬 Comenzar sesión",
+    "sleepLinks": {
+      "why": "Por qué el sueño es tan importante",
+      "whySub": "5 min lectura",
+      "apnea": "¿Qué es la apnea del sueño?",
+      "apneaSub": "6 min lectura",
+      "breathwork": "Respiración para el sueño profundo",
+      "breathworkSub": "Práctica",
+      "slow": "Por qué respirar lento te calma",
+      "slowSub": "Ciencia"
+    },
+    "quotes": {
+      "thich": "La respiración es el puente que conecta la vida con la conciencia.",
+      "thichAuthor": "Thich Nhat Hanh",
+      "anne": "Casi todo volverá a funcionar si lo desconectas unos minutos — incluido tú.",
+      "anneAuthor": "Anne Lamott"
+    }
+  },
+  "journal": {
+    "eyebrow": "Breathe · Diario emocional",
+    "title": "Tu diario",
+    "sessionCount": "{{count}} sesiones analizadas · inteligencia emocional con IA",
+    "addNotes": "Añade notas a tus sesiones para desbloquear información emocional",
+    "newSession": "Nueva sesión",
+    "emotionalScore": "Puntuación emocional",
+    "intensity": "intensidad {{value}}/10",
+    "recommendedTechnique": "Técnica recomendada:",
+    "tryIt": "Probar",
+    "yourNotes": "Tus notas",
+    "generallyPositive": "Generalmente positivo",
+    "challengingPeriod": "Período desafiante",
+    "balanced": "Equilibrado",
+    "thirtyDay": "Resumen de 30 días",
+    "analyzed": "analizadas",
+    "overallMood": "estado de ánimo general",
+    "positiveSessions": "sesiones positivas",
+    "recurringThemes": "Temas recurrentes",
+    "sentimentDist": "Distribución de sentimientos",
+    "positiveLabel": "● Positivo",
+    "neutralLabel": "● Neutral",
+    "difficultLabel": "● Difícil",
+    "empty": "Tu diario está vacío",
+    "emptyDesc": "Añade notas a tus sesiones de respiración. La IA analizará tus emociones y sugerirá técnicas.",
+    "startSession": "Iniciar sesión",
+    "moodDelta": "+{{delta}} estado de ánimo",
+    "entries_one": "{{count}} entrada",
+    "entries_other": "{{count}} entradas",
+    "tip": "Cuanto más escribas en el diario, mejor entenderá la IA tus patrones emocionales y podrá recomendarte la técnica adecuada en el momento justo.",
+    "techniqueLabels": {
+      "box-breathing": "Respiración en caja",
+      "4-7-8": "Respiración 4-7-8",
+      "wim-hof": "Método Wim Hof",
+      "coherent": "Respiración coherente",
+      "belly": "Respiración abdominal",
+      "morning-ritual": "Ritual matutino"
     }
   },
   "onboarding": {
@@ -882,7 +1145,11 @@
     "retry": "Reintentar",
     "startFirst": "Empieza tu primer desafío",
     "habitDesc": "Crea un hábito diario de respiración en 7 o 21 días. Completa sesiones para ganar insignias.",
-    "popularPicks": "Los más populares"
+    "popularPicks": "Los más populares",
+    "copiedToClipboard": "¡Copiado al portapapeles!",
+    "failedJoin": "No se pudo unir",
+    "failedCheckin": "Error al registrar el día",
+    "failedAbandon": "No se pudo abandonar"
   },
   "newSession": {
     "title": "Registrar nueva sesión de meditación",
@@ -908,7 +1175,19 @@
     "evening": "Noche temprana",
     "night": "Noche",
     "minutes": "minutos",
-    "cyclesUnit": "ciclos"
+    "cyclesUnit": "ciclos",
+    "techniques": {
+      "breathingLabel": "Ejercicio de respiración",
+      "breathingDesc": "Control rítmico de la respiración para calmar el sistema nervioso",
+      "sleepLabel": "Meditación para dormir",
+      "sleepDesc": "Escaneo suave del cuerpo para entrar en un sueño profundo y reparador",
+      "focusLabel": "Sesión de enfoque",
+      "focusDesc": "Agudiza la atención y entra en un estado mental claro",
+      "relaxationLabel": "Relajación profunda",
+      "relaxationDesc": "Liberación progresiva de tensión de la cabeza a los pies"
+    },
+    "seoTitle": "Registrar sesión | Breathe",
+    "seoDesc": "Registra una nueva sesión de respiración o meditación. Anota la duración, el estado de ánimo, el nivel de concentración y notas para seguir tu progreso."
   },
   "leaderboard": {
     "title": "Clasificación",
@@ -1025,6 +1304,40 @@
       "stress": ["Días 1–2: Restablece tu base con 4-7-8", "Días 3–5: Respiración cuadrada para la calma diurna", "Días 6–7: Consolida la rutina nocturna"],
       "shallow": ["Días 1–2: Fundamentos de la respiración abdominal", "Días 3–5: Avanza a la respiración coherente", "Días 6–7: Activación completa del diafragma"],
       "natural": ["Días 1–2: Establece resonancia de 5.5 resp/min", "Días 3–5: Seguimiento VFC + Wim Hof", "Días 6–7: Consolida tu rutina de máximo rendimiento"]
+    }
+  },
+  "homeStress": {
+    "tabQuiz": "🧪 Test de respiración",
+    "tabStress": "📊 Nivel de estrés",
+    "scoreLow": "Estrés bajo",
+    "scoreBalanced": "Equilibrado",
+    "scoreModerate": "Estrés moderado",
+    "scoreHigh": "Estrés alto",
+    "sliderSleep": "Calidad del sueño",
+    "sliderAnxiety": "Nivel de ansiedad",
+    "sliderFocus": "Concentración",
+    "sliderEnergy": "Energía",
+    "sliderLow": "Bajo",
+    "sliderHigh": "Alto",
+    "whatsDriving": "Qué está influyendo en tu puntuación:",
+    "startPlan": "Comenzar mi plan →",
+    "getBreathingPlan": "Obtener mi plan de respiración →",
+    "freeNoCard": "Gratis · Sin tarjeta · 30 segundos",
+    "adjustScores": "Ajustar puntuaciones",
+    "yourStressScore": "Tu nivel de estrés:",
+    "calculatePlan": "Calcular mi plan →",
+    "insightSleepLever": "El sueño es tu principal palanca ahora mismo",
+    "insightAnxietySpiking": "La ansiedad está elevando tu estrés base",
+    "insightLowFocus": "La baja concentración sugiere fatiga mental",
+    "insightLowEnergy": "Una rutina matutina ayudaría a los niveles de energía",
+    "insightMaintainBalance": "Mantén tu equilibrio saludable actual",
+    "insightCoherentBreathing": "Agrega respiración coherente para profundizar",
+    "insightEveningWindDown": "Se recomienda sesión de relajación nocturna",
+    "breakdown": {
+      "highStress": ["El sueño es tu principal palanca ahora mismo", "La rutina de respiración matutina reduciría el pico de cortisol", "Relajación nocturna con 4-7-8 recomendada"],
+      "moderateStress": ["La concentración está algo dispersa — prueba respiración cuadrada antes del trabajo", "La calidad del sueño puede mejorar con 4-7-8 antes de dormir", "La práctica matutina constante estabilizaría la energía"],
+      "balanced": ["Tu base es saludable — respiración coherente para optimizar la VFC", "El ritual matutino amplificaría tu energía natural", "Registra sesiones para ver tendencias a lo largo del tiempo"],
+      "lowStress": ["Excelente base — Wim Hof para impulsar el rendimiento", "Tu VFC probablemente es alta — conecta un dispositivo para confirmar", "Enfócate en mantener la constancia"]
     }
   }
 }

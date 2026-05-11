@@ -37,6 +37,7 @@ const SlowBreathingPage    = lazy(() => import('./pages/science/SlowBreathingPag
 const MorningRitualPage    = lazy(() => import('./pages/techniques/MorningRitualPage'));
 const PrivacyPolicyPage    = lazy(() => import('./pages/PrivacyPolicyPage'));
 const LeaderboardPage      = lazy(() => import('./pages/LeaderboardPage'));
+const NotFoundPage         = lazy(() => import('./pages/NotFoundPage'));
 const MusicLibrary         = lazy(() => import('./components/AudioPlayer/MusicLibrary').then(m => ({ default: m.MusicLibrary })));
 
 import { HelmetProvider } from 'react-helmet-async';
@@ -112,7 +113,7 @@ function AnimatedRoutes() {
         <Route path="/privacy"                         element={<PageWrapper><PrivacyPolicyPage /></PageWrapper>} />
         <Route path="/challenges"                      element={<Navigate to="/profile" replace />} />
         <Route path="/leaderboard"                     element={<PageWrapper><LeaderboardPage /></PageWrapper>} />
-        <Route path="*"              element={<PageWrapper><HomePage /></PageWrapper>} />
+        <Route path="*"              element={<PageWrapper><NotFoundPage /></PageWrapper>} />
       </Routes>
     </AnimatePresence>
   );

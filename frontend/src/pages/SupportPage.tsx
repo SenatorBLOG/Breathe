@@ -71,18 +71,19 @@ function QuickCard({ icon, title, desc, to, label }: {
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Category = 'bug' | 'question' | 'feedback' | 'account' | 'other';
 
-const CATEGORIES: { value: Category; label: string; icon: React.ReactNode }[] = [
-  { value: 'bug',      label: 'Bug report',    icon: <Bug size={18} color="#F97316" /> },
-  { value: 'question', label: 'Question',      icon: <MessageCircle size={18} color="#7AC4FF" /> },
-  { value: 'feedback', label: 'Feedback',      icon: <Lightbulb size={18} color="#FACC15" /> },
-  { value: 'account',  label: 'Account issue', icon: <User size={18} color="#A78BFA" /> },
-  { value: 'other',    label: 'Other',         icon: <Mail size={18} color="#4ADE80" /> },
-];
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function SupportPage() {
   const { t } = useTranslation();
   const ts = useThemeStyles();
+
+  const CATEGORIES: { value: Category; label: string; icon: React.ReactNode }[] = [
+    { value: 'bug',      label: t('support.topics.bug'),      icon: <Bug size={18} color="#F97316" /> },
+    { value: 'question', label: t('support.topics.question'), icon: <MessageCircle size={18} color="#7AC4FF" /> },
+    { value: 'feedback', label: t('support.topics.feedback'), icon: <Lightbulb size={18} color="#FACC15" /> },
+    { value: 'account',  label: t('support.topics.account'),  icon: <User size={18} color="#A78BFA" /> },
+    { value: 'other',    label: t('support.topics.other'),    icon: <Mail size={18} color="#4ADE80" /> },
+  ];
+
   const [category, setCategory] = useState<Category>('question');
   const [name,     setName]     = useState('');
   const [email,    setEmail]    = useState('');
@@ -129,10 +130,10 @@ export default function SupportPage() {
               color: ts.textMuted,
               borderColor: ts.border,
             }}>
-            Support
+            {t('support.badge')}
           </span>
           <h1 className="text-2xl sm:text-4xl font-light tracking-wide" style={{ color: ts.textPrimary }}>
-            We're here to help
+            {t('support.title')}
           </h1>
           <p className="t-body max-w-sm leading-relaxed" style={{ color: ts.textMuted }}>
             {t("support.subtitle")}
@@ -162,7 +163,7 @@ export default function SupportPage() {
                       {t("support.success")}
                     </p>
                     <p className="t-body mt-1 leading-relaxed" style={{ color: ts.textMuted }}>
-                      Thanks {name.split(' ')[0]}. We'll reply to <span style={{ color: ts.accent }}>{email}</span> within 24 hours.
+                      {t('support.thanksName', { name: name.split(' ')[0] })} {t('support.successDesc')} <span style={{ color: ts.accent }}>{email}</span> {t('support.successDesc2')}
                     </p>
                   </div>
                   <div className="flex gap-3 mt-2">
@@ -172,12 +173,12 @@ export default function SupportPage() {
                         color: ts.accent,
                         border: `1px solid ${ts.border}`,
                       }}>
-                      Send another
+                      {t('support.sendAnother')}
                     </button>
                     <Link to="/"
                       className="px-5 py-2 rounded-xl t-caption text-white font-medium transition-all hover:shadow-[0_0_16px_rgba(58,130,247,0.35)]"
                       style={{ background: ts.btnGradient }}>
-                      Back to home
+                      {t('support.backHome')}
                     </Link>
                   </div>
                 </div>
@@ -193,7 +194,7 @@ export default function SupportPage() {
                     {/* Category */}
                     <div className="flex flex-col gap-2">
                       <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
-                        Topic
+                        {t('support.topic')}
                       </label>
                       <div className="flex gap-2 flex-wrap">
                         {CATEGORIES.map(c => (
@@ -214,10 +215,10 @@ export default function SupportPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="flex flex-col gap-1.5">
                         <label htmlFor="support-name" className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
-                          Your name
+                          {t('support.name')}
                         </label>
                         <input type="text" id="support-name" name="name" autoComplete="name" value={name} onChange={e => setName(e.target.value)}
-                          placeholder="Alex"
+                          placeholder={t('support.namePlaceholder')}
                           className="rounded-xl px-4 py-2.5 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                           style={{
                             backgroundColor: ts.cardBg,
@@ -227,10 +228,10 @@ export default function SupportPage() {
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label htmlFor="support-email" className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
-                          Email address
+                          {t('support.email')}
                         </label>
                         <input id="support-email" name="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)}
-                          type="email" placeholder="you@email.com"
+                          type="email" placeholder={t('support.emailPlaceholder')}
                           className="rounded-xl px-4 py-2.5 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                           style={{
                             backgroundColor: ts.cardBg,
@@ -243,11 +244,11 @@ export default function SupportPage() {
                     {/* Message */}
                     <div className="flex flex-col gap-1.5">
                       <label htmlFor="support-message" className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
-                        Message
+                        {t('support.message')}
                       </label>
                       <textarea id="support-message" name="message" value={message} onChange={e => setMessage(e.target.value)}
                         rows={5} maxLength={1000}
-                        placeholder="Describe your issue or question in detail…"
+                        placeholder={t('support.messagePlaceholder')}
                         className="rounded-xl px-4 py-3 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors resize-none leading-relaxed"
                         style={{
                           backgroundColor: ts.cardBg,
@@ -270,7 +271,7 @@ export default function SupportPage() {
                         className="flex items-center gap-2 px-7 py-2.5 rounded-xl t-body font-medium tracking-wide transition-all hover:shadow-[0_0_20px_rgba(58,130,247,0.4)] hover:scale-105 active:scale-95 disabled:opacity-35"
                         style={{ background: ts.btnGradient }}>
                         <Send size={13} />
-                        {sending ? 'Sending…' : 'Send message'}
+                        {sending ? t('support.sending') : t('support.send')}
                       </button>
                     </div>
                   </div>
@@ -282,29 +283,29 @@ export default function SupportPage() {
             <aside className="hidden lg:flex flex-col gap-4 w-56 flex-shrink-0">
               <QuickCard
                 icon={<BookOpen size={14} style={{ color: ts.accent }} />}
-                title="Browse FAQ"
-                desc="Most questions are already answered in our help center."
+                title={t('support.quickLinks.faqTitle')}
+                desc={t('support.quickLinks.faqDesc')}
                 to="/faq"
-                label="Open FAQ"
+                label={t('support.quickLinks.faqLabel')}
               />
               <QuickCard
                 icon={<Users size={14} style={{ color: ts.accent }} />}
-                title="Ask the community"
-                desc="Fellow meditators often have the fastest answers."
+                title={t('support.quickLinks.communityTitle')}
+                desc={t('support.quickLinks.communityDesc')}
                 to="/community"
-                label="Go to community"
+                label={t('support.quickLinks.communityLabel')}
               />
               <QuickCard
                 icon={<MessageCircle size={14} style={{ color: ts.accentLight }} />}
-                title="Response time"
-                desc="We reply within 24 hours on weekdays. Usually much faster."
+                title={t('support.quickLinks.responseTitle')}
+                desc={t('support.quickLinks.responseDesc')}
                 to="/support"
-                label="Send a message"
+                label={t('support.quickLinks.responseLabel')}
               />
               <QuickCard
                 icon={<Mail size={14} style={{ color: ts.accent }} />}
-                title="Email us directly"
-                desc="Prefer email? Reach us any time."
+                title={t('support.quickLinks.emailTitle')}
+                desc={t('support.quickLinks.emailDesc')}
                 to="mailto:support@breatheonline.app"
                 label="support@breatheonline.app"
               />
@@ -317,17 +318,17 @@ export default function SupportPage() {
           <div className="lg:hidden grid grid-cols-2 gap-3 mt-6">
             <QuickCard
               icon={<BookOpen size={14} style={{ color: ts.accent }} />}
-              title="Browse FAQ"
-              desc="Most questions already answered."
+              title={t('support.quickLinks.faqTitle')}
+              desc={t('support.quickLinks.faqDescMobile')}
               to="/faq"
-              label="Open FAQ"
+              label={t('support.quickLinks.faqLabel')}
             />
             <QuickCard
               icon={<Users size={14} style={{ color: ts.accent }} />}
-              title="Community"
-              desc="Ask fellow meditators."
+              title={t('support.quickLinks.communityTitleMobile')}
+              desc={t('support.quickLinks.communityDescMobile')}
               to="/community"
-              label="Open community"
+              label={t('support.quickLinks.communityLabelMobile')}
             />
           </div>
         </main>

@@ -9,6 +9,7 @@ import api from '../api';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { Heart, MessageCircle, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 const TAG_PALETTE = [
   { color: '#00D4FF', bg: 'rgba(0,212,255,0.14)',   border: 'rgba(0,212,255,0.45)'   },
@@ -78,6 +79,7 @@ function RelatedCard({ post }: { post: Post }) {
 
 export default function CommunityPostPage() {
   const { id } = useParams<{ id: string }>();
+  const { t } = useTranslation();
   const ts = useThemeStyles();
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
@@ -215,11 +217,11 @@ export default function CommunityPostPage() {
           {/* CTA */}
           <div className="flex flex-col items-center gap-3 py-6 text-center border-t"
             style={{ borderColor: `${ts.border}50` }}>
-            <p className="t-caption" style={{ color: ts.textMuted }}>Join the conversation</p>
+            <p className="t-caption" style={{ color: ts.textMuted }}>{t('community.joinConversation')}</p>
             <Link to="/community"
               className="px-8 py-3 rounded-xl t-body font-medium text-white transition-all hover:opacity-90"
               style={{ background: ts.btnGradient }}>
-              Go to Community
+              {t('community.goToCommunity')}
             </Link>
           </div>
         </main>
