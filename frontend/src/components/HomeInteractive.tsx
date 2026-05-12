@@ -207,33 +207,10 @@ function QuizSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
   );
 }
 
-// ─── Stress breakdown helper ──────────────────────────────────────────────────
-function getBreakdown(score: number): string[] {
-  if (score < 30) return [
-    'Sleep is your biggest lever right now',
-    'Morning breathing routine would reduce cortisol spike',
-    'Evening wind-down with 4-7-8 recommended',
-  ];
-  if (score < 50) return [
-    'Focus is slightly scattered — try box breathing before work',
-    'Sleep quality can be improved with 4-7-8 before bed',
-    'Consistent morning practice would stabilize energy',
-  ];
-  if (score < 75) return [
-    'Your baseline is healthy — coherent breathing to optimize HRV',
-    'Morning ritual would amplify your natural energy',
-    'Track sessions to see trends over time',
-  ];
-  return [
-    'Excellent baseline — Wim Hof to push performance further',
-    'Your HRV is likely high — connect wearable to confirm',
-    'Focus on maintaining consistency',
-  ];
-}
-
 // ─── Stress calculator ────────────────────────────────────────────────────────
 function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
   const { isAuthenticated } = useContext(AuthContext);
+  const { t } = useTranslation();
   const [sleep,   setSleep]   = useState(5);
   const [anxiety, setAnxiety] = useState(5);
   const [focus,   setFocus]   = useState(5);
@@ -247,25 +224,32 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
     (energy  / 10) * 25,
   );
 
-  const scoreLabel = score >= 76 ? 'Low Stress' : score >= 51 ? 'Balanced' : score >= 31 ? 'Moderate Stress' : 'High Stress';
+  const scoreLabel = score >= 76 ? t('homeStress.scoreLow') : score >= 51 ? t('homeStress.scoreBalanced') : score >= 31 ? t('homeStress.scoreModerate') : t('homeStress.scoreHigh');
   const scoreColor = score >= 76 ? '#4AE8A0'    : score >= 51 ? '#4A9EFF'  : score >= 31 ? '#FFD97D'         : '#FF8A8A';
 
   const insights: string[] = [];
-  if (sleep   <= 4) insights.push('Sleep is your biggest lever right now');
-  if (anxiety >= 7) insights.push('Anxiety is spiking your baseline stress');
-  if (focus   <= 4) insights.push('Low focus suggests mental fatigue');
-  if (energy  <= 4) insights.push('Morning routine would help energy levels');
+  if (sleep   <= 4) insights.push(t('homeStress.insightSleepLever'));
+  if (anxiety >= 7) insights.push(t('homeStress.insightAnxietySpiking'));
+  if (focus   <= 4) insights.push(t('homeStress.insightLowFocus'));
+  if (energy  <= 4) insights.push(t('homeStress.insightLowEnergy'));
   if (insights.length === 0) {
-    insights.push('Maintain your current healthy balance', 'Add Coherent Breathing to go deeper', 'Evening wind-down session recommended');
+    insights.push(t('homeStress.insightMaintainBalance'), t('homeStress.insightCoherentBreathing'), t('homeStress.insightEveningWindDown'));
   }
-  while (insights.length < 3) insights.push('Evening wind-down session recommended');
+  while (insights.length < 3) insights.push(t('homeStress.insightEveningWindDown'));
   const planLines = insights.slice(0, 3);
 
+  const getBreakdown = (s: number): string[] => {
+    if (s < 30) return t('homeStress.breakdown.highStress',     { returnObjects: true }) as string[];
+    if (s < 50) return t('homeStress.breakdown.moderateStress', { returnObjects: true }) as string[];
+    if (s < 75) return t('homeStress.breakdown.balanced',       { returnObjects: true }) as string[];
+    return           t('homeStress.breakdown.lowStress',        { returnObjects: true }) as string[];
+  };
+
   const sliders = [
-    { label: 'Sleep Quality', value: sleep,   set: setSleep,   color: ts.accent,      invert: false },
-    { label: 'Anxiety Level', value: anxiety, set: setAnxiety, color: '#FF8A8A',      invert: true  },
-    { label: 'Focus',         value: focus,   set: setFocus,   color: ts.accentLight, invert: false },
-    { label: 'Energy',        value: energy,  set: setEnergy,  color: '#FFD97D',      invert: false },
+    { label: t('homeStress.sliderSleep'),   value: sleep,   set: setSleep,   color: ts.accent,      invert: false },
+    { label: t('homeStress.sliderAnxiety'), value: anxiety, set: setAnxiety, color: '#FF8A8A',      invert: true  },
+    { label: t('homeStress.sliderFocus'),   value: focus,   set: setFocus,   color: ts.accentLight, invert: false },
+    { label: t('homeStress.sliderEnergy'),  value: energy,  set: setEnergy,  color: '#FFD97D',      invert: false },
   ];
 
   const breakdown = getBreakdown(score);
@@ -287,7 +271,7 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
         {isAuthenticated ? (
           <div className="w-full flex flex-col gap-2 p-4 rounded-xl"
             style={{ background: ts.cardBgHover, border: `1px solid ${ts.borderHover}` }}>
-            <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>What's driving your score:</p>
+            <p className="t-caption font-medium" style={{ color: ts.textPrimary }}>{t('homeStress.whatsDriving')}</p>
             {breakdown.map(item => (
               <div key={item} className="flex items-start gap-2">
                 <span style={{ color: scoreColor }}>→</span>
@@ -297,7 +281,7 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
             <Link to={planHref}
               className="flex items-center justify-center py-2.5 rounded-xl text-white t-caption font-medium mt-2 transition-all hover:scale-[1.02]"
               style={{ background: ts.btnGradient }}>
-              Start your plan →
+              {t('homeStress.startPlan')}
             </Link>
           </div>
         ) : (
@@ -311,14 +295,14 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
               className="w-full py-3 rounded-xl t-body font-medium tracking-wide text-white text-center transition-all hover:scale-[1.02] active:scale-[0.98]"
               style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
             >
-              Get my breathing plan →
+              {t('homeStress.getBreathingPlan')}
             </Link>
-            <p className="t-caption" style={{ color: ts.textDim }}>Free · No card · 30 seconds</p>
+            <p className="t-caption" style={{ color: ts.textDim }}>{t('homeStress.freeNoCard')}</p>
           </>
         )}
 
         <button onClick={() => setShowResult(false)} className="t-caption hover:underline" style={{ color: ts.textDim }}>
-          Adjust scores
+          {t('homeStress.adjustScores')}
         </button>
       </div>
     );
@@ -344,8 +328,8 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
               }}
             />
             <div className="flex justify-between">
-              <span className="t-caption" style={{ color: ts.textDim }}>{invert ? 'Low' : '1'}</span>
-              <span className="t-caption" style={{ color: ts.textDim }}>{invert ? 'High' : '10'}</span>
+              <span className="t-caption" style={{ color: ts.textDim }}>{invert ? t('homeStress.sliderLow') : '1'}</span>
+              <span className="t-caption" style={{ color: ts.textDim }}>{invert ? t('homeStress.sliderHigh') : '10'}</span>
             </div>
           </div>
         );
@@ -354,7 +338,7 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
       {/* Live preview */}
       <div className="flex items-center justify-between px-4 py-3 rounded-xl"
         style={{ backgroundColor: `${ts.cardBg}80`, border: `1px solid ${ts.border}` }}>
-        <p className="t-caption" style={{ color: ts.textMuted }}>Your stress score:</p>
+        <p className="t-caption" style={{ color: ts.textMuted }}>{t('homeStress.yourStressScore')}</p>
         <div className="flex items-center gap-2">
           <p className="t-heading font-medium tabular-nums" style={{ color: scoreColor }}>{score}</p>
           <p className="t-caption" style={{ color: scoreColor }}>{scoreLabel}</p>
@@ -366,7 +350,7 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
         className="w-full py-3 rounded-xl t-body font-medium text-white tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98]"
         style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
       >
-        Calculate my plan →
+        {t('homeStress.calculatePlan')}
       </button>
     </div>
   );
@@ -375,24 +359,25 @@ function StressSection({ ts }: { ts: ReturnType<typeof useThemeStyles> }) {
 // ─── Main export ──────────────────────────────────────────────────────────────
 export default function HomeInteractive() {
   const ts  = useThemeStyles();
+  const { t } = useTranslation();
   const [tab, setTab] = useState<'quiz' | 'stress'>('quiz');
 
   return (
     <div className="w-full max-w-md">
       {/* Tab switcher */}
       <div className="flex gap-1 p-1 rounded-xl mb-4" style={{ backgroundColor: `${ts.border}60` }}>
-        {(['quiz', 'stress'] as const).map(t => (
+        {(['quiz', 'stress'] as const).map(tabKey => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
+            key={tabKey}
+            onClick={() => setTab(tabKey)}
             className="flex-1 py-2 rounded-lg t-caption font-medium tracking-wide transition-all"
             style={{
-              backgroundColor: tab === t ? ts.cardBg : 'transparent',
-              color:           tab === t ? ts.textPrimary : ts.textMuted,
-              boxShadow:       tab === t ? '0 1px 4px rgba(0,0,0,0.2)' : 'none',
+              backgroundColor: tab === tabKey ? ts.cardBg : 'transparent',
+              color:           tab === tabKey ? ts.textPrimary : ts.textMuted,
+              boxShadow:       tab === tabKey ? '0 1px 4px rgba(0,0,0,0.2)' : 'none',
             }}
           >
-            {t === 'quiz' ? '🧪 Breathing Quiz' : '📊 Stress Score'}
+            {tabKey === 'quiz' ? t('homeStress.tabQuiz') : t('homeStress.tabStress')}
           </button>
         ))}
       </div>

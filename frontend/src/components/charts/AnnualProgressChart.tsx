@@ -6,6 +6,7 @@ import {
 } from 'recharts';
 import api from '../../api';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTranslation } from 'react-i18next';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface RawSession {
@@ -73,6 +74,7 @@ function ViewToggle({ value, onChange }: { value: string; onChange: (v: string) 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 const AnnualProgressChart = () => {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [rawSessions, setRawSessions] = useState<RawSession[]>([]);
   const [loading, setLoading]         = useState(true);
   const [view, setView]               = useState('12 months');
@@ -154,7 +156,7 @@ const AnnualProgressChart = () => {
         <ViewToggle value={view} onChange={setView} />
         <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
           <span className="text-3xl opacity-30">🌊</span>
-          <p className="t-caption" style={{ color: ts.textMuted }}>No data yet</p>
+          <p className="t-caption" style={{ color: ts.textMuted }}>{t('charts.noDataYet')}</p>
         </div>
       </div>
     );
@@ -167,11 +169,11 @@ const AnnualProgressChart = () => {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-1 rounded-full inline-block" style={{ background: ts.accent }} />
-            <span className="t-label uppercase tracking-wide" style={{ color: ts.textMuted }}>Minutes</span>
+            <span className="t-label uppercase tracking-wide" style={{ color: ts.textMuted }}>{t('charts.minutes')}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 inline-block" style={{ background: `linear-gradient(90deg,${ts.accentLight},#4AE8A0)`, height: 2, borderRadius: 2 }} />
-            <span className="t-label uppercase tracking-wide" style={{ color: ts.textMuted }}>Sessions</span>
+            <span className="t-label uppercase tracking-wide" style={{ color: ts.textMuted }}>{t('charts.sessions')}</span>
           </div>
         </div>
         <ViewToggle value={view} onChange={setView} />

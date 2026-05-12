@@ -6,6 +6,7 @@ import {
 } from 'recharts';
 import api from '../../api';
 import { useThemeStyles } from "../../hooks/useThemeStyles";
+import { useTranslation } from 'react-i18next';
 
 interface Session {
   sessionDate: string;
@@ -59,6 +60,7 @@ function PeriodTabs({ value, onChange }: { value: string; onChange: (v: string) 
 // ─── Main component ───────────────────────────────────────────────────────────
 const ActivityChart = () => {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [data, setData] = useState<any[]>([]);
   const [period, setPeriod] = useState('Weekly');
   const [loading, setLoading] = useState(true);
@@ -152,7 +154,7 @@ const ActivityChart = () => {
         <PeriodTabs value={period} onChange={setPeriod} />
         <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
           <span className="text-3xl opacity-20">📊</span>
-          <p style={{ color: ts.textSecondary }} className="t-caption italic">No activity yet</p>
+          <p style={{ color: ts.textSecondary }} className="t-caption italic">{t('charts.noActivityYet')}</p>
         </div>
       </div>
     );

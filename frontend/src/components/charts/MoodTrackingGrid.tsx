@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import api from '../../api';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTranslation } from 'react-i18next';
 
 interface Session {
   moodBefore?: number;
@@ -73,6 +74,7 @@ function InfoCard({ title, value, sub, children, accentColor }: {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 const MoodTrackingGrid = () => {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading]   = useState(true);
 
@@ -124,19 +126,19 @@ const MoodTrackingGrid = () => {
       <div className="grid grid-cols-1 gap-4">
 
         {/* Breakdown */}
-        <InfoCard title="Mood breakdown · all sessions"
+        <InfoCard title={t('moodGrid.breakdownTitle')}
           value={loading ? dash : stats.total > 0 ? `${stats.positivePct}%` : dash}
-          sub={stats.total > 0 ? `${stats.total} entries` : undefined}
+          sub={stats.total > 0 ? t('moodGrid.entries', { count: stats.total }) : undefined}
           accentColor="#4AE8A0">
-          <StatRow label="Positive" pct={stats.positivePct} count={stats.positive} color="#4AE8A0" bg="linear-gradient(90deg,#1A8F60,#4AE8A0)" />
-          <StatRow label="Neutral"  pct={stats.neutralPct}  count={stats.neutral}  color="#4A9EFF" bg="linear-gradient(90deg,#1A5FCC,#4A9EFF)" />
-          <StatRow label="Tough"    pct={stats.negativePct} count={stats.negative} color="#FF8A8A" bg="linear-gradient(90deg,#8A2020,#FF8A8A)" />
+          <StatRow label={t('moodGrid.positive')} pct={stats.positivePct} count={stats.positive} color="#4AE8A0" bg="linear-gradient(90deg,#1A8F60,#4AE8A0)" />
+          <StatRow label={t('moodGrid.neutral')}  pct={stats.neutralPct}  count={stats.neutral}  color="#4A9EFF" bg="linear-gradient(90deg,#1A5FCC,#4A9EFF)" />
+          <StatRow label={t('moodGrid.tough')}    pct={stats.negativePct} count={stats.negative} color="#FF8A8A" bg="linear-gradient(90deg,#8A2020,#FF8A8A)" />
         </InfoCard>
 
         {/* Avg + most common */}
-        <InfoCard title="Average mood score"
+        <InfoCard title={t('moodGrid.avgMoodTitle')}
           value={loading ? dash : stats.avg !== null ? `${stats.avg}/10` : dash}
-          sub={topMood.count ? `Most common: ${topMood.value}/10 (${topMood.count}×)` : undefined}
+          sub={topMood.count ? t('moodGrid.mostCommon', { value: topMood.value, count: topMood.count }) : undefined}
           accentColor={ts.accent}>
           {/* Score distribution 1–10 mini bars */}
           <div className="flex items-end gap-0.5 h-10">
@@ -158,9 +160,9 @@ const MoodTrackingGrid = () => {
         </InfoCard>
 
         {/* Unique / total */}
-        <InfoCard title="Unique mood scores logged"
+        <InfoCard title={t('moodGrid.uniqueTitle')}
           value={loading ? dash : String(uniqueMoods)}
-          sub="of 10 possible"
+          sub={t('moodGrid.of10')}
           accentColor={ts.accentLight}>
           {/* Score range dots */}
           <div className="flex gap-1 flex-wrap pt-1">

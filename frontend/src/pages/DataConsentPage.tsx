@@ -6,6 +6,7 @@ import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
 import { Heart, Shield, TrendingUp, Zap, Lock, Eye, ChevronRight, Check, Watch, Globe, Bot } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 // ─── Feature card ─────────────────────────────────────────────────────────────
 function FeatureCard({ icon, title, desc, example }: {
@@ -42,6 +43,7 @@ function FeatureCard({ icon, title, desc, example }: {
 // ─── Before / After demo ──────────────────────────────────────────────────────
 function BeforeAfterDemo() {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   return (
     <div className="rounded-2xl overflow-hidden border"
       style={{
@@ -50,19 +52,19 @@ function BeforeAfterDemo() {
       }}>
       <div className="px-4 py-3 border-b" style={{ borderColor: ts.border }}>
         <p className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
-          Live example — 8 min Box Breathing session
+          {t('dataConsent.demoLabel')}
         </p>
       </div>
       <div className="grid grid-cols-3 gap-0">
-        {[
-          { label: 'Before', bpm: 88, hrv: 42, calm: null, color: '#FF8A8A' },
-          { label: 'During', bpm: 74, hrv: 55, calm: null, color: '#FFD97D' },
-          { label: 'After',  bpm: 64, hrv: 67, calm: 34,   color: '#4AE8A0' },
-        ].map(({ label, bpm, hrv, calm, color }, i) => (
-          <div key={label}
+        {([
+          { labelKey: 'dataConsent.demoBefore', bpm: 88, hrv: 42, calm: null, color: '#FF8A8A' },
+          { labelKey: 'dataConsent.demoDuring', bpm: 74, hrv: 55, calm: null, color: '#FFD97D' },
+          { labelKey: 'dataConsent.demoAfter',  bpm: 64, hrv: 67, calm: 34,   color: '#4AE8A0' },
+        ] as const).map(({ labelKey, bpm, hrv, calm, color }, i) => (
+          <div key={labelKey}
             className={`flex flex-col items-center gap-3 p-5 ${i < 2 ? 'border-r' : ''}`}
             style={{ borderColor: ts.border }}>
-            <p className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>{label}</p>
+            <p className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>{t(labelKey)}</p>
             <div className="flex flex-col items-center gap-1">
               <span className="text-2xl font-light tabular-nums" style={{ color }}>{bpm}</span>
               <span className="t-label" style={{ color: ts.textMuted }}>bpm</span>
@@ -78,7 +80,7 @@ function BeforeAfterDemo() {
                   border: `1px solid ${ts.accent}25`,
                 }}>
                 <span className="t-heading font-medium" style={{ color: ts.accent }}>+{calm}</span>
-                <span className="t-label" style={{ color: ts.accent }}>Calm Score</span>
+                <span className="t-label" style={{ color: ts.accent }}>{t('dataConsent.calmScore')}</span>
               </div>
             )}
           </div>
@@ -108,6 +110,7 @@ function PrivacyPoint({ text }: { text: string }) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function DataConsentPage() {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
 
@@ -136,10 +139,10 @@ export default function DataConsentPage() {
             </div>
             <div>
               <h1 className="text-2xl sm:text-3xl font-light tracking-wide mb-2" style={{ color: ts.textPrimary }}>
-                Measure your calm
+                {t('dataConsent.heroTitle')}
               </h1>
               <p className="t-body leading-relaxed max-w-md" style={{ color: ts.textMuted }}>
-                Connect your heart rate monitor to see exactly how meditation changes your body — in real time.
+                {t('dataConsent.heroSubtitle')}
               </p>
             </div>
           </div>
@@ -150,45 +153,45 @@ export default function DataConsentPage() {
           {/* What we measure */}
           <div className="flex flex-col gap-3">
             <p className="t-label uppercase tracking-widest px-1" style={{ color: ts.textMuted }}>
-              What we track during your session
+              {t('dataConsent.whatWeTrack')}
             </p>
             <FeatureCard
               icon={<Heart size={16} style={{ color: ts.accent }} />}
-              title="Heart Rate (BPM)"
-              desc="We measure your heart rate before, during, and after each session. A drop of 10–30 bpm is a reliable sign your nervous system has shifted into rest mode."
-              example="Your HR dropped from 88 to 64 bpm — a 27% reduction in 8 minutes"
+              title={t('dataConsent.hrTitle')}
+              desc={t('dataConsent.hrDesc')}
+              example={t('dataConsent.hrExample')}
             />
             <FeatureCard
               icon={<Zap size={16} style={{ color: ts.accent }} />}
-              title="Heart Rate Variability (HRV)"
-              desc="HRV is the variation between heartbeats — a higher HRV means your body is calm and adaptable. It's the single best real-time indicator of stress reduction."
-              example="HRV improved from 42ms to 67ms — your recovery index is now optimal"
+              title={t('dataConsent.hrvTitle')}
+              desc={t('dataConsent.hrvDesc')}
+              example={t('dataConsent.hrvExample')}
             />
             <FeatureCard
               icon={<TrendingUp size={16} style={{ color: ts.accent }} />}
-              title="Calm Score"
-              desc="We combine HR change, HRV improvement, and session duration into a single Calm Score. Track it over time to see your meditation practice get stronger."
-              example="7-day average Calm Score: +28. Up 40% from last week 🌊"
+              title={t('dataConsent.calmTitle')}
+              desc={t('dataConsent.calmDesc')}
+              example={t('dataConsent.calmExample')}
             />
             <FeatureCard
               icon={<Zap size={16} style={{ color: ts.accent }} />}
-              title="AI Technique Matching"
-              desc="Your biometrics tell us which techniques work best for you personally. If 4-7-8 consistently gives you a better Calm Score than Box Breathing, we'll recommend it more."
-              example="Based on 14 sessions: 4-7-8 is 2.3× more effective for your nervous system"
+              title={t('dataConsent.aiTitle')}
+              desc={t('dataConsent.aiDesc')}
+              example={t('dataConsent.aiExample')}
             />
           </div>
 
           {/* How data flows */}
           <div className="flex flex-col gap-3">
             <p className="t-label uppercase tracking-widest px-1" style={{ color: ts.textMuted }}>
-              How your data flows
+              {t('dataConsent.dataFlowTitle')}
             </p>
             <div className="relative flex flex-col gap-0">
               {[
-                { icon: <Watch size={20} color="#7AC4FF" />, label: 'Your watch/device', desc: 'Heart rate via Bluetooth LE — never leaves your device without permission' },
-                { icon: <Globe size={20} color="#4ADE80" />, label: 'Your browser', desc: 'Processed locally first — we only send aggregated session summaries' },
-                { icon: <Lock size={20} color="#A78BFA" />, label: 'Breathe servers', desc: 'Encrypted, stored under your account — never sold, never shared' },
-                { icon: <Bot size={20} color="#F59E0B" />, label: 'Your AI Coach', desc: 'Uses your patterns to improve recommendations — only accessible to you' },
+                { icon: <Watch size={20} color="#7AC4FF" />, label: t('dataConsent.flowWatch'),   desc: t('dataConsent.flowWatchDesc')   },
+                { icon: <Globe size={20} color="#4ADE80" />, label: t('dataConsent.flowBrowser'), desc: t('dataConsent.flowBrowserDesc') },
+                { icon: <Lock  size={20} color="#A78BFA" />, label: t('dataConsent.flowServer'),  desc: t('dataConsent.flowServerDesc')  },
+                { icon: <Bot   size={20} color="#F59E0B" />, label: t('dataConsent.flowAI'),      desc: t('dataConsent.flowAIDesc')      },
               ].map(({ icon, label, desc }, i) => (
                 <div key={label} className="flex gap-3">
                   <div className="flex flex-col items-center">
@@ -219,15 +222,15 @@ export default function DataConsentPage() {
             <div className="flex items-center gap-2 mb-1">
               <Shield size={14} style={{ color: ts.accent }} />
               <p className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
-                Our privacy promise
+                {t('dataConsent.privacyTitle')}
               </p>
             </div>
-            <PrivacyPoint text="Your heart rate data is never sold to third parties" />
-            <PrivacyPoint text="You can delete all biometric data at any time from your profile" />
-            <PrivacyPoint text="Data is encrypted in transit and at rest" />
-            <PrivacyPoint text="We never share individual readings — only you see your data" />
-            <PrivacyPoint text="You can disconnect your device and revoke access at any time" />
-            <PrivacyPoint text="Breathe is not a medical device — this is for personal wellness only" />
+            <PrivacyPoint text={t('dataConsent.privacy1')} />
+            <PrivacyPoint text={t('dataConsent.privacy2')} />
+            <PrivacyPoint text={t('dataConsent.privacy3')} />
+            <PrivacyPoint text={t('dataConsent.privacy4')} />
+            <PrivacyPoint text={t('dataConsent.privacy5')} />
+            <PrivacyPoint text={t('dataConsent.privacy6')} />
           </div>
 
           {/* Consent + CTA */}
@@ -241,7 +244,7 @@ export default function DataConsentPage() {
                 {agreed && <Check size={11} className="text-white" />}
               </div>
               <p className="t-caption leading-relaxed group-hover:text-white transition-colors" style={{ color: ts.textMuted }}>
-                I understand that Breathe will use my heart rate data to calculate my Calm Score and improve breathing recommendations. I can revoke this permission at any time.
+                {t('dataConsent.consentText')}
               </p>
             </label>
 
@@ -251,13 +254,13 @@ export default function DataConsentPage() {
                 background: agreed ? ts.btnGradient : `${ts.cardBg}40`,
               }}>
               <Heart size={16} className="inline mr-2" />
-              Connect heart rate monitor →
+              {t('dataConsent.connectBtn')}
             </button>
 
             <Link to="/breathing"
               className="text-center t-label transition-colors"
               style={{ color: ts.textMuted }}>
-              Skip for now — use Breathe without biometrics
+              {t('dataConsent.skipLink')}
             </Link>
           </div>
 

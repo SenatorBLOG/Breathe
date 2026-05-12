@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import api from '../../api';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTranslation } from 'react-i18next';
 
 // ─── Duration buckets (colors derived from theme inside component) ─────────────
 const BUCKET_META = [
@@ -36,6 +37,7 @@ function CustomTooltip({ active, payload }: any) {
 
 const MonthlyActivityChart = () => {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [rawSessions, setRawSessions] = useState<any[]>([]);
   const [loading, setLoading]         = useState(true);
 
@@ -88,7 +90,7 @@ const MonthlyActivityChart = () => {
     return (
       <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
         <span className="text-3xl opacity-30">🫧</span>
-        <p className="t-caption" style={{ color: ts.textMuted }}>No sessions yet</p>
+        <p className="t-caption" style={{ color: ts.textMuted }}>{t('charts.noSessionsYet')}</p>
       </div>
     );
   }

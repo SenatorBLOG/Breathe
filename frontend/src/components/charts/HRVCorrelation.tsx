@@ -6,6 +6,7 @@ import {
 } from 'recharts';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { DailyHRV } from '../../hooks/useHealthData';
+import { useTranslation } from 'react-i18next';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Session {
@@ -29,6 +30,7 @@ interface ChartPoint {
 // ─── Tooltip ──────────────────────────────────────────────────────────────────
 function CustomTooltip({ active, payload }: any) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   if (!active || !payload?.length) return null;
   const p: ChartPoint = payload[0].payload;
   return (
@@ -45,14 +47,14 @@ function CustomTooltip({ active, payload }: any) {
       {p.hrv !== null ? (
         <p style={{ color: '#4AE8A0' }}>{p.hrv} ms HRV</p>
       ) : (
-        <p style={{ color: ts.textDim }}>No HRV data</p>
+        <p style={{ color: ts.textDim }}>{t('charts.noHRVData')}</p>
       )}
       {p.sessions > 0 ? (
         <p className="mt-0.5" style={{ color: ts.accent }}>
-          {p.sessions} meditation session{p.sessions !== 1 ? 's' : ''}
+          {t('charts.meditationSessions', { count: p.sessions })}
         </p>
       ) : (
-        <p className="mt-0.5" style={{ color: ts.textDim }}>No session</p>
+        <p className="mt-0.5" style={{ color: ts.textDim }}>{t('charts.noSession')}</p>
       )}
     </div>
   );
@@ -61,6 +63,7 @@ function CustomTooltip({ active, payload }: any) {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 const HRVCorrelation = ({ hrv, sessions, loadingHealth }: Props) => {
   const ts = useThemeStyles();
+  const { t, i18n } = useTranslation();
 
   // Build last-30-day chart data by joining HRV + sessions
   const { chartData, trend } = useMemo(() => {
@@ -85,7 +88,7 @@ const HRVCorrelation = ({ hrv, sessions, loadingHealth }: Props) => {
       const d = new Date(start);
       d.setDate(start.getDate() + i);
       const key = d.toISOString().slice(0, 10);
-      const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const label = d.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' });
       days.push({
         label,
         date: key,
@@ -132,9 +135,9 @@ const HRVCorrelation = ({ hrv, sessions, loadingHealth }: Props) => {
     return (
       <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
         <span className="text-3xl opacity-30">🫀</span>
-        <p className="t-caption font-medium" style={{ color: ts.textMuted }}>No HRV data yet</p>
+        <p className="t-caption font-medium" style={{ color: ts.textMuted }}>{t('charts.noHRVData')}</p>
         <p className="t-label max-w-xs" style={{ color: ts.textDim }}>
-          Connect your smartwatch via the Android app to see how meditation affects your heart rate variability
+          {t('charts.connectSmartwatch')}
         </p>
       </div>
     );
@@ -152,29 +155,29 @@ const HRVCorrelation = ({ hrv, sessions, loadingHealth }: Props) => {
         return (
           <div className="grid grid-cols-3 gap-3">
             <div className="flex flex-col gap-1 p-3 rounded-xl" style={{ backgroundColor: `${ts.accent}12`, border: `1px solid ${ts.border}` }}>
-              <p className="t-label" style={{ color: ts.textMuted }}>On meditation days</p>
+              <p className="t-label" style={{ color: ts.textMuted }}>{t('charts.onMeditationDays')}</p>
               <p className="t-subheading font-medium tabular-nums" style={{ color: '#4AE8A0' }}>
                 {trend.meditationAvg} ms
               </p>
-              <p className="t-label" style={{ color: ts.textDim }}>avg HRV</p>
+              <p className="t-label" style={{ color: ts.textDim }}>{t('charts.avgHRV')}</p>
             </div>
             <div className="flex flex-col gap-1 p-3 rounded-xl" style={{ backgroundColor: `${ts.cardBg}`, border: `1px solid ${ts.border}` }}>
-              <p className="t-label" style={{ color: ts.textMuted }}>Rest days</p>
+              <p className="t-label" style={{ color: ts.textMuted }}>{t('charts.restDays')}</p>
               <p className="t-subheading font-medium tabular-nums" style={{ color: ts.textSecondary }}>
                 {trend.restAvg} ms
               </p>
-              <p className="t-label" style={{ color: ts.textDim }}>avg HRV</p>
+              <p className="t-label" style={{ color: ts.textDim }}>{t('charts.avgHRV')}</p>
             </div>
             <div className="flex flex-col gap-1 p-3 rounded-xl" style={{
               backgroundColor: pct > 0 ? `rgba(74,232,160,0.08)` : `rgba(255,138,138,0.08)`,
               border: `1px solid ${ts.border}`,
             }}>
-              <p className="t-label" style={{ color: ts.textMuted }}>Difference</p>
+              <p className="t-label" style={{ color: ts.textMuted }}>{t('charts.difference')}</p>
               <p className="t-subheading font-medium tabular-nums" style={{ color: pct > 0 ? '#4AE8A0' : '#FF8A8A' }}>
                 {pct > 0 ? '+' : ''}{pct}%
               </p>
               <p className="t-label" style={{ color: ts.textDim }}>
-                {pct > 0 ? 'higher on med. days' : 'lower on med. days'}
+                {pct > 0 ? t('charts.higherOnMedDays') : t('charts.lowerOnMedDays')}
               </p>
             </div>
           </div>
@@ -189,7 +192,7 @@ const HRVCorrelation = ({ hrv, sessions, loadingHealth }: Props) => {
         </div>
         <div className="flex items-center gap-1.5">
           <span className="inline-block w-3 h-3 rounded-sm" style={{ background: ts.accent, opacity: 0.7 }} />
-          <span className="t-label uppercase tracking-wide" style={{ color: ts.textMuted }}>Sessions</span>
+          <span className="t-label uppercase tracking-wide" style={{ color: ts.textMuted }}>{t('charts.sessions')}</span>
         </div>
       </div>
 

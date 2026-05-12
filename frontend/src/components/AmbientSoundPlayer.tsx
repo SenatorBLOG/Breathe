@@ -3,15 +3,9 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { CloudRain, Waves, Leaf, Wind, Volume2, Music } from 'lucide-react';
 import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTranslation } from 'react-i18next';
 
 type SoundType = 'rain' | 'ocean' | 'forest' | 'white';
-
-const SOUNDS: { id: SoundType; label: string; icon: ReactNode }[] = [
-  { id: 'rain',   label: 'Rain',        icon: <CloudRain size={18} /> },
-  { id: 'ocean',  label: 'Ocean',       icon: <Waves size={18} /> },
-  { id: 'forest', label: 'Forest',      icon: <Leaf size={18} /> },
-  { id: 'white',  label: 'White noise', icon: <Wind size={18} /> },
-];
 
 // ── Synthesis helpers ──────────────────────────────────────────────────────────
 
@@ -88,6 +82,13 @@ interface AmbientSoundPlayerProps {
 
 export default function AmbientSoundPlayer({ inline = false }: AmbientSoundPlayerProps) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
+  const SOUNDS: { id: SoundType; label: string; icon: ReactNode }[] = [
+    { id: 'rain',   label: t('ambient.sounds.rain'),   icon: <CloudRain size={18} /> },
+    { id: 'ocean',  label: t('ambient.sounds.ocean'),  icon: <Waves size={18} /> },
+    { id: 'forest', label: t('ambient.sounds.forest'), icon: <Leaf size={18} /> },
+    { id: 'white',  label: t('ambient.sounds.white'),  icon: <Wind size={18} /> },
+  ];
   const [active, setActive]   = useState<SoundType | null>(null);
   const [volume, setVolume]   = useState(0.35);
   const [expanded, setExpanded] = useState(false);
@@ -325,7 +326,7 @@ export default function AmbientSoundPlayer({ inline = false }: AmbientSoundPlaye
         }}
       >
         <Music size={13} />
-        <span className="flex-1 text-left truncate" style={{ fontSize: 11 }}>Ambient</span>
+        <span className="flex-1 text-left truncate" style={{ fontSize: 11 }}>{t('ambient.label')}</span>
         {active && <span className="t-label px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: ts.accent, color: '#fff', fontSize: 9 }}>ON</span>}
         <span style={{ color: ts.textDim, fontSize: 9 }}>{expanded ? '▲' : '▼'}</span>
       </button>
@@ -341,7 +342,7 @@ export default function AmbientSoundPlayer({ inline = false }: AmbientSoundPlaye
             boxShadow: '0 -8px 32px rgba(0,0,0,0.5)',
           }}
         >
-          <p className="t-label uppercase tracking-widest px-1" style={{ color: ts.textDim }}>Ambient sound</p>
+          <p className="t-label uppercase tracking-widest px-1" style={{ color: ts.textDim }}>{t('ambient.soundLabel')}</p>
           {/* Sound buttons */}
           <div className="grid grid-cols-4 gap-1.5">
             {SOUNDS.map(s => (
