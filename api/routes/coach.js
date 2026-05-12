@@ -1,6 +1,7 @@
 // routes/coach.js
 const express      = require('express');
 const router       = express.Router();
+const axios        = require('axios');
 const optionalAuth = require('../middleware/optionalAuth');
 const rateLimit    = require('../middleware/coachRateLimit');
 
@@ -98,22 +99,18 @@ router.post('/message', optionalAuth, rateLimit, async (req, res) => {
 
     console.log('Calling Gemini, messages:', contents.length);
 
-    const geminiRes = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(body),
-    });
-
-    const geminiData = await geminiRes.json();
-
-    if (!geminiRes.ok) {
-      console.error(`Gemini error ${geminiRes.status}: ${geminiData?.error?.message ?? 'unknown'}`);
-      console.error('Gemini error detail:', JSON.stringify(geminiData?.error ?? geminiData));
-      return res.status(502).json({
-        error:  'AI service error. Please try again.',
-        detail: geminiData?.error?.message ?? `Gemini status ${geminiRes.status}`,
-        gemini: geminiData?.error,
+    let geminiData;
+    try {
+      const geminiRes = await axios.post(`${GEMINI_API_URL}?key=${apiKey}`, body, {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 25000,
       });
+      geminiData = geminiRes.data;
+    } catch (axErr) {
+      const status = axErr.response?.status;
+      const msg    = axErr.response?.data?.error?.message ?? axErr.message;
+      console.error(`Gemini error ${status ?? 'network'}: ${msg}`);
+      return res.status(502).json({ error: 'AI service error. Please try again.', detail: msg });
     }
     console.log(`Gemini OK — candidates: ${geminiData?.candidates?.length}`);
 
@@ -185,15 +182,15 @@ Begin the story immediately. No preamble.`;
       generationConfig: { temperature: 0.9, maxOutputTokens: 2048, topP: 0.95 },
     };
 
-    const geminiRes = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(body),
-    });
-
-    const geminiData = await geminiRes.json();
-    if (!geminiRes.ok) {
-      console.error('Gemini sleep-story error:', geminiData?.error?.message);
+    let geminiData;
+    try {
+      const geminiRes = await axios.post(`${GEMINI_API_URL}?key=${apiKey}`, body, {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 30000,
+      });
+      geminiData = geminiRes.data;
+    } catch (axErr) {
+      console.error('Gemini sleep-story error:', axErr.response?.data?.error?.message ?? axErr.message);
       return res.status(502).json({ error: 'Story generation failed. Please try again.' });
     }
 
