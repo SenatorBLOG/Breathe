@@ -4,7 +4,7 @@ const router       = express.Router();
 const optionalAuth = require('../middleware/optionalAuth');
 const rateLimit    = require('../middleware/coachRateLimit');
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent';
 
 if (!process.env.GEMINI_API_KEY) {
   console.error('⚠️  GEMINI_API_KEY is not set');
@@ -107,15 +107,15 @@ router.post('/message', optionalAuth, rateLimit, async (req, res) => {
     const geminiData = await geminiRes.json();
 
     if (!geminiRes.ok) {
-      console.error('Gemini API error status:', geminiRes.status);
-      console.error('Gemini API error body:', JSON.stringify(geminiData));
+      console.error(`Gemini error ${geminiRes.status}: ${geminiData?.error?.message ?? 'unknown'}`);
+      console.error('Gemini error detail:', JSON.stringify(geminiData?.error ?? geminiData));
       return res.status(502).json({
         error:  'AI service error. Please try again.',
         detail: geminiData?.error?.message ?? `Gemini status ${geminiRes.status}`,
         gemini: geminiData?.error,
       });
     }
-    console.log('Gemini success, candidate count:', geminiData?.candidates?.length);
+    console.log(`Gemini OK — candidates: ${geminiData?.candidates?.length}`);
 
     const text = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!text) {
