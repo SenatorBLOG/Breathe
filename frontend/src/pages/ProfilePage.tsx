@@ -1,6 +1,6 @@
 // src/pages/ProfilePage.tsx
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
@@ -91,8 +91,8 @@ const PROVIDER_META = {
   },
 };
 
-function fmt(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+function fmt(iso: string, locale?: string) {
+  return new Date(iso).toLocaleDateString(locale ?? (typeof navigator !== 'undefined' ? navigator.language : 'en-US'), { month: 'short', day: 'numeric' });
 }
 function timeAgo(iso: string) {
   const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
@@ -397,13 +397,31 @@ export default function ProfilePage() {
   const ts = useThemeStyles();
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, updateUser } = useContext(AuthContext);
 
   // ── Tab ─────────────────────────────────────────────────────────────────────
   const validTabs = ['profile', 'devices', 'challenges', 'sessions', 'progress'] as const;
   type TabId = typeof validTabs[number];
   const paramTab = new URLSearchParams(location.search).get('tab') as TabId | null;
-  const [tab, setTab] = useState<TabId>(validTabs.includes(paramTab as TabId) ? (paramTab as TabId) : 'profile');
+  const [tab, setTabState] = useState<TabId>(validTabs.includes(paramTab as TabId) ? (paramTab as TabId) : 'profile');
+
+  // Keep state in sync with URL ?tab= param (back/forward nav + direct links)
+  useEffect(() => {
+    const next = new URLSearchParams(location.search).get('tab') as TabId | null;
+    if (next && validTabs.includes(next) && next !== tab) {
+      setTabState(next);
+    }
+  }, [location.search]);
+
+  // Click handler that updates both state AND the URL so the link is shareable
+  const setTab = (next: TabId) => {
+    setTabState(next);
+    const params = new URLSearchParams(location.search);
+    if (next === 'profile') params.delete('tab');
+    else params.set('tab', next);
+    navigate(`${location.pathname}${params.toString() ? '?' + params.toString() : ''}`, { replace: true });
+  };
 
   // ── Profile form ─────────────────────────────────────────────────────────────
   const [nickname, setNickname]    = useState('');
@@ -529,7 +547,7 @@ export default function ProfilePage() {
     fetchStatus();
   }, [location.search]);
 
-  const BACKEND = import.meta.env.VITE_API_BASE?.replace('/api', '') ?? 'https://breathe-production-6cce.up.railway.app';
+  const BACKEND = import.meta.env.VITE_API_BASE?.replace('/api', '') ?? 'https://breathe-api-amut.onrender.com';
   const connect    = (provider: string) => {
     window.location.href = `${BACKEND}/api/integrations/${provider}/connect?token=${localStorage.getItem('token') ?? ''}`;
   };
@@ -968,8 +986,8 @@ export default function ProfilePage() {
                           const hrvAvg = h.length ? Math.round(h.reduce((a, d) => a + (d.rmssd ?? 0), 0) / h.length) : null;
                           return avg || hrvAvg ? (
                             <div className="flex gap-2 flex-wrap">
-                              {avg    && <StatPill icon={<Moon size={11} />}     label="Avg sleep" value={fmtDur(avg)}    color="#7AC4FF" />}
-                              {hrvAvg && <StatPill icon={<Activity size={11} />} label="Avg HRV"   value={`${hrvAvg} ms`} color="#4A9EFF" />}
+                              {avg    && <StatPill icon={<Moon size={11} />}     label={t('profile.avgSleep')} value={fmtDur(avg)}    color="#7AC4FF" />}
+                              {hrvAvg && <StatPill icon={<Activity size={11} />} label={t('profile.avgHRV')}   value={`${hrvAvg} ms`} color="#4A9EFF" />}
                             </div>
                           ) : null;
                         })()}
@@ -988,7 +1006,7 @@ export default function ProfilePage() {
                           const avg = s.length ? Math.round(s.reduce((a, d) => a + d.duration, 0) / s.length) : null;
                           return avg ? (
                             <div className="flex gap-2">
-                              <StatPill icon={<Moon size={11} />} label="Avg sleep" value={fmtDur(avg)} color="#7AC4FF" />
+                              <StatPill icon={<Moon size={11} />} label={t('profile.avgSleep')} value={fmtDur(avg)} color="#7AC4FF" />
                             </div>
                           ) : null;
                         })()}

@@ -113,7 +113,7 @@ const AnnualProgressChart = () => {
       buckets[key].cycles   += Number(s.cycles || 0);
     });
 
-    return Object.values(buckets).map(m => ({ ...m, totalMinutes: Math.round(m.totalMinutes * 10) / 10 }));
+    return Object.values(buckets).map(m => ({ ...m, totalMinutes: Math.round(m.totalMinutes) }));
   }, [rawSessions]);
 
   const byYear = useMemo((): ChartPoint[] => {
@@ -130,7 +130,7 @@ const AnnualProgressChart = () => {
     });
     return Object.values(map)
       .sort((a, b) => Number(a.name) - Number(b.name))
-      .map(m => ({ ...m, totalMinutes: Math.round(m.totalMinutes * 10) / 10 }));
+      .map(m => ({ ...m, totalMinutes: Math.round(m.totalMinutes) }));
   }, [rawSessions]);
 
   const data = view === 'By year' ? byYear : last12;
@@ -201,7 +201,7 @@ const AnnualProgressChart = () => {
               tickLine={false}
               domain={[0, yBarMax]}
               tick={{ fill: ts.textMuted, fontSize: 11, fontFamily: 'Montserrat' }}
-              tickFormatter={v => v === 0 ? '' : `${v}m`}
+              tickFormatter={v => v === 0 ? '' : `${Math.round(v)}m`}
               width={36}
             />
 
@@ -276,7 +276,7 @@ const AnnualProgressChart = () => {
       {/* Sub-caption */}
       <div className="flex items-center justify-between border-t pt-2" style={{ borderColor: `${ts.border}40` }}>
         <span className="t-label" style={{ color: ts.textDim }}>
-          {data.reduce((s, d) => s + d.sessions, 0)} sessions · {data.reduce((s, d) => s + d.totalMinutes, 0)}m total
+          {data.reduce((s, d) => s + d.sessions, 0)} sessions · {Math.round(data.reduce((s, d) => s + d.totalMinutes, 0))}m total
         </span>
         <span className="t-label" style={{ color: ts.accent }}>
           ● this {view === 'By year' ? 'year' : 'month'}
