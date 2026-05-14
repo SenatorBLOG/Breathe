@@ -81,9 +81,22 @@ export function useHealthData(): { data: HealthData; loading: boolean } {
         integrations.forEach(integ => {
           if (!integ.data) return;
           sources.push(integ.provider);
-          if (integ.data.sleep?.length)     allSleep.push(...integ.data.sleep);
-          if (integ.data.hrv?.length)       allHRV.push(...integ.data.hrv);
-          if (integ.data.heartRate?.length) allHR.push(...integ.data.heartRate);
+          if (Array.isArray(integ.data.sleep) && integ.data.sleep.length)
+            allSleep.push(...integ.data.sleep);
+
+          if (Array.isArray(integ.data.hrv) && integ.data.hrv.length) {
+            // Normalize: different providers use different field names for HRV value
+            const normalized: DailyHRV[] = integ.data.hrv.map((e: any) => ({
+              // Date: try 'date', 'dateTime', 'startDate' (ISO string → take first 10 chars)
+              date: (e.date ?? e.dateTime ?? e.startDate ?? '').slice(0, 10),
+              // Value: try rmssd, value, sdnn, hrv (all common field names)
+              rmssd: e.rmssd ?? e.value ?? e.sdnn ?? e.hrv ?? null,
+            })).filter((e: DailyHRV) => e.date && e.rmssd !== null);
+            allHRV.push(...normalized);
+          }
+
+          if (Array.isArray(integ.data.heartRate) && integ.data.heartRate.length)
+            allHR.push(...integ.data.heartRate);
         });
 
         // Deduplicate by date (prefer fitbit over others)

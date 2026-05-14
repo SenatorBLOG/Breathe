@@ -204,25 +204,25 @@ router.post('/sync', auth, async (req, res) => {
         integ = await ensureToken(integ);
 
         if (integ.provider === 'fitbit') {
-          // Sleep — last 7 days
+          // Sleep + HRV — last 30 days
           const today    = new Date().toISOString().split('T')[0];
-          const weekAgo  = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+          const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
           const sleepRes = await fetch(
-            `https://api.fitbit.com/1.2/user/-/sleep/date/${weekAgo}/${today}.json`,
+            `https://api.fitbit.com/1.2/user/-/sleep/date/${monthAgo}/${today}.json`,
             { headers: { Authorization: `Bearer ${integ.accessToken}` } }
           );
           const sleepData = await sleepRes.json();
 
-          // HRV — last 7 days
+          // HRV — last 30 days
           const hrvRes  = await fetch(
-            `https://api.fitbit.com/1/user/-/hrv/date/${weekAgo}/${today}.json`,
+            `https://api.fitbit.com/1/user/-/hrv/date/${monthAgo}/${today}.json`,
             { headers: { Authorization: `Bearer ${integ.accessToken}` } }
           );
           const hrvData = await hrvRes.json();
 
-          // Resting heart rate
+          // Resting heart rate — last 30 days
           const hrRes  = await fetch(
-            `https://api.fitbit.com/1/user/-/activities/heart/date/today/7d.json`,
+            `https://api.fitbit.com/1/user/-/activities/heart/date/today/30d.json`,
             { headers: { Authorization: `Bearer ${integ.accessToken}` } }
           );
           const hrData = await hrRes.json();
