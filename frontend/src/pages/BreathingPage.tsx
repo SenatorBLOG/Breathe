@@ -525,14 +525,18 @@ export default function BreathingPage() {
         >
           <Settings size={14} style={{ color: ts.textMuted, flexShrink: 0 }} />
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <span className="t-label uppercase tracking-[0.18em]" style={{ color: ts.textMuted }}>
-              {GUIDANCE_META_STATIC[guidanceMode].label}
+            <span className="t-label uppercase tracking-[0.18em]" style={{ color: ts.textSecondary }}>
+              {t(GUIDANCE_META_STATIC[guidanceMode].tKey)}
+            </span>
+            <span style={{ color: ts.textDim, fontSize: 10 }}>·</span>
+            <span className="t-label tabular-nums" style={{ color: ts.textMuted }}>
+              {phaseDurations.inhale}-{phaseDurations.hold}-{phaseDurations.exhale}-{phaseDurations.pause}
             </span>
             {totalStats.streak > 0 && (
               <>
                 <span style={{ color: ts.textDim, fontSize: 10 }}>·</span>
                 <span className="t-label font-semibold" style={{ color: ts.accent }}>
-                  {totalStats.streak} {t('breathing.dStreak')}
+                  🔥 {totalStats.streak}
                 </span>
               </>
             )}
