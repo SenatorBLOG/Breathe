@@ -399,6 +399,7 @@
     "breathingChallengesHint": "7 и 21-дневные серии · зарабатывайте бейджи",
     "statusLoading": "Загрузка…",
     "statusCount": "{{filtered}} из {{total}} сессий",
+    "statusRange": "Показано {{from}}–{{to}} из {{total}}",
     "statusFiltered": "отфильтровано",
     "statusPage": "стр. {{page}}/{{total}}",
     "noMatchFilters": "Сессии не соответствуют фильтрам",

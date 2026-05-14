@@ -399,6 +399,7 @@
     "breathingChallengesHint": "7 & 21-day streaks · earn badges",
     "statusLoading": "Loading…",
     "statusCount": "{{filtered}} of {{total}} sessions",
+    "statusRange": "Showing {{from}}–{{to}} of {{total}}",
     "statusFiltered": "filtered",
     "statusPage": "page {{page}}/{{total}}",
     "noMatchFilters": "No sessions match your filters",

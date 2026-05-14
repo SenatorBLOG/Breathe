@@ -1018,9 +1018,18 @@ export function SessionsSection() {
                 </div>
               )}
 
-              {/* Status */}
+              {/* Status — when paginating, show the visible range instead of the contradictory full count */}
               <p className="t-caption tracking-wide" style={{ color: ts.textMuted }}>
-                {loading ? t('sessions.statusLoading') : t('sessions.statusCount', { filtered: filtered.length, total: sessions.length })}
+                {loading
+                  ? t('sessions.statusLoading')
+                  : totalPages > 1
+                    ? t('sessions.statusRange', {
+                        from: (page - 1) * PAGE_SIZE + 1,
+                        to: Math.min(page * PAGE_SIZE, filtered.length),
+                        total: filtered.length,
+                        defaultValue: `Showing ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, filtered.length)} of ${filtered.length}`,
+                      })
+                    : t('sessions.statusCount', { filtered: filtered.length, total: sessions.length })}
                 {(minCycles > 0 || minDuration > 0 || search) ? ` · ${t('sessions.statusFiltered')}` : ""}
                 {totalPages > 1 ? ` · ${t('sessions.statusPage', { page, total: totalPages })}` : ""}
               </p>

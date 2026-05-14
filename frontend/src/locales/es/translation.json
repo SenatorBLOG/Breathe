@@ -399,6 +399,7 @@
     "breathingChallengesHint": "Rachas de 7 y 21 días · gana insignias",
     "statusLoading": "Cargando…",
     "statusCount": "{{filtered}} de {{total}} sesiones",
+    "statusRange": "Mostrando {{from}}–{{to}} de {{total}}",
     "statusFiltered": "filtrado",
     "statusPage": "página {{page}}/{{total}}",
     "noMatchFilters": "Ninguna sesión coincide con los filtros",

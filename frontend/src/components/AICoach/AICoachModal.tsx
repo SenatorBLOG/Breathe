@@ -115,7 +115,7 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
     try {
       const history = messages.map(m => ({ role: m.role === 'coach' ? 'model' : 'user', text: m.text }));
       const { data } = await api.post('/coach/message', { message: userMsg, history, language: i18n.language.slice(0, 2) });
-      
+
       setMessages(prev => [...prev, {
         id: Date.now() + '_c',
         role: 'coach',
@@ -126,6 +126,16 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
     } catch (err: any) {
       if (err?.response?.status === 429) {
         setLimit(err.response.data);
+      } else {
+        // Surface a visible error message — silent failure breaks the chat UX
+        const errMsg = err?.response?.data?.error
+          ?? t('coach.errorGeneric', "Sorry, I couldn't respond just now. Try again in a moment?");
+        setMessages(prev => [...prev, {
+          id: Date.now() + '_e',
+          role: 'coach',
+          text: errMsg,
+          done: true,
+        }]);
       }
     } finally {
       setLoading(false);
@@ -192,7 +202,12 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend(input)}
+              onKeyDown={(e) => {
+                if (e.key !== 'Enter') return;
+                if (e.shiftKey || (e as any).isComposing || (e as any).nativeEvent?.isComposing) return;
+                e.preventDefault();
+                handleSend(input);
+              }}
               placeholder={t('coach.placeholder')}
               className="w-full bg-transparent border-2 rounded-2xl px-4 py-3 t-body transition-all focus:outline-none"
               style={{ borderColor: ts.border, color: ts.textPrimary }}

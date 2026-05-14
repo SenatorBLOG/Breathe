@@ -113,6 +113,11 @@ function AnimatedRoutes() {
         <Route path="/privacy"                         element={<PageWrapper><PrivacyPolicyPage /></PageWrapper>} />
         <Route path="/challenges"                      element={<Navigate to="/profile" replace />} />
         <Route path="/leaderboard"                     element={<PageWrapper><LeaderboardPage /></PageWrapper>} />
+        {/* Aliases for URLs users might type from menu labels */}
+        <Route path="/contact"   element={<Navigate to="/support" replace />} />
+        <Route path="/meditate"  element={<Navigate to="/breathing" replace />} />
+        <Route path="/account"   element={<Navigate to="/profile" replace />} />
+        <Route path="/settings"  element={<Navigate to="/profile" replace />} />
         <Route path="*"              element={<PageWrapper><NotFoundPage /></PageWrapper>} />
       </Routes>
     </AnimatePresence>

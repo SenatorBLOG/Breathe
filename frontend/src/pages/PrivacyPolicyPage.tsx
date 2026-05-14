@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
+import PageSEO from '../components/PageSEO';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { Shield, Database, Eye, Trash2, Lock, Globe, Mail, UserCheck } from 'lucide-react';
 
@@ -178,6 +179,11 @@ export default function PrivacyPolicyPage() {
 
   return (
     <div className="relative flex flex-col min-h-screen font-montserrat">
+      <PageSEO
+        title="Privacy Policy | Breathe"
+        description="How Breathe collects, stores, and protects your data. Read about GDPR rights, third-party integrations, and how to export or delete your account."
+        canonical="/privacy"
+      />
       <ThemeBackground />
       <div className="relative z-50"><NavBar /></div>
 

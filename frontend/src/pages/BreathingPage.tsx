@@ -292,6 +292,7 @@ export default function BreathingPage() {
   const savedClientIdsRef = useRef(new Set<string>());
   const [phase, setPhase] = useState<Phase | null>(null);
   const startTimeRef = useRef<number | null>(null);
+  const pausedElapsedRef = useRef(0);          // seconds accumulated across previous pauses
   const wasActiveRef = useRef(isActive);
   const feedbackShownRef = useRef(false);
 
@@ -405,32 +406,70 @@ export default function BreathingPage() {
 
   useEffect(() => {
     if (isActive) {
-      startTimeRef.current = Date.now();
+      // Resume: subtract the elapsed-while-paused so the running clock continues from where it left off
+      startTimeRef.current = Date.now() - pausedElapsedRef.current * 1000;
       feedbackShownRef.current = false;
     } else if (wasActiveRef.current && startTimeRef.current) {
-      const sessionLength = Math.round(((Date.now() - startTimeRef.current) / 60000) * 10) / 10 || 0.1;
-      const cid = `c_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-      const base = {
-        sessionDate: new Date().toISOString(),
-        moodBefore: 5, moodAfter: 5, focusLevel: 5, stressLevel: 5,
-        breathingDepth: 5, calmnessScore: 5, distractionCount: 0,
-        timeOfDay: new Date().toLocaleTimeString([], { hour12: false }),
-        noiseLevel: "Quiet", sessionLength, cycles,
-        notes: "", clientId: cid,
-      };
-
-      if (cycles >= FEEDBACK_AFTER_CYCLES) {
-        savedClientIdsRef.current.delete(cid);
-        setPendingPayload({ ...base, feedbackSubmitted: false });
-        setFeedbackOpen(true);
-      } else {
-        saveSession({ ...base, feedbackSubmitted: true });
-      }
-
-      startTimeRef.current = null;
+      // Paused — freeze the running clock but DO NOT save. Session is preserved until user taps End.
+      pausedElapsedRef.current = Math.floor((Date.now() - startTimeRef.current) / 1000);
     }
     wasActiveRef.current = isActive;
   }, [isActive]);
+
+  // Explicit "End session" — saves and resets. The only path that persists a session now.
+  const endSession = useCallback(() => {
+    if (!startTimeRef.current && pausedElapsedRef.current === 0) return;
+    const elapsedSec = isActive && startTimeRef.current
+      ? (Date.now() - startTimeRef.current) / 1000
+      : pausedElapsedRef.current;
+    const sessionLength = Math.round((elapsedSec / 60) * 10) / 10 || 0.1;
+    const cid = `c_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const base = {
+      sessionDate: new Date().toISOString(),
+      moodBefore: 5, moodAfter: 5, focusLevel: 5, stressLevel: 5,
+      breathingDepth: 5, calmnessScore: 5, distractionCount: 0,
+      timeOfDay: new Date().toLocaleTimeString([], { hour12: false }),
+      noiseLevel: "Quiet", sessionLength, cycles,
+      notes: "", clientId: cid,
+    };
+
+    setIsActive(false);
+    startTimeRef.current = null;
+    pausedElapsedRef.current = 0;
+
+    if (cycles >= FEEDBACK_AFTER_CYCLES) {
+      savedClientIdsRef.current.delete(cid);
+      setPendingPayload({ ...base, feedbackSubmitted: false });
+      setFeedbackOpen(true);
+    } else {
+      saveSession({ ...base, feedbackSubmitted: true });
+    }
+  }, [cycles, isActive]);
+
+  // Safety net: if the user navigates away mid-session, auto-save so progress isn't silently lost.
+  useEffect(() => {
+    return () => {
+      if (startTimeRef.current || pausedElapsedRef.current > 0) {
+        // Cannot setState during unmount cleanup — fire saveSession directly with a synchronous snapshot
+        const elapsedSec = startTimeRef.current
+          ? (Date.now() - startTimeRef.current) / 1000
+          : pausedElapsedRef.current;
+        const sessionLength = Math.round((elapsedSec / 60) * 10) / 10 || 0.1;
+        if (cycles >= 1) {
+          const cid = `c_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+          saveSession({
+            sessionDate: new Date().toISOString(),
+            moodBefore: 5, moodAfter: 5, focusLevel: 5, stressLevel: 5,
+            breathingDepth: 5, calmnessScore: 5, distractionCount: 0,
+            timeOfDay: new Date().toLocaleTimeString([], { hour12: false }),
+            noiseLevel: "Quiet", sessionLength, cycles,
+            notes: "", clientId: cid, feedbackSubmitted: true,
+          });
+        }
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const presets: { name: string; pattern: PhaseDurations; coachKey?: string }[] = [
     { name: t('breathing.presetNames.box'),      pattern: { inhale: 4, hold: 4, exhale: 4, pause: 4 }, coachKey: "box" },
@@ -499,18 +538,38 @@ export default function BreathingPage() {
           />
         </div>
 
-        {/* ── Start / Pause ──────────────────────────────────────────────────── */}
-        <button
-          onClick={() => setIsActive(a => !a)}
-          className="w-full max-w-sm py-3.5 rounded-full text-white t-body font-medium tracking-wide flex items-center justify-center gap-2.5 transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
-          style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
-        >
-          {isActive ? (
-            <><svg width="12" height="14" viewBox="0 0 12 14" fill="white"><rect x="0" y="0" width="4" height="14" rx="1.5"/><rect x="8" y="0" width="4" height="14" rx="1.5"/></svg>{t('breathing.pause')}</>
-          ) : (
-            <><svg width="11" height="13" viewBox="0 0 12 14" fill="white"><path d="M1 1l10 6L1 13V1z"/></svg>{cycles > 0 ? t('breathing.resume') : t('breathing.start')}</>
+        {/* ── Start / Pause / End ────────────────────────────────────────────── */}
+        <div className="w-full max-w-sm flex items-center gap-2">
+          <button
+            onClick={() => setIsActive(a => !a)}
+            className="flex-1 py-3.5 rounded-full text-white t-body font-medium tracking-wide flex items-center justify-center gap-2.5 transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+            style={{ background: ts.btnGradient, boxShadow: ts.btnShadow }}
+          >
+            {isActive ? (
+              <><svg width="12" height="14" viewBox="0 0 12 14" fill="white"><rect x="0" y="0" width="4" height="14" rx="1.5"/><rect x="8" y="0" width="4" height="14" rx="1.5"/></svg>{t('breathing.pause')}</>
+            ) : (
+              <><svg width="11" height="13" viewBox="0 0 12 14" fill="white"><path d="M1 1l10 6L1 13V1z"/></svg>{cycles > 0 ? t('breathing.resume') : t('breathing.start')}</>
+            )}
+          </button>
+          {/* End session — only visible when there's progress to save */}
+          {(cycles > 0 || currentDuration > 0) && (
+            <button
+              onClick={() => {
+                // Confirm if the session is long enough to lose meaningful progress
+                if (cycles >= FEEDBACK_AFTER_CYCLES || currentDuration >= 60) {
+                  if (!window.confirm(t('breathing.endConfirm', 'End session and save?'))) return;
+                }
+                endSession();
+              }}
+              className="px-5 py-3.5 rounded-full t-body font-medium tracking-wide flex items-center justify-center gap-2 transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+              style={{ background: ts.cardBg, color: ts.textSecondary, border: `1px solid ${ts.border}` }}
+              aria-label={t('breathing.endSession', 'End session')}
+            >
+              <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><rect x="0" y="0" width="12" height="12" rx="1.5"/></svg>
+              <span className="hidden sm:inline">{t('breathing.endSession', 'End')}</span>
+            </button>
           )}
-        </button>
+        </div>
 
         {/* ── Settings trigger pill ─────────────────────────────────────── */}
         <button
