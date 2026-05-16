@@ -51,12 +51,7 @@
     <priority>0.5</priority>
   </url>
 
-  <url>
-    <loc>https://breatheonline.app/login</loc>
-    <lastmod>2026-01-01</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
+  <!-- /login and /signup intentionally not listed: they are noindex and shouldn't compete for SERP space -->
 
   <!-- ── Breathing techniques ──────────────────────────────────────────── -->
   <url>

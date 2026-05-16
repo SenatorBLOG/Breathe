@@ -1,5 +1,5 @@
 // src/pages/LoginPage.tsx
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
@@ -18,11 +18,19 @@ function LoginPageInner() {
   const { t } = useTranslation();
   const ts = useThemeStyles();
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+  const { login, isAuthenticated } = useContext(AuthContext);
   const [searchParams] = useSearchParams();
   const ref = searchParams.get('ref');
   const expired = searchParams.get('expired') === '1';
   const nextPath = searchParams.get('next');
+
+  // Already authenticated? Don't show the form — go home (or to ?next= if specified).
+  useEffect(() => {
+    if (isAuthenticated) {
+      const dest = nextPath && nextPath.startsWith('/') && !nextPath.startsWith('//') ? nextPath : '/';
+      navigate(dest, { replace: true });
+    }
+  }, [isAuthenticated, navigate, nextPath]);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -192,14 +200,18 @@ function LoginPageInner() {
                     </div>
                   )}
 
-                  <form onSubmit={handleLogin} className="flex flex-col gap-4">
+                  <form onSubmit={handleLogin} method="post" action="#" noValidate className="flex flex-col gap-4">
                     {/* Email */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      <label htmlFor="login-email" className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                         {t('auth.email')}
                       </label>
                       <input
+                        id="login-email"
+                        name="email"
                         type="email"
+                        autoComplete="email"
+                        inputMode="email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         required
@@ -216,7 +228,7 @@ function LoginPageInner() {
                     {/* Password */}
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center justify-between">
-                        <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                        <label htmlFor="login-password" className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                           {t('auth.password')}
                         </label>
                         <Link to="/forgot-password" className="t-label transition-colors" style={{ color: ts.accent }}>
@@ -225,7 +237,10 @@ function LoginPageInner() {
                       </div>
                       <div className="relative">
                         <input
+                          id="login-password"
+                          name="password"
                           type={showPass ? 'text' : 'password'}
+                          autoComplete="current-password"
                           value={password}
                           onChange={e => setPassword(e.target.value)}
                           required
@@ -240,6 +255,8 @@ function LoginPageInner() {
                         <button
                           type="button"
                           onClick={() => setShowPass(v => !v)}
+                          aria-label={showPass ? t('auth.hidePassword', 'Hide password') : t('auth.showPassword', 'Show password')}
+                          aria-pressed={showPass}
                           className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
                           style={{ color: ts.textMuted }}
                         >
@@ -267,9 +284,9 @@ function LoginPageInner() {
                       </span>
                     </label>
 
-                    {/* Error */}
+                    {/* Error — assertive so screen readers announce it immediately */}
                     {error && (
-                      <div className="px-4 py-3 rounded-xl t-caption text-center"
+                      <div role="alert" aria-live="assertive" className="px-4 py-3 rounded-xl t-caption text-center"
                         style={{
                           backgroundColor: 'rgba(255,138,138,0.1)',
                           border: '1px solid rgba(255,138,138,0.25)',

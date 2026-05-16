@@ -2,6 +2,33 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// User-scoped keys that must NOT outlive a sign-out / account switch.
+// Anything mentioning a user's mood, goal, ML inputs, onboarding state, or nudge timers
+// would leak between users on a shared device. Theme + language stay (UI preferences).
+const USER_SCOPED_LS_KEYS = [
+  'token',
+  'user',
+  'userId',
+  'breathe_ml_text',
+  'breathe_ml_stress',
+  'breathe_ml_time',
+  'breathe_goal',
+  'breathe_tour_done',
+  'breathe_nudge_at',
+  'breathe_pwa_dismissed',
+];
+
+function clearUserScopedStorage() {
+  if (typeof window === 'undefined') return;
+  for (const key of USER_SCOPED_LS_KEYS) localStorage.removeItem(key);
+}
+
+function safeJSONParse<T = any>(raw: string | null): T | null {
+  if (!raw || raw === 'undefined' || raw === 'null') return null;
+  try { return JSON.parse(raw) as T; }
+  catch { return null; }
+}
+
 type AuthCtx = {
   isAuthenticated: boolean;
   token: string | null;
@@ -27,9 +54,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const t = localStorage.getItem('token');
-    const u = localStorage.getItem('user');
+    const parsedUser = safeJSONParse(localStorage.getItem('user'));
     if (t) setToken(t);
-    if (u) setUser(JSON.parse(u));
+    if (parsedUser) setUser(parsedUser);
+    // If user was stored as the literal string "undefined" or other garbage, scrub it
+    // so nothing else in the app tries to JSON.parse it and crash.
+    if (localStorage.getItem('user') && !parsedUser) localStorage.removeItem('user');
   }, []);
 
   const login = (newToken: string, userPayload?: any) => {
@@ -48,10 +78,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    clearUserScopedStorage();
     setToken(null);
     setUser(null);
+    // Land on home so the post-logout state is clearly anonymous, not mid-flow on /breathing.
     navigate('/');
   };
 

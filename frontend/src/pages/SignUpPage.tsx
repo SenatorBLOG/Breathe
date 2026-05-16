@@ -1,5 +1,5 @@
 // src/pages/SignUpPage.tsx
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { AuthContext } from '../components/contexts/AuthContext';
@@ -18,7 +18,13 @@ function SignUpPageInner() {
   const { t } = useTranslation();
   const ts = useThemeStyles();
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+  const { login, isAuthenticated } = useContext(AuthContext);
+
+  // Already authenticated? Don't show signup form — creating a second account from
+  // inside an active session is confusing and breaks state in subtle ways.
+  useEffect(() => {
+    if (isAuthenticated) navigate('/', { replace: true });
+  }, [isAuthenticated, navigate]);
 
   const [searchParams] = useSearchParams();
   const ref   = searchParams.get('ref');
@@ -221,13 +227,19 @@ function SignUpPageInner() {
                     </p>
                   </div>
 
-                  <form onSubmit={handleSignUp} className="flex flex-col gap-4">
+                  <form onSubmit={handleSignUp} method="post" action="#" noValidate className="flex flex-col gap-4">
                     {/* Name */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      <label htmlFor="signup-name" className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                         {t('auth.name')}
                       </label>
                       <input
+                        id="signup-name"
+                        name="name"
+                        autoComplete="name"
+                        required
+                        minLength={1}
+                        maxLength={60}
                         value={name}
                         onChange={e => setName(e.target.value)}
                         placeholder={t('auth.namePlaceholder')}
@@ -242,11 +254,15 @@ function SignUpPageInner() {
 
                     {/* Email */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      <label htmlFor="signup-email" className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                         {t('auth.email')}
                       </label>
                       <input
+                        id="signup-email"
+                        name="email"
                         type="email"
+                        autoComplete="email"
+                        inputMode="email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         required
@@ -262,16 +278,19 @@ function SignUpPageInner() {
 
                     {/* Password */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
+                      <label htmlFor="signup-password" className="t-label uppercase tracking-widest" style={{ color: ts.textMuted }}>
                         {t('auth.password')}
                       </label>
                       <div className="relative">
                         <input
+                          id="signup-password"
+                          name="password"
                           type={showPass ? 'text' : 'password'}
+                          autoComplete="new-password"
                           value={password}
                           onChange={e => setPassword(e.target.value)}
                           required
-                          minLength={6}
+                          minLength={8}
                           placeholder={t('auth.passwordHint')}
                           className="w-full rounded-xl px-4 py-3 pr-10 t-body placeholder-[#2A4060] outline-none focus:border-[#2A5499] transition-colors"
                           style={{
@@ -283,6 +302,8 @@ function SignUpPageInner() {
                         <button
                           type="button"
                           onClick={() => setShowPass(v => !v)}
+                          aria-label={showPass ? t('auth.hidePassword', 'Hide password') : t('auth.showPassword', 'Show password')}
+                          aria-pressed={showPass}
                           className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
                           style={{ color: ts.textMuted }}
                         >
@@ -322,15 +343,15 @@ function SignUpPageInner() {
                       </div>
                       <span className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
                         {t("auth.termsAgree")}{' '}
-                        <Link to="/support" style={{ color: ts.accent }}>{t("auth.terms")}</Link>{' '}
+                        <Link to="/terms" style={{ color: ts.accent }}>{t("auth.terms")}</Link>{' '}
                         {t('auth.and')}{' '}
                         <Link to="/privacy" style={{ color: ts.accent }}>{t("auth.privacy")}</Link>
                       </span>
                     </label>
 
-                    {/* Error */}
+                    {/* Error — assertive so screen readers announce immediately */}
                     {error && (
-                      <div className="px-4 py-3 rounded-xl t-caption text-center"
+                      <div role="alert" aria-live="assertive" className="px-4 py-3 rounded-xl t-caption text-center"
                         style={{
                           backgroundColor: 'rgba(255,138,138,0.1)',
                           border: '1px solid rgba(255,138,138,0.25)',

@@ -36,6 +36,7 @@ const SleepStoryPage       = lazy(() => import('./pages/sleep/SleepStoryPage'));
 const SlowBreathingPage    = lazy(() => import('./pages/science/SlowBreathingPage'));
 const MorningRitualPage    = lazy(() => import('./pages/techniques/MorningRitualPage'));
 const PrivacyPolicyPage    = lazy(() => import('./pages/PrivacyPolicyPage'));
+const ForgotPasswordPage   = lazy(() => import('./pages/ForgotPasswordPage'));
 const LeaderboardPage      = lazy(() => import('./pages/LeaderboardPage'));
 const NotFoundPage         = lazy(() => import('./pages/NotFoundPage'));
 const MusicLibrary         = lazy(() => import('./components/AudioPlayer/MusicLibrary').then(m => ({ default: m.MusicLibrary })));
@@ -113,6 +114,11 @@ function AnimatedRoutes() {
         <Route path="/privacy"                         element={<PageWrapper><PrivacyPolicyPage /></PageWrapper>} />
         <Route path="/challenges"                      element={<Navigate to="/profile" replace />} />
         <Route path="/leaderboard"                     element={<PageWrapper><LeaderboardPage /></PageWrapper>} />
+        {/* Auth-flow placeholders — full reset-by-email pipeline is on the roadmap */}
+        <Route path="/forgot-password" element={<PageWrapper><ForgotPasswordPage /></PageWrapper>} />
+        <Route path="/reset-password"  element={<PageWrapper><ForgotPasswordPage /></PageWrapper>} />
+        <Route path="/verify-email"    element={<Navigate to="/login" replace />} />
+        <Route path="/terms"           element={<Navigate to="/privacy" replace />} />
         {/* Aliases for URLs users might type from menu labels */}
         <Route path="/contact"   element={<Navigate to="/support" replace />} />
         <Route path="/meditate"  element={<Navigate to="/breathing" replace />} />
