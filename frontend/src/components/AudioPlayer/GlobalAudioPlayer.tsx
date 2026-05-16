@@ -53,7 +53,7 @@ function SeekBar({ current, total, onChange }: { current: number; total: number;
       onMouseLeave={() => setHot(false)}
       onClick={seek}
     >
-      <div className="absolute inset-0 rounded-full" style={{ backgroundColor: ts.border }} />
+      <div className="absolute inset-0 rounded-full" style={{ backgroundColor: `${ts.textMuted}40` }} />
       <div
         className="absolute top-0 left-0 h-full rounded-full"
         style={{
@@ -184,7 +184,7 @@ export function GlobalAudioPlayer() {
           onMouseLeave={e => (e.currentTarget.style.borderColor = ts.border)}
         >
           <MiniWave playing={isPlaying} />
-          <span className="t-caption max-w-[120px] truncate" style={{ color: ts.textSecondary }}>{currentTrack.name}</span>
+          <span className="t-caption max-w-[120px] truncate" style={{ color: ts.textSecondary }} title={currentTrack.name}>{currentTrack.name}</span>
         </button>
       ) : (
         <div className="gap-player fixed bottom-0 left-0 right-0 z-50 font-montserrat">
@@ -215,8 +215,8 @@ export function GlobalAudioPlayer() {
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="t-caption font-medium truncate leading-snug" style={{ color: ts.textPrimary }}>{currentTrack.name}</p>
-                    <p className="t-label truncate" style={{ color: ts.textMuted }}>{currentTrack.artist_name}</p>
+                    <p className="t-caption font-medium truncate leading-snug" style={{ color: ts.textPrimary }} title={currentTrack.name}>{currentTrack.name}</p>
+                    <p className="t-label truncate" style={{ color: ts.textMuted }} title={currentTrack.artist_name}>{currentTrack.artist_name}</p>
                   </div>
                   <MiniWave playing={isPlaying} />
                 </div>

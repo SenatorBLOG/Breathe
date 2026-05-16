@@ -117,12 +117,13 @@ function DayDots({ total, done }: { total: number; done: number }) {
 
 // ─── Challenge card ───────────────────────────────────────────────────────────
 function ChallengeCard({
-  challenge, onJoin, joining, alreadyJoined,
+  challenge, onJoin, joining, alreadyJoined, alreadyCompleted,
 }: {
   challenge: Challenge;
   onJoin: (slug: string) => void;
   joining: boolean;
   alreadyJoined: boolean;
+  alreadyCompleted?: boolean;
 }) {
   const ts = useThemeStyles();
   const { t } = useTranslation();
@@ -180,6 +181,8 @@ function ChallengeCard({
         </div>
         {alreadyJoined ? (
           <span className="t-caption font-medium" style={{ color: ts.accent }}>{t('challenges.active')} ✓</span>
+        ) : alreadyCompleted ? (
+          <span className="t-caption font-medium" style={{ color: '#FFD700' }}>{t('challenges.completed', 'Completed')} 🏆</span>
         ) : (
           <button
             onClick={() => onJoin(challenge.slug)}
@@ -341,9 +344,13 @@ export default function ChallengesSection() {
 
   useEffect(() => { load(); }, [isAuthenticated]);
 
-  const activeSlugs = new Set(userChallenges.filter(uc => !uc.abandoned).map(uc => uc.challenge?.slug));
-  const active      = userChallenges.filter(uc => !uc.completedAt && !uc.abandoned);
-  const completed   = userChallenges.filter(uc => !!uc.completedAt);
+  // Currently-running (badge says "Active ✓") vs already-completed (badge says "Completed").
+  // Bug fix: previously activeSlugs included completed challenges, which made the Available tab
+  // show "Active ✓" on a challenge that no longer appears on the Active tab.
+  const active        = userChallenges.filter(uc => !uc.completedAt && !uc.abandoned);
+  const completed     = userChallenges.filter(uc => !!uc.completedAt);
+  const activeSlugs   = new Set(active.map(uc => uc.challenge?.slug));
+  const completedSlugs = new Set(completed.map(uc => uc.challenge?.slug));
 
   const handleJoin = async (slug: string) => {
     if (!isAuthenticated) { toast.error(t('challenges.signInToTrack')); return; }
@@ -469,7 +476,8 @@ export default function ChallengesSection() {
             {challenges.map(c => (
               <ChallengeCard key={c._id} challenge={c}
                 onJoin={handleJoin} joining={joining === c.slug}
-                alreadyJoined={activeSlugs.has(c.slug)} />
+                alreadyJoined={activeSlugs.has(c.slug)}
+                alreadyCompleted={completedSlugs.has(c.slug)} />
             ))}
           </div>
         </div>

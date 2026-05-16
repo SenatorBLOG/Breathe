@@ -90,6 +90,10 @@ function BeforeAfterPicker({ before, after, onBefore, onAfter }: {
               );
             })}
           </div>
+          <div className="flex justify-between px-0.5">
+            <span className="t-label" style={{ color: ts.textDim }}>{t('sessions.feedback.moodAnchorLow')}</span>
+            <span className="t-label" style={{ color: ts.textDim }}>{t('sessions.feedback.moodAnchorHigh')}</span>
+          </div>
         </div>
       ))}
     </div>
