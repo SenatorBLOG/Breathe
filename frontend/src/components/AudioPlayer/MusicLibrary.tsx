@@ -141,6 +141,8 @@ function TrackCard({
           <img
             src={track.image}
             alt=""
+            loading="lazy"
+            decoding="async"
             className={`w-full h-full object-cover transition-opacity duration-300 ${isCurrent ? "opacity-80" : "opacity-55 group-hover:opacity-75"}`}
           />
         ) : (

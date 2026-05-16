@@ -267,7 +267,7 @@ export function GlobalAudioPlayer() {
                     onMute={() => setIsMuted(!isMuted)}
                   />
                   <button
-                    onClick={() => window.open(currentTrack.audio, "_blank")}
+                    onClick={() => window.open(currentTrack.audio, "_blank", "noopener,noreferrer")}
                     className="transition-colors p-1.5"
                     style={{ color: ts.textMuted }}
                     title="Download"
