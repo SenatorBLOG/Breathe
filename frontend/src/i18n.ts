@@ -27,4 +27,18 @@ i18n
     },
   });
 
+// Keep <html lang> + <html dir> in sync with the active language so:
+//   - screen readers use the correct voice
+//   - Google indexes content under the right locale
+//   - Chrome's "translate this page" prompt stops firing on already-translated text
+const applyHtmlLang = (lng: string) => {
+  if (typeof document === 'undefined') return;
+  const code = lng.split('-')[0];
+  document.documentElement.lang = code;
+  // RTL placeholder — currently no RTL locale is shipped, but this keeps the slot ready
+  document.documentElement.dir = ['ar', 'he', 'fa', 'ur'].includes(code) ? 'rtl' : 'ltr';
+};
+applyHtmlLang(i18n.language || 'en');
+i18n.on('languageChanged', applyHtmlLang);
+
 export default i18n;

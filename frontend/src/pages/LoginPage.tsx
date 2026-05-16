@@ -21,6 +21,8 @@ function LoginPageInner() {
   const { login } = useContext(AuthContext);
   const [searchParams] = useSearchParams();
   const ref = searchParams.get('ref');
+  const expired = searchParams.get('expired') === '1';
+  const nextPath = searchParams.get('next');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,6 +42,9 @@ function LoginPageInner() {
     if (ref && RESULT_TO_PRESET[ref]) {
       const preset = RESULT_TO_PRESET[ref];
       navigate('/breathing', { state: { coachPreset: preset, coachPresetName: preset.name } });
+    } else if (nextPath && nextPath.startsWith('/')) {
+      // After session-expired redirect, return the user to where they were
+      navigate(nextPath);
     } else {
       navigate('/');
     }
@@ -173,6 +178,19 @@ function LoginPageInner() {
                       </Link>
                     </p>
                   </div>
+
+                  {expired && (
+                    <div
+                      role="status"
+                      className="flex items-start gap-2 px-3 py-2.5 rounded-xl mb-3"
+                      style={{ background: 'rgba(255,217,125,0.10)', border: '1px solid rgba(255,217,125,0.30)' }}
+                    >
+                      <span style={{ color: '#FFD97D', fontSize: 14, lineHeight: '20px' }}>⏱</span>
+                      <p className="t-caption" style={{ color: '#FFD97D' }}>
+                        {t('auth.sessionExpired', 'Your session expired — please sign in again.')}
+                      </p>
+                    </div>
+                  )}
 
                   <form onSubmit={handleLogin} className="flex flex-col gap-4">
                     {/* Email */}
