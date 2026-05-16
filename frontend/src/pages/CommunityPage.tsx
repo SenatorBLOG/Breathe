@@ -575,6 +575,7 @@ const CAT_ICONS: Record<string, string> = {
 
 function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreated: (p: Post) => void }) {
   const ts = useThemeStyles();
+  const { t } = useTranslation();
   const [text, setText] = useState('');
   const [category, setCategory] = useState<typeof CATEGORIES[number]>('experience');
   const [tagInput, setTagInput] = useState('');
@@ -582,8 +583,8 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
   const [sending, setSending] = useState(false);
 
   const addTag = () => {
-    const t = tagInput.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-    if (t && !tags.includes(t) && tags.length < 5) { setTags(prev => [...prev, t]); setTagInput(''); }
+    const cleaned = tagInput.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    if (cleaned && !tags.includes(cleaned) && tags.length < 5) { setTags(prev => [...prev, cleaned]); setTagInput(''); }
   };
 
   const submit = async () => {
@@ -682,13 +683,13 @@ function CreatePostModal({ onClose, onCreated }: { onClose: () => void; onCreate
             </div>
             {tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
-                {tags.map(t => {
-                  const tc = pickTagColor(t);
+                {tags.map(tag => {
+                  const tc = pickTagColor(tag);
                   return (
-                    <span key={t} className="flex items-center gap-1 t-label px-2 py-0.5 rounded-full"
+                    <span key={tag} className="flex items-center gap-1 t-label px-2 py-0.5 rounded-full"
                       style={{ backgroundColor: tc.bg, border: `1px solid ${tc.border}`, color: tc.color }}>
-                      #{t}
-                      <button onClick={() => setTags(prev => prev.filter(x => x !== t))} className="ml-0.5 transition-colors" style={{ color: tc.color }}>×</button>
+                      #{tag}
+                      <button onClick={() => setTags(prev => prev.filter(x => x !== tag))} className="ml-0.5 transition-colors" style={{ color: tc.color }}>×</button>
                     </span>
                   );
                 })}

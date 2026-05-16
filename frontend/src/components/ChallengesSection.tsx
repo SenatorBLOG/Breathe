@@ -577,7 +577,7 @@ export default function ChallengesSection() {
           ) : (
             <div className="flex flex-col gap-3">
               <p className="t-caption" style={{ color: ts.textMuted }}>
-                {completed.length} {t('challenges.badgesEarned')}
+                {t('challenges.badgesEarned', { count: completed.length })}
               </p>
               {completed.map(uc => <BadgeCard key={uc._id} uc={uc} />)}
             </div>

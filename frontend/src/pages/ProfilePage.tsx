@@ -124,22 +124,42 @@ function NumberField({ label, unit, min, max, value, onChange }: {
   value: string | number; onChange: (v: string) => void;
 }) {
   const ts = useThemeStyles();
+  const numeric = value === '' ? null : Number(value);
+  const outOfRange = numeric !== null && (Number.isNaN(numeric) || numeric < min || numeric > max);
+
+  // Clamp to [min, max] when the user finishes editing (blur).
+  // Typing-time stays permissive so partial values like "1" while reaching "180" aren't fought.
+  const onBlur = () => {
+    if (value === '' || numeric === null) return;
+    if (Number.isNaN(numeric)) { onChange(''); return; }
+    if (numeric < min) onChange(String(min));
+    else if (numeric > max) onChange(String(max));
+  };
+
   return (
     <div>
       <label className="t-caption uppercase tracking-widest font-semibold block mb-2" style={{ color: ts.textSecondary }}>
         {label}
       </label>
       <div className="flex items-center gap-2 px-3 py-3 rounded-xl"
-        style={{ background: ts.cardBgHover, border: `1px solid ${ts.border}` }}>
+        style={{
+          background: ts.cardBgHover,
+          border: `1px solid ${outOfRange ? '#FF8A8A' : ts.border}`,
+        }}>
         <input
-          type="number" min={min} max={max} value={value}
+          type="number" min={min} max={max} step={1} value={value}
           onChange={e => onChange(e.target.value)}
+          onBlur={onBlur}
           placeholder="—"
           className="flex-1 w-0 bg-transparent t-body outline-none tabular-nums"
           style={{ color: ts.textPrimary }}
+          aria-invalid={outOfRange}
         />
         <span className="t-caption flex-shrink-0" style={{ color: ts.textMuted }}>{unit}</span>
       </div>
+      {outOfRange && (
+        <p className="t-label mt-1" style={{ color: '#FF8A8A' }}>{`Allowed: ${min}–${max} ${unit}`}</p>
+      )}
     </div>
   );
 }
@@ -425,6 +445,9 @@ export default function ProfilePage() {
 
   // ── Profile form ─────────────────────────────────────────────────────────────
   const [nickname, setNickname]    = useState('');
+  // savedNickname is the value last persisted to the server; used for the avatar header preview
+  // so the header doesn't visually change as the user types or clears the input pre-save.
+  const [savedNickname, setSavedNickname] = useState('');
   const [avatarSrc, setAvatarSrc]  = useState<string | null>(null);
   const [body, setBody]            = useState({ heightCm: '', weightKg: '', age: '', gender: '', goal: '' });
   const [saving, setSaving]        = useState(false);
@@ -442,6 +465,7 @@ export default function ProfilePage() {
     api.get('/auth/me')
       .then(({ data }) => {
         setNickname(data.nickname || '');
+        setSavedNickname(data.nickname || '');
         setAvatarSrc(data.avatar || data.picture || null);
         if (data.bodyProfile) {
           setBody({
@@ -513,6 +537,7 @@ export default function ProfilePage() {
       };
       const { data } = await api.patch('/auth/me', payload);
       updateUser({ nickname: data.nickname, avatar: data.avatar });
+      setSavedNickname(data.nickname || '');
       toast.success(t('profile.savedSuccess'));
     } catch {
       toast.error(t('profile.failedSave'));
@@ -566,7 +591,7 @@ export default function ProfilePage() {
   const getStatus = (provider: string) => integrations.find(i => i.provider === provider);
 
   // ── Derived display values ────────────────────────────────────────────────────
-  const displayName  = nickname || user?.name || user?.email?.split('@')[0] || 'Your Profile';
+  const displayName  = savedNickname || user?.name || user?.email?.split('@')[0] || 'Your Profile';
   const currentGoal  = GOALS.find(g => g.value === body.goal);
 
   // ── Render ────────────────────────────────────────────────────────────────────

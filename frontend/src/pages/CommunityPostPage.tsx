@@ -198,7 +198,7 @@ export default function CommunityPostPage() {
                   <Heart size={13} /> {post.likeCount}
                 </span>
                 <span className="flex items-center gap-1.5 t-caption" style={{ color: ts.textMuted }}>
-                  <MessageCircle size={13} /> {post.commentCount} comments
+                  <MessageCircle size={13} /> {t('community.commentCount', { count: post.commentCount })}
                 </span>
               </div>
             </motion.article>
