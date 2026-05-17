@@ -39,7 +39,16 @@ export function MusicProvider({ children }: { children: ReactNode }) {
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolumeState] = useState(80);
+  // Safety default: meditation tracks at low volume so headphone users
+  // don't get a 100% blast on first play. Persisted across sessions below.
+  const [volume, setVolumeState] = useState(() => {
+    try {
+      const stored = localStorage.getItem('breathe_audio_volume');
+      const n = stored ? parseInt(stored, 10) : NaN;
+      if (!isNaN(n) && n >= 0 && n <= 100) return n;
+    } catch {}
+    return 35;
+  });
   const [isMuted, setIsMutedState] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 

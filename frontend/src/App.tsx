@@ -37,6 +37,7 @@ const SlowBreathingPage    = lazy(() => import('./pages/science/SlowBreathingPag
 const MorningRitualPage    = lazy(() => import('./pages/techniques/MorningRitualPage'));
 const PrivacyPolicyPage    = lazy(() => import('./pages/PrivacyPolicyPage'));
 const ForgotPasswordPage   = lazy(() => import('./pages/ForgotPasswordPage'));
+const TermsPage            = lazy(() => import('./pages/TermsPage'));
 const LeaderboardPage      = lazy(() => import('./pages/LeaderboardPage'));
 const NotFoundPage         = lazy(() => import('./pages/NotFoundPage'));
 const MusicLibrary         = lazy(() => import('./components/AudioPlayer/MusicLibrary').then(m => ({ default: m.MusicLibrary })));
@@ -51,6 +52,8 @@ import PWAInstallBanner from './components/PWAInstallBanner';
 import OfflineIndicator from './components/OfflineIndicator';
 import ChallengeNudge from './components/ChallengeNudge';
 import OnboardingTour from './components/OnboardingTour';
+import CookieConsent from './components/CookieConsent';
+import { Toaster } from 'sonner';
 import './index.css';
 import { GlobalAudioPlayer } from './components/AudioPlayer/GlobalAudioPlayer';
 import { MusicProvider } from './components/contexts/MusicContext';
@@ -118,7 +121,8 @@ function AnimatedRoutes() {
         <Route path="/forgot-password" element={<PageWrapper><ForgotPasswordPage /></PageWrapper>} />
         <Route path="/reset-password"  element={<PageWrapper><ForgotPasswordPage /></PageWrapper>} />
         <Route path="/verify-email"    element={<Navigate to="/login" replace />} />
-        <Route path="/terms"           element={<Navigate to="/privacy" replace />} />
+        <Route path="/terms"           element={<PageWrapper><TermsPage /></PageWrapper>} />
+        <Route path="/tos"             element={<Navigate to="/terms" replace />} />
         {/* Aliases for URLs users might type from menu labels */}
         <Route path="/contact"   element={<Navigate to="/support" replace />} />
         <Route path="/meditate"  element={<Navigate to="/breathing" replace />} />
@@ -140,8 +144,20 @@ export default function App() {
           <ErrorBoundary>
           <div className="min-h-screen">
             <ScrollToTop />
+            {/* Skip link — first focusable element so keyboard users can
+                bypass the whole header/navigation. WCAG 2.4.1 Bypass Blocks. */}
+            <a
+              href="#main"
+              className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[1000] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-black focus:text-white focus:shadow-2xl"
+            >
+              Skip to main content
+            </a>
             <Suspense fallback={<PageLoader />}>
-              <AnimatedRoutes />
+              {/* `id="main"` is the skip-link target. tabIndex=-1 lets focus
+                  land here without making it part of normal tab order. */}
+              <div id="main" tabIndex={-1}>
+                <AnimatedRoutes />
+              </div>
             </Suspense>
             <AICoachButton variant="floating" />
             <ScrollToTopButton />
@@ -150,6 +166,11 @@ export default function App() {
             <OfflineIndicator />
             <ChallengeNudge />
             <OnboardingTour />
+            <CookieConsent />
+            {/* Toast notifications — `richColors` keeps semantic colour
+                contrast, and sonner already emits aria-live="polite" plus
+                role="status" on each toast for screen-reader users. */}
+            <Toaster richColors position="top-center" closeButton />
           </div>
           </ErrorBoundary>
         </MusicProvider>

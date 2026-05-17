@@ -13,6 +13,40 @@
     <meta name="keywords"
       content="breathing exercises, guided breathing, meditation online, box breathing, 4-7-8 breathing, sleep breathing, anxiety breathing, wim hof breathing, breathwork, mindfulness" />
     <meta name="author" content="Breathe App" />
+    <!-- React DevTools attach must be neutralised BEFORE the bundle parses.
+         Setting these hook values when the global doesn't exist is a no-op,
+         so dev builds (which install the real DevTools hook later) aren't
+         affected. Production hides component tree + props from the extension. -->
+    <script>
+      (function() {
+        try {
+          // Only install the trap in production. Vite replaces the
+          // `import.meta.env.PROD` at build time but here we're in a plain
+          // <script>, so detect prod via hostname.
+          var isProd = location.hostname === 'breatheonline.app'
+                    || location.hostname === 'www.breatheonline.app'
+                    || location.hostname.endsWith('.vercel.app');
+          if (!isProd) return;
+          var noop = function() {};
+          Object.defineProperty(window, '__REACT_DEVTOOLS_GLOBAL_HOOK__', {
+            configurable: false,
+            enumerable:   false,
+            get: function() {
+              return {
+                isDisabled:    true,
+                supportsFiber: true,
+                inject:        noop,
+                onCommitFiberRoot: noop,
+                onCommitFiberUnmount: noop,
+                onScheduleFiberRoot:  noop,
+                renderers:     new Map(),
+              };
+            },
+          });
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Critical above-the-fold styles inlined to eliminate render-blocking CSS -->
     <style>
       *,::before,::after{box-sizing:border-box;margin:0;padding:0}
@@ -153,31 +187,42 @@
     <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 
     <!-- ═══════════════════════════════════════════════════
-         GOOGLE ANALYTICS 4
-         Replace G-XXXXXXXXXX with your actual Measurement ID
-         from analytics.google.com
+         GOOGLE ANALYTICS 4 — consent-gated (GDPR / ePrivacy)
+         The GA script is loaded only AFTER the user accepts the
+         cookie banner (components/CookieConsent.tsx), which dispatches
+         the `breathe:analytics-consent` event. Until then no GA
+         cookies are set and no requests go to google-analytics.com.
     ═══════════════════════════════════════════════════ -->
-    <!-- GA4: load after page is interactive to avoid TBT contribution -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-PBVKQHYMB9', { page_title: document.title, page_location: window.location.href });
-      // Defer the GTM script until the browser is idle so it doesn't
-      // compete with first paint. Falls back to DOMContentLoaded on
-      // browsers that don't support requestIdleCallback.
       (function() {
-        function loadGTM() {
+        function loadGA() {
+          if (window.__gaLoaded) return;
+          window.__gaLoaded = true;
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){ dataLayer.push(arguments); }
+          window.gtag = gtag;
+          gtag('js', new Date());
+          gtag('config', 'G-PBVKQHYMB9', {
+            page_title: document.title,
+            page_location: window.location.href,
+            anonymize_ip: true
+          });
           var s = document.createElement('script');
           s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PBVKQHYMB9';
           s.async = true;
           document.head.appendChild(s);
         }
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(loadGTM, { timeout: 4000 });
-        } else {
-          window.addEventListener('DOMContentLoaded', loadGTM);
-        }
+        // Consent already granted from a prior visit?
+        try {
+          if (localStorage.getItem('breathe_cookie_consent') === 'accepted') {
+            window.__breatheAnalyticsConsent = true;
+            if ('requestIdleCallback' in window) requestIdleCallback(loadGA, { timeout: 4000 });
+            else window.addEventListener('DOMContentLoaded', loadGA);
+            return;
+          }
+        } catch (e) {}
+        // Otherwise wait for the banner to fire the event
+        window.addEventListener('breathe:analytics-consent', loadGA, { once: true });
       })();
     </script>
 

@@ -513,6 +513,8 @@ export default function BreathingPage() {
 
       <div className="relative z-50"><NavBar /></div>
 
+      <h1 className="sr-only">{t('breathing.h1', 'Guided Breathing Session')}</h1>
+
       <section
         className="relative z-10 flex flex-col items-center justify-center gap-4 sm:gap-5 px-4"
         style={{ minHeight: "calc(100vh - 56px)" }}
@@ -602,6 +604,19 @@ export default function BreathingPage() {
           </div>
           <ChevronDown size={13} style={{ color: ts.textDim, flexShrink: 0 }} />
         </button>
+
+        {/* Wellness-not-medical disclaimer — required to avoid being treated
+            as a medical device under FDA / MHRA / MDR (EU). Always visible
+            on the page where users actually perform the practice. */}
+        <p
+          className="t-label leading-relaxed text-center max-w-md px-4 mt-4 opacity-60"
+          style={{ color: ts.textMuted }}
+        >
+          {t(
+            'breathing.medicalDisclaimer',
+            'Breathe is a wellness app, not medical advice. If you feel dizzy, stop and rest. In a crisis call 988, 112, or 116 123.'
+          )}
+        </p>
       </section>
 
       {/* ── Settings bottom sheet ──────────────────────────────────────────────── */}

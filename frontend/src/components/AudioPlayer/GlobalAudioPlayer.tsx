@@ -3,6 +3,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Download, X, Music2 } from "lucide-react";
 import { useMusic } from "../contexts/MusicContext";
 import { useThemeStyles } from "../../hooks/useThemeStyles";
+import { fadeAudio } from "../../utils/audioFade";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function fmt(s: number) {
@@ -129,9 +130,22 @@ export function GlobalAudioPlayer() {
   const [visible, setVisible] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
 
+  // Fade in/out on play/pause toggle so meditation atmosphere isn't broken
+  // by abrupt audio cuts. Volume/mute slider changes are handled live in
+  // the dedicated effect below (no fade — that would feel laggy).
   useEffect(() => {
-    if (!audioRef.current) return;
-    isPlaying ? audioRef.current.play().catch(console.error) : audioRef.current.pause();
+    const a = audioRef.current;
+    if (!a) return;
+    const target = (isMuted ? 0 : volume) / 100;
+    if (isPlaying) {
+      a.play()
+        .then(() => fadeAudio(a, 'in', target, 350))
+        .catch(console.error);
+    } else if (!a.paused) {
+      fadeAudio(a, 'out', target, 250).then(() => a.pause());
+    }
+    // intentionally only `isPlaying` — volume is handled by the live effect
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying]);
 
   useEffect(() => {
@@ -140,6 +154,44 @@ export function GlobalAudioPlayer() {
     audioRef.current.load();
     if (isPlaying) audioRef.current.play().catch(console.error);
   }, [currentTrack?.id]);
+
+  // Persist volume so the safe default isn't reset every visit
+  useEffect(() => {
+    try { localStorage.setItem('breathe_audio_volume', String(volume)); } catch {}
+  }, [volume]);
+
+  // MediaSession — exposes current track to OS notification, lockscreen,
+  // Bluetooth headphone controls (play/pause/next/prev). Without this, users
+  // meditating eyes-closed can't control playback from their device.
+  useEffect(() => {
+    if (!('mediaSession' in navigator) || !currentTrack) return;
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title:  currentTrack.name,
+      artist: currentTrack.artist_name,
+      album:  'Breathe',
+      artwork: currentTrack.image
+        ? [
+            { src: currentTrack.image, sizes: '300x300', type: 'image/jpeg' },
+            { src: currentTrack.image, sizes: '512x512', type: 'image/jpeg' },
+          ]
+        : [],
+    });
+    navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+    const handlers: Array<[MediaSessionAction, () => void]> = [
+      ['play',           () => togglePlayPause()],
+      ['pause',          () => togglePlayPause()],
+      ['previoustrack',  () => previousTrack()],
+      ['nexttrack',      () => nextTrack()],
+    ];
+    for (const [action, h] of handlers) {
+      try { navigator.mediaSession.setActionHandler(action, h); } catch {}
+    }
+    return () => {
+      for (const [action] of handlers) {
+        try { navigator.mediaSession.setActionHandler(action, null); } catch {}
+      }
+    };
+  }, [currentTrack?.id, isPlaying, togglePlayPause, nextTrack, previousTrack]);
 
   useEffect(() => {
     const a = audioRef.current; if (!a) return;
@@ -170,7 +222,13 @@ export function GlobalAudioPlayer() {
         .gap-player { animation: slideUp 0.35s cubic-bezier(.34,1.56,.64,1) forwards; }
       `}</style>
 
-      <audio ref={audioRef} src={currentTrack.audio} />
+      <audio
+        ref={audioRef}
+        src={currentTrack.audio}
+        preload="none"
+        crossOrigin="anonymous"
+        title={`${currentTrack.name} — ${currentTrack.artist_name} (CC via Jamendo)`}
+      />
 
       {!visible ? (
         <button
@@ -266,14 +324,21 @@ export function GlobalAudioPlayer() {
                     onVolume={v => { setVolume(v); if (v === 0) setIsMuted(true); else setIsMuted(false); }}
                     onMute={() => setIsMuted(!isMuted)}
                   />
-                  <button
-                    onClick={() => window.open(currentTrack.audio, "_blank", "noopener,noreferrer")}
-                    className="transition-colors p-1.5"
+                  {/* Open the track's Jamendo page rather than the raw audio URL,
+                      so users land on the page that shows the Creative Commons
+                      license + artist credit. Avoids encouraging unattributed
+                      re-distribution of NC/ND-licensed tracks. */}
+                  <a
+                    href={`https://www.jamendo.com/track/${currentTrack.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`View ${currentTrack.name} on Jamendo`}
+                    className="transition-colors p-1.5 flex items-center"
                     style={{ color: ts.textMuted }}
-                    title="Download"
+                    title="View on Jamendo (CC license)"
                   >
                     <Download size={13} />
-                  </button>
+                  </a>
                   <button onClick={() => setVisible(false)} className="transition-colors p-1.5 ml-1" style={{ color: ts.textMuted }} title="Minimise">
                     <X size={13} />
                   </button>

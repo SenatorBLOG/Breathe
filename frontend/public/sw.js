@@ -1,4 +1,6 @@
-const CACHE_NAME = 'breathe-v6';
+// Bumped on every cache-shape change. Old caches are deleted in `activate`.
+const CACHE_NAME = 'breathe-v7';
+const AUDIO_CACHE = 'breathe-audio-v1';
 const OFFLINE_URL = '/breathing';
 
 // Assets to cache immediately on install.
@@ -24,12 +26,15 @@ self.addEventListener('install', event => {
   );
 });
 
-// Activate — clean old caches
+// Activate — clean old caches. Keep current versioned caches only;
+// every stale entry from a previous deploy is removed here so the
+// device doesn't accumulate JS chunks indefinitely.
+const KEEP_CACHES = new Set([CACHE_NAME, AUDIO_CACHE]);
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(
-        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
+        keys.filter(k => !KEEP_CACHES.has(k)).map(k => caches.delete(k))
       ))
       .then(() => self.clients.claim())
   );
@@ -50,7 +55,29 @@ self.addEventListener('fetch', event => {
   if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') return;
   if (url.pathname.startsWith('/api/')) return;
 
-  // Skip ALL external origins — let the browser handle CDN/API requests directly.
+  // Jamendo audio streams — cache-on-demand so previously-listened tracks
+  // continue to work offline. Bounded by AUDIO_CACHE entry count to keep
+  // device storage in check.
+  if (url.hostname.endsWith('storage.jamendo.com') || request.destination === 'audio') {
+    event.respondWith(
+      caches.open(AUDIO_CACHE).then(cache =>
+        cache.match(request).then(cached => {
+          if (cached) return cached;
+          return fetch(request).then(response => {
+            // Only cache full (200) responses, never partial 206 byte-ranges
+            if (response.status === 200) {
+              const clone = response.clone();
+              cache.put(request, clone).then(() => trimCache(AUDIO_CACHE, 20));
+            }
+            return response;
+          }).catch(() => cached);
+        })
+      )
+    );
+    return;
+  }
+
+  // Skip ALL other external origins — let the browser handle CDN/API requests directly.
   // The SW must not intercept them: CSP blocks SW-internal fetches to external domains,
   // which would cause map tiles, fonts, analytics, and auth calls to silently fail.
   if (url.hostname !== self.location.hostname) return;
@@ -97,6 +124,18 @@ self.addEventListener('fetch', event => {
     )
   );
 });
+
+// Evict oldest entries when a cache exceeds `max` items. Simple FIFO
+// rather than LRU — accurate enough for audio (20 tracks) and JS chunks.
+async function trimCache(cacheName, max) {
+  try {
+    const cache = await caches.open(cacheName);
+    const keys = await cache.keys();
+    if (keys.length <= max) return;
+    const toDelete = keys.length - max;
+    for (let i = 0; i < toDelete; i++) await cache.delete(keys[i]);
+  } catch (_) {}
+}
 
 // Push notifications
 self.addEventListener('push', event => {

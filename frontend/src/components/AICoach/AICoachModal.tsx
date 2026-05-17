@@ -1,10 +1,19 @@
 // src/components/AICoach/AICoachModal.tsx
+//
+// Mental-health-aware AI chat. Three safety layers must remain in place:
+//  1) Crisis keyword detection BEFORE the message reaches the backend
+//     (utils/crisisDetection.ts → CrisisHelp modal). Never let the LLM
+//     improvise on suicide/self-harm content.
+//  2) First-use consent disclosing that messages are sent to Google Gemini.
+//  3) Visible wellness-not-medical disclaimer at all times.
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { X, Send, Sparkles, ChevronRight, RotateCcw, ShieldAlert } from 'lucide-react';
+import { X, Send, Sparkles, ChevronRight, RotateCcw, ShieldAlert, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import api from '../../api';
 import { useThemeStyles } from "../../hooks/useThemeStyles";
+import { detectCrisis } from '../../utils/crisisDetection';
+import CrisisHelp from '../CrisisHelp';
 
 // ─── Types & Presets ──────────────────────────────────────────────────────────
 interface Technique { key: string; label: string; }
@@ -19,6 +28,28 @@ const COACH_PRESETS: Record<string, any> = {
   'wim-hof': { name: 'Wim Hof Method', inhale: 2, hold: 1, exhale: 2, pause: 1 },
   'coherent': { name: 'Coherent Breathing', inhale: 4, hold: 2, exhale: 6, pause: 2 },
 };
+
+const CONSENT_KEY = 'breathe_aicoach_consent';
+const MIN_SEND_INTERVAL_MS = 1500;
+const MAX_MESSAGE_CHARS = 1500;
+
+// Strip the most obvious prompt-injection prefixes. Server-side guardrails
+// should remain the source of truth; this is a defense-in-depth filter, not
+// a substitute for a hardened system prompt on the backend.
+const INJECTION_PATTERNS: RegExp[] = [
+  /^\s*(ignore|disregard|forget)\s+(all\s+|the\s+)?(previous|prior|above)\s+(instructions?|messages?|prompts?)/i,
+  /^\s*you\s+are\s+now\s+/i,
+  /^\s*act\s+as\s+(an?\s+)?(unrestricted|jailbroken|dan|developer\s+mode)/i,
+  /<\|im_(start|end)\|>/i,
+  /^\s*system\s*:/i,
+];
+function sanitizePrompt(raw: string): string {
+  let text = raw.slice(0, MAX_MESSAGE_CHARS);
+  for (const re of INJECTION_PATTERNS) {
+    text = text.replace(re, '[filtered] ');
+  }
+  return text.trim();
+}
 
 // ─── Sub-Components ───────────────────────────────────────────────────────────
 
@@ -44,9 +75,8 @@ const TypingIndicator = () => {
 const CoachBubble = ({ message, isLatest, onTry }: { message: Message; isLatest: boolean; onTry: (t: Technique) => void }) => {
   const ts = useThemeStyles();
   const { t } = useTranslation();
-  // Имитация печати для последнего сообщения
   const [displayed, setDisplayed] = useState(isLatest ? "" : message.text);
-  
+
   useEffect(() => {
     if (isLatest && displayed.length < message.text.length) {
       const timeout = setTimeout(() => {
@@ -71,7 +101,7 @@ const CoachBubble = ({ message, isLatest, onTry }: { message: Message; isLatest:
           )}
         </div>
         {message.technique && displayed.length === message.text.length && (
-          <button 
+          <button
             onClick={() => onTry(message.technique!)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl t-caption font-bold text-white self-start transition-all hover:scale-105 active:scale-95 shadow-lg"
             style={{ background: ts.accent }}
@@ -84,6 +114,51 @@ const CoachBubble = ({ message, isLatest, onTry }: { message: Message; isLatest:
   );
 };
 
+// ─── Consent screen (first-time use) ──────────────────────────────────────────
+function ConsentScreen({ onAccept, onClose }: { onAccept: () => void; onClose: () => void }) {
+  const ts = useThemeStyles();
+  const { t } = useTranslation();
+  return (
+    <div className="p-6 flex flex-col gap-4">
+      <div className="flex items-start gap-3">
+        <Info size={20} style={{ color: ts.accent }} className="flex-shrink-0 mt-0.5" />
+        <div className="flex flex-col gap-2">
+          <h3 className="text-lg font-medium" style={{ color: ts.textPrimary }}>
+            {t('coach.consent.title', 'Before you start')}
+          </h3>
+          <p className="t-body leading-relaxed" style={{ color: ts.textSecondary }}>
+            {t('coach.consent.body', 'AI Coach is powered by Google Gemini. The messages you type are sent to Google for processing. The Coach is a wellness companion — it is not a therapist, not a doctor, and not a substitute for professional medical or mental-health care.')}
+          </p>
+          <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
+            {t('coach.consent.crisis', 'If you are in crisis or thinking about self-harm, close this chat and use the crisis-help screen — we will not improvise a response.')}{' '}
+            <Link to="/privacy" className="underline" style={{ color: ts.accent }}>
+              {t('coach.consent.privacy', 'Privacy policy')}
+            </Link>
+          </p>
+        </div>
+      </div>
+      <div className="flex gap-2 mt-2">
+        <button
+          type="button"
+          onClick={onAccept}
+          className="flex-1 px-4 py-3 rounded-xl t-body font-semibold text-white"
+          style={{ background: ts.btnGradient }}
+        >
+          {t('coach.consent.accept', 'I understand — continue')}
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-4 py-3 rounded-xl t-body font-semibold border"
+          style={{ borderColor: ts.border, color: ts.textPrimary, background: ts.cardBg }}
+        >
+          {t('common.cancel', 'Cancel')}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function AICoachModal({ onClose }: { onClose: () => void }) {
@@ -91,25 +166,59 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
+  const [consented, setConsented] = useState<boolean>(() => {
+    try { return localStorage.getItem(CONSENT_KEY) === '1'; } catch { return false; }
+  });
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [limitData, setLimit] = useState<any>(null);
+  const [crisisOpen, setCrisisOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const lastSendRef = useRef<number>(0);
 
   useEffect(() => {
-    setMessages([{ id: 'welcome', role: 'coach', text: t('coach.welcome'), done: true }]);
-  }, [t]);
+    if (consented) {
+      setMessages([{ id: 'welcome', role: 'coach', text: t('coach.welcome'), done: true }]);
+    }
+  }, [t, consented]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
+  // Escape closes the modal
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  const acceptConsent = useCallback(() => {
+    try { localStorage.setItem(CONSENT_KEY, '1'); } catch {}
+    setConsented(true);
+  }, []);
+
   const handleSend = async (text: string) => {
-    if (!text.trim() || loading) return;
-    const userMsg = text.trim();
+    const raw = text.trim();
+    if (!raw || loading) return;
+
+    // Layer 1 — crisis routing happens BEFORE we touch the network
+    if (detectCrisis(raw)) {
+      setCrisisOpen(true);
+      setInput('');
+      return;
+    }
+
+    // Layer 2 — basic rate limit + length cap + prompt sanitization
+    const now = Date.now();
+    if (now - lastSendRef.current < MIN_SEND_INTERVAL_MS) return;
+    lastSendRef.current = now;
+    const userMsg = sanitizePrompt(raw);
+    if (!userMsg) return;
+
     setInput('');
-    setMessages(prev => [...prev, { id: Date.now().toString(), role: 'user', text: userMsg, done: true }]);
+    setMessages(prev => [...prev, { id: now.toString(), role: 'user', text: userMsg, done: true }]);
     setLoading(true);
 
     try {
@@ -127,7 +236,6 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
       if (err?.response?.status === 429) {
         setLimit(err.response.data);
       } else {
-        // Surface a visible error message — silent failure breaks the chat UX
         const errMsg = err?.response?.data?.error
           ?? t('coach.errorGeneric', "Sorry, I couldn't respond just now. Try again in a moment?");
         setMessages(prev => [...prev, {
@@ -143,89 +251,128 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="w-full flex flex-col rounded-3xl overflow-hidden border shadow-2xl animate-in zoom-in-95 duration-300"
-         style={{ background: ts.cardBg, borderColor: ts.border }}>
-      
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="coach-title"
+      className="w-full flex flex-col rounded-3xl overflow-hidden border shadow-2xl animate-in zoom-in-95 duration-300"
+      style={{ background: ts.cardBg, borderColor: ts.border }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: ts.border }}>
         <div className="flex items-center gap-3">
           <div className="w-2.5 h-2.5 rounded-full bg-[#4AE8A0] animate-pulse shadow-[0_0_8px_#4AE8A0]" />
-          <span className="t-caption font-bold uppercase tracking-widest" style={{ color: ts.textDim }}>AI Coach</span>
+          <span id="coach-title" className="t-caption font-bold uppercase tracking-widest" style={{ color: ts.textDim }}>
+            {t('coach.titleAria', 'AI Coach')}
+          </span>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => setMessages([{ id: 'w', role: 'coach', text: t('coach.welcome'), done: true }])} 
-                  className="p-2 rounded-lg hover:bg-black/5 transition-colors" style={{ color: ts.textDim }}>
+          <button
+            onClick={() => setMessages([{ id: 'w', role: 'coach', text: t('coach.welcome'), done: true }])}
+            aria-label={t('coach.resetAria', 'Reset conversation')}
+            title={t('coach.resetAria', 'Reset conversation')}
+            className="p-2 rounded-lg hover:bg-black/5 transition-colors"
+            style={{ color: ts.textDim }}>
             <RotateCcw size={16} />
           </button>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-black/5 transition-colors" style={{ color: ts.textDim }}>
+          <button
+            onClick={onClose}
+            aria-label={t('common.close', 'Close')}
+            className="p-2 rounded-lg hover:bg-black/5 transition-colors"
+            style={{ color: ts.textDim }}>
             <X size={18} />
           </button>
         </div>
       </div>
 
-      {/* Chat Area */}
-      <div className="h-[350px] overflow-y-auto px-5 py-4 scrollbar-hide">
-        {messages.map((msg, i) => (
-          msg.role === 'user' ? (
-            <div key={msg.id} className="flex justify-end mb-4 animate-in slide-in-from-right-2">
-              <div className="px-4 py-3 rounded-2xl rounded-br-none t-body font-medium border"
-                   style={{ backgroundColor: `${ts.accent}15`, borderColor: `${ts.accent}30`, color: ts.textPrimary }}>
-                {msg.text}
-              </div>
-            </div>
-          ) : (
-            <CoachBubble key={msg.id} message={msg} isLatest={i === messages.length - 1} onTry={(tech) => {
-              onClose();
-              navigate('/breathing', { state: { coachPreset: COACH_PRESETS[tech.key], coachPresetName: tech.label } });
-            }} />
-          )
-        ))}
-        {loading && <TypingIndicator />}
-        <div ref={bottomRef} />
-      </div>
+      {!consented ? (
+        <ConsentScreen onAccept={acceptConsent} onClose={onClose} />
+      ) : (
+        <>
+          {/* Chat Area */}
+          <div className="h-[350px] overflow-y-auto px-5 py-4 scrollbar-hide">
+            {messages.map((msg, i) => (
+              msg.role === 'user' ? (
+                <div key={msg.id} className="flex justify-end mb-4 animate-in slide-in-from-right-2">
+                  <div className="px-4 py-3 rounded-2xl rounded-br-none t-body font-medium border"
+                       style={{ backgroundColor: `${ts.accent}15`, borderColor: `${ts.accent}30`, color: ts.textPrimary }}>
+                    {msg.text}
+                  </div>
+                </div>
+              ) : (
+                <CoachBubble key={msg.id} message={msg} isLatest={i === messages.length - 1} onTry={(tech) => {
+                  onClose();
+                  navigate('/breathing', { state: { coachPreset: COACH_PRESETS[tech.key], coachPresetName: tech.label } });
+                }} />
+              )
+            ))}
+            {loading && <TypingIndicator />}
+            <div ref={bottomRef} />
+          </div>
 
-      {/* Input Area */}
-      <div className="p-4 border-t" style={{ borderColor: ts.border, background: ts.pageBg }}>
-        {limitData ? (
-          <div className="p-3 rounded-xl border flex items-center gap-3" style={{ borderColor: '#ff4d4d30', backgroundColor: '#ff4d4d10' }}>
-            <ShieldAlert className="text-[#ff4d4d]" size={18} />
-            <div className="t-label leading-tight" style={{ color: ts.textPrimary }}>
-              <p className="font-bold uppercase tracking-tighter">{t('coach.limit.usedAuth')}</p>
-              <p className="opacity-60">
-                {t('coach.limit.comeback')} {limitData.hoursUntilReset}{t('coach.limit.comebackHours')} {t('coach.limit.createAccount')}
-              </p>
-            </div>
+          {/* Always-visible wellness disclaimer */}
+          <div
+            className="px-4 py-2 border-t flex items-center gap-2"
+            style={{ borderColor: ts.border, background: ts.pageBg }}
+          >
+            <ShieldAlert size={12} style={{ color: ts.textDim }} className="flex-shrink-0" />
+            <p className="t-label leading-tight" style={{ color: ts.textDim }}>
+              {t('coach.disclaimerShort', 'Wellness companion — not medical advice. In crisis call 988 / 112 / 116 123.')}
+            </p>
           </div>
-        ) : (
-          <div className="relative flex items-center gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key !== 'Enter') return;
-                if (e.shiftKey || (e as any).isComposing || (e as any).nativeEvent?.isComposing) return;
-                e.preventDefault();
-                handleSend(input);
-              }}
-              placeholder={t('coach.placeholder')}
-              className="w-full bg-transparent border-2 rounded-2xl px-4 py-3 t-body transition-all focus:outline-none"
-              style={{ borderColor: ts.border, color: ts.textPrimary }}
-            />
-            <button 
-              onClick={() => handleSend(input)}
-              disabled={!input.trim() || loading}
-              className="absolute right-2 p-2 rounded-xl text-white transition-all hover:scale-110 active:scale-95 disabled:opacity-30 disabled:grayscale"
-              style={{ background: ts.accent }}
-            >
-              <Send size={16} />
-            </button>
+
+          {/* Input Area */}
+          <div className="p-4 border-t" style={{ borderColor: ts.border, background: ts.pageBg }}>
+            {limitData ? (
+              <div className="p-3 rounded-xl border flex items-center gap-3" style={{ borderColor: '#ff4d4d30', backgroundColor: '#ff4d4d10' }}>
+                <ShieldAlert className="text-[#ff4d4d]" size={18} />
+                <div className="t-label leading-tight" style={{ color: ts.textPrimary }}>
+                  <p className="font-bold uppercase tracking-tighter">{t('coach.limit.usedAuth')}</p>
+                  <p className="opacity-60">
+                    {t('coach.limit.comeback')} {limitData.hoursUntilReset}{t('coach.limit.comebackHours')} {t('coach.limit.createAccount')}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="relative flex items-center gap-2">
+                <label htmlFor="coach-input" className="sr-only">
+                  {t('coach.placeholder')}
+                </label>
+                <input
+                  id="coach-input"
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  maxLength={MAX_MESSAGE_CHARS}
+                  onKeyDown={(e) => {
+                    if (e.key !== 'Enter') return;
+                    if (e.shiftKey || (e as any).isComposing || (e as any).nativeEvent?.isComposing) return;
+                    e.preventDefault();
+                    handleSend(input);
+                  }}
+                  placeholder={t('coach.placeholder')}
+                  className="w-full bg-transparent border-2 rounded-2xl px-4 py-3 t-body transition-all focus:outline-none"
+                  style={{ borderColor: ts.border, color: ts.textPrimary }}
+                />
+                <button
+                  onClick={() => handleSend(input)}
+                  disabled={!input.trim() || loading}
+                  aria-label={t('coach.sendAria', 'Send message')}
+                  className="absolute right-2 p-2 rounded-xl text-white transition-all hover:scale-110 active:scale-95 disabled:opacity-30 disabled:grayscale"
+                  style={{ background: ts.accent }}
+                >
+                  <Send size={16} />
+                </button>
+              </div>
+            )}
+            <p className="t-label text-center mt-3 opacity-30 font-bold uppercase tracking-widest" style={{ color: ts.textDim }}>
+              {t('coach.poweredBy', 'Powered by Google Gemini')}
+            </p>
           </div>
-        )}
-        <p className="t-label text-center mt-3 opacity-30 font-bold uppercase tracking-widest" style={{ color: ts.textDim }}>
-          Powered by Gemini AI
-        </p>
-      </div>
+        </>
+      )}
+
+      {crisisOpen && <CrisisHelp onClose={() => setCrisisOpen(false)} />}
     </div>
   );
 }

@@ -107,6 +107,7 @@ export default function Footer() {
               { to: "/faq",     label: t("footer.faq") },
               { to: "/support", label: t("footer.contact") },
               { to: "/privacy", label: t("footer.privacy") },
+              { to: "/terms",   label: t("footer.terms", "Terms") },
             ].map(({ to, label }) => (
               <Link
                 key={label}
@@ -162,8 +163,13 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ── Mobile ── (aria-hidden: desktop block above already exposes all links to AT) */}
-        <div className="flex sm:hidden flex-col gap-6" aria-hidden="true">
+        {/* ── Mobile ──
+            The desktop block above is hidden on mobile via `hidden sm:grid`,
+            so AT users on mobile rely on THIS block. Previous version had
+            `aria-hidden="true"` with focusable <a> children — a WCAG 4.1.2
+            violation (focus lands on something the screen reader can't see).
+            Removed the aria-hidden so the mobile footer is exposed properly. */}
+        <div className="flex sm:hidden flex-col gap-6">
 
           {/* Top */}
           <div className="flex items-center justify-between">

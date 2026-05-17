@@ -22,10 +22,15 @@ router.get('/', async (req, res) => {
     const liveMap = {};
     counts.forEach(c => { liveMap[c._id.toString()] = c.live; });
 
-    const result = challenges.map(ch => ({
-      ...ch,
-      joinCount: (ch.baseJoinCount ?? 0) + (liveMap[ch._id.toString()] ?? 0),
-    }));
+    // Honest social-proof number: only actual `UserChallenge` documents
+    // count toward `joinCount`. We do NOT add `baseJoinCount` from the
+    // Challenge document — that's a fake-multiplier field that misleads
+    // users and risks FTC / EU UCPD claims around deceptive practices.
+    const result = challenges.map(ch => {
+      const live = liveMap[ch._id.toString()] ?? 0;
+      const { baseJoinCount: _ignored, ...safe } = ch;
+      return { ...safe, joinCount: live };
+    });
 
     res.json(result);
   } catch (err) {

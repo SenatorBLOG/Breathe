@@ -125,6 +125,8 @@ export default function CommunityPostPage() {
 
         <main className="flex-1 max-w-2xl mx-auto w-full px-4 sm:px-6 py-8 flex flex-col gap-6">
 
+          <h1 className="sr-only">{post?.text ? post.text.slice(0, 80) : t('community.postH1', 'Community post')}</h1>
+
           {/* Back */}
           <button onClick={() => navigate('/community')}
             className="flex items-center gap-2 t-caption transition-colors self-start"

@@ -3,6 +3,16 @@ import react from '@vitejs/plugin-react-swc';
 import mkcert from 'vite-plugin-mkcert';
 import cesium from 'vite-plugin-cesium';
 import path from 'path';
+import { execSync } from 'child_process';
+
+// Capture the current commit hash so error reports and bug reports can be
+// tied back to a deployed version. Falls back to "dev" if git is missing.
+function gitSha(): string {
+  try { return execSync('git rev-parse --short HEAD').toString().trim(); }
+  catch { return 'dev'; }
+}
+const COMMIT = gitSha();
+const BUILD_TIME = new Date().toISOString();
 
 /**
  * vite-plugin-cesium unconditionally injects:
@@ -38,6 +48,10 @@ export default defineConfig({
     removeCesiumHtmlInjection(),
   ],
   base: '/', // критически важно для Vercel
+  define: {
+    __COMMIT__:     JSON.stringify(COMMIT),
+    __BUILD_TIME__: JSON.stringify(BUILD_TIME),
+  },
   build: {
     target: 'esnext',
     outDir: 'build',

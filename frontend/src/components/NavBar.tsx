@@ -68,12 +68,16 @@ export default function NavBar() {
         .nav-link:hover span { width: 100% !important; }
       `}</style>
 
-      <nav aria-label={t('common.mainNavigation')} className="sticky top-0 z-50 w-full transition-all duration-300"
+      {/* <header> wrapper gives a `banner` landmark; the inner <nav> remains
+          the `navigation` landmark. Both are required for WCAG 1.3.1. */}
+      <header role="banner" className="sticky top-0 z-50 w-full">
+      <nav aria-label={t('common.mainNavigation')} className="w-full transition-all duration-300"
         style={{
           background: scrolled ? `${ts.navBg}` : `${ts.navBg}B0`,
           backdropFilter: 'blur(12px)',
           borderBottom: `1px solid ${scrolled ? ts.border : ts.border + '80'}`,
           boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.3)' : 'none',
+          paddingTop: 'env(safe-area-inset-top)',
         }}>
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-4">
@@ -288,6 +292,7 @@ export default function NavBar() {
           </div>
         )}
       </nav>
+      </header>
     </>
   );
 }

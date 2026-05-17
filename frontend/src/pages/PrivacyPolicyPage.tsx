@@ -98,7 +98,7 @@ export default function PrivacyPolicyPage() {
             <Li>Biometric (heart rate) data is stored separately and access-controlled so only you can read it.</Li>
             <Li>We use industry-standard practices to protect against unauthorised access, alteration, and deletion.</Li>
           </ul>
-          <p>Despite our best efforts, no system is 100% secure. If you discover a security issue, please contact us at <strong style={{ color: ts.textPrimary }}>privacy@breatheapp.co</strong>.</p>
+          <p>Despite our best efforts, no system is 100% secure. If you discover a security issue, please contact us at <strong style={{ color: ts.textPrimary }}>privacy@breatheonline.app</strong>.</p>
         </>
       ),
     },
@@ -164,11 +164,11 @@ export default function PrivacyPolicyPage() {
           <p>
             Email:{' '}
             <a
-              href="mailto:privacy@breatheapp.co"
+              href="mailto:privacy@breatheonline.app"
               className="font-medium hover:opacity-80 transition-opacity"
               style={{ color: ts.textSecondary }}
             >
-              privacy@breatheapp.co
+              privacy@breatheonline.app
             </a>
           </p>
           <p>We aim to respond to all privacy-related requests within 5 business days.</p>
@@ -231,8 +231,8 @@ export default function PrivacyPolicyPage() {
                 Visit our Support page
               </Link>
               {' '}or email{' '}
-              <a href="mailto:privacy@breatheapp.co" className="font-medium hover:opacity-80 transition-opacity" style={{ color: ts.textSecondary }}>
-                privacy@breatheapp.co
+              <a href="mailto:privacy@breatheonline.app" className="font-medium hover:opacity-80 transition-opacity" style={{ color: ts.textSecondary }}>
+                privacy@breatheonline.app
               </a>.
             </p>
           </div>

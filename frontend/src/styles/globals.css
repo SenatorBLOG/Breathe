@@ -4,6 +4,79 @@
 }
 .animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   Mobile / safe-area / touch — bundle for production mobile UX
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* iOS notch / dynamic island / home indicator — pages can opt-in with
+   class="safe-top" / "safe-bottom" / "safe-x". The values resolve to 0
+   on devices without a safe area, so they're cheap to apply broadly. */
+.safe-top    { padding-top:    env(safe-area-inset-top, 0); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0); }
+.safe-x      { padding-left:   env(safe-area-inset-left, 0);
+               padding-right:  env(safe-area-inset-right, 0); }
+
+/* `min-h-screen` uses 100vh which iOS Safari fixes incorrectly when the
+   on-screen keyboard appears. `dvh` (dynamic viewport height) shrinks
+   correctly, so forms / modals stay above the keyboard. Falls back to
+   `vh` on browsers that don't yet support `dvh`. */
+@supports (height: 100dvh) {
+  .min-h-screen { min-height: 100dvh !important; }
+  .h-screen     { height:     100dvh !important; }
+}
+
+/* Default touch behaviour: no double-tap zoom on tappable widgets, no
+   accidental browser pull-to-refresh on full-screen interactive views
+   like the breathing orb. Components opt in / out with these classes. */
+body { overscroll-behavior-y: contain; }
+button,
+[role="button"],
+a {
+  touch-action: manipulation;
+}
+
+/* Minimum touch-target — WCAG 2.5.5 Level AAA + Apple HIG (44pt) and
+   Material Design (48dp). Anything tagged `.tap-target` (or buttons/links
+   inside `.tap-targets`) is forced to ≥ 44 px on its shortest side. */
+.tap-target,
+.tap-targets a,
+.tap-targets button {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   prefers-reduced-motion — WCAG 2.3.3
+   Users who set "Reduce motion" in their OS must not be subjected to
+   the breathing-app's heavy entrance / pulse / shimmer animations.
+   We collapse all animation + transition durations to a single frame so
+   the layout still settles in the right place but nothing actually moves.
+   Add `data-allow-motion="true"` to an element to opt back in (e.g. the
+   breathing orb itself, which IS the feature).
+   ───────────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-allow-motion="true"],
+  [data-allow-motion="true"] *,
+  [data-allow-motion="true"] *::before,
+  [data-allow-motion="true"] *::after {
+    animation-duration: revert !important;
+    animation-iteration-count: revert !important;
+    animation-delay: revert !important;
+    transition-duration: revert !important;
+    transition-delay: revert !important;
+  }
+}
+
 /* ── Hero entrance animations ─────────────────────────────────────────────── */
 @keyframes anim-fade-up {
   from { opacity: 0; transform: translateY(24px); }

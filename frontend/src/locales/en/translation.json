@@ -97,6 +97,7 @@
     "basedOnNotes": "Based on your notes: try {{technique}}",
     "seoTitle": "Guided Breathing Exercises — Box, 4-7-8, Wim Hof & More",
     "seoDesc": "Free guided breathing sessions for sleep, stress relief, and focus. Try Box Breathing, 4-7-8, Wim Hof Method and more. No download needed — works in your browser.",
+    "h1": "Guided Breathing Session",
     "presetNames": {
       "box": "Box",
       "478": "4-7-8",
@@ -145,6 +146,7 @@
     "subtitle": "Share your journey with fellow meditators",
     "seoTitle": "Breathing Community — Share Your Journey",
     "seoDescription": "Join thousands of people sharing their breathwork journey. Read posts, share experiences, and stay motivated with the Breathe community.",
+    "postH1": "Community post",
     "brand": "Breathe · Community",
     "commentCount": "{{count}} comments",
     "commentCount_one": "{{count}} comment",
@@ -214,6 +216,7 @@
   "globe": {
     "seoTitle": "Breathe Together — Global Meditation Community Map",
     "seoDescription": "See meditators around the world. Discover and share meditation spots, connect with the global breathing community.",
+    "h1": "Breathe Together — Global Community Map",
     "brand": "Breathe Together",
     "failedLoad": "Failed to load globe data.",
     "failedLike": "Failed to like pin.",

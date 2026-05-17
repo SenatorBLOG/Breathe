@@ -255,6 +255,28 @@ export function MusicLibrary() {
             <div>
               <p className="t-label tracking-[0.3em] uppercase" style={{ color: ts.textMuted }}>{t('music.brand')}</p>
               <h1 className="text-2xl sm:text-3xl font-light" style={{ color: ts.textPrimary }}>{t('music.title')}</h1>
+              {/* Creative Commons attribution required by Jamendo's licensing terms */}
+              <p className="t-label mt-1.5" style={{ color: ts.textDim }}>
+                {t('music.attribution', 'Tracks by independent artists via')}{' '}
+                <a
+                  href="https://www.jamendo.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                  style={{ color: ts.textMuted }}
+                >
+                  Jamendo
+                </a>{' '}·{' '}
+                <a
+                  href="https://creativecommons.org/licenses/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                  style={{ color: ts.textMuted }}
+                >
+                  Creative Commons
+                </a>
+              </p>
             </div>
 
             {/* Search */}

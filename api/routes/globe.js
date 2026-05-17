@@ -46,12 +46,35 @@ router.get('/', getLimiter, optionalAuth, async (req, res) => {
       }
     }
 
+    // Privacy: never return full address (`title` field may contain street-level
+    // text) or `userId` (enables user enumeration) to unauthenticated clients.
+    // Coordinates are rounded to 2 decimals (~1.1 km) so a pin can show "I
+    // meditated in this neighbourhood" without leaking the exact home address.
     const pins = await GlobePin.find(filter)
       .sort({ createdAt: -1 })
       .limit(limit)
+      .select('lat lng city country technique note photoUrl likeCount createdAt username')
       .lean();
 
-    res.json(pins);
+    const requesterId = req.user?._id?.toString();
+    const publicPins = pins.map(p => {
+      // The pin's owner sees their own pin at full precision; everyone else
+      // sees a coarse coordinate so the location isn't a stalking vector.
+      const isOwner = requesterId && p.userId && String(p.userId) === requesterId;
+      if (isOwner) return p;
+      return {
+        ...p,
+        lat: Math.round(p.lat * 100) / 100,
+        lng: Math.round(p.lng * 100) / 100,
+        // Strip the username down to a non-identifying initial so the email
+        // prefix isn't published verbatim alongside city + country.
+        username: typeof p.username === 'string' && p.username
+          ? (p.username[0].toUpperCase() + (p.username.length > 1 ? '.' : ''))
+          : 'Anonymous',
+      };
+    });
+
+    res.json(publicPins);
   } catch (err) {
     console.error('GET /globe/pins error:', err);
     res.status(500).json({ error: 'Failed to fetch pins.' });

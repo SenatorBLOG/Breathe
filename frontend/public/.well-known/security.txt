@@ -1,0 +1,16 @@
+# Responsible disclosure channel for breatheonline.app
+# Format: RFC 9116 (https://www.rfc-editor.org/rfc/rfc9116)
+
+Contact: mailto:security@breatheonline.app
+Expires: 2027-05-17T00:00:00.000Z
+Preferred-Languages: en, ru, es
+Canonical: https://breatheonline.app/.well-known/security.txt
+Policy: https://breatheonline.app/privacy
+
+# If you've found a security issue, please email the address above. Please
+# do NOT open a public GitHub issue. We aim to acknowledge reports within
+# three business days and to publish a fix or mitigation within thirty days.
+#
+# Out of scope: rate-limiting on public read-only endpoints, missing
+# best-practice headers on /.well-known/* and static asset paths, and
+# any finding requiring access to a user's own device.

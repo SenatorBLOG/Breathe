@@ -109,8 +109,11 @@ router.post('/message', optionalAuth, rateLimit, async (req, res) => {
     } catch (axErr) {
       const status = axErr.response?.status;
       const msg    = axErr.response?.data?.error?.message ?? axErr.message;
+      // Log full detail server-side but never echo it back to the client —
+      // upstream error strings leak internal architecture (which provider,
+      // which model, which endpoint failed).
       console.error(`Gemini error ${status ?? 'network'}: ${msg}`);
-      return res.status(502).json({ error: 'AI service error. Please try again.', detail: msg });
+      return res.status(502).json({ error: 'AI service error. Please try again.' });
     }
     console.log(`Gemini OK — candidates: ${geminiData?.candidates?.length}`);
 
@@ -140,7 +143,7 @@ router.post('/message', optionalAuth, rateLimit, async (req, res) => {
 
   } catch (err) {
     console.error('Coach route error:', err.message, err.stack);
-    res.status(500).json({ error: 'Something went wrong. Please try again.', detail: err.message });
+    res.status(500).json({ error: 'Something went wrong. Please try again.' });
   }
 });
 

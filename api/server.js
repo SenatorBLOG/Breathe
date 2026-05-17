@@ -113,6 +113,24 @@ app.use('/api/unsubscribe',  unsubscribeRouter);
 app.use('/api/integrations', integrationsRouter);
 
 app.get('/api/ping', (req, res) => res.json({ ok: true }));
+
+// Real health check — load balancer / Render uses this to decide whether to
+// route traffic. Returns 200 only when MongoDB is reachable and the critical
+// env vars are present; otherwise 503 so the platform restarts the container.
+app.get('/healthz', async (req, res) => {
+  const checks = {
+    mongo:  mongoose.connection.readyState === 1,
+    gemini: !!process.env.GEMINI_API_KEY,
+    jwt:    !!process.env.JWT_SECRET,
+  };
+  const ok = Object.values(checks).every(Boolean);
+  res.status(ok ? 200 : 503).json({
+    status: ok ? 'ok' : 'degraded',
+    checks,
+    uptime: process.uptime(),
+  });
+});
+
 app.get('/', (req, res) => res.send('Breathe server is running!'));
 
 const PORT = process.env.PORT || 5000;

@@ -133,6 +133,8 @@ export default function GlobePage() {
 
       <NavBar />
 
+      <h1 className="sr-only">{t('globe.h1', 'Breathe Together — Global Community Map')}</h1>
+
       {/* ── Top toolbar ─────────────────────────────────────────────────────── */}
       <div style={{
         position:       'relative',

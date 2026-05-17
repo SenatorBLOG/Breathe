@@ -97,6 +97,7 @@
     "basedOnNotes": "Según tus notas: prueba {{technique}}",
     "seoTitle": "Ejercicios de respiración guiada — Box, 4-7-8, Wim Hof y más",
     "seoDesc": "Sesiones de respiración guiada gratuitas para dormir, aliviar el estrés y concentrarte. Prueba la respiración Box, 4-7-8, el método Wim Hof y más. Sin descarga — funciona en tu navegador.",
+    "h1": "Sesión de respiración guiada",
     "presetNames": {
       "box": "Box",
       "478": "4-7-8",
@@ -145,6 +146,7 @@
     "subtitle": "Comparte tu viaje con otros meditadores",
     "seoTitle": "Comunidad de respiración — comparte tu viaje",
     "seoDescription": "Únete a miles de personas que comparten su viaje de breathwork. Lee publicaciones, comparte experiencias y mantente motivado con la comunidad de Breathe.",
+    "postH1": "Publicación de la comunidad",
     "brand": "Breathe · Comunidad",
     "commentCount": "{{count}} comentarios",
     "commentCount_one": "{{count}} comentario",
@@ -214,6 +216,7 @@
   "globe": {
     "seoTitle": "Breathe Together — mapa global de la comunidad",
     "seoDescription": "Mira dónde meditan personas de todo el mundo. Descubre y comparte lugares de práctica y conéctate con la comunidad global de Breathe.",
+    "h1": "Breathe Together — mapa global de la comunidad",
     "brand": "Breathe Together",
     "failedLoad": "No se pudieron cargar los datos del mapa.",
     "failedLike": "No se pudo dar like.",
