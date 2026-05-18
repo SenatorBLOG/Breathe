@@ -62,12 +62,36 @@ export default defineConfig({
         assetFileNames: 'assets/[name]-[hash][extname]',
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
-        // Split vendor libraries into separate chunks so browsers can cache
-        // them independently and the entry chunk stays small
-        // No manualChunks — let Rollup's default chunking keep React and all
-        // vendor libs in a safe load order. Manual splitting was causing
-        // "Cannot read properties of undefined (reading 'forwardRef')" because
-        // libraries in 'vendor' called React APIs before 'vendor-react' loaded.
+        // Safe manual chunking: React + framer-motion stay together (framer
+        // uses React hooks internally — splitting them caused forwardRef errors).
+        // i18next and chart.js are React-independent and safe to isolate.
+        manualChunks(id) {
+          // React ecosystem — must be one chunk so hooks initialise before consumers
+          if (id.includes('node_modules/react') ||
+              id.includes('node_modules/react-dom') ||
+              id.includes('node_modules/framer-motion') ||
+              id.includes('node_modules/scheduler')) {
+            return 'vendor-react';
+          }
+          // i18next is pure JS with no React dependency
+          if (id.includes('node_modules/i18next') ||
+              id.includes('node_modules/react-i18next')) {
+            return 'vendor-i18n';
+          }
+          // chart.js + adapters are large and React-independent
+          if (id.includes('node_modules/chart.js') ||
+              id.includes('node_modules/react-chartjs-2')) {
+            return 'vendor-charts';
+          }
+          // recharts + echarts are heavy — isolate so ProfilePage lazy-load
+          // doesn't pull them into the initial bundle
+          if (id.includes('node_modules/recharts') ||
+              id.includes('node_modules/echarts') ||
+              id.includes('node_modules/zrender') ||
+              id.includes('node_modules/d3-')) {
+            return 'vendor-charts-2';
+          }
+        },
       },
     },
   },

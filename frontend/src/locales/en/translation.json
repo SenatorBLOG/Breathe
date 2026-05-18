@@ -681,12 +681,24 @@
       "calm": "Overwhelmed, need calm"
     },
     "limit": {
-      "used": "3 free messages used",
-      "usedAuth": "You've used today's messages",
-      "comeback": "Come back in",
-      "comebackHours": "h for more coaching.",
-      "createAccount": "Create a free account for 10 messages per day."
-    }
+      "usedAuth": "You've used your daily messages.",
+      "createAccount": "Create a free account for more.",
+      "comeback": "Come back tomorrow for more messages.",
+      "comebackHours": "Come back in {{hours}} hours."
+    },
+    "consent": {
+      "title": "AI Breathing Coach",
+      "body": "This coach is powered by Google Gemini AI. It offers wellness guidance only — not medical advice or therapy.",
+      "crisis": "If you are in crisis, call 988 (US/CA), 116 123 (UK/IE), or 112 (EU).",
+      "privacy": "Your messages are sent to Google. Do not share personal health information.",
+      "accept": "I understand, continue"
+    },
+    "disclaimerShort": "Not medical advice. Crisis: 988 · 112 · 116 123",
+    "poweredBy": "Powered by Google Gemini",
+    "resetAria": "Reset conversation",
+    "sendAria": "Send message",
+    "titleAria": "AI Breathing Coach chat",
+    "errorGeneric": "Something went wrong. Please try again."
   },
   "challengeNudge": {
     "messages": [
@@ -783,7 +795,6 @@
     "achievementsLabel": "Achievements",
     "healthOverview": "Health overview · last 7 days",
     "sources": "Sources",
-    "syncAll": "Sync all",
     "good": "good",
     "fair": "fair",
     "poor": "poor",
@@ -1055,18 +1066,26 @@
     "desc3": "Free forever · No ads · Works offline",
     "goalTitle": "What brings you here?",
     "goals": {
-      "sleep": "Better Sleep", "sleepDesc": "Fall asleep faster",
-      "anxiety": "Less Anxiety", "anxietyDesc": "Calm racing thoughts",
-      "focus": "More Focus", "focusDesc": "Sharp and present",
-      "energy": "More Energy", "energyDesc": "Natural alertness"
+      "sleep": "Better Sleep",
+      "sleepDesc": "Fall asleep faster",
+      "anxiety": "Less Anxiety",
+      "anxietyDesc": "Calm racing thoughts",
+      "focus": "More Focus",
+      "focusDesc": "Sharp and present",
+      "energy": "More Energy",
+      "energyDesc": "Natural alertness"
     },
     "guidanceTitle": "How should we guide you?",
     "guidanceSub": "You can change this anytime on the breathing page",
     "guidanceModes": {
-      "visual": "Visual", "visualDesc": "Watch the circle",
-      "sound": "Sound", "soundDesc": "Tones for each phase",
-      "vibration": "Vibration", "vibrationDesc": "Android only",
-      "voice": "Voice", "voiceDesc": "Spoken instructions"
+      "visual": "Visual",
+      "visualDesc": "Watch the circle",
+      "sound": "Sound",
+      "soundDesc": "Tones for each phase",
+      "vibration": "Vibration",
+      "vibrationDesc": "Android only",
+      "voice": "Voice",
+      "voiceDesc": "Spoken instructions"
     },
     "guidanceHint": "You can close your eyes — we'll guide you",
     "guidanceUnavailable": "unavailable",
@@ -1284,9 +1303,21 @@
       }
     },
     "plans": {
-      "stress": ["Day 1–2: Reset your baseline with 4-7-8", "Day 3–5: Box breathing for daytime calm", "Day 6–7: Lock in the evening wind-down"],
-      "shallow": ["Day 1–2: Belly breathing foundation", "Day 3–5: Expand to coherent breathing", "Day 6–7: Full diaphragm activation habit"],
-      "natural": ["Day 1–2: Establish 5.5 BPM resonance", "Day 3–5: HRV tracking + Wim Hof boost", "Day 6–7: Lock in your peak-performance routine"]
+      "stress": [
+        "Day 1–2: Reset your baseline with 4-7-8",
+        "Day 3–5: Box breathing for daytime calm",
+        "Day 6–7: Lock in the evening wind-down"
+      ],
+      "shallow": [
+        "Day 1–2: Belly breathing foundation",
+        "Day 3–5: Expand to coherent breathing",
+        "Day 6–7: Full diaphragm activation habit"
+      ],
+      "natural": [
+        "Day 1–2: Establish 5.5 BPM resonance",
+        "Day 3–5: HRV tracking + Wim Hof boost",
+        "Day 6–7: Lock in your peak-performance routine"
+      ]
     }
   },
   "homeStress": {
@@ -1317,10 +1348,26 @@
     "insightCoherentBreathing": "Add Coherent Breathing to go deeper",
     "insightEveningWindDown": "Evening wind-down session recommended",
     "breakdown": {
-      "highStress": ["Sleep is your biggest lever right now", "Morning breathing routine would reduce cortisol spike", "Evening wind-down with 4-7-8 recommended"],
-      "moderateStress": ["Focus is slightly scattered — try box breathing before work", "Sleep quality can be improved with 4-7-8 before bed", "Consistent morning practice would stabilize energy"],
-      "balanced": ["Your baseline is healthy — coherent breathing to optimize HRV", "Morning ritual would amplify your natural energy", "Track sessions to see trends over time"],
-      "lowStress": ["Excellent baseline — Wim Hof to push performance further", "Your HRV is likely high — connect wearable to confirm", "Focus on maintaining consistency"]
+      "highStress": [
+        "Sleep is your biggest lever right now",
+        "Morning breathing routine would reduce cortisol spike",
+        "Evening wind-down with 4-7-8 recommended"
+      ],
+      "moderateStress": [
+        "Focus is slightly scattered — try box breathing before work",
+        "Sleep quality can be improved with 4-7-8 before bed",
+        "Consistent morning practice would stabilize energy"
+      ],
+      "balanced": [
+        "Your baseline is healthy — coherent breathing to optimize HRV",
+        "Morning ritual would amplify your natural energy",
+        "Track sessions to see trends over time"
+      ],
+      "lowStress": [
+        "Excellent baseline — Wim Hof to push performance further",
+        "Your HRV is likely high — connect wearable to confirm",
+        "Focus on maintaining consistency"
+      ]
     }
   },
   "charts": {
@@ -1356,5 +1403,19 @@
       "forest": "Forest",
       "white": "White noise"
     }
+  },
+  "cookies": {
+    "title": "This site uses cookies",
+    "body": "We use analytics cookies to improve your experience. You can opt out at any time.",
+    "accept": "Accept",
+    "reject": "Reject",
+    "learnMore": "Privacy policy"
+  },
+  "crisis": {
+    "title": "Are you in crisis?",
+    "subtitle": "You're not alone. Free, confidential support is available 24/7.",
+    "text": "If you or someone you know is in immediate danger, please call emergency services now.",
+    "disclaimer": "Breathe is a wellness app, not a crisis service. Please reach out to the resources above.",
+    "website": "Website"
   }
 }

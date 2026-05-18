@@ -715,12 +715,24 @@
       "calm": "Abrumado, necesito calma"
     },
     "limit": {
-      "used": "3 mensajes gratuitos usados",
-      "usedAuth": "Has usado los mensajes de hoy",
-      "comeback": "Vuelve en",
-      "comebackHours": "h para más sesiones.",
-      "createAccount": "Crea una cuenta gratuita para 10 mensajes al día."
-    }
+      "usedAuth": "Has usado tus mensajes diarios.",
+      "createAccount": "Crea una cuenta gratuita para más.",
+      "comeback": "Vuelve mañana para más mensajes.",
+      "comebackHours": "Vuelve en {{hours}} horas."
+    },
+    "consent": {
+      "title": "Entrenador de respiración IA",
+      "body": "Este entrenador usa Google Gemini AI. Solo ofrece orientación de bienestar — no consejos médicos.",
+      "crisis": "En crisis llama al 717 003 717 (ES) o 112.",
+      "privacy": "Tus mensajes se envían a Google. No compartas información médica personal.",
+      "accept": "Entendido, continuar"
+    },
+    "disclaimerShort": "No es consejo médico. Crisis: 112 · 717 003 717",
+    "poweredBy": "Impulsado por Google Gemini",
+    "resetAria": "Reiniciar conversación",
+    "sendAria": "Enviar mensaje",
+    "titleAria": "Chat con entrenador de respiración IA",
+    "errorGeneric": "Algo salió mal. Por favor intenta de nuevo."
   },
   "challengeNudge": {
     "messages": [
@@ -817,7 +829,6 @@
     "achievementsLabel": "Logros",
     "healthOverview": "Salud · últimos 7 días",
     "sources": "Fuentes",
-    "syncAll": "Sincronizar todo",
     "good": "bien",
     "fair": "regular",
     "poor": "mal",
@@ -1089,18 +1100,26 @@
     "desc3": "Gratis para siempre · Sin anuncios · Funciona sin internet",
     "goalTitle": "¿Qué te trae aquí?",
     "goals": {
-      "sleep": "Dormir mejor", "sleepDesc": "Conciliar el sueño más rápido",
-      "anxiety": "Menos ansiedad", "anxietyDesc": "Calmar pensamientos acelerados",
-      "focus": "Más enfoque", "focusDesc": "Claridad y presencia",
-      "energy": "Más energía", "energyDesc": "Alerta natural"
+      "sleep": "Dormir mejor",
+      "sleepDesc": "Conciliar el sueño más rápido",
+      "anxiety": "Menos ansiedad",
+      "anxietyDesc": "Calmar pensamientos acelerados",
+      "focus": "Más enfoque",
+      "focusDesc": "Claridad y presencia",
+      "energy": "Más energía",
+      "energyDesc": "Alerta natural"
     },
     "guidanceTitle": "¿Cómo quieres ser guiado?",
     "guidanceSub": "Puedes cambiarlo en cualquier momento en la página de respiración",
     "guidanceModes": {
-      "visual": "Visual", "visualDesc": "Sigue el círculo",
-      "sound": "Sonido", "soundDesc": "Tonos por cada fase",
-      "vibration": "Vibración", "vibrationDesc": "Solo Android",
-      "voice": "Voz", "voiceDesc": "Instrucciones habladas"
+      "visual": "Visual",
+      "visualDesc": "Sigue el círculo",
+      "sound": "Sonido",
+      "soundDesc": "Tonos por cada fase",
+      "vibration": "Vibración",
+      "vibrationDesc": "Solo Android",
+      "voice": "Voz",
+      "voiceDesc": "Instrucciones habladas"
     },
     "guidanceHint": "Puedes cerrar los ojos — te guiaremos",
     "guidanceUnavailable": "no disponible",
@@ -1318,9 +1337,21 @@
       }
     },
     "plans": {
-      "stress": ["Días 1–2: Restablece tu base con 4-7-8", "Días 3–5: Respiración cuadrada para la calma diurna", "Días 6–7: Consolida la rutina nocturna"],
-      "shallow": ["Días 1–2: Fundamentos de la respiración abdominal", "Días 3–5: Avanza a la respiración coherente", "Días 6–7: Activación completa del diafragma"],
-      "natural": ["Días 1–2: Establece resonancia de 5.5 resp/min", "Días 3–5: Seguimiento VFC + Wim Hof", "Días 6–7: Consolida tu rutina de máximo rendimiento"]
+      "stress": [
+        "Días 1–2: Restablece tu base con 4-7-8",
+        "Días 3–5: Respiración cuadrada para la calma diurna",
+        "Días 6–7: Consolida la rutina nocturna"
+      ],
+      "shallow": [
+        "Días 1–2: Fundamentos de la respiración abdominal",
+        "Días 3–5: Avanza a la respiración coherente",
+        "Días 6–7: Activación completa del diafragma"
+      ],
+      "natural": [
+        "Días 1–2: Establece resonancia de 5.5 resp/min",
+        "Días 3–5: Seguimiento VFC + Wim Hof",
+        "Días 6–7: Consolida tu rutina de máximo rendimiento"
+      ]
     }
   },
   "homeStress": {
@@ -1351,10 +1382,40 @@
     "insightCoherentBreathing": "Agrega respiración coherente para profundizar",
     "insightEveningWindDown": "Se recomienda sesión de relajación nocturna",
     "breakdown": {
-      "highStress": ["El sueño es tu principal palanca ahora mismo", "La rutina de respiración matutina reduciría el pico de cortisol", "Relajación nocturna con 4-7-8 recomendada"],
-      "moderateStress": ["La concentración está algo dispersa — prueba respiración cuadrada antes del trabajo", "La calidad del sueño puede mejorar con 4-7-8 antes de dormir", "La práctica matutina constante estabilizaría la energía"],
-      "balanced": ["Tu base es saludable — respiración coherente para optimizar la VFC", "El ritual matutino amplificaría tu energía natural", "Registra sesiones para ver tendencias a lo largo del tiempo"],
-      "lowStress": ["Excelente base — Wim Hof para impulsar el rendimiento", "Tu VFC probablemente es alta — conecta un dispositivo para confirmar", "Enfócate en mantener la constancia"]
+      "highStress": [
+        "El sueño es tu principal palanca ahora mismo",
+        "La rutina de respiración matutina reduciría el pico de cortisol",
+        "Relajación nocturna con 4-7-8 recomendada"
+      ],
+      "moderateStress": [
+        "La concentración está algo dispersa — prueba respiración cuadrada antes del trabajo",
+        "La calidad del sueño puede mejorar con 4-7-8 antes de dormir",
+        "La práctica matutina constante estabilizaría la energía"
+      ],
+      "balanced": [
+        "Tu base es saludable — respiración coherente para optimizar la VFC",
+        "El ritual matutino amplificaría tu energía natural",
+        "Registra sesiones para ver tendencias a lo largo del tiempo"
+      ],
+      "lowStress": [
+        "Excelente base — Wim Hof para impulsar el rendimiento",
+        "Tu VFC probablemente es alta — conecta un dispositivo para confirmar",
+        "Enfócate en mantener la constancia"
+      ]
     }
+  },
+  "cookies": {
+    "title": "Este sitio usa cookies",
+    "body": "Usamos cookies analíticas para mejorar tu experiencia. Puedes rechazarlas en cualquier momento.",
+    "accept": "Aceptar",
+    "reject": "Rechazar",
+    "learnMore": "Política de privacidad"
+  },
+  "crisis": {
+    "title": "¿Estás en crisis?",
+    "subtitle": "No estás solo/a. Apoyo gratuito y confidencial disponible las 24 horas.",
+    "text": "Si tú o alguien cercano está en peligro inmediato, llama a los servicios de emergencia ahora.",
+    "disclaimer": "Breathe es una app de bienestar, no un servicio de crisis. Por favor contacta los recursos arriba.",
+    "website": "Sitio web"
   }
 }
