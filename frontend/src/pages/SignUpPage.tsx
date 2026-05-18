@@ -93,6 +93,18 @@ function SignUpPageInner() {
     setError('');
     try {
       const res = await api.post('/auth/register', { name, email, password });
+      // The backend deliberately returns 200 with no token when the email
+      // already exists, so an attacker cannot distinguish new vs existing
+      // email by response code. We MUST check for the token before treating
+      // this as success — otherwise we set `token = "undefined"` in
+      // localStorage and ship the user to /onboarding without being signed in.
+      if (!res.data?.token) {
+        const msg = res.data?.message
+          || t('auth.emailMaybeExists', 'If this email is new, check your inbox. If you already have an account, please sign in.');
+        setError(msg);
+        toast.info(msg);
+        return;
+      }
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('userId', res.data.user?._id ?? '');
       if (ref)   localStorage.setItem('breathe_quiz_result', ref);

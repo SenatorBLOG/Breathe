@@ -899,8 +899,17 @@ export default function ProfilePage() {
                         const res = await api.get('/users/me/export', { responseType: 'blob', timeout: 60000 });
                         const url = URL.createObjectURL(res.data);
                         const a = document.createElement('a');
-                        a.href = url; a.download = 'breathe-my-data.json'; a.click();
-                        URL.revokeObjectURL(url);
+                        a.href = url;
+                        a.download = 'breathe-my-data.json';
+                        // Safari requires the anchor to be in the DOM for the
+                        // download to trigger; revoke the URL after the click
+                        // has been dispatched, not synchronously.
+                        document.body.appendChild(a);
+                        a.click();
+                        setTimeout(() => {
+                          a.remove();
+                          URL.revokeObjectURL(url);
+                        }, 0);
                         toast.success(t('profile.exportSuccess', 'Your data is downloading.'));
                       } catch {
                         toast.error(t('profile.exportError', 'Export failed. Please try again.'));
@@ -921,8 +930,7 @@ export default function ProfilePage() {
                       try {
                         await api.delete('/users/me');
                         toast.success(t('profile.deleteSuccess', 'Account deleted.'));
-                        logout();
-                        navigate('/');
+                        logout(); // clears token + navigates to '/'
                       } catch {
                         toast.error(t('profile.deleteError', 'Delete failed. Please try again or contact support.'));
                       }

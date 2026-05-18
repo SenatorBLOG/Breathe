@@ -2,10 +2,19 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
 const authenticate = require('../middleware/auth');
 const { OAuth2Client } = require('google-auth-library');
+
+// Pre-generated cost-12 bcrypt hash of a throwaway string. Used to keep the
+// "user not found" branch's response timing equal to the "password wrong"
+// branch — without this, the no-such-email branch returns in ~3 ms while the
+// real branch takes ~200 ms, leaking email existence over the network.
+// The plaintext is irrelevant; the hash just gives bcrypt.compare a real
+// workload of the same cost.
+const TIMING_DUMMY_HASH = '$2b$12$1.QmSl/egSQX95ZvPZc2tuygEbzk2hBZCTSCDyrH3bPqbQiSK5bYW';
 
 // Per-IP throttles. The global limiter in server.js is too loose (100/15min)
 // for auth flows — credential stuffing and email enumeration need much
@@ -103,9 +112,11 @@ router.post('/login', loginLimiter, [
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      // Run a dummy bcrypt compare so the response timing of "user-not-found"
-      // matches the "wrong-password" branch (defeats timing-based enumeration).
-      try { await User.prototype.comparePassword?.call({ password: '$2b$10$x' }, password); } catch {}
+      // Run a REAL bcrypt compare against a valid pre-computed hash so this
+      // branch takes the same time (~200 ms at cost 12) as the wrong-password
+      // branch. The previous version called `comparePassword` with an
+      // invalid hash, which threw immediately and left timing leakable.
+      await bcrypt.compare(password, TIMING_DUMMY_HASH);
       return res.status(400).json({ error: GENERIC_AUTH_ERR });
     }
 

@@ -130,6 +130,9 @@ function ConsentScreen({ onAccept, onClose }: { onAccept: () => void; onClose: (
             {t('coach.consent.body', 'AI Coach is powered by Google Gemini. The messages you type are sent to Google for processing. The Coach is a wellness companion — it is not a therapist, not a doctor, and not a substitute for professional medical or mental-health care.')}
           </p>
           <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
+            {t('coach.consent.dataNotice', 'Your messages are sent to Google. Do not share personal health information.')}
+          </p>
+          <p className="t-caption leading-relaxed" style={{ color: ts.textMuted }}>
             {t('coach.consent.crisis', 'If you are in crisis or thinking about self-harm, close this chat and use the crisis-help screen — we will not improvise a response.')}{' '}
             <Link to="/privacy" className="underline" style={{ color: ts.accent }}>
               {t('coach.consent.privacy', 'Privacy policy')}
@@ -329,7 +332,7 @@ export default function AICoachModal({ onClose }: { onClose: () => void }) {
                 <div className="t-label leading-tight" style={{ color: ts.textPrimary }}>
                   <p className="font-bold uppercase tracking-tighter">{t('coach.limit.usedAuth')}</p>
                   <p className="opacity-60">
-                    {t('coach.limit.comeback')} {limitData.hoursUntilReset}{t('coach.limit.comebackHours')} {t('coach.limit.createAccount')}
+                    {t('coach.limit.comebackHours', { hours: limitData.hoursUntilReset })} {t('coach.limit.createAccount')}
                   </p>
                 </div>
               </div>

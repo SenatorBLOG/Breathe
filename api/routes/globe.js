@@ -50,26 +50,31 @@ router.get('/', getLimiter, optionalAuth, async (req, res) => {
     // text) or `userId` (enables user enumeration) to unauthenticated clients.
     // Coordinates are rounded to 2 decimals (~1.1 km) so a pin can show "I
     // meditated in this neighbourhood" without leaking the exact home address.
+    // We MUST include `userId` in the select so we can check ownership for
+    // coarsening, but we strip it from every response below so it never
+    // leaves the server (still no enumeration over the wire).
     const pins = await GlobePin.find(filter)
       .sort({ createdAt: -1 })
       .limit(limit)
-      .select('lat lng city country technique note photoUrl likeCount createdAt username')
+      .select('lat lng city country technique note photoUrl likeCount createdAt username userId')
       .lean();
 
     const requesterId = req.user?._id?.toString();
     const publicPins = pins.map(p => {
       // The pin's owner sees their own pin at full precision; everyone else
       // sees a coarse coordinate so the location isn't a stalking vector.
-      const isOwner = requesterId && p.userId && String(p.userId) === requesterId;
-      if (isOwner) return p;
+      const isOwner = !!(requesterId && p.userId && String(p.userId) === requesterId);
+      // Strip userId from every response — owner or not.
+      const { userId: _ownerId, ...safe } = p;
+      if (isOwner) return safe;
       return {
-        ...p,
-        lat: Math.round(p.lat * 100) / 100,
-        lng: Math.round(p.lng * 100) / 100,
+        ...safe,
+        lat: Math.round(safe.lat * 100) / 100,
+        lng: Math.round(safe.lng * 100) / 100,
         // Strip the username down to a non-identifying initial so the email
         // prefix isn't published verbatim alongside city + country.
-        username: typeof p.username === 'string' && p.username
-          ? (p.username[0].toUpperCase() + (p.username.length > 1 ? '.' : ''))
+        username: typeof safe.username === 'string' && safe.username
+          ? (safe.username[0].toUpperCase() + (safe.username.length > 1 ? '.' : ''))
           : 'Anonymous',
       };
     });

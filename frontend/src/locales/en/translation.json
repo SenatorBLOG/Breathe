@@ -642,7 +642,8 @@
     "failedCreateAccount": "Failed to create account",
     "strengthWeak": "Weak",
     "strengthFair": "Fair",
-    "strengthStrong": "Strong"
+    "strengthStrong": "Strong",
+    "emailMaybeExists": "If this email is new, check your inbox. If you already have an account, please sign in."
   },
   "footer": {
     "tagline": "Mindful breathing for sleep, focus & calm. Find your rhythm.",
@@ -691,8 +692,9 @@
       "title": "AI Breathing Coach",
       "body": "This coach is powered by Google Gemini AI. It offers wellness guidance only — not medical advice or therapy.",
       "crisis": "If you are in crisis, call 988 (US/CA), 116 123 (UK/IE), or 112 (EU).",
-      "privacy": "Your messages are sent to Google. Do not share personal health information.",
-      "accept": "I understand, continue"
+      "privacy": "Privacy policy",
+      "accept": "I understand, continue",
+      "dataNotice": "Your messages are sent to Google. Do not share personal health information."
     },
     "disclaimerShort": "Not medical advice. Crisis: 988 · 112 · 116 123",
     "poweredBy": "Powered by Google Gemini",

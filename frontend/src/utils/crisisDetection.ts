@@ -9,39 +9,52 @@
 // English + Russian + Spanish keyword/phrase coverage. False positives are
 // preferable to false negatives for this check; an extra helpline screen is
 // never harmful, but missing one can be fatal.
+//
+// IMPORTANT: JavaScript's `\b` is ASCII-only — it does not recognise Cyrillic
+// (or other non-Latin) letters as word characters, so `\bпокончить\b` NEVER
+// matches in normal Russian text. We use Unicode property escapes `\p{L}` in
+// look-arounds (requires the `u` flag) so word boundaries work for all scripts.
+
+// Unicode-aware word boundary equivalents.
+const LB = '(?<!\\p{L})';  // before: not preceded by a letter
+const RB = '(?!\\p{L})';   // after: not followed by a letter
+
+// Helper: build a unicode-boundary-aware case-insensitive regex.
+const re = (pat: string) => new RegExp(`${LB}(?:${pat})${RB}`, 'iu');
 
 const PATTERNS: RegExp[] = [
   // English — direct ideation
-  /\bkill\s+(my ?self|me)\b/i,
-  /\bsuicid(e|al|ing)\b/i,
-  /\bend\s+(my\s+life|it\s+all)\b/i,
-  /\btake\s+my\s+(own\s+)?life\b/i,
-  /\b(want|wanna|going)\s+to\s+die\b/i,
-  /\bi\s+want\s+to\s+die\b/i,
-  /\bself[- ]?harm/i,
-  /\bcut(ting)?\s+my(self)?\b/i,
-  /\bhurt\s+my ?self\b/i,
-  /\boverdose\b/i,
-  /\bno\s+(reason|point)\s+to\s+(live|continue)\b/i,
-  /\bbetter\s+off\s+(dead|without\s+me)\b/i,
-  /\bcan'?t\s+(go\s+on|do\s+this\s+anymore|take\s+it\s+anymore)\b/i,
+  re('kill\\s+(?:my ?self|me)'),
+  re('suicid(?:e|al|ing)'),
+  re('end\\s+(?:my\\s+life|it\\s+all)'),
+  re('take\\s+my\\s+(?:own\\s+)?life'),
+  re('(?:want|wanna|going)\\s+to\\s+die'),
+  re('self[- ]?harm'),
+  re('cut(?:ting)?\\s+my(?:self)?'),
+  re('hurt\\s+my ?self'),
+  re('overdose'),
+  re('no\\s+(?:reason|point)\\s+to\\s+(?:live|continue)'),
+  re('better\\s+off\\s+(?:dead|without\\s+me)'),
+  re("can'?t\\s+(?:go\\s+on|do\\s+this\\s+anymore|take\\s+it\\s+anymore)"),
 
   // Russian — direct ideation
-  /\bпокончить\s+(с\s+собой|жизнь|жизнью)\b/i,
-  /\bсамоубий(ство|ца)\b/i,
-  /\bхочу\s+(умереть|сдохнуть)\b/i,
-  /\b(убить|убью|убью\s+себя)\b/i,
-  /\bпорезать(ся)?\b/i,
-  /\bпричинить\s+(себе\s+)?вред\b/i,
-  /\bнет\s+смысла\s+жить\b/i,
+  re('покончить\\s+(?:с\\s+собой|жизнь|жизнью)'),
+  re('самоубий(?:ство|ца)'),
+  re('хочу\\s+(?:умереть|сдохнуть)'),
+  re('убить\\s+себя'),
+  re('убью\\s+себя'),
+  re('порезать(?:ся)?'),
+  re('причинить\\s+(?:себе\\s+)?вред'),
+  re('нет\\s+смысла\\s+жить'),
+  re('жить\\s+не\\s+хочется'),
 
   // Spanish — direct ideation
-  /\bsuicid(arme|io|arse|a)\b/i,
-  /\bquiero\s+morir(me)?\b/i,
-  /\bmatar(me|se)\b/i,
-  /\bquitar(me|se)\s+la\s+vida\b/i,
-  /\bhacerme\s+da[ñn]o\b/i,
-  /\bautolesi[oó]n\b/i,
+  re('suicid(?:arme|io|arse|a)'),
+  re('quiero\\s+morir(?:me)?'),
+  re('matar(?:me|se)'),
+  re('quitar(?:me|se)\\s+la\\s+vida'),
+  re('hacerme\\s+da[ñn]o'),
+  re('autolesi[oó]n'),
 ];
 
 /**

@@ -642,7 +642,8 @@
     "failedCreateAccount": "No se pudo crear la cuenta",
     "strengthWeak": "Débil",
     "strengthFair": "Regular",
-    "strengthStrong": "Fuerte"
+    "strengthStrong": "Fuerte",
+    "emailMaybeExists": "Si este correo es nuevo, revisa tu bandeja. Si ya tienes una cuenta, inicia sesión."
   },
   "charts": {
     "noDataYet": "Sin datos aún",
@@ -725,8 +726,9 @@
       "title": "Entrenador de respiración IA",
       "body": "Este entrenador usa Google Gemini AI. Solo ofrece orientación de bienestar — no consejos médicos.",
       "crisis": "En crisis llama al 717 003 717 (ES) o 112.",
-      "privacy": "Tus mensajes se envían a Google. No compartas información médica personal.",
-      "accept": "Entendido, continuar"
+      "privacy": "Política de privacidad",
+      "accept": "Entendido, continuar",
+      "dataNotice": "Tus mensajes se envían a Google. No compartas información médica personal."
     },
     "disclaimerShort": "No es consejo médico. Crisis: 112 · 717 003 717",
     "poweredBy": "Impulsado por Google Gemini",
