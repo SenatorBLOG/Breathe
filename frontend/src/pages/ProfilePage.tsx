@@ -9,7 +9,7 @@ import api from '../api';
 import { toast } from 'sonner';
 import {
   RefreshCw, Unlink, Moon, Heart, Activity, Zap, ChevronRight,
-  Watch, Camera, Save,
+  Watch, Camera, Save, Download, Trash2,
   Wind, Star, Target, Dumbbell, Trophy, Flame, Sparkles, Waves, Sunrise, Smile,
 } from 'lucide-react';
 import { AchievementBadge } from '../components/AchievementToast';
@@ -887,6 +887,55 @@ export default function ProfilePage() {
                       />
                     );
                   })}
+                </div>
+              </Section>
+
+              {/* ── Data & Account ─────────────────────────────────────────── */}
+              <Section label={t('profile.dataAccount', 'Data & Account')}>
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={async () => {
+                      try {
+                        const res = await api.get('/users/me/export', { responseType: 'blob' });
+                        const url = URL.createObjectURL(res.data);
+                        const a = document.createElement('a');
+                        a.href = url; a.download = 'breathe-my-data.json'; a.click();
+                        URL.revokeObjectURL(url);
+                        toast.success(t('profile.exportSuccess', 'Your data is downloading.'));
+                      } catch {
+                        toast.error(t('profile.exportError', 'Export failed. Please try again.'));
+                      }
+                    }}
+                    className="flex items-center gap-3 p-4 rounded-2xl text-left transition-all hover:opacity-90"
+                    style={{ background: ts.cardBg, border: `1px solid ${ts.border}` }}
+                  >
+                    <Download size={16} style={{ color: ts.accent }} />
+                    <div>
+                      <p className="t-body font-medium" style={{ color: ts.textPrimary }}>{t('profile.exportData', 'Export My Data')}</p>
+                      <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>{t('profile.exportDataSub', 'Download a copy of all your data (GDPR Art. 20)')}</p>
+                    </div>
+                  </button>
+                  <button
+                    onClick={async () => {
+                      if (!window.confirm(t('profile.deleteConfirm', 'This will permanently delete your account and all data. This cannot be undone. Continue?'))) return;
+                      try {
+                        await api.delete('/users/me');
+                        toast.success(t('profile.deleteSuccess', 'Account deleted.'));
+                        // AuthContext logout
+                        window.location.href = '/';
+                      } catch {
+                        toast.error(t('profile.deleteError', 'Delete failed. Please try again or contact support.'));
+                      }
+                    }}
+                    className="flex items-center gap-3 p-4 rounded-2xl text-left transition-all hover:opacity-90"
+                    style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)' }}
+                  >
+                    <Trash2 size={16} color="#EF4444" />
+                    <div>
+                      <p className="t-body font-medium" style={{ color: '#EF4444' }}>{t('profile.deleteAccount', 'Delete Account')}</p>
+                      <p className="t-caption mt-0.5" style={{ color: ts.textMuted }}>{t('profile.deleteAccountSub', 'Permanently erase your account and all associated data (GDPR Art. 17)')}</p>
+                    </div>
+                  </button>
                 </div>
               </Section>
             </div>

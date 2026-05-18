@@ -127,8 +127,8 @@ export default function PrivacyPolicyPage() {
             <Li><strong style={{ color: ts.textPrimary }}>Access</strong> — view all your session history and stats from your Profile page at any time.</Li>
             <Li><strong style={{ color: ts.textPrimary }}>Delete sessions</strong> — remove individual sessions from your session history.</Li>
             <Li><strong style={{ color: ts.textPrimary }}>Delete biometric data</strong> — revoke heart-rate consent and erase all stored readings from Profile → Data & Privacy.</Li>
-            <Li><strong style={{ color: ts.textPrimary }}>Delete account</strong> — permanently erase your account and all associated data. Contact us at the email below.</Li>
-            <Li><strong style={{ color: ts.textPrimary }}>Export</strong> — request a copy of your data at any time by emailing us.</Li>
+            <Li><strong style={{ color: ts.textPrimary }}>Delete account</strong> — permanently erase your account and all associated data from Profile → Settings → Delete Account, or email us.</Li>
+            <Li><strong style={{ color: ts.textPrimary }}>Export</strong> — download a machine-readable copy of all your data from Profile → Settings → Export My Data, or email us.</Li>
           </ul>
           <p>If you are in the EU/EEA, you also have rights under GDPR including the right to object to processing and to lodge a complaint with your supervisory authority.</p>
         </>

@@ -1,7 +1,12 @@
-const express = require('express');
-const router  = express.Router();
-const User    = require('../models/User');
-const auth    = require('../middleware/auth');
+const express        = require('express');
+const router         = express.Router();
+const User           = require('../models/User');
+const Session        = require('../models/Session');
+const Post           = require('../models/Post');
+const Comment        = require('../models/Comment');
+const GlobePin       = require('../models/GlobePin');
+const UserChallenge  = require('../models/UserChallenge');
+const auth           = require('../middleware/auth');
 
 // ─── POST /api/users/:id/block ────────────────────────────────────────────────
 router.post('/:id/block', auth, async (req, res) => {
@@ -82,6 +87,57 @@ router.patch('/me', auth, async (req, res) => {
   } catch (err) {
     console.error('PATCH /users/me error:', err.message);
     res.status(500).json({ error: 'Failed to update user profile.' });
+  }
+});
+
+// ─── GET /api/users/me/export — GDPR data portability (Art. 20) ──────────────
+router.get('/me/export', auth, async (req, res) => {
+  try {
+    const uid = req.user._id;
+    const [user, sessions, posts, comments, pins, challenges] = await Promise.all([
+      User.findById(uid).select('-password -__v').lean(),
+      Session.find({ userId: uid }).select('-__v').lean(),
+      Post.find({ author: uid }).select('-__v').lean(),
+      Comment.find({ author: uid }).select('-__v').lean(),
+      GlobePin.find({ userId: uid }).select('-__v').lean(),
+      UserChallenge.find({ userId: uid }).select('-__v').lean(),
+    ]);
+
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      account: user,
+      breathingSessions: sessions,
+      communityPosts: posts,
+      communityComments: comments,
+      globePins: pins,
+      challenges,
+    };
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', 'attachment; filename="breathe-my-data.json"');
+    res.json(payload);
+  } catch (err) {
+    console.error('GET /users/me/export error:', err.message);
+    res.status(500).json({ error: 'Failed to export data.' });
+  }
+});
+
+// ─── DELETE /api/users/me — GDPR right to erasure (Art. 17) ──────────────────
+router.delete('/me', auth, async (req, res) => {
+  try {
+    const uid = req.user._id;
+    await Promise.all([
+      Session.deleteMany({ userId: uid }),
+      GlobePin.deleteMany({ userId: uid }),
+      UserChallenge.deleteMany({ userId: uid }),
+      Post.updateMany({ author: uid }, { $set: { author: null, text: '[deleted]', deleted: true } }),
+      Comment.updateMany({ author: uid }, { $set: { author: null, text: '[deleted]', deleted: true } }),
+    ]);
+    await User.findByIdAndDelete(uid);
+    res.json({ ok: true, message: 'Account and associated data deleted.' });
+  } catch (err) {
+    console.error('DELETE /users/me error:', err.message);
+    res.status(500).json({ error: 'Failed to delete account.' });
   }
 });
 
