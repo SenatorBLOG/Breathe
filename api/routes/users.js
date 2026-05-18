@@ -123,15 +123,24 @@ router.get('/me/export', auth, async (req, res) => {
 });
 
 // ─── DELETE /api/users/me — GDPR right to erasure (Art. 17) ──────────────────
+// Hard-delete the user's PII along with every record that ties to them. Posts
+// and Comments have `author: required: true` in their schemas, so we can't
+// soft-anonymise — we hard-delete. The user's comments on OTHER posts are
+// also deleted (they contain user-authored text, which is PII under GDPR).
 router.delete('/me', auth, async (req, res) => {
   try {
     const uid = req.user._id;
+    // Collect post IDs first so we can cascade-delete all comments on them
+    const userPosts = await Post.find({ author: uid }).select('_id').lean();
+    const userPostIds = userPosts.map(p => p._id);
+
     await Promise.all([
       Session.deleteMany({ userId: uid }),
       GlobePin.deleteMany({ userId: uid }),
       UserChallenge.deleteMany({ userId: uid }),
-      Post.updateMany({ author: uid }, { $set: { author: null, text: '[deleted]', deleted: true } }),
-      Comment.updateMany({ author: uid }, { $set: { author: null, text: '[deleted]', deleted: true } }),
+      Comment.deleteMany({ author: uid }),                  // their comments
+      Comment.deleteMany({ post: { $in: userPostIds } }),   // comments on their posts
+      Post.deleteMany({ author: uid }),
     ]);
     await User.findByIdAndDelete(uid);
     res.json({ ok: true, message: 'Account and associated data deleted.' });

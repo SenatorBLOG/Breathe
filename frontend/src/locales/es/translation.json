@@ -139,7 +139,8 @@
       "androidOnly": "Solo Android",
       "notSupported": "No disponible",
       "done": "Listo"
-    }
+    },
+    "medicalDisclaimer": "Breathe es una app de bienestar, no un consejo médico. Si te sientes mareado, detente y descansa. En crisis llama al 112 o al 717 003 717."
   },
   "community": {
     "title": "Comunidad",
@@ -855,7 +856,17 @@
       "normal": "Normal",
       "overweight": "Sobrepeso",
       "obese": "Obesidad"
-    }
+    },
+    "dataAccount": "Datos y cuenta",
+    "exportData": "Exportar mis datos",
+    "exportDataSub": "Descarga una copia de todos tus datos (GDPR Art. 20)",
+    "exportSuccess": "Tus datos se están descargando.",
+    "exportError": "La exportación falló. Por favor intenta de nuevo.",
+    "deleteAccount": "Eliminar cuenta",
+    "deleteAccountSub": "Borra permanentemente tu cuenta y todos los datos asociados (GDPR Art. 17)",
+    "deleteConfirm": "Esto eliminará permanentemente tu cuenta y todos los datos. No se puede deshacer. ¿Continuar?",
+    "deleteSuccess": "Cuenta eliminada.",
+    "deleteError": "La eliminación falló. Por favor intenta de nuevo o contacta soporte."
   },
   "moodGrid": {
     "breakdownTitle": "Estado de ánimo · todas las sesiones",

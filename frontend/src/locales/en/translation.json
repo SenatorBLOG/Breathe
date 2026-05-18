@@ -139,7 +139,8 @@
       "androidOnly": "Android only",
       "notSupported": "Not supported",
       "done": "Done"
-    }
+    },
+    "medicalDisclaimer": "Breathe is a wellness app, not medical advice. If you feel dizzy, stop and rest. In a crisis call 988, 112, or 116 123."
   },
   "community": {
     "title": "Community",
@@ -821,7 +822,17 @@
       "normal": "Normal",
       "overweight": "Overweight",
       "obese": "Obese"
-    }
+    },
+    "dataAccount": "Data & Account",
+    "exportData": "Export My Data",
+    "exportDataSub": "Download a copy of all your data (GDPR Art. 20)",
+    "exportSuccess": "Your data is downloading.",
+    "exportError": "Export failed. Please try again.",
+    "deleteAccount": "Delete Account",
+    "deleteAccountSub": "Permanently erase your account and all associated data (GDPR Art. 17)",
+    "deleteConfirm": "This will permanently delete your account and all data. This cannot be undone. Continue?",
+    "deleteSuccess": "Account deleted.",
+    "deleteError": "Delete failed. Please try again or contact support."
   },
   "moodGrid": {
     "breakdownTitle": "Mood breakdown · all sessions",

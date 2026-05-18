@@ -418,7 +418,7 @@ export default function ProfilePage() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, updateUser } = useContext(AuthContext);
+  const { user, updateUser, logout } = useContext(AuthContext);
 
   // ── Tab ─────────────────────────────────────────────────────────────────────
   const validTabs = ['profile', 'devices', 'challenges', 'sessions', 'progress'] as const;
@@ -896,7 +896,7 @@ export default function ProfilePage() {
                   <button
                     onClick={async () => {
                       try {
-                        const res = await api.get('/users/me/export', { responseType: 'blob' });
+                        const res = await api.get('/users/me/export', { responseType: 'blob', timeout: 60000 });
                         const url = URL.createObjectURL(res.data);
                         const a = document.createElement('a');
                         a.href = url; a.download = 'breathe-my-data.json'; a.click();
@@ -921,8 +921,8 @@ export default function ProfilePage() {
                       try {
                         await api.delete('/users/me');
                         toast.success(t('profile.deleteSuccess', 'Account deleted.'));
-                        // AuthContext logout
-                        window.location.href = '/';
+                        logout();
+                        navigate('/');
                       } catch {
                         toast.error(t('profile.deleteError', 'Delete failed. Please try again or contact support.'));
                       }
