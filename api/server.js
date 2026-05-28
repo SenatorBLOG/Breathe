@@ -118,16 +118,22 @@ app.get('/api/ping', (req, res) => res.json({ ok: true }));
 // route traffic. Returns 200 only when MongoDB is reachable and the critical
 // env vars are present; otherwise 503 so the platform restarts the container.
 app.get('/healthz', async (req, res) => {
-  const checks = {
-    mongo:  mongoose.connection.readyState === 1,
-    gemini: !!process.env.GEMINI_API_KEY,
-    jwt:    !!process.env.JWT_SECRET,
+  // Hard requirements — app cannot function without these
+  const required = {
+    mongo: mongoose.connection.readyState === 1,
+    jwt:   !!process.env.JWT_SECRET,
   };
-  const ok = Object.values(checks).every(Boolean);
+  // Soft warnings — missing degrades features but app still runs
+  const optional = {
+    gemini:    !!process.env.GEMINI_API_KEY,
+    mapsApi:   !!process.env.GOOGLE_MAPS_API_KEY,
+  };
+  const ok = Object.values(required).every(Boolean);
   res.status(ok ? 200 : 503).json({
-    status: ok ? 'ok' : 'degraded',
-    checks,
-    uptime: process.uptime(),
+    status:   ok ? 'ok' : 'degraded',
+    required,
+    optional,
+    uptime:   process.uptime(),
   });
 });
 
