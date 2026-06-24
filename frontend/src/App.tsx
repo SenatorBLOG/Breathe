@@ -34,6 +34,7 @@ const WhySleepPage         = lazy(() => import('./pages/sleep/WhySleepPage'));
 const BreathworkSleepPage  = lazy(() => import('./pages/sleep/BreathworkSleepPage'));
 const SleepStoryPage       = lazy(() => import('./pages/sleep/SleepStoryPage'));
 const SlowBreathingPage    = lazy(() => import('./pages/science/SlowBreathingPage'));
+const FightOrFlightPage    = lazy(() => import('./pages/science/FightOrFlightPage'));
 const MorningRitualPage    = lazy(() => import('./pages/techniques/MorningRitualPage'));
 const PrivacyPolicyPage    = lazy(() => import('./pages/PrivacyPolicyPage'));
 const ForgotPasswordPage   = lazy(() => import('./pages/ForgotPasswordPage'));
@@ -113,6 +114,7 @@ function AnimatedRoutes() {
         <Route path="/sleep/breathwork-for-deep-sleep" element={<PageWrapper><BreathworkSleepPage /></PageWrapper>} />
         <Route path="/sleep/story"                   element={<PageWrapper><SleepStoryPage /></PageWrapper>} />
         <Route path="/science/slow-breathing"          element={<PageWrapper><SlowBreathingPage /></PageWrapper>} />
+        <Route path="/science/fight-or-flight"         element={<PageWrapper><FightOrFlightPage /></PageWrapper>} />
         <Route path="/breathing/morning-ritual"        element={<PageWrapper><MorningRitualPage /></PageWrapper>} />
         <Route path="/privacy"                         element={<PageWrapper><PrivacyPolicyPage /></PageWrapper>} />
         <Route path="/challenges"                      element={<Navigate to="/profile" replace />} />

@@ -127,6 +127,13 @@
     <priority>0.85</priority>
   </url>
 
+  <url>
+    <loc>https://breatheonline.app/science/fight-or-flight</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
   <!-- ── Legal ──────────────────────────────────────────────────────────── -->
   <url>
     <loc>https://breatheonline.app/privacy</loc>

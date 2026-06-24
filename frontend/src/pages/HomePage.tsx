@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Square, Moon, Heart, Flame, Wind, Infinity, Waves, Zap, BarChart2, Globe } from 'lucide-react';
+import { Square, Moon, Heart, Flame, Wind, Infinity, Waves, Zap, BarChart2, Globe, Activity } from 'lucide-react';
 import NavBar from '../components/NavBar';
 import ThemeBackground from '../components/ThemeBackground';
 import Footer from '../components/Footer';
@@ -357,6 +357,7 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 reveal-stagger">
                   <ContentCard icon={<Waves size={20} color="#38BDF8" />}    tag="Guide"     title={t('home.contentCards.sleepTitle')}     desc={t('home.contentCards.sleepDesc')}      href="/sleep/breathwork-for-deep-sleep" />
                   <ContentCard icon={<Zap size={20} color="#FACC15" />}      tag="Science"   title={t('home.contentCards.scienceTitle')}   desc={t('home.contentCards.scienceDesc')}    href="/science/slow-breathing" />
+                  <ContentCard icon={<Activity size={20} color="#F87171" />} tag="Science"   title={t('home.contentCards.fightTitle')}     desc={t('home.contentCards.fightDesc')}      href="/science/fight-or-flight" />
                   <ContentCard icon={<Wind size={20} color="#A78BFA" />}     tag="Practice"  title={t('home.contentCards.morningTitle')}   desc={t('home.contentCards.morningDesc')}    href="/breathing/morning-ritual" />
                   <ContentCard icon={<BarChart2 size={20} color="#4A9EFF" />} tag="Track"    title={t('home.contentCards.progressTitle')}  desc={t('home.contentCards.progressDesc')}   href="/sessions" />
                   <ContentCard icon={<Globe size={20} color="#4ADE80" />}    tag="Community" title={t('home.contentCards.communityTitle')} desc={t('home.contentCards.communityDesc')}  href="/community" />
