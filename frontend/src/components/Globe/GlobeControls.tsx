@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
-import type { GlobePin } from './useGlobe';
+import type { GlobePin } from './types';
 import { resolveMapUrl, type ResolvedPlace } from '../../utils/resolveMapUrl';
 
 const TECHNIQUE_OPTIONS = [

@@ -10,7 +10,7 @@ import PageSEO from '../components/PageSEO';
 import { AuthContext } from '../components/contexts/AuthContext';
 import api from '../api';
 import { toast } from 'sonner';
-import type { GlobePin } from '../components/Globe/useGlobe';
+import type { GlobePin } from '../components/Globe/types';
 import MapView    from '../components/Globe/MapView';
 import FilterBar  from '../components/Globe/FilterBar';
 import SpotSidebar from '../components/Globe/SpotSidebar';

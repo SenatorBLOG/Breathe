@@ -4,7 +4,7 @@
  */
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import type { GlobePin } from './useGlobe';
+import type { GlobePin } from './types';
 
 const PIN_COLORS: Record<string, string> = {
   'box':       '#3A82F7',

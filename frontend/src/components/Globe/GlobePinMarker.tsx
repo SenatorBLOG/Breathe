@@ -1,6 +1,6 @@
 import React from 'react';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
-import type { GlobePin } from './useGlobe';
+import type { GlobePin } from './types';
 
 const TECHNIQUE_LABELS: Record<string, string> = {
   'box':       'Box',

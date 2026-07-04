@@ -6,7 +6,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import type { GlobePin } from './useGlobe';
+import type { GlobePin } from './types';
 
 // ── Technique colours ────────────────────────────────────────────────────────
 const PIN_COLORS: Record<string, string> = {

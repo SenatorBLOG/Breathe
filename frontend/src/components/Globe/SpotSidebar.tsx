@@ -4,7 +4,7 @@
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import type { GlobePin } from './useGlobe';
+import type { GlobePin } from './types';
 import SpotCard from './SpotCard';
 
 interface GlobeStats {
