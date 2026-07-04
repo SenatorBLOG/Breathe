@@ -19,9 +19,11 @@ const TIMING_DUMMY_HASH = '$2b$12$1.QmSl/egSQX95ZvPZc2tuygEbzk2hBZCTSCDyrH3bPqbQ
 // Per-IP throttles. The global limiter in server.js is too loose (100/15min)
 // for auth flows — credential stuffing and email enumeration need much
 // tighter caps. `keyGenerator` falls back to `req.ip` honoring trust proxy.
+// Caps are env-overridable so the test suite can exercise the limiter
+// (low cap) or bypass it (high cap) without touching production defaults.
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 8,                       // 8 attempts per 15 min per IP
+  max: Number(process.env.LOGIN_RATE_MAX) || 8,    // 8 attempts per 15 min per IP
   message: { error: 'Too many login attempts. Please wait a few minutes and try again.' },
   standardHeaders: 'draft-7',
   legacyHeaders: false,
@@ -29,7 +31,7 @@ const loginLimiter = rateLimit({
 
 const registerLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 6,                       // 6 signups per hour per IP — blocks automated enumeration
+  max: Number(process.env.REGISTER_RATE_MAX) || 6, // 6 signups per hour per IP — blocks automated enumeration
   message: { error: 'Too many signup attempts. Please try again later.' },
   standardHeaders: 'draft-7',
   legacyHeaders: false,
