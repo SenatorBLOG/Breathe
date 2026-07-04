@@ -21,10 +21,16 @@ const allowedOrigins = [
   'https://localhost:5174',
 ];
 
+// Vercel preview deployments for THIS project only (e.g.
+// breathe-two-plum-git-branch-user.vercel.app). A bare `.vercel.app` suffix
+// check would let ANY attacker-deployed Vercel site call this API with
+// credentials — that's why the project slug is pinned.
+const VERCEL_PREVIEW_RE = /^https:\/\/breathe-two-plum(-[a-z0-9-]+)?\.vercel\.app$/;
+
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+    if (allowedOrigins.includes(origin) || VERCEL_PREVIEW_RE.test(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));

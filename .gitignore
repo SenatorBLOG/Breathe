@@ -31,3 +31,7 @@ api/.env.worktrees/
 node_modules/
 build/
 dist/
+# OS / tool junk
+manifests/
+blobs/
+*.stackdump

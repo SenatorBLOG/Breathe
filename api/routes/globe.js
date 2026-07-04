@@ -127,6 +127,26 @@ const resolveLimiter = rateLimit({
   message: { error: 'Too many requests. Slow down.' },
 });
 
+// SSRF guard: we only ever fetch Google-owned map hosts. Parsing with `new
+// URL()` and checking the hostname exactly (not a substring regex) blocks
+// tricks like `http://169.254.169.254/?goo.gl` or `http://evil.com/goo.gl`.
+const ALLOWED_MAP_HOSTS = new Set([
+  'goo.gl',
+  'maps.app.goo.gl',
+  'maps.google.com',
+  'www.google.com',
+  'google.com',
+]);
+
+function isAllowedMapUrl(raw) {
+  try {
+    const u = new URL(raw);
+    return u.protocol === 'https:' && ALLOWED_MAP_HOSTS.has(u.hostname);
+  } catch {
+    return false;
+  }
+}
+
 router.post('/resolve-place', resolveLimiter, async (req, res) => {
   const { url } = req.body;
   if (!url || typeof url !== 'string') return res.status(400).json({ error: 'URL required' });
@@ -134,10 +154,15 @@ router.post('/resolve-place', resolveLimiter, async (req, res) => {
   const KEY = process.env.GOOGLE_MAPS_API_KEY;
   if (!KEY) return res.status(500).json({ error: 'Maps API not configured' });
 
+  if (!isAllowedMapUrl(url.trim())) {
+    return res.status(400).json({ error: 'Only Google Maps links are supported' });
+  }
+
   try {
     // 1. Resolve short links (goo.gl / maps.app.goo.gl)
     let resolved = url.trim();
-    if (/goo\.gl|maps\.app\.goo\.gl/.test(resolved)) {
+    const shortHost = new URL(resolved).hostname;
+    if (shortHost === 'goo.gl' || shortHost === 'maps.app.goo.gl') {
       const r = await fetch(resolved, { method: 'HEAD', redirect: 'follow' });
       resolved = r.url;
     }

@@ -182,16 +182,6 @@ router.post('/:id/like', auth, async (req, res) => {
   }
 });
 
-// ─── POST /api/posts/:id/report ──────────────────────────────────────────────
-router.post('/:id/report', auth, async (req, res) => {
-  try {
-    await Post.findByIdAndUpdate(req.params.id, { reported: true });
-    res.json({ ok: true });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to report' });
-  }
-});
-
 // ─── GET /api/posts/:id/comments — public ────────────────────────────────────
 router.get('/:id/comments', optionalAuth, async (req, res) => {
   try {
@@ -251,6 +241,7 @@ router.post('/:id/report', auth, async (req, res) => {
     const reason = String(req.body.reason || '').trim().slice(0, 500);
     post.reports = post.reports || [];
     post.reports.push({ userId: uid(req), reason, createdAt: new Date() });
+    post.reported = true;
     await post.save();
     res.json({ ok: true });
   } catch (err) {
