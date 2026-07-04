@@ -1,6 +1,12 @@
-# 🌊 Breathe — Guided Breathing & Meditation App
+# 🌊 Breathe — Guided Breathing & Meditation PWA
 
-> A full-stack web app for guided breathing, sleep, focus and calm — with an AI coach, community forum, and session tracking. No download required.
+[![CI](https://github.com/SenatorBLOG/Breathe/actions/workflows/ci.yml/badge.svg)](https://github.com/SenatorBLOG/Breathe/actions/workflows/ci.yml)
+[![Live](https://img.shields.io/badge/live-breatheonline.app-38bdf8)](https://breatheonline.app)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+> A full-stack breathing & meditation web app — animated breathing guide, AI coach,
+> world meditation map, community, and session analytics. Solo-built and operated
+> in production. No download, no signup required to start.
 
 **Live:** [breatheonline.app](https://breatheonline.app)
 
@@ -8,109 +14,80 @@
 
 ## ✨ Features
 
-- **Animated breathing orb** — follows your breath in real time (inhale → expand, exhale → contract)
-- **6 science-backed techniques** — Box Breathing, 4-7-8, Wim Hof, Coherent, Belly, Alternate Nostril
-- **AI Breathing Coach** — powered by Gemini 2.5 Flash, recommends the right technique based on how you feel
-- **Session tracking** — mood before/after, focus, calmness, distraction count
-- **Progress dashboard** — streaks, charts, mood trends, HRV insights
-- **Sleep sounds library** — ambient audio via Jamendo API
-- **Community forum** — posts, comments, likes for meditators
-- **Weekly Calm newsletter** — automated Sunday tip via Resend
-- **Google OAuth** — sign in with Google
-- **PWA** — installable on mobile, works offline
+| | |
+|---|---|
+| 🫁 **Breathing engine** | Animated orb guiding 6 science-backed techniques (Box, 4-7-8, Wim Hof, Coherent, Belly, Alternate Nostril) with audio fades and guidance modes |
+| 🤖 **AI Coach** | Gemini-powered coach that recommends a technique from how you feel — with client-side **crisis-language detection** (EN/RU/ES) that routes to helplines instead of the LLM |
+| 🗺 **Meditation Globe** | Pin where you meditate on a world map — with privacy-preserving coordinate coarsening (~1.1 km) for everyone except the pin's owner |
+| 📊 **Progress analytics** | Streaks, mood before/after, calm score, charts; optional ML recommendations from a Python microservice |
+| 👥 **Community** | Posts, comments, likes, reports, user blocking |
+| 🌍 **i18n** | Full EN / RU / ES localization, including Unicode-aware safety patterns |
+| 🔐 **Privacy & GDPR** | Data export (Art. 20), cascade account deletion (Art. 17), cookie consent, coordinate privacy |
+| 📱 **PWA** | Installable, offline-capable, Lighthouse-optimized |
 
 ---
 
-## 🛠 Tech Stack
+## 🏗 Architecture
 
-### Frontend
-| Tech | Purpose |
-|------|---------|
-| React 18 + TypeScript | UI framework |
-| Vite | Build tool |
-| Tailwind CSS | Styling |
-| React Router v6 | Client-side routing |
-| Recharts | Data visualisation |
-| Sonner | Toast notifications |
-| Lucide React | Icons |
-| @react-oauth/google | Google OAuth |
+```mermaid
+flowchart LR
+    U[Browser / PWA] -->|HTTPS| V[Vercel\nReact 18 + Vite SPA]
+    V -->|REST /api| F[Fly.io\nExpress + Node 20]
+    F --> M[(MongoDB Atlas)]
+    F --> G[Gemini API\nAI Coach]
+    F --> R2[Resend\ntransactional email]
+    F --> ML[Render\nPython FastAPI ML]
+    V --> J[Jamendo API\nambient audio]
+```
 
-### Backend
-| Tech | Purpose |
-|------|---------|
-| Node.js + Express | API server |
-| MongoDB + Mongoose | Database |
-| JWT | Authentication |
-| Google Gemini 2.5 Flash | AI Coach |
-| Resend | Email / newsletter |
-| bcrypt | Password hashing |
+- **Frontend** — React 18, TypeScript, Vite, Tailwind, framer-motion, i18next, Leaflet. Route-level code splitting + manual vendor chunks (initial JS ≈ 124 KB gzip).
+- **API** — Express on Fly.io: JWT auth, per-route rate limits, helmet, express-validator, timing-equalized login, enumeration-resistant registration.
+- **ML service** — Python FastAPI on Render; scikit-learn model recommending techniques from session history.
+- **Data** — MongoDB Atlas via Mongoose.
 
-### Infrastructure
-| Service | Purpose |
-|---------|---------|
-| Vercel | Frontend hosting |
-| Railway | Backend + env vars |
-| MongoDB Atlas | Database hosting |
-| Google AI Studio | Gemini API key |
+Key design decisions are documented as [ADRs in `docs/adr/`](docs/adr/).
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+
-- MongoDB Atlas account (or local MongoDB)
-- Google AI Studio API key
-- Google OAuth client ID
-
-### 1. Clone the repo
+## 🧪 Testing & CI
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/breathe.git
-cd breathe
+# API — 27 integration tests (Jest + supertest + in-memory MongoDB)
+cd api && npm test
+
+# Frontend — 36 unit tests (Vitest)
+cd frontend && npm test
 ```
 
-### 2. Frontend setup
+Covered: auth flow & enumeration defenses, JWT validation, globe privacy
+(coordinate coarsening, username redaction, `userId` non-leak), owner-only
+deletion, SSRF allowlist, GDPR export completeness, cascade deletion with
+bystander isolation, brute-force 429s, multi-script crisis detection, audio
+fade race cancellation.
+
+CI runs both suites + a production build on every push ([workflow](.github/workflows/ci.yml)).
+
+---
+
+## 🚀 Run Locally
+
+Prereqs: Node 18+, a MongoDB URI (Atlas free tier works).
 
 ```bash
-cd frontend
+git clone https://github.com/SenatorBLOG/Breathe.git
+
+# 1 — API
+cd Breathe/api
 npm install
-cp .env.example .env.local
-```
+# .env: MONGO_URI, JWT_SECRET (any 32+ random chars). Optional: GEMINI_API_KEY,
+# RESEND_API_KEY, GOOGLE_MAPS_API_KEY — features degrade gracefully without them.
+npm start                     # http://localhost:5000
 
-Fill in `.env.local`:
-```env
-VITE_API_BASE=http://localhost:5000/api
-VITE_GOOGLE_CLIENT_ID=your_google_client_id
-```
-
-```bash
-npm run dev
-```
-
-### 3. Backend setup
-
-```bash
-cd backend
+# 2 — Frontend
+cd ../frontend
 npm install
-cp .env.example .env
+npm run dev                   # http://localhost:3000, proxies /api to :5000
 ```
-
-Fill in `.env`:
-```env
-MONGO_URI=mongodb+srv://...
-JWT_SECRET=your_random_secret_here
-GEMINI_API_KEY=your_gemini_key
-RESEND_API_KEY=re_your_resend_key
-CRON_SECRET=your_cron_secret
-PORT=5000
-```
-
-```bash
-npm run dev
-```
-
-App runs at `http://localhost:3000`
 
 ---
 
@@ -118,182 +95,39 @@ App runs at `http://localhost:3000`
 
 ```
 breathe/
-├── frontend/
+├── frontend/          # React SPA (Vercel)
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── AICoach/
-│   │   │   │   ├── AICoachModal.tsx     # Chat UI with typewriter effect
-│   │   │   │   ├── AICoachButton.tsx    # Floating trigger button
-│   │   │   │   └── SoulOrb.tsx          # Animated mascot orb with eyes
-│   │   │   ├── AudioPlayer/
-│   │   │   │   ├── MusicLibrary.tsx
-│   │   │   │   └── GlobalAudioPlayer.tsx
-│   │   │   ├── charts/
-│   │   │   │   ├── StatsCards.tsx
-│   │   │   │   ├── ActivityChart.tsx
-│   │   │   │   ├── AnnualProgressChart.tsx
-│   │   │   │   ├── MonthlyActivityChart.tsx
-│   │   │   │   └── MoodTrackingGrid.tsx
-│   │   │   ├── BreathingCircle.tsx      # Core breathing orb component
-│   │   │   ├── VideoBackground.tsx      # Dynamic video background
-│   │   │   ├── NavBar.tsx
-│   │   │   ├── Footer.tsx
-│   │   │   └── NewsletterWidget.tsx
-│   │   ├── pages/
-│   │   │   ├── HomePage.tsx
-│   │   │   ├── BreathingPage.tsx        # Main meditation page
-│   │   │   ├── SessionsPage.tsx
-│   │   │   ├── StatsPage.tsx
-│   │   │   ├── CommunityPage.tsx
-│   │   │   ├── FAQPage.tsx
-│   │   │   ├── SupportPage.tsx
-│   │   │   ├── LoginPage.tsx
-│   │   │   ├── SignUpPage.tsx
-│   │   │   └── techniques/
-│   │   │       ├── BoxBreathingPage.tsx
-│   │   │       ├── Breathing478Page.tsx
-│   │   │       ├── WimHofPage.tsx
-│   │   │       └── BreathingAnxietyPage.tsx
-│   │   ├── contexts/
-│   │   │   ├── AuthContext.tsx
-│   │   │   └── MusicContext.tsx
-│   │   ├── api.ts                       # Axios instance + interceptors
-│   │   └── App.tsx
-│   ├── public/
-│   │   ├── sitemap.xml
-│   │   ├── robots.txt
-│   │   └── site.webmanifest
-│   └── index.html                       # SEO meta tags + GA4
-│
-└── backend/
-    ├── models/
-    │   ├── User.js
-    │   ├── Session.js
-    │   ├── Post.js
-    │   ├── Comment.js
-    │   ├── SupportTicket.js
-    │   └── NewsletterSubscriber.js
-    ├── routes/
-    │   ├── auth.js                      # Register, login, Google OAuth
-    │   ├── sessions.js                  # CRUD meditation sessions
-    │   ├── posts.js                     # Community posts + comments
-    │   ├── coach.js                     # Gemini AI coach endpoint
-    │   ├── newsletter.js                # Subscribe + weekly send
-    │   └── support.js                   # Support tickets
-    ├── middleware/
-    │   ├── auth.js                      # JWT verification
-    │   ├── optionalAuth.js              # Auth if token present, skip if not
-    │   └── coachRateLimit.js            # 3/day anon, 10/day users
-    └── server.js
+│   │   ├── pages/           # 22 routes, all lazy-loaded
+│   │   ├── components/      # BreathingCircle, AICoach/, Globe/, charts/…
+│   │   ├── locales/         # en / ru / es translation.json
+│   │   └── utils/           # crisisDetection, audioFade, calmScore (+tests)
+│   └── vercel.json          # CSP, HSTS, cache headers, SPA rewrites
+├── api/               # Express API (Fly.io)
+│   ├── app.js               # app assembly (exported for supertest)
+│   ├── server.js            # HTTP entrypoint
+│   ├── routes/              # 15 routers: auth, globe, coach, users…
+│   ├── models/              # 10 Mongoose schemas
+│   ├── middleware/          # JWT auth, optionalAuth, coach rate limit
+│   ├── tests/               # Jest integration suite
+│   └── Dockerfile           # Fly.io deploy
+├── ml/                # FastAPI + scikit-learn recommender (Render)
+└── docs/
+    ├── adr/                 # Architecture Decision Records
+    └── DEVELOPMENT_PLAN.md  # audit + roadmap
 ```
 
 ---
 
-## 🔑 Environment Variables
+## 🔒 Security Posture
 
-### Frontend (`.env.local`)
-```env
-VITE_API_BASE=https://your-railway-domain.up.railway.app/api
-VITE_GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
-```
-
-### Backend (`.env` / Railway)
-```env
-MONGO_URI=mongodb+srv://...
-JWT_SECRET=minimum_32_char_random_string
-GEMINI_API_KEY=AIza...
-RESEND_API_KEY=re_...
-CRON_SECRET=random_string_for_newsletter_cron
-PORT=5000
-NODE_ENV=production
-```
-
----
-
-## 🌐 API Endpoints
-
-### Auth
-```
-POST /api/auth/register     Create account
-POST /api/auth/login        Sign in
-POST /api/auth/google       Google OAuth
-```
-
-### Sessions
-```
-GET    /api/sessions        Get user sessions
-POST   /api/sessions        Save session
-DELETE /api/sessions/:id    Delete one session
-DELETE /api/sessions        Delete all sessions
-```
-
-### AI Coach
-```
-POST /api/coach/message     Send message, get technique recommendation
-GET  /api/coach/status      Check remaining daily messages
-```
-
-### Community
-```
-GET    /api/posts                              Public feed
-POST   /api/posts                              Create post (auth)
-POST   /api/posts/:id/like                     Toggle like (auth)
-GET    /api/posts/:id/comments                 Get comments
-POST   /api/posts/:id/comments                 Add comment (auth)
-POST   /api/posts/:id/comments/:cid/like       Like comment (auth)
-```
-
-### Newsletter
-```
-POST /api/newsletter/subscribe                 Subscribe email
-GET  /api/newsletter/unsubscribe?token=xxx     One-click unsub
-POST /api/newsletter/send-weekly               Trigger send (cron only)
-```
-
----
-
-## 📊 Architecture
-
-```
-User Browser
-     │
-     ▼
-Vercel (React SPA)
-     │  HTTPS API calls
-     ▼
-Railway (Express API)
-     │
-     ├── MongoDB Atlas  (sessions, users, posts)
-     ├── Gemini API     (AI coach responses)
-     └── Resend API     (email delivery)
-```
-
----
-
-## 🤖 AI Coach
-
-The AI coach uses **Gemini 2.5 Flash** with a custom system prompt tuned for breathing/wellness coaching. It:
-
-1. Analyzes user's current state (stress, sleep, anxiety, energy)
-2. Recommends one of 6 breathing techniques
-3. Explains the science in plain language
-4. Provides exact timing instructions
-5. Auto-detects the technique in the response and shows a "Try X" button that navigates to `/breathing` with the preset pre-loaded
-
-Rate limits: **3 messages/day** for anonymous users, **10/day** for registered users.
-
----
-
-## 📈 SEO Pages
-
-Dedicated landing pages targeting high-volume search queries:
-
-| URL | Target keyword | Monthly searches |
-|-----|---------------|-----------------|
-| `/breathing/box-breathing` | box breathing technique | 40K |
-| `/breathing/4-7-8` | 4-7-8 breathing sleep | 60K |
-| `/breathing/wim-hof` | wim hof breathing guide | 30K |
-| `/breathing/anxiety` | breathing exercises anxiety | 90K |
+- bcrypt (cost 12) with a **timing-equalized** "user not found" branch
+- Registration never confirms whether an email exists (enumeration defense)
+- Per-route rate limits (8 logins / 15 min, 6 signups / hour per IP)
+- CORS pinned to production + project preview domains (no wildcard suffixes)
+- SSRF hostname allowlist on the map-link resolver
+- CSP, HSTS (preload), X-Frame-Options DENY, strict referrer policy
+- Globe pins: coordinates coarsened to ~1.1 km and usernames reduced to an
+  initial for everyone but the owner; `userId` never leaves the server
 
 ---
 
@@ -301,15 +135,9 @@ Dedicated landing pages targeting high-volume search queries:
 
 MIT — free to use, modify and distribute.
 
----
+## 🙏 Author
 
-## 🙏 Credits
-
-Built by [@SenatorBLOG](https://github.com/SenatorBLOG)
-
-Inspired by the science of breathwork and the need for a calm, beautiful, no-BS meditation tool.
-
----
+Built and operated by [@SenatorBLOG](https://github.com/SenatorBLOG).
 
 <p align="center">
   <a href="https://breatheonline.app">🌊 breatheonline.app</a>
