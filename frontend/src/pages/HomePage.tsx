@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import NewsletterWidget from '../components/NewsletterWidget';
 import SoulOrb from '../components/AICoach/SoulOrb';
+import HeroBreathDemo from '../components/HeroBreathDemo';
 import HomeInteractive from '../components/HomeInteractive';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import UserProgressStrip from '../components/UserProgressStrip';
@@ -293,6 +294,9 @@ export default function HomePage() {
             <StatCard value="4.9★" label={t("hero.stats.rating")} />
           </div>
         </section>
+
+        {/* INSTANT BREATH DEMO — the product working before any click */}
+        <HeroBreathDemo />
 
         {/* USER PROGRESS STRIP */}
         <div className="w-full py-4 sm:py-6">

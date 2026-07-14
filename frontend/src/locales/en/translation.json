@@ -99,8 +99,8 @@
     "seoDesc": "Free guided breathing sessions for sleep, stress relief, and focus. Try Box Breathing, 4-7-8, Wim Hof Method and more. No download needed — works in your browser.",
     "h1": "Guided Breathing Session",
     "presetNames": {
-      "box": "Box",
       "478": "4-7-8",
+      "box": "Box",
       "calm": "Calm",
       "energize": "Energize",
       "wimHof": "Wim Hof",
@@ -1033,6 +1033,11 @@
       "thichAuthor": "Thich Nhat Hanh",
       "anne": "Almost everything will work again if you unplug it for a few minutes — including you.",
       "anneAuthor": "Anne Lamott"
+    },
+    "breathDemo": {
+      "title": "Try it right now",
+      "caption": "Breathe with the circle — inhale 4s, exhale 6s. No signup, it’s already working.",
+      "cta": "Start a full session"
     }
   },
   "journal": {
