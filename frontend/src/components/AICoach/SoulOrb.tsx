@@ -1,7 +1,10 @@
 // src/components/AICoach/SoulOrb.tsx
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useThemeStyles } from "../../hooks/useThemeStyles";
-import AICoachModal from './AICoachModal';
+
+// The coach modal (chat UI, consent flow, crisis screening) is heavy and only
+// needed after a click on the orb — keep it out of the initial bundle.
+const AICoachModal = lazy(() => import('./AICoachModal'));
 
 type Mood = 'idle' | 'curious' | 'happy' | 'thinking' | 'speaking';
 
@@ -204,10 +207,16 @@ export default function SoulOrb() {
           </div>
         )}
 
-        {/* MODAL */}
+        {/* MODAL — lazy chunk, loads on first open */}
         {open && (
           <div className="w-full max-w-md mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <AICoachModal onClose={() => setOpen(false)} />
+            <Suspense fallback={
+              <div className="flex justify-center py-8" aria-busy="true">
+                <span className="t-caption animate-pulse" style={{ color: ts.textMuted }}>…</span>
+              </div>
+            }>
+              <AICoachModal onClose={() => setOpen(false)} />
+            </Suspense>
           </div>
         )}
 

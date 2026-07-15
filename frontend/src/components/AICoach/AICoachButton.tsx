@@ -1,9 +1,18 @@
 // src/components/AICoach/AICoachButton.tsx
-import React, { useState } from 'react';
+import React, { lazy, Suspense, useState } from 'react';
 import { Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from "../../hooks/useThemeStyles";
-import AICoachModal from './AICoachModal';
+
+// Lazy for the same reason as in SoulOrb: the chat UI must not weigh down
+// the initial bundle of every page that renders this button.
+const AICoachModal = lazy(() => import('./AICoachModal'));
+
+const ModalFallback = () => (
+  <div className="flex justify-center py-8" aria-busy="true">
+    <span className="t-caption animate-pulse text-white/60">…</span>
+  </div>
+);
 
 interface AICoachButtonProps {
   variant?: 'orb' | 'floating';
@@ -48,7 +57,9 @@ export default function AICoachButton({ variant = 'floating' }: AICoachButtonPro
 
         {open && (
           <div className="w-full max-w-sm mt-4">
-            <AICoachModal onClose={() => setOpen(false)} />
+            <Suspense fallback={<ModalFallback />}>
+              <AICoachModal onClose={() => setOpen(false)} />
+            </Suspense>
           </div>
         )}
       </div>
@@ -100,7 +111,9 @@ export default function AICoachButton({ variant = 'floating' }: AICoachButtonPro
             >
               {t('common.close', 'Close')}
             </button>
-            <AICoachModal onClose={() => setOpen(false)} />
+            <Suspense fallback={<ModalFallback />}>
+              <AICoachModal onClose={() => setOpen(false)} />
+            </Suspense>
           </div>
         </div>
       )}
