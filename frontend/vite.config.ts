@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import mkcert from 'vite-plugin-mkcert';
+import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 import { execSync } from 'child_process';
 
@@ -17,6 +18,22 @@ export default defineConfig({
   plugins: [
     react(),
     mkcert(),
+    // Workbox service worker (replaces the old hand-rolled public/sw.js).
+    // injectManifest keeps our custom src/sw.ts (push notification handlers)
+    // while the build injects the hashed-asset precache manifest into it.
+    VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
+      injectRegister: null,   // main.tsx already registers /sw.js manually
+      manifest: false,        // public/site.webmanifest is hand-maintained
+      injectManifest: {
+        globPatterns: ['**/*.{js,css,html,webmanifest}', 'Background_*.webp', 'icons/icon-192.png', 'icons/icon-512.png'],
+        globIgnores: ['videos/**', 'cesium/**'],
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+      },
+      devOptions: { enabled: false },
+    }),
   ],
   base: '/', // критически важно для Vercel
   define: {
