@@ -288,7 +288,10 @@
       "titleDefaultValue": "Lugar de meditación",
       "latPlaceholder": "ej. 48.86",
       "lngPlaceholder": "ej. 2.35"
-    }
+    },
+    "hide": "Ocultar",
+    "spots": "Lugares",
+    "clickToPin": "Toca cualquier punto del mapa para marcar tu lugar de meditación 📍"
   },
   "sessions": {
     "title": "Mis sesiones",

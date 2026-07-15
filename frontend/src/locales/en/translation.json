@@ -288,7 +288,10 @@
       "titleDefaultValue": "Meditation spot",
       "latPlaceholder": "e.g. 48.86",
       "lngPlaceholder": "e.g. 2.35"
-    }
+    },
+    "hide": "Hide",
+    "spots": "Spots",
+    "clickToPin": "Click anywhere on the map to pin your meditation spot 📍"
   },
   "sessions": {
     "title": "My Sessions",

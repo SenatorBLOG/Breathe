@@ -16,6 +16,7 @@
 //
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme, type Theme } from '../../contexts/ThemeContext';
 
@@ -43,11 +44,12 @@ interface CoachOrbProps {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const PHASE_LABEL: Record<Phase, string> = {
-  inhale: 'Inhale',
-  hold:   'Hold',
-  exhale: 'Exhale',
-  pause:  'Rest',
+// i18n keys for the in-orb phase label (breathing.phaseLabels.* exists in all locales)
+const PHASE_LABEL_KEY: Record<Phase, string> = {
+  inhale: 'breathing.phaseLabels.inhale',
+  hold:   'breathing.phaseLabels.hold',
+  exhale: 'breathing.phaseLabels.exhale',
+  pause:  'breathing.phaseLabels.rest',
 };
 
 // Eye vertical openness multiplier per phase (1.0 = baseline)
@@ -71,11 +73,12 @@ const PHASE_GLOW: Record<Phase, number> = {
 // Always-dark orb body per theme — breathing page always has dark video backdrop.
 // Day/gold theme uses a deep amber-black so the gold glow reads clearly, never white.
 // Fully opaque so backdropFilter can't bleed the bright video background through.
-// Day/gold uses dark amber-black so the gold accent reads clearly (not cream like ts.cardBg).
+// (A slate-100 white slipped in here once and made the orb a glaring white ball
+// on the day theme — if you touch these, keep every base DARK.)
 const ORB_BASE: Record<Theme, string> = {
-  night:  'rgb(10, 20, 42)',    // deep navy
-  day:    'rgb(241, 245, 249)',    // dark amber-black
-  nature: 'rgb( 8, 20, 10)',   // dark forest
+  night:  'rgb(10, 20, 42)',   // deep navy
+  day:    'rgb(32, 24, 10)',   // deep amber-black
+  nature: 'rgb(8, 20, 10)',    // dark forest
 };
 
 export function CoachOrb({
@@ -89,6 +92,7 @@ export function CoachOrb({
   maxScale = 1.08,
   glowIntensity = 1.0,
 }: CoachOrbProps) {
+  const { t } = useTranslation();
   const ts = useThemeStyles();
   const { theme } = useTheme();
   const orbBase = ORB_BASE[theme];
@@ -399,7 +403,7 @@ const bottomHighlight =
                   textTransform: 'uppercase',
                   textShadow: '0 1px 8px rgba(0,0,0,0.50)',
                 }}>
-                  {PHASE_LABEL[phase]}
+                  {t(PHASE_LABEL_KEY[phase])}
                 </div>
                 <div style={{
                   color: 'rgba(255,255,255,0.92)',
@@ -422,7 +426,7 @@ const bottomHighlight =
                   letterSpacing: '0.12em',
                   textShadow: '0 2px 10px rgba(0,0,0,0.4)',
                 }}>
-                  Tap to begin
+                  {t('breathing.tapToBegin')}
                 </div>
               </div>
             )}

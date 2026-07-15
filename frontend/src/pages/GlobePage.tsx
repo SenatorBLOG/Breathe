@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import NavBar from '../components/NavBar';
 import PageSEO from '../components/PageSEO';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 import { AuthContext } from '../components/contexts/AuthContext';
 import api from '../api';
 import { toast } from 'sonner';
@@ -26,6 +27,7 @@ interface GlobeStats {
 
 export default function GlobePage() {
   const { t } = useTranslation();
+  const ts = useThemeStyles();
   const { isAuthenticated, user } = useContext(AuthContext);
 
   const [pins,            setPins]            = useState<GlobePin[]>([]);
@@ -128,8 +130,8 @@ export default function GlobePage() {
   return (
     <div style={{
       height:          '100vh',
-      background:      '#080c1e',
-      color:           '#e8eaf0',
+      background:      ts.pageBg,
+      color:           ts.textPrimary,
       display:         'flex',
       flexDirection:   'column',
       position:        'relative',
@@ -154,18 +156,18 @@ export default function GlobePage() {
         alignItems:     'center',
         gap:            12,
         flexWrap:       'wrap',
-        background:     'rgba(8,12,30,0.85)',
+        background:     ts.navBg,
         backdropFilter: 'blur(12px)',
-        borderBottom:   '1px solid rgba(255,255,255,0.06)',
+        borderBottom:   `1px solid ${ts.border}`,
       }}>
         {/* Page title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           <span style={{ fontSize: 18 }}>🌍</span>
-          <span style={{ fontWeight: 700, fontSize: 15, color: '#00d4ff' }}>{t('globe.brand')}</span>
+          <span style={{ fontWeight: 700, fontSize: 15, color: ts.accent }}>{t('globe.brand')}</span>
           {stats && (
             <span style={{
               fontSize:     11,
-              color:        'rgba(255,255,255,0.38)',
+              color:        ts.textMuted,
               fontWeight:   400,
               marginLeft:   2,
             }}>
@@ -188,9 +190,9 @@ export default function GlobePage() {
             style={{
               padding:      '7px 14px',
               borderRadius: 20,
-              border:       '1px solid rgba(255,255,255,0.15)',
-              background:   'rgba(255,255,255,0.05)',
-              color:        'rgba(255,255,255,0.7)',
+              border:       `1px solid ${ts.border}`,
+              background:   ts.cardBg,
+              color:        ts.textMuted,
               fontSize:     13,
               cursor:       'pointer',
               whiteSpace:   'nowrap',
@@ -206,9 +208,9 @@ export default function GlobePage() {
             style={{
               padding:      '7px 14px',
               borderRadius: 20,
-              border:       `1px solid ${addPinMode ? '#00d4ff' : 'rgba(0,212,255,0.35)'}`,
-              background:   addPinMode ? 'rgba(0,212,255,0.18)' : 'rgba(0,212,255,0.07)',
-              color:        addPinMode ? '#00d4ff' : 'rgba(0,212,255,0.7)',
+              border:       `1px solid ${addPinMode ? ts.accent : ts.accent + '59'}`,
+              background:   addPinMode ? ts.accent + '2E' : ts.accent + '12',
+              color:        addPinMode ? ts.accent : ts.accent + 'CC',
               fontSize:     13,
               fontWeight:   600,
               cursor:       'pointer',
@@ -225,16 +227,16 @@ export default function GlobePage() {
             style={{
               padding:      '7px 14px',
               borderRadius: 20,
-              border:       '1px solid rgba(255,255,255,0.15)',
-              background:   sidebarOpen ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)',
-              color:        'rgba(255,255,255,0.7)',
+              border:       `1px solid ${ts.border}`,
+              background:   sidebarOpen ? ts.cardBgHover : ts.cardBg,
+              color:        ts.textMuted,
               fontSize:     13,
               cursor:       'pointer',
               whiteSpace:   'nowrap',
               transition:   'all 0.18s',
             }}
           >
-            {sidebarOpen ? '→ Hide' : '☰ Spots'}
+            {sidebarOpen ? `→ ${t('globe.hide', 'Hide')}` : `☰ ${t('globe.spots', 'Spots')}`}
           </motion.button>
         </div>
       </div>
@@ -251,14 +253,14 @@ export default function GlobePage() {
               zIndex:        50,
               textAlign:     'center',
               padding:       '8px 16px',
-              background:    'rgba(0,212,255,0.12)',
-              borderBottom:  '1px solid rgba(0,212,255,0.25)',
+              background:    ts.accent + '1F',
+              borderBottom:  `1px solid ${ts.accent}40`,
               fontSize:      13,
-              color:         '#00d4ff',
+              color:         ts.accent,
               fontWeight:    500,
             }}
           >
-            Click anywhere on the map to pin your meditation spot 📍
+            {t('globe.clickToPin', 'Click anywhere on the map to pin your meditation spot 📍')}
           </motion.div>
         )}
       </AnimatePresence>
@@ -276,7 +278,7 @@ export default function GlobePage() {
                 position:       'absolute',
                 inset:          0,
                 zIndex:         200,
-                background:     '#080c1e',
+                background:     ts.pageBg,
                 display:        'flex',
                 flexDirection:  'column',
                 alignItems:     'center',
@@ -288,11 +290,11 @@ export default function GlobePage() {
                 width:        48,
                 height:       48,
                 borderRadius: '50%',
-                background:   'radial-gradient(circle at 35% 35%, #00d4ff, #0070aa)',
-                boxShadow:    '0 0 28px #00d4ff44',
+                background:   `radial-gradient(circle at 35% 35%, ${ts.accentLight}, ${ts.accent})`,
+                boxShadow:    `0 0 28px ${ts.accent}44`,
                 animation:    'pageloader-pulse 1.6s ease-in-out infinite',
               }} />
-              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13 }}>{t('globe.loadingSpots')}</div>
+              <div style={{ color: ts.textMuted, fontSize: 13 }}>{t('globe.loadingSpots')}</div>
             </motion.div>
           )}
         </AnimatePresence>

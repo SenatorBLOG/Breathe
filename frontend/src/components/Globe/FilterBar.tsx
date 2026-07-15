@@ -2,6 +2,7 @@
  * FilterBar — horizontal sticky technique-filter pill row.
  */
 import { motion } from 'framer-motion';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 const TECHNIQUES = [
   { value: 'all',       label: 'All'          },
@@ -15,7 +16,6 @@ const TECHNIQUES = [
 ];
 
 const PIN_COLORS: Record<string, string> = {
-  'all':       '#00d4ff',
   'box':       '#3A82F7',
   '4-7-8':     '#7AC4FF',
   'wim-hof':   '#FF9A5C',
@@ -31,6 +31,7 @@ interface Props {
 }
 
 export default function FilterBar({ active, onChange }: Props) {
+  const ts = useThemeStyles();
   return (
     <div
       style={{
@@ -43,7 +44,8 @@ export default function FilterBar({ active, onChange }: Props) {
     >
       {TECHNIQUES.map(t => {
         const isActive = active === t.value;
-        const color    = PIN_COLORS[t.value];
+        // 'All' follows the theme accent; techniques keep their brand colors
+        const color    = PIN_COLORS[t.value] ?? ts.accent;
         return (
           <motion.button
             key={t.value}
@@ -53,11 +55,9 @@ export default function FilterBar({ active, onChange }: Props) {
               flexShrink:      0,
               padding:         '5px 13px',
               borderRadius:    20,
-              border:          `1px solid ${isActive ? color : 'rgba(255,255,255,0.15)'}`,
-              background:      isActive
-                ? `${color}22`
-                : 'rgba(255,255,255,0.05)',
-              color:           isActive ? color : 'rgba(255,255,255,0.65)',
+              border:          `1px solid ${isActive ? color : ts.border}`,
+              background:      isActive ? `${color}22` : ts.cardBg,
+              color:           isActive ? color : ts.textMuted,
               fontSize:        12,
               fontWeight:      isActive ? 600 : 400,
               cursor:          'pointer',
