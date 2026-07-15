@@ -54,11 +54,26 @@ export default defineConfig({
         // uses React hooks internally — splitting them caused forwardRef errors).
         // i18next and chart.js are React-independent and safe to isolate.
         manualChunks(id) {
-          // React ecosystem — must be one chunk so hooks initialise before consumers
-          if (id.includes('node_modules/react') ||
-              id.includes('node_modules/react-dom') ||
-              id.includes('node_modules/framer-motion') ||
-              id.includes('node_modules/scheduler')) {
+          // 3D globe stack — only ever imported by the lazy GlobePage chunk.
+          // MUST be matched before the react rule: 'react-globe.gl' would
+          // otherwise be swallowed by a loose 'node_modules/react' prefix
+          // and drag three.js into the boot bundle of every page.
+          if (id.includes('node_modules/three/') ||
+              id.includes('node_modules/globe.gl') ||
+              id.includes('node_modules/react-globe.gl') ||
+              id.includes('node_modules/three-') ||
+              id.includes('node_modules/h3-js') ||
+              id.includes('node_modules/topojson-client')) {
+            return 'vendor-globe';
+          }
+          // React core — exact package paths (trailing slash) so react-*
+          // libraries don't get pulled into the boot chunk by prefix match.
+          // framer-motion stays with react: splitting them caused forwardRef
+          // errors (framer uses React hooks at module init).
+          if (id.includes('node_modules/react/') ||
+              id.includes('node_modules/react-dom/') ||
+              id.includes('node_modules/framer-motion/') ||
+              id.includes('node_modules/scheduler/')) {
             return 'vendor-react';
           }
           // i18next is pure JS with no React dependency

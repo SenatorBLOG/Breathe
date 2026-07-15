@@ -12,6 +12,7 @@ import api from '../api';
 import { toast } from 'sonner';
 import type { GlobePin } from '../components/Globe/types';
 import MapView    from '../components/Globe/MapView';
+import Globe3D    from '../components/Globe/Globe3D';
 import FilterBar  from '../components/Globe/FilterBar';
 import SpotSidebar from '../components/Globe/SpotSidebar';
 import AddSpotModal from '../components/Globe/AddSpotModal';
@@ -35,6 +36,15 @@ export default function GlobePage() {
   const [addPinMode,      setAddPinMode]      = useState(false);
   const [pickedLatLng,    setPickedLatLng]    = useState<{ lat: number; lng: number } | null>(null);
   const [loading,         setLoading]         = useState(true);
+  // 3D globe by default; falls back to the 2D map when WebGL is missing.
+  const [view3d,          setView3d]          = useState(() => localStorage.getItem('globeView') !== '2d');
+
+  const switchView = useCallback((to3d: boolean) => {
+    setView3d(to3d);
+    localStorage.setItem('globeView', to3d ? '3d' : '2d');
+  }, []);
+
+  const webglFallback = useCallback(() => setView3d(false), []);
 
   // ── Fetch pins + stats ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -173,6 +183,25 @@ export default function GlobePage() {
         <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
           <motion.button
             whileTap={{ scale: 0.94 }}
+            onClick={() => switchView(!view3d)}
+            aria-label={view3d ? 'Switch to 2D map' : 'Switch to 3D globe'}
+            style={{
+              padding:      '7px 14px',
+              borderRadius: 20,
+              border:       '1px solid rgba(255,255,255,0.15)',
+              background:   'rgba(255,255,255,0.05)',
+              color:        'rgba(255,255,255,0.7)',
+              fontSize:     13,
+              cursor:       'pointer',
+              whiteSpace:   'nowrap',
+              transition:   'all 0.18s',
+            }}
+          >
+            {view3d ? '🗺 2D' : '🌐 3D'}
+          </motion.button>
+
+          <motion.button
+            whileTap={{ scale: 0.94 }}
             onClick={toggleAddPinMode}
             style={{
               padding:      '7px 14px',
@@ -268,15 +297,27 @@ export default function GlobePage() {
           )}
         </AnimatePresence>
 
-        {/* Map */}
-        <MapView
-          pins={pins}
-          filterTechnique={filterTechnique}
-          selectedPin={selectedPin}
-          addPinMode={addPinMode}
-          onPinClick={handlePinClick}
-          onMapClick={handleMapClick}
-        />
+        {/* Map / Globe */}
+        {view3d ? (
+          <Globe3D
+            pins={pins}
+            filterTechnique={filterTechnique}
+            selectedPin={selectedPin}
+            addPinMode={addPinMode}
+            onPinClick={handlePinClick}
+            onMapClick={handleMapClick}
+            onUnsupported={webglFallback}
+          />
+        ) : (
+          <MapView
+            pins={pins}
+            filterTechnique={filterTechnique}
+            selectedPin={selectedPin}
+            addPinMode={addPinMode}
+            onPinClick={handlePinClick}
+            onMapClick={handleMapClick}
+          />
+        )}
 
         {/* Sidebar */}
         <SpotSidebar
