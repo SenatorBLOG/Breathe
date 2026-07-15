@@ -43,7 +43,7 @@ router.get('/overview', async (req, res) => {
 
     res.json({ totalSessions, totalMinutes, streak, averageSession });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -83,7 +83,7 @@ router.get('/weekly', async (req, res) => {
 
     res.json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -124,7 +124,7 @@ router.get('/monthly', async (req, res) => {
 
     res.json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -156,7 +156,7 @@ router.get('/mood', async (req, res) => {
       total
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -190,7 +190,7 @@ router.get('/sessions-breakdown', async (req, res) => {
       { name: 'Extended (30min+)', value: breakdown.extended, percentage: total > 0 ? Math.round((breakdown.extended / total) * 100) : 0 }
     ]);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -233,7 +233,7 @@ router.get('/progress', async (req, res) => {
 
     res.json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -317,7 +317,7 @@ router.get('/hrv-correlation', auth, async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 

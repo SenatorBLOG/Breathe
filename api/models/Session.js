@@ -14,7 +14,7 @@ const sessionSchema = new mongoose.Schema({
   noiseLevel: { type: String, default: '' },
   sessionLength: { type: Number, default: 0 }, // minutes
   cycles: { type: Number, default: 0 },
-  notes: { type: String, default: '' },
+  notes: { type: String, default: '', maxlength: 2000 },
   nlp: {
     sentiment:          { type: String, enum: ['positive', 'neutral', 'negative'], default: null },
     score:              { type: Number, min: -1, max: 1, default: null },

@@ -148,9 +148,17 @@ router.post('/message', optionalAuth, rateLimit, async (req, res) => {
 });
 
 // ─── POST /api/coach/sleep-story ─────────────────────────────────────────────
-router.post('/sleep-story', optionalAuth, async (req, res) => {
+// Shares the daily coach allowance — this is the most expensive Gemini call
+// in the app (2048 output tokens) and had no limit at all before.
+router.post('/sleep-story', optionalAuth, rateLimit, async (req, res) => {
   try {
-    const { theme = 'a quiet forest at dusk', duration = 'medium', language = 'en' } = req.body;
+    const { theme: rawTheme, duration = 'medium', language = 'en' } = req.body;
+
+    // The theme is interpolated into the prompt — clamp it to one short line
+    // so it can't be used as a free-form prompt-injection channel.
+    const theme = (typeof rawTheme === 'string' && rawTheme.trim())
+      ? rawTheme.replace(/[\r\n]+/g, ' ').trim().slice(0, 120)
+      : 'a quiet forest at dusk';
 
     const WORD_COUNTS = { short: 250, medium: 600, long: 1200 };
     const words = WORD_COUNTS[duration] || 600;
@@ -209,11 +217,14 @@ Begin the story immediately. No preamble.`;
 
 // ─── GET /api/coach/status ────────────────────────────────────────────────────
 router.get('/status', optionalAuth, async (req, res) => {
+  // Same LIMITS object the limiter enforces — this endpoint used to hardcode
+  // 3/10 while the middleware allowed 10/30, so the UI showed wrong quotas.
+  const { LIMITS } = require('../middleware/coachRateLimit');
   try {
     const userId = req.user?._id?.toString() ?? null;
-    const ip     = req.ip || 'unknown';
+    const ip     = req.headers['fly-client-ip'] || req.ip || 'unknown';
     const key    = userId ? `coach:user:${userId}` : `coach:ip:${ip}`;
-    const limit  = userId ? 10 : 3;
+    const limit  = userId ? LIMITS.user : LIMITS.anonymous;
 
     const mongoose  = require('mongoose');
     const RateLimit = mongoose.model('RateLimit');
@@ -223,7 +234,7 @@ router.get('/status', optionalAuth, async (req, res) => {
 
     res.json({ used, limit, left: Math.max(0, limit - used), isAuthenticated: !!userId });
   } catch {
-    res.json({ used: 0, limit: 3, left: 3, isAuthenticated: false });
+    res.json({ used: 0, limit: LIMITS.anonymous, left: LIMITS.anonymous, isAuthenticated: false });
   }
 });
 

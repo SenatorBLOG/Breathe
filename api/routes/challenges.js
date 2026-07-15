@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
 
     res.json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -55,7 +55,7 @@ router.get('/my', authenticate, async (req, res) => {
     }));
     res.json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -147,7 +147,7 @@ router.post('/:slug/join', authenticate, async (req, res) => {
     const result = { ...uc.toObject(), challenge: challenge.toObject() };
     res.status(201).json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -176,7 +176,7 @@ router.post('/:id/checkin', authenticate, async (req, res) => {
     const result = { ...uc.toObject(), challenge: challenge.toObject() };
     res.json({ ok: true, userChallenge: result, completed: !!uc.completedAt });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -190,7 +190,7 @@ router.delete('/:id', authenticate, async (req, res) => {
     await uc.save();
     res.json({ ok: true });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 

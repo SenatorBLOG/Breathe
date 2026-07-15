@@ -40,7 +40,7 @@ router.get('/', authenticate, async (req, res) => {
         { $sort: { totalMins: -1 } },
         { $limit: TOP },
         { $lookup: { from: 'users', localField: '_id', foreignField: '_id', as: 'user' } },
-        { $unwind: { path: '$user', preserveNullAndEmpty: true } },
+        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
         { $project: {
             totalMins: 1,
             sessions: 1,

@@ -19,7 +19,7 @@ router.get('/', authenticate, async (req, res) => {
     const sessions = await Session.find({ userId }).sort({ sessionDate: -1 });
     res.json(sessions);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -98,7 +98,7 @@ router.delete('/', authenticate, async (req, res) => {
     await Session.deleteMany({ userId });
     res.json({ message: 'All sessions deleted' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -114,7 +114,7 @@ router.delete('/:id', authenticate, async (req, res) => {
     await Session.findByIdAndDelete(req.params.id);
     res.json({ ok: true });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -169,7 +169,7 @@ router.post('/with-recommendation', authenticate, async (req, res) => {
     res.status(201).json(result);
   } catch (err) {
     console.error('Failed to create session with recommendation:', err.message);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -191,7 +191,7 @@ router.patch('/:id/choice', authenticate, async (req, res) => {
     res.json(session);
   } catch (err) {
     console.error('Failed to update session choice:', err.message);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -203,7 +203,7 @@ router.get('/ml-stats', authenticate, async (req, res) => {
     res.json(stats);
   } catch (err) {
     console.error('Failed to get ML stats:', err.message);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 

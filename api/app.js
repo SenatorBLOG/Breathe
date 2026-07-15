@@ -11,6 +11,11 @@ dotenv.config();
 
 const app = express();
 
+// Fly.io terminates TLS at its proxy (one hop). Without this, req.ip is the
+// proxy's internal address for EVERY client — all rate-limit buckets collapse
+// into one shared bucket, so one abuser (or normal traffic) can 429 everyone.
+app.set('trust proxy', 1);
+
 const allowedOrigins = [
   'https://breatheonline.app',
   'https://www.breatheonline.app',

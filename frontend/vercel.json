@@ -11,6 +11,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://breathe-api-prod.fly.dev/api/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

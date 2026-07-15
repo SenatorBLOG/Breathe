@@ -12,14 +12,15 @@ const RateLimit = mongoose.models.RateLimit
 
 const LIMITS = { anonymous: 10, user: 30 };
 
-// Get the real client IP — works behind Railway / Vercel / Nginx proxies
+// Get the real client IP. Fly.io sets Fly-Client-IP with the verified client
+// address — prefer it. Falling back to the FIRST x-forwarded-for entry is
+// spoofable (clients can send their own XFF and reset their own bucket), so
+// req.ip (trust proxy is configured in app.js) comes before it.
 function getRealIp(req) {
-  const forwarded = req.headers['x-forwarded-for'];
-  if (forwarded) {
-    // x-forwarded-for can be "client, proxy1, proxy2" — take first
-    return forwarded.split(',')[0].trim();
-  }
-  return req.socket?.remoteAddress || req.ip || 'unknown';
+  return req.headers['fly-client-ip']
+    || req.ip
+    || req.socket?.remoteAddress
+    || 'unknown';
 }
 
 module.exports = async function coachRateLimit(req, res, next) {
@@ -68,3 +69,5 @@ module.exports = async function coachRateLimit(req, res, next) {
     next(); // fail open
   }
 };
+// Exposed so /coach/status reports the SAME numbers the limiter enforces
+module.exports.LIMITS = LIMITS;

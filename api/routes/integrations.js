@@ -291,7 +291,7 @@ router.get('/status', auth, async (req, res) => {
     }));
     res.json(status);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -301,7 +301,7 @@ router.delete('/:provider', auth, async (req, res) => {
     await Integration.findOneAndDelete({ userId: req.user._id, provider: req.params.provider });
     res.json({ ok: true });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 

@@ -1,8 +1,19 @@
 // routes/newsletter.js
-const express  = require('express');
-const router   = express.Router();
-const crypto   = require('crypto');
+const express   = require('express');
+const router    = express.Router();
+const crypto    = require('crypto');
+const rateLimit = require('express-rate-limit');
 const NewsletterSubscriber = require('../models/NewsletterSubscriber');
+
+// Each subscribe fires a real email — without a cap this endpoint lets
+// anyone spam-blast arbitrary inboxes with "welcome" mail.
+const subscribeLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  message: { error: 'Too many subscription attempts. Try again later.' },
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+});
 
 // ─── Helper: send email via Resend ───────────────────────────────────────────
 async function sendEmail({ to, subject, html }) {
@@ -60,7 +71,7 @@ function buildEmailHtml({ tip, unsubUrl }) {
 
       <a href="https://breatheonline.app/breathing"
         style="display:inline-block;background:linear-gradient(135deg,#1A5FCC,#3A82F7);color:#fff;text-decoration:none;padding:12px 28px;border-radius:100px;font-size:13px;font-weight:500;letter-spacing:0.05em;">
-        <img src="/icons/1.blow.webp" alt="" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;" /> Try it now
+        <img src="https://breatheonline.app/icons/1.blow.webp" alt="" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;" /> Try it now
       </a>
     </div>
 
@@ -79,7 +90,7 @@ function buildEmailHtml({ tip, unsubUrl }) {
 }
 
 // ─── POST /api/newsletter/subscribe ──────────────────────────────────────────
-router.post('/subscribe', async (req, res) => {
+router.post('/subscribe', subscribeLimiter, async (req, res) => {
   try {
     const { email } = req.body;
     if (!email || !email.includes('@'))
@@ -170,7 +181,7 @@ router.post('/send-weekly', async (req, res) => {
     res.json({ sent, failed, total: subscribers.length });
   } catch (err) {
     console.error('Send weekly error:', err.message);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
