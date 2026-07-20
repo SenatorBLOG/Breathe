@@ -4,6 +4,8 @@ import mkcert from 'vite-plugin-mkcert';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 import { execSync } from 'child_process';
+// @ts-expect-error — plain .mjs data/plugin, no type declarations
+import { prerenderShells } from './seo/prerenderShells.mjs';
 
 // Capture the current commit hash so error reports and bug reports can be
 // tied back to a deployed version. Falls back to "dev" if git is missing.
@@ -34,6 +36,9 @@ export default defineConfig({
       },
       devOptions: { enabled: false },
     }),
+    // Bakes per-route static HTML with correct SEO <head> + crawlable
+    // <noscript> content. Runs last (closeBundle) so build/index.html exists.
+    prerenderShells(),
   ],
   base: '/', // критически важно для Vercel
   define: {
