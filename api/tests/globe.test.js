@@ -11,6 +11,7 @@ const PIN = {
   country: 'Canada',
   technique: 'box',
   note: 'Morning session by the water',
+  photoUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUg==',
 };
 
 beforeAll(async () => {
@@ -87,6 +88,33 @@ describe('GET /api/globe — location privacy', () => {
       const res = await req;
       expect(res.body[0]).not.toHaveProperty('userId');
     }
+  });
+
+  it('strips photoUrl from the LIST (payload size) but serves it via detail', async () => {
+    const list = await request(app).get('/api/globe');
+    expect(list.body[0]).not.toHaveProperty('photoUrl');
+
+    const detail = await request(app).get(`/api/globe/${list.body[0]._id}`);
+    expect(detail.status).toBe(200);
+    expect(detail.body.photoUrl).toMatch(/^data:image\/png/);
+    // detail applies the same privacy shaping: coarse coords for strangers
+    expect(detail.body.lat).toBe(49.28);
+    expect(detail.body.username).toBe('A.');
+    expect(detail.body).not.toHaveProperty('userId');
+  });
+
+  it('detail shows the owner full precision', async () => {
+    const list = await request(app).get('/api/globe');
+    const detail = await request(app)
+      .get(`/api/globe/${list.body[0]._id}`)
+      .set('Authorization', `Bearer ${tokenA}`);
+    expect(detail.body.lat).toBe(49.28312);
+    expect(detail.body.username).toBe('Alice');
+  });
+
+  it('detail 404s cleanly on junk ids', async () => {
+    expect((await request(app).get('/api/globe/not-an-id')).status).toBe(404);
+    expect((await request(app).get('/api/globe/aaaaaaaaaaaaaaaaaaaaaaaa')).status).toBe(404);
   });
 });
 

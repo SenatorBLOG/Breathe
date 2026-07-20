@@ -1,4 +1,5 @@
 // emails/weekly.js
+const { sign: unsubSign } = require('../utils/unsubSign');
 function weeklyHtml({ name, email, stats }) {
   const displayName = name || 'there';
   const { sessionCount = 0, totalMinutes = 0, avgMood = null, topTechnique = null } = stats;
@@ -113,7 +114,7 @@ function weeklyHtml({ name, email, stats }) {
               <p style="margin:0 0 8px;font-size:12px;color:#2A4060;">
                 Breathe · breatheonline.app · Sent every Sunday
               </p>
-              <a href="https://breatheonline.app/api/unsubscribe?email=${encodeURIComponent(email)}&type=weekly"
+              <a href="https://breatheonline.app/api/unsubscribe?email=${encodeURIComponent(email)}&type=weekly&sig=${unsubSign(email, 'weekly')}"
                 style="font-size:12px;color:#2A4060;text-decoration:underline;">
                 Unsubscribe from weekly summaries
               </a>

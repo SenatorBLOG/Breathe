@@ -2,6 +2,7 @@
 const express = require('express');
 const router  = express.Router();
 const User    = require('../models/User');
+const { verify } = require('../utils/unsubSign');
 
 const VALID_TYPES = ['welcome', 'reminder', 'weekly'];
 
@@ -36,9 +37,9 @@ const successPage = (message) => `<!DOCTYPE html>
 
 const errorPage = (message) => successPage(message).replace('✅', '⚠️').replace("You've been unsubscribed", 'Something went wrong');
 
-// GET /api/unsubscribe?email=...&type=...
+// GET /api/unsubscribe?email=...&type=...&sig=...
 router.get('/', async (req, res) => {
-  const { email, type } = req.query;
+  const { email, type, sig } = req.query;
 
   if (!email || !type) {
     return res.status(400).send(errorPage('Missing email or type parameter.'));
@@ -46,6 +47,17 @@ router.get('/', async (req, res) => {
 
   if (!VALID_TYPES.includes(type)) {
     return res.status(400).send(errorPage('Unknown unsubscribe type.'));
+  }
+
+  // The HMAC proves this link came from an email we sent to this address —
+  // without it, anyone could unsubscribe any address they can guess.
+  // Links from before signing existed have no sig: send those users to
+  // their profile settings instead of silently failing.
+  if (!verify(email, type, sig)) {
+    return res.status(403).send(errorPage(
+      'This unsubscribe link is invalid or from an older email. ' +
+      'You can manage email preferences any time in your profile settings at breatheonline.app/profile.'
+    ));
   }
 
   try {

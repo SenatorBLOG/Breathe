@@ -1,4 +1,5 @@
 // emails/welcome.js
+const { sign: unsubSign } = require('../utils/unsubSign');
 function welcomeHtml({ name, email }) {
   const displayName = name || 'there';
   return `<!DOCTYPE html>
@@ -76,7 +77,7 @@ function welcomeHtml({ name, email }) {
               <p style="margin:0 0 8px;font-size:12px;color:#2A4060;">
                 You're receiving this because you signed up at breatheonline.app
               </p>
-              <a href="https://breatheonline.app/api/unsubscribe?email=${encodeURIComponent(email)}&type=welcome"
+              <a href="https://breatheonline.app/api/unsubscribe?email=${encodeURIComponent(email)}&type=welcome&sig=${unsubSign(email, 'welcome')}"
                 style="font-size:12px;color:#2A4060;text-decoration:underline;">
                 Unsubscribe from onboarding emails
               </a>

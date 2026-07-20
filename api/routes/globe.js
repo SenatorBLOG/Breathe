@@ -53,38 +53,42 @@ router.get('/', getLimiter, optionalAuth, async (req, res) => {
     // We MUST include `userId` in the select so we can check ownership for
     // coarsening, but we strip it from every response below so it never
     // leaves the server (still no enumeration over the wire).
+    //
+    // photoUrl is deliberately NOT selected: photos are base64 blobs up to
+    // 1.5 MB each — in a 200-pin list that's potentially hundreds of MB.
+    // The detail endpoint below serves the photo for the selected pin only.
     const pins = await GlobePin.find(filter)
       .sort({ createdAt: -1 })
       .limit(limit)
-      .select('lat lng city country technique note photoUrl likeCount createdAt username userId')
+      .select('lat lng city country technique note likeCount createdAt username userId')
       .lean();
 
     const requesterId = req.user?._id?.toString();
-    const publicPins = pins.map(p => {
-      // The pin's owner sees their own pin at full precision; everyone else
-      // sees a coarse coordinate so the location isn't a stalking vector.
-      const isOwner = !!(requesterId && p.userId && String(p.userId) === requesterId);
-      // Strip userId from every response — owner or not.
-      const { userId: _ownerId, ...safe } = p;
-      if (isOwner) return safe;
-      return {
-        ...safe,
-        lat: Math.round(safe.lat * 100) / 100,
-        lng: Math.round(safe.lng * 100) / 100,
-        // Strip the username down to a non-identifying initial so the email
-        // prefix isn't published verbatim alongside city + country.
-        username: typeof safe.username === 'string' && safe.username
-          ? (safe.username[0].toUpperCase() + (safe.username.length > 1 ? '.' : ''))
-          : 'Anonymous',
-      };
-    });
-
-    res.json(publicPins);
+    res.json(pins.map(p => shapePinForViewer(p, requesterId)));
   } catch (err) {
     console.error('GET /globe/pins error:', err);
     res.status(500).json({ error: 'Failed to fetch pins.' });
   }
 });
+
+// The pin's owner sees their own pin at full precision; everyone else sees a
+// coarse coordinate so the location isn't a stalking vector. userId never
+// leaves the server either way.
+function shapePinForViewer(p, requesterId) {
+  const isOwner = !!(requesterId && p.userId && String(p.userId) === requesterId);
+  const { userId: _ownerId, ...safe } = p;
+  if (isOwner) return safe;
+  return {
+    ...safe,
+    lat: Math.round(safe.lat * 100) / 100,
+    lng: Math.round(safe.lng * 100) / 100,
+    // Strip the username down to a non-identifying initial so the email
+    // prefix isn't published verbatim alongside city + country.
+    username: typeof safe.username === 'string' && safe.username
+      ? (safe.username[0].toUpperCase() + (safe.username.length > 1 ? '.' : ''))
+      : 'Anonymous',
+  };
+}
 
 // ── GET /globe/stats ──────────────────────────────────────────────────────────
 router.get('/stats', async (req, res) => {
@@ -117,6 +121,27 @@ router.get('/stats', async (req, res) => {
   } catch (err) {
     console.error('GET /globe/stats error:', err);
     res.status(500).json({ error: 'Failed to fetch stats.' });
+  }
+});
+
+// ── GET /globe/:id — single pin WITH photo ────────────────────────────────────
+// The list endpoint strips photos for payload size; the frontend calls this
+// when a pin is selected. Same privacy shaping as the list.
+router.get('/:id', getLimiter, optionalAuth, async (req, res) => {
+  try {
+    if (!/^[0-9a-fA-F]{24}$/.test(req.params.id)) {
+      return res.status(404).json({ error: 'Pin not found.' });
+    }
+    const pin = await GlobePin.findById(req.params.id)
+      .select('lat lng city country technique note photoUrl likeCount createdAt username userId')
+      .lean();
+    if (!pin) return res.status(404).json({ error: 'Pin not found.' });
+
+    const requesterId = req.user?._id?.toString();
+    res.json(shapePinForViewer(pin, requesterId));
+  } catch (err) {
+    console.error('GET /globe/:id error:', err);
+    res.status(500).json({ error: 'Failed to fetch pin.' });
   }
 });
 

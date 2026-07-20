@@ -74,6 +74,13 @@ export default function GlobePage() {
   const handlePinClick = useCallback((pin: GlobePin) => {
     setSelectedPin(pin);
     setSidebarOpen(true);
+    // The list API strips photos (payload size) — fetch the full pin lazily.
+    // Guard against a fast second click: only merge if still selected.
+    api.get<GlobePin>(`/globe/${pin._id}`)
+      .then(res => {
+        setSelectedPin(prev => (prev?._id === pin._id ? { ...prev, ...res.data } : prev));
+      })
+      .catch(() => { /* photo just won't show — not worth a toast */ });
   }, []);
 
   const handleMapClick = useCallback((lat: number, lng: number) => {

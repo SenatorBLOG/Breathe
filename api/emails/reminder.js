@@ -1,4 +1,5 @@
 // emails/reminder.js
+const { sign: unsubSign } = require('../utils/unsubSign');
 function reminderHtml({ name, email }) {
   const displayName = name || 'there';
   return `<!DOCTYPE html>
@@ -97,7 +98,7 @@ function reminderHtml({ name, email }) {
               <p style="margin:0 0 8px;font-size:12px;color:#2A4060;">
                 Breathe · breatheonline.app
               </p>
-              <a href="https://breatheonline.app/api/unsubscribe?email=${encodeURIComponent(email)}&type=reminder"
+              <a href="https://breatheonline.app/api/unsubscribe?email=${encodeURIComponent(email)}&type=reminder&sig=${unsubSign(email, 'reminder')}"
                 style="font-size:12px;color:#2A4060;text-decoration:underline;">
                 Unsubscribe from streak reminders
               </a>
