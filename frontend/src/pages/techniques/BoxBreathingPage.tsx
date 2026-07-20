@@ -186,8 +186,9 @@ export default function BoxBreathingPage() {
             </p>
             <div className="flex flex-wrap gap-2">
               {[
+                { label: 'Coherent Breathing', href: '/breathing/coherent' },
                 { label: '4-7-8 for Sleep', href: '/breathing/4-7-8' },
-                { label: 'Wim Hof Method', href: '/breathing/wim-hof' },
+                { label: 'The Physiological Sigh', href: '/breathing/physiological-sigh' },
                 { label: 'Breathing for Anxiety', href: '/breathing/anxiety' },
               ].map(({ label, href }) => (
                 <Link key={href} to={href}

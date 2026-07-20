@@ -101,6 +101,39 @@ export const ROUTE_META = {
       breadcrumbs(crumb('Home', '/'), crumb('Breathing', '/breathing'), crumb('Breathing for Anxiety', '/breathing/anxiety')),
     ],
   },
+  '/breathing/coherent': {
+    title: 'Coherent Breathing — 5–6 Breaths Per Minute for Calm & HRV',
+    description: 'Coherent breathing (resonance breathing) at 5–6 breaths per minute syncs your heart and nervous system, boosts HRV, and lowers stress. Free guided sessions online.',
+    h1: 'Coherent breathing: 5–6 breaths a minute',
+    intro: 'Slow your breath to about six a minute — five seconds in, five seconds out — and your heart, lungs and nervous system lock into one calm rhythm. It is the gentlest, most sustainable way to lower stress and raise heart rate variability (HRV).',
+    links: [['Try coherent breathing', '/breathing'], ['The science of slow breathing', '/science/slow-breathing'], ['Box breathing', '/breathing/box-breathing']],
+    jsonLd: [
+      howTo('How to do coherent breathing', 'Coherent (resonance) breathing at 5–6 breaths per minute for calm and HRV.', [
+        'Sit comfortably and relax your shoulders.',
+        'Breathe in gently through your nose for 5 seconds.',
+        'Breathe out slowly for 5 seconds — no holds, no force.',
+        'Keep the wave smooth and even.',
+        'Continue for 5–20 minutes.',
+      ]),
+      breadcrumbs(crumb('Home', '/'), crumb('Breathing', '/breathing'), crumb('Coherent Breathing', '/breathing/coherent')),
+    ],
+  },
+  '/breathing/physiological-sigh': {
+    title: 'The Physiological Sigh — The Fastest Way to Calm Down',
+    description: 'The physiological sigh: a double inhale through the nose and a long exhale through the mouth. The science-backed fastest way to lower stress in real time. Try it free.',
+    h1: 'The physiological sigh: calm in one breath',
+    intro: 'Two inhales through the nose, one long exhale through the mouth — the pattern your body reaches for when you cry. Done on purpose, it is the single fastest way scientists have found to switch off stress in real time, often within one breath.',
+    links: [['Practise a calming breath', '/breathing'], ['Breathing for anxiety', '/breathing/anxiety'], ['Fight-or-flight explained', '/science/fight-or-flight']],
+    jsonLd: [
+      howTo('How to do a physiological sigh', 'The physiological sigh (double inhale, long exhale) to calm down fast.', [
+        'Inhale fully through your nose.',
+        'Sip a second short inhale on top to top up your lungs.',
+        'Exhale slowly and completely through your mouth.',
+        'Repeat 1–3 times, or once whenever you need it.',
+      ]),
+      breadcrumbs(crumb('Home', '/'), crumb('Breathing', '/breathing'), crumb('Physiological Sigh', '/breathing/physiological-sigh')),
+    ],
+  },
   '/breathing/morning-ritual': {
     title: '3-Minute Morning Breathing Ritual — Focus & Energy for the Day',
     description: 'A simple 3-minute breathwork sequence to do every morning before coffee. Boosts focus, energy and mood — no equipment, no experience needed.',

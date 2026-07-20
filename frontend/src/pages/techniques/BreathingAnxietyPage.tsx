@@ -157,9 +157,10 @@ export default function BreathingAnxietyPage() {
             </p>
             <div className="flex flex-wrap gap-2">
               {[
+                { label: 'The Physiological Sigh', href: '/breathing/physiological-sigh' },
+                { label: 'Coherent Breathing', href: '/breathing/coherent' },
                 { label: 'Box Breathing', href: '/breathing/box-breathing' },
                 { label: '4-7-8 for Sleep', href: '/breathing/4-7-8' },
-                { label: 'Wim Hof Method', href: '/breathing/wim-hof' },
               ].map(({ label, href }) => (
                 <Link key={href} to={href}
                   className="px-4 py-2 rounded-xl t-caption transition-all"
