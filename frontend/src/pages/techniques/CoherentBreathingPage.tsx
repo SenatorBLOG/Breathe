@@ -200,9 +200,9 @@ export default function CoherentBreathingPage() {
             <div className="flex flex-wrap gap-2">
               {[
                 { label: 'The science of slow breathing', href: '/science/slow-breathing' },
+                { label: 'Breathing & blood pressure', href: '/breathing/high-blood-pressure' },
+                { label: 'Belly breathing', href: '/breathing/belly-breathing' },
                 { label: 'Box Breathing', href: '/breathing/box-breathing' },
-                { label: '4-7-8 for sleep', href: '/breathing/4-7-8' },
-                { label: 'Breathing for anxiety', href: '/breathing/anxiety' },
               ].map(({ label, href }) => (
                 <Link key={href} to={href} className="px-4 py-2 rounded-xl t-caption transition-all"
                   style={{ color: ts.accent, border: `1px solid ${ts.border}` }}>

@@ -159,8 +159,8 @@ export default function BreathingAnxietyPage() {
               {[
                 { label: 'The Physiological Sigh', href: '/breathing/physiological-sigh' },
                 { label: 'Coherent Breathing', href: '/breathing/coherent' },
-                { label: 'Box Breathing', href: '/breathing/box-breathing' },
-                { label: '4-7-8 for Sleep', href: '/breathing/4-7-8' },
+                { label: 'Belly Breathing', href: '/breathing/belly-breathing' },
+                { label: 'Before Public Speaking', href: '/breathing/public-speaking' },
               ].map(({ label, href }) => (
                 <Link key={href} to={href}
                   className="px-4 py-2 rounded-xl t-caption transition-all"

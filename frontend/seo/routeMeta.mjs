@@ -134,6 +134,49 @@ export const ROUTE_META = {
       breadcrumbs(crumb('Home', '/'), crumb('Breathing', '/breathing'), crumb('Physiological Sigh', '/breathing/physiological-sigh')),
     ],
   },
+  '/breathing/belly-breathing': {
+    title: 'Diaphragmatic Breathing — How to Belly Breathe Properly',
+    description: 'Learn diaphragmatic (belly) breathing step by step: breathe with your diaphragm, not your chest. Reduces stress, improves oxygen exchange. Free guided practice.',
+    h1: 'Diaphragmatic breathing: breathe with your belly',
+    intro: 'Most adults breathe with the chest and shoulders all day — shallow, fast, and stuck in a low-grade stress pattern. Belly breathing puts the work back where it belongs: the diaphragm. It is the foundation every other breathing technique is built on.',
+    links: [['Practise belly breathing', '/breathing'], ['Coherent breathing', '/breathing/coherent'], ['Breathing for anxiety', '/breathing/anxiety']],
+    jsonLd: [
+      howTo('How to do diaphragmatic breathing', 'Step-by-step diaphragmatic (belly) breathing technique.', [
+        'Lie down or sit upright with one hand on your chest and one on your belly.',
+        'Inhale through your nose for 4 seconds — let the belly hand rise.',
+        'Exhale slowly through pursed lips for 6 seconds — the belly falls.',
+        'Keep the chest hand as still as possible throughout.',
+        'Continue for 5–10 minutes a day.',
+      ]),
+      breadcrumbs(crumb('Home', '/'), crumb('Breathing', '/breathing'), crumb('Belly Breathing', '/breathing/belly-breathing')),
+    ],
+  },
+  '/breathing/public-speaking': {
+    title: 'Breathing Before Public Speaking — Calm Nerves & Steady Your Voice',
+    description: 'Breathing exercises to calm nerves before public speaking. Stop a shaking voice, steady your hands, and stay sharp on stage. Free guided techniques you can do backstage.',
+    h1: 'Breathing before public speaking',
+    intro: 'Shaking hands, a wobbling voice, going blank on the first line — that is adrenaline, not a lack of preparation. Three minutes of the right breathing backstage keeps the sharpness and drops the shake, and nobody can see you doing it.',
+    links: [['Calm down before you speak', '/breathing'], ['Box breathing', '/breathing/box-breathing'], ['The physiological sigh', '/breathing/physiological-sigh']],
+    jsonLd: [
+      howTo('How to breathe before public speaking', 'A backstage breathing routine to calm nerves before speaking.', [
+        '10 minutes before: belly breathing with long exhales to settle your baseline.',
+        '3 minutes before: five slow cycles of box breathing (4-4-4-4).',
+        'Right before your first line: one physiological sigh — double inhale, long exhale.',
+        'On stage: exhale fully before each new point.',
+      ]),
+      breadcrumbs(crumb('Home', '/'), crumb('Breathing', '/breathing'), crumb('Public Speaking', '/breathing/public-speaking')),
+    ],
+  },
+  '/breathing/high-blood-pressure': {
+    title: 'Breathing Exercises for High Blood Pressure — What the Evidence Says',
+    description: 'Can slow breathing lower blood pressure? An honest look at the evidence, the realistic effect size, and how to practise coherent breathing safely alongside your treatment.',
+    h1: 'Breathing and high blood pressure',
+    intro: 'Slow breathing does lower blood pressure — but by less than the internet usually claims, and only with consistent practice. Breathing exercises complement medical treatment and never replace it: never stop or change prescribed medication without your doctor.',
+    links: [['Try guided slow breathing', '/breathing'], ['Coherent breathing', '/breathing/coherent'], ['The science of slow breathing', '/science/slow-breathing']],
+    jsonLd: [
+      breadcrumbs(crumb('Home', '/'), crumb('Breathing', '/breathing'), crumb('High Blood Pressure', '/breathing/high-blood-pressure')),
+    ],
+  },
   '/breathing/morning-ritual': {
     title: '3-Minute Morning Breathing Ritual — Focus & Energy for the Day',
     description: 'A simple 3-minute breathwork sequence to do every morning before coffee. Boosts focus, energy and mood — no equipment, no experience needed.',

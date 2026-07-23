@@ -27,6 +27,9 @@ const WimHofPage           = lazy(() => import('./pages/techniques/WimHofPage'))
 const BreathingAnxietyPage = lazy(() => import('./pages/techniques/BreathingAnxietyPage'));
 const CoherentBreathingPage = lazy(() => import('./pages/techniques/CoherentBreathingPage'));
 const PhysiologicalSighPage = lazy(() => import('./pages/techniques/PhysiologicalSighPage'));
+const BellyBreathingPage   = lazy(() => import('./pages/techniques/BellyBreathingPage'));
+const PublicSpeakingPage   = lazy(() => import('./pages/techniques/PublicSpeakingPage'));
+const BloodPressurePage    = lazy(() => import('./pages/techniques/BloodPressurePage'));
 const ProfilePage          = lazy(() => import('./pages/ProfilePage'));
 const DataConsentPage      = lazy(() => import('./pages/DataConsentPage'));
 const OnboardingPage       = lazy(() => import('./pages/OnboardingPage'));
@@ -104,6 +107,9 @@ function AnimatedRoutes() {
         <Route path="/breathing/box-breathing" element={<PageWrapper><BoxBreathingPage /></PageWrapper>} />
         <Route path="/breathing/coherent"      element={<PageWrapper><CoherentBreathingPage /></PageWrapper>} />
         <Route path="/breathing/physiological-sigh" element={<PageWrapper><PhysiologicalSighPage /></PageWrapper>} />
+        <Route path="/breathing/belly-breathing" element={<PageWrapper><BellyBreathingPage /></PageWrapper>} />
+        <Route path="/breathing/public-speaking" element={<PageWrapper><PublicSpeakingPage /></PageWrapper>} />
+        <Route path="/breathing/high-blood-pressure" element={<PageWrapper><BloodPressurePage /></PageWrapper>} />
         <Route path="/breathing/4-7-8"         element={<PageWrapper><Breathing478Page /></PageWrapper>} />
         <Route path="/breathing/wim-hof"        element={<PageWrapper><WimHofPage /></PageWrapper>} />
         <Route path="/breathing/anxiety"        element={<PageWrapper><BreathingAnxietyPage /></PageWrapper>} />
