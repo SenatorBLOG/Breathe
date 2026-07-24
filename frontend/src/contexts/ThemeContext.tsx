@@ -24,39 +24,44 @@ const ThemeContext = createContext<ThemeContextType>({
   theme: 'night', setTheme: () => {}, toggle: () => {}, isLoading: false,
 });
 
+// Resolve the theme SYNCHRONOUSLY, before the first render.
+//
+// This used to default to 'night' and correct itself in an effect, which meant
+// a day-theme visitor rendered the night background first: a visible theme
+// flash on every cold load AND a wasted background image download (both
+// Background_Night.webp and Background_Day.webp were fetched).
+function resolveInitialTheme(): Theme {
+  if (typeof window === 'undefined') return 'night';
+  try {
+    const saved = localStorage.getItem('breathe_theme') as Theme | null;
+    if (saved && CYCLE.includes(saved)) return saved;
+  } catch {
+    // localStorage can throw in private mode — fall through to time-of-day
+  }
+  const hour = new Date().getHours();
+  return hour >= 6 && hour < 20 ? 'day' : 'night';
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('night');
+  const [theme, setThemeState] = useState<Theme>(resolveInitialTheme);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load theme from user profile on mount
+  // The local theme is already correct at this point; this only reconciles it
+  // with the signed-in user's saved preference, which requires a round trip.
   useEffect(() => {
     const loadTheme = async () => {
       const token = localStorage.getItem('token');
-      
       if (token) {
         try {
-          // Try to get theme from user profile
           const response = await api.get('/users/me');
           const userTheme = response.data.theme as Theme;
           if (userTheme && CYCLE.includes(userTheme)) {
             setThemeState(userTheme);
             localStorage.setItem('breathe_theme', userTheme);
-            setIsLoading(false);
-            return;
           }
-        } catch (err) {
-          // Theme profile fetch failed — silently fall through to localStorage.
-          // This is expected when user is not authenticated or API is slow.
+        } catch {
+          // Not authenticated or API slow — the locally resolved theme stands.
         }
-      }
-      
-      // Fallback to localStorage or time-based
-      const savedTheme = localStorage.getItem('breathe_theme') as Theme;
-      if (savedTheme && CYCLE.includes(savedTheme)) {
-        setThemeState(savedTheme);
-      } else {
-        const hour = new Date().getHours();
-        setThemeState(hour >= 6 && hour < 20 ? 'day' : 'night');
       }
       setIsLoading(false);
     };

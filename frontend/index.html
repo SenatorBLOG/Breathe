@@ -52,8 +52,28 @@
       *,::before,::after{box-sizing:border-box;margin:0;padding:0}
       html{-webkit-text-size-adjust:100%;font-family:ui-sans-serif,system-ui,sans-serif}
       body{min-height:100vh;background:#010814;color:#fff}
+      /* Set by the pre-paint script below so day/nature visitors never see a
+         flash of the dark night background before React mounts. */
+      html[data-theme="day"] body{background:#F5F0E8;color:#0A0A1E}
+      html[data-theme="nature"] body{background:#0A1A0E;color:#EDFFF5}
       #root{min-height:100vh}
     </style>
+
+    <!-- Resolve the theme BEFORE first paint. Must mirror resolveInitialTheme()
+         in src/contexts/ThemeContext.tsx — if the two disagree the page will
+         flash as React corrects it. -->
+    <script>
+      (function() {
+        try {
+          var t = localStorage.getItem('breathe_theme');
+          if (t !== 'night' && t !== 'day' && t !== 'nature') {
+            var h = new Date().getHours();
+            t = (h >= 6 && h < 20) ? 'day' : 'night';
+          }
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- ═══════════════════════════════════════════════════
          OPEN GRAPH (Facebook, LinkedIn, Telegram)
