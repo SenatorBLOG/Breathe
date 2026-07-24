@@ -34,7 +34,10 @@ const SECTIONS: { heading: string; blurb: string; items: Guide[] }[] = [
     items: [
       { icon: '😰', title: 'Breathing for Anxiety', desc: 'Interrupt a panic spiral in 60–90 seconds, no medication needed.', href: '/breathing/anxiety' },
       { icon: '🎤', title: 'Before Public Speaking', desc: 'Steady a shaking voice and calm your hands backstage.', href: '/breathing/public-speaking' },
+      { icon: '🎯', title: 'Focus & Concentration', desc: 'A 3-minute routine to start deep work or study without drifting.', href: '/breathing/focus' },
       { icon: '🩺', title: 'High Blood Pressure', desc: 'What the evidence honestly supports — and what it does not.', href: '/breathing/high-blood-pressure' },
+      { icon: '🏃', title: 'Breathing While Running', desc: 'Rhythmic 3:2 breathing, nose vs mouth, and killing side stitches.', href: '/breathing/running' },
+      { icon: '🧒', title: 'Breathing for Kids', desc: 'Six playful calm-down exercises for children, with safety notes.', href: '/breathing/for-kids' },
     ],
   },
   {
@@ -98,8 +101,9 @@ export default function LearnPage() {
               <span style={{ color: ts.accent }}>on purpose</span>
             </h1>
             <p className="t-body leading-relaxed max-w-xl" style={{ color: ts.textMuted }}>
-              {allGuides.length} free guides — the techniques, what to reach for in a given moment,
-              and the science underneath. No account needed for any of it.
+              {allGuides.length} free guides — the techniques, what to reach for in a given moment
+              (anxiety, focus, running, kids), and the science underneath. No account needed for any
+              of it.
             </p>
             <Link to="/breathing"
               className="flex items-center gap-2 px-8 py-3.5 rounded-full text-white font-medium w-fit transition-all hover:scale-105"

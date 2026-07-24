@@ -44,8 +44,11 @@ export const ROUTE_META = {
     title: 'Learn — Breathing Guides, Techniques & Science',
     description: 'Every Breathe guide in one place: breathing techniques step by step, what to use for anxiety, sleep and public speaking, and the science behind why breathwork works.',
     h1: 'Learn to breathe on purpose',
-    intro: 'Sixteen free guides: the core breathing techniques with step-by-step instructions, what to reach for in a specific moment — anxiety, public speaking, sleep, blood pressure — and the science of why slow breathing changes how you feel. No account needed for any of it.',
+    intro: 'Nineteen free guides: the core breathing techniques with step-by-step instructions, what to reach for in a specific moment — anxiety, focus, public speaking, running, kids, sleep, blood pressure — and the science of why slow breathing changes how you feel. No account needed for any of it.',
     links: [
+      ['Breathing for Focus', '/breathing/focus'],
+      ['Breathing While Running', '/breathing/running'],
+      ['Breathing for Kids', '/breathing/for-kids'],
       ['Box Breathing', '/breathing/box-breathing'],
       ['4-7-8 Breathing', '/breathing/4-7-8'],
       ['Coherent Breathing', '/breathing/coherent'],
@@ -202,6 +205,56 @@ export const ROUTE_META = {
     links: [['Try guided slow breathing', '/breathing'], ['Coherent breathing', '/breathing/coherent'], ['The science of slow breathing', '/science/slow-breathing']],
     jsonLd: [
       breadcrumbs(crumb('Home', '/'), crumb('Breathing', '/breathing'), crumb('High Blood Pressure', '/breathing/high-blood-pressure')),
+    ],
+  },
+  '/breathing/for-kids': {
+    title: 'Breathing Exercises for Kids — 6 Calm-Down Techniques That Work',
+    description: 'Simple, playful breathing exercises for children: birthday candles, bumble-bee breath, balloon belly and more. Calm big feelings at home or in the classroom. Free.',
+    h1: 'Breathing exercises for kids',
+    intro: 'Children cannot "just calm down" on command — but they can blow out imaginary candles, hum like a bee, or rock a teddy bear on their tummy. Six playful exercises that teach the same nervous-system skill adults use. Keep it gentle: no breath holds for kids.',
+    links: [['Breathe together', '/breathing'], ['Belly breathing', '/breathing/belly-breathing'], ['All guides', '/learn']],
+    jsonLd: [
+      howTo('Breathing exercises for children', 'Playful, age-appropriate breathing exercises to help kids calm down.', [
+        'Birthday candles: hold up five fingers and blow each one out with a long slow breath.',
+        'Smell the flower, blow the feather: breathe in through the nose, out slowly through the mouth.',
+        'Bumble-bee breath: breathe in, then hum all the way out.',
+        'Teddy on the belly: lie down and rock a soft toy up and down with the breath.',
+        'Keep sessions to 1–3 minutes and stop while it is still fun.',
+      ]),
+      breadcrumbs(crumb('Home', '/'), crumb('Learn', '/learn'), crumb('Breathing for Kids', '/breathing/for-kids')),
+    ],
+  },
+  '/breathing/running': {
+    title: 'How to Breathe While Running — Rhythm, Nose vs Mouth & Side Stitches',
+    description: 'How to breathe while running: rhythmic 3:2 breathing, nose vs mouth, belly breathing, and how to stop a side stitch. Practical guide for beginners and runners.',
+    h1: 'How to breathe while running',
+    intro: 'Gasping two kilometres in usually is not your lungs — it is pace, shallow chest breathing, and no rhythm. Learn rhythmic breathing (3:2 easy, 2:1 hard), when to switch from nose to mouth, and how to kill a side stitch.',
+    links: [['Train belly breathing', '/breathing'], ['Belly breathing', '/breathing/belly-breathing'], ['Wim Hof Method', '/breathing/wim-hof']],
+    jsonLd: [
+      howTo('How to breathe while running', 'Rhythmic breathing technique for running.', [
+        'Breathe in through the nose and mouth together; breathe out through the mouth.',
+        'On easy runs, inhale for 3 steps and exhale for 2.',
+        'At hard efforts, switch to a 2:1 pattern and open the mouth fully.',
+        'Breathe into the belly, not the chest, to prevent side stitches.',
+        'If a stitch starts, slow down and exhale forcefully on the opposite foot strike.',
+      ]),
+      breadcrumbs(crumb('Home', '/'), crumb('Learn', '/learn'), crumb('Breathing While Running', '/breathing/running')),
+    ],
+  },
+  '/breathing/focus': {
+    title: 'Breathing Exercises for Focus & Concentration — Before Work or Study',
+    description: 'Breathing exercises for focus and concentration: a 3-minute box breathing routine to start deep work or study sessions with a clear, settled mind. Free and guided.',
+    h1: 'Breathing for focus and concentration',
+    intro: 'You sit down to work and your mind is still in six tabs. Scattered focus is usually over-arousal, not laziness — three minutes of box breathing lowers it to the level where sustained attention is actually possible, and rehearses the exact skill the next hour requires.',
+    links: [['Focus in 3 minutes', '/breathing'], ['Box breathing', '/breathing/box-breathing'], ['Coherent breathing', '/breathing/coherent']],
+    jsonLd: [
+      howTo('A 3-minute breathing routine for focus', 'Box breathing routine to settle attention before deep work or study.', [
+        'Put your phone out of reach and close extra tabs.',
+        'Do about 8 slow cycles of box breathing: in 4, hold 4, out 4, hold 4.',
+        'Decide the single next action before opening anything.',
+        'Start with that action — no inbox, no quick checks.',
+      ]),
+      breadcrumbs(crumb('Home', '/'), crumb('Learn', '/learn'), crumb('Breathing for Focus', '/breathing/focus')),
     ],
   },
   '/breathing/morning-ritual': {
