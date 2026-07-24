@@ -107,7 +107,7 @@ export default function NavBar() {
             <NavLink to="/community" dataTour="nav-community">{t("nav.community")}</NavLink>
             {!isAuthenticated && (
               <>
-                <NavLink to="/faq">{t("nav.learn")}</NavLink>
+                <NavLink to="/learn">{t("nav.learn")}</NavLink>
                 <NavLink to="/support">{t("nav.support")}</NavLink>
               </>
             )}
@@ -213,7 +213,7 @@ export default function NavBar() {
                 { to: '/music-library',label: t('nav.sounds') },
                 { to: '/community',    label: t('nav.community') },
                 ...(!isAuthenticated
-                  ? [{ to: '/faq', label: t('nav.learn') }, { to: '/support', label: t('nav.support') }]
+                  ? [{ to: '/learn', label: t('nav.learn') }, { to: '/support', label: t('nav.support') }]
                   : []
                 ),
               ].map(({ to, label }) => (

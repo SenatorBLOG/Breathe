@@ -38,6 +38,13 @@
   </url>
 
   <url>
+    <loc>https://breatheonline.app/learn</loc>
+    <lastmod>2026-07-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
     <loc>https://breatheonline.app/faq</loc>
     <lastmod>2026-03-01</lastmod>
     <changefreq>monthly</changefreq>

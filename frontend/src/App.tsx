@@ -20,6 +20,7 @@ const NewSessionPage       = lazy(() => import('./pages/NewSessionPage'));
 const CommunityPage        = lazy(() => import('./pages/CommunityPage'));
 const CommunityPostPage    = lazy(() => import('./pages/CommunityPostPage'));
 const FAQPage              = lazy(() => import('./pages/FaqPage'));
+const LearnPage            = lazy(() => import('./pages/LearnPage'));
 const SupportPage          = lazy(() => import('./pages/SupportPage'));
 const BoxBreathingPage     = lazy(() => import('./pages/techniques/BoxBreathingPage'));
 const Breathing478Page     = lazy(() => import('./pages/techniques/Breathing478Page'));
@@ -99,6 +100,8 @@ function AnimatedRoutes() {
         <Route path="/sessions/new" element={<PageWrapper><NewSessionPage /></PageWrapper>} />
         <Route path="/statistics"   element={<Navigate to="/profile?tab=progress" replace />} />
         <Route path="/faq"           element={<PageWrapper><FAQPage /></PageWrapper>} />
+        <Route path="/learn"         element={<PageWrapper><LearnPage /></PageWrapper>} />
+        <Route path="/guides"        element={<Navigate to="/learn" replace />} />
         <Route path="/community"          element={<PageWrapper><CommunityPage /></PageWrapper>} />
         <Route path="/community/post/:id" element={<PageWrapper><CommunityPostPage /></PageWrapper>} />
         <Route path="/login"         element={<PageWrapper><LoginPage /></PageWrapper>} />

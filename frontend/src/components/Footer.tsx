@@ -197,6 +197,7 @@ export default function Footer() {
               { to: "/breathing",    label: t("nav.meditate") },
               { to: "/music-library",label: t("nav.sounds") },
               { to: "/community",    label: t("nav.community") },
+              { to: "/learn",        label: t("nav.learn") },
               { to: "/sessions",     label: t("nav.sessions") },
               { to: "/faq",          label: t("footer.faq") },
             ].map(({ to, label }) => (

@@ -40,6 +40,33 @@ const howTo = (name, description, steps) => ({
  *   jsonLd              — array of structured-data objects injected before </head>
  */
 export const ROUTE_META = {
+  '/learn': {
+    title: 'Learn — Breathing Guides, Techniques & Science',
+    description: 'Every Breathe guide in one place: breathing techniques step by step, what to use for anxiety, sleep and public speaking, and the science behind why breathwork works.',
+    h1: 'Learn to breathe on purpose',
+    intro: 'Sixteen free guides: the core breathing techniques with step-by-step instructions, what to reach for in a specific moment — anxiety, public speaking, sleep, blood pressure — and the science of why slow breathing changes how you feel. No account needed for any of it.',
+    links: [
+      ['Box Breathing', '/breathing/box-breathing'],
+      ['4-7-8 Breathing', '/breathing/4-7-8'],
+      ['Coherent Breathing', '/breathing/coherent'],
+      ['Belly Breathing', '/breathing/belly-breathing'],
+      ['The Physiological Sigh', '/breathing/physiological-sigh'],
+      ['Wim Hof Method', '/breathing/wim-hof'],
+      ['Morning Ritual', '/breathing/morning-ritual'],
+      ['Breathing for Anxiety', '/breathing/anxiety'],
+      ['Before Public Speaking', '/breathing/public-speaking'],
+      ['High Blood Pressure', '/breathing/high-blood-pressure'],
+      ['Why Slow Breathing Calms You', '/science/slow-breathing'],
+      ['Fight-or-Flight Explained', '/science/fight-or-flight'],
+      ['Breathwork for Deep Sleep', '/sleep/breathwork-for-deep-sleep'],
+      ['Why Sleep Is Important', '/sleep/why-sleep-is-important'],
+      ['What Is Sleep Apnea', '/sleep/what-is-sleep-apnea'],
+      ['AI Sleep Stories', '/sleep/story'],
+    ],
+    jsonLd: [
+      breadcrumbs(crumb('Home', '/'), crumb('Learn', '/learn')),
+    ],
+  },
   '/breathing/box-breathing': {
     title: 'Box Breathing — 4-4-4-4 Technique for Focus & Stress Relief',
     description: 'Learn box breathing (4-4-4-4): inhale 4s, hold 4s, exhale 4s, hold 4s. Used by Navy SEALs to stay calm under pressure. Free guided sessions in your browser.',
