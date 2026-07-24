@@ -26,6 +26,18 @@ const SECTIONS: { heading: string; blurb: string; items: Guide[] }[] = [
       { icon: '💨', title: 'The Physiological Sigh', desc: 'Double inhale, long exhale — the fastest way to calm down.', href: '/breathing/physiological-sigh' },
       { icon: '🔥', title: 'Wim Hof Method', desc: 'Rapid cycles and breath holds for energy and cold tolerance.', href: '/breathing/wim-hof' },
       { icon: '☀️', title: 'Morning Ritual', desc: 'A 3-minute sequence to start the day focused, before coffee.', href: '/breathing/morning-ritual' },
+      { icon: '☯️', title: 'Alternate Nostril (Nadi Shodhana)', desc: 'The yogic technique for steadying an agitated mind in five minutes.', href: '/breathing/alternate-nostril' },
+      { icon: '👄', title: 'Pursed-Lip Breathing', desc: 'What respiratory therapists teach first for shortness of breath.', href: '/breathing/pursed-lip' },
+    ],
+  },
+  {
+    heading: 'Compare & choose',
+    blurb: 'Not sure which technique fits? Start here.',
+    items: [
+      { icon: '⚖️', title: 'Box Breathing vs 4-7-8', desc: 'Equal breath steadies you, long exhale sedates you. Pick the right one.', href: '/breathing/box-vs-4-7-8' },
+      { icon: '👃', title: 'Nose vs Mouth Breathing', desc: 'What your nose does that your mouth cannot — and when mouth is fine.', href: '/breathing/nose-vs-mouth' },
+      { icon: '🧘', title: 'How to Breathe During Meditation', desc: 'The beginner question: watch the breath, do not manage it.', href: '/breathing/during-meditation' },
+      { icon: '📐', title: 'The Buteyko Method', desc: 'Breathe less, not deeper — and an honest look at the evidence.', href: '/breathing/buteyko' },
     ],
   },
   {
@@ -38,6 +50,8 @@ const SECTIONS: { heading: string; blurb: string; items: Guide[] }[] = [
       { icon: '🩺', title: 'High Blood Pressure', desc: 'What the evidence honestly supports — and what it does not.', href: '/breathing/high-blood-pressure' },
       { icon: '🏃', title: 'Breathing While Running', desc: 'Rhythmic 3:2 breathing, nose vs mouth, and killing side stitches.', href: '/breathing/running' },
       { icon: '🧒', title: 'Breathing for Kids', desc: 'Six playful calm-down exercises for children, with safety notes.', href: '/breathing/for-kids' },
+      { icon: '🌀', title: 'Racing Thoughts at 3am', desc: 'You cannot out-think overthinking — change the body state instead.', href: '/breathing/racing-thoughts' },
+      { icon: '💼', title: 'The 2-Minute Desk Reset', desc: 'Discreet reset between meetings. Nobody can tell you are doing it.', href: '/breathing/desk-reset' },
     ],
   },
   {
@@ -46,6 +60,8 @@ const SECTIONS: { heading: string; blurb: string; items: Guide[] }[] = [
     items: [
       { icon: '⚡', title: 'Why Slow Breathing Calms You', desc: 'The vagus nerve, HRV, and what happens at six breaths a minute.', href: '/science/slow-breathing' },
       { icon: '🐯', title: 'Fight-or-Flight & the False Alarm', desc: 'Why adrenaline fires with no real threat — and how to switch it off.', href: '/science/fight-or-flight' },
+      { icon: '🧠', title: 'How to Stimulate the Vagus Nerve', desc: 'What genuinely works — and what the wellness industry oversells.', href: '/science/vagus-nerve' },
+      { icon: '⏱️', title: 'Breath Holds & CO₂ Tolerance', desc: 'Why you feel the urge to breathe, and how to train it safely.', href: '/breathing/breath-hold' },
     ],
   },
   {

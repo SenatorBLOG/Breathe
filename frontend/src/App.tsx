@@ -34,6 +34,16 @@ const BloodPressurePage    = lazy(() => import('./pages/techniques/BloodPressure
 const KidsBreathingPage    = lazy(() => import('./pages/techniques/KidsBreathingPage'));
 const RunningBreathingPage = lazy(() => import('./pages/techniques/RunningBreathingPage'));
 const FocusBreathingPage   = lazy(() => import('./pages/techniques/FocusBreathingPage'));
+const AlternateNostrilPage = lazy(() => import('./pages/techniques/AlternateNostrilPage'));
+const NoseVsMouthPage      = lazy(() => import('./pages/techniques/NoseVsMouthPage'));
+const BoxVs478Page         = lazy(() => import('./pages/techniques/BoxVs478Page'));
+const RacingThoughtsPage   = lazy(() => import('./pages/techniques/RacingThoughtsPage'));
+const BreathHoldPage       = lazy(() => import('./pages/techniques/BreathHoldPage'));
+const PursedLipPage        = lazy(() => import('./pages/techniques/PursedLipPage'));
+const DeskResetPage        = lazy(() => import('./pages/techniques/DeskResetPage'));
+const ButeykoPage          = lazy(() => import('./pages/techniques/ButeykoPage'));
+const DuringMeditationPage = lazy(() => import('./pages/techniques/DuringMeditationPage'));
+const VagusNervePage       = lazy(() => import('./pages/science/VagusNervePage'));
 const ProfilePage          = lazy(() => import('./pages/ProfilePage'));
 const DataConsentPage      = lazy(() => import('./pages/DataConsentPage'));
 const OnboardingPage       = lazy(() => import('./pages/OnboardingPage'));
@@ -119,6 +129,16 @@ function AnimatedRoutes() {
         <Route path="/breathing/for-kids"  element={<PageWrapper><KidsBreathingPage /></PageWrapper>} />
         <Route path="/breathing/running"   element={<PageWrapper><RunningBreathingPage /></PageWrapper>} />
         <Route path="/breathing/focus"     element={<PageWrapper><FocusBreathingPage /></PageWrapper>} />
+        <Route path="/breathing/alternate-nostril"  element={<PageWrapper><AlternateNostrilPage /></PageWrapper>} />
+        <Route path="/breathing/nose-vs-mouth"      element={<PageWrapper><NoseVsMouthPage /></PageWrapper>} />
+        <Route path="/breathing/box-vs-4-7-8"       element={<PageWrapper><BoxVs478Page /></PageWrapper>} />
+        <Route path="/breathing/racing-thoughts"    element={<PageWrapper><RacingThoughtsPage /></PageWrapper>} />
+        <Route path="/breathing/breath-hold"        element={<PageWrapper><BreathHoldPage /></PageWrapper>} />
+        <Route path="/breathing/pursed-lip"         element={<PageWrapper><PursedLipPage /></PageWrapper>} />
+        <Route path="/breathing/desk-reset"         element={<PageWrapper><DeskResetPage /></PageWrapper>} />
+        <Route path="/breathing/buteyko"            element={<PageWrapper><ButeykoPage /></PageWrapper>} />
+        <Route path="/breathing/during-meditation"  element={<PageWrapper><DuringMeditationPage /></PageWrapper>} />
+        <Route path="/science/vagus-nerve"          element={<PageWrapper><VagusNervePage /></PageWrapper>} />
         <Route path="/breathing/4-7-8"         element={<PageWrapper><Breathing478Page /></PageWrapper>} />
         <Route path="/breathing/wim-hof"        element={<PageWrapper><WimHofPage /></PageWrapper>} />
         <Route path="/breathing/anxiety"        element={<PageWrapper><BreathingAnxietyPage /></PageWrapper>} />
