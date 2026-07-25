@@ -52,6 +52,11 @@ const SECTIONS: { heading: string; blurb: string; items: Guide[] }[] = [
       { icon: '🧒', title: 'Breathing for Kids', desc: 'Six playful calm-down exercises for children, with safety notes.', href: '/breathing/for-kids' },
       { icon: '🌀', title: 'Racing Thoughts at 3am', desc: 'You cannot out-think overthinking — change the body state instead.', href: '/breathing/racing-thoughts' },
       { icon: '💼', title: 'The 2-Minute Desk Reset', desc: 'Discreet reset between meetings. Nobody can tell you are doing it.', href: '/breathing/desk-reset' },
+      { icon: '😤', title: 'Calm Down When Angry', desc: 'The 90-second rule and the long exhale that drains the surge.', href: '/breathing/anger' },
+      { icon: '🤢', title: 'Breathing for Nausea', desc: 'Slow breathing to ease queasiness and motion sickness.', href: '/breathing/nausea' },
+      { icon: '🌊', title: 'Breathing Through a Craving', desc: 'Urge surfing — ride out the wave instead of fighting it.', href: '/breathing/cravings' },
+      { icon: '🧊', title: 'Ice Baths & Cold Water', desc: 'Control the cold-shock gasp safely — and the rule that keeps it safe.', href: '/breathing/cold-exposure' },
+      { icon: '🎤', title: 'Breath Support for Singing', desc: 'Stop running out of air mid-phrase — control the exhale.', href: '/breathing/for-singing' },
     ],
   },
   {

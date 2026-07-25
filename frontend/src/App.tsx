@@ -44,6 +44,11 @@ const DeskResetPage        = lazy(() => import('./pages/techniques/DeskResetPage
 const ButeykoPage          = lazy(() => import('./pages/techniques/ButeykoPage'));
 const DuringMeditationPage = lazy(() => import('./pages/techniques/DuringMeditationPage'));
 const VagusNervePage       = lazy(() => import('./pages/science/VagusNervePage'));
+const AngerPage            = lazy(() => import('./pages/techniques/AngerPage'));
+const NauseaPage           = lazy(() => import('./pages/techniques/NauseaPage'));
+const CravingsPage         = lazy(() => import('./pages/techniques/CravingsPage'));
+const SingingBreathPage    = lazy(() => import('./pages/techniques/SingingBreathPage'));
+const ColdExposurePage     = lazy(() => import('./pages/techniques/ColdExposurePage'));
 const ProfilePage          = lazy(() => import('./pages/ProfilePage'));
 const DataConsentPage      = lazy(() => import('./pages/DataConsentPage'));
 const OnboardingPage       = lazy(() => import('./pages/OnboardingPage'));
@@ -139,6 +144,11 @@ function AnimatedRoutes() {
         <Route path="/breathing/buteyko"            element={<PageWrapper><ButeykoPage /></PageWrapper>} />
         <Route path="/breathing/during-meditation"  element={<PageWrapper><DuringMeditationPage /></PageWrapper>} />
         <Route path="/science/vagus-nerve"          element={<PageWrapper><VagusNervePage /></PageWrapper>} />
+        <Route path="/breathing/anger"              element={<PageWrapper><AngerPage /></PageWrapper>} />
+        <Route path="/breathing/nausea"             element={<PageWrapper><NauseaPage /></PageWrapper>} />
+        <Route path="/breathing/cravings"           element={<PageWrapper><CravingsPage /></PageWrapper>} />
+        <Route path="/breathing/for-singing"        element={<PageWrapper><SingingBreathPage /></PageWrapper>} />
+        <Route path="/breathing/cold-exposure"      element={<PageWrapper><ColdExposurePage /></PageWrapper>} />
         <Route path="/breathing/4-7-8"         element={<PageWrapper><Breathing478Page /></PageWrapper>} />
         <Route path="/breathing/wim-hof"        element={<PageWrapper><WimHofPage /></PageWrapper>} />
         <Route path="/breathing/anxiety"        element={<PageWrapper><BreathingAnxietyPage /></PageWrapper>} />
