@@ -355,9 +355,14 @@ export default function HomePage() {
             {/* Left column */}
             <div className="lg:col-span-2 flex flex-col gap-6">
               <div>
-                <h2 className="t-heading sm:text-xl font-medium mb-4 tracking-wide" style={{ color: ts.textPrimary }}>
-                  {t('home.exploreMindfulness')}
-                </h2>
+                <div className="flex items-center justify-between mb-4 gap-3">
+                  <h2 className="t-heading sm:text-xl font-medium tracking-wide" style={{ color: ts.textPrimary }}>
+                    {t('home.exploreMindfulness')}
+                  </h2>
+                  <Link to="/learn" className="t-caption whitespace-nowrap hover:underline flex-shrink-0" style={{ color: ts.accent }}>
+                    {t('home.viewAllGuides', 'All guides →')}
+                  </Link>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 reveal-stagger">
                   <ContentCard icon={<Waves size={20} color="#38BDF8" />}    tag="Guide"     title={t('home.contentCards.sleepTitle')}     desc={t('home.contentCards.sleepDesc')}      href="/sleep/breathwork-for-deep-sleep" />
                   <ContentCard icon={<Zap size={20} color="#FACC15" />}      tag="Science"   title={t('home.contentCards.scienceTitle')}   desc={t('home.contentCards.scienceDesc')}    href="/science/slow-breathing" />
@@ -366,6 +371,11 @@ export default function HomePage() {
                   <ContentCard icon={<BarChart2 size={20} color="#4A9EFF" />} tag="Track"    title={t('home.contentCards.progressTitle')}  desc={t('home.contentCards.progressDesc')}   href="/sessions" />
                   <ContentCard icon={<Globe size={20} color="#4ADE80" />}    tag="Community" title={t('home.contentCards.communityTitle')} desc={t('home.contentCards.communityDesc')}  href="/community" />
                 </div>
+                <Link to="/learn"
+                  className="mt-4 flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl t-body font-medium transition-all hover:scale-[1.01]"
+                  style={{ color: ts.accent, border: `1px solid ${ts.border}`, backgroundColor: ts.cardBg }}>
+                  📚 {t('home.browseLibrary', 'Browse the full guide library — 30+ free guides')} →
+                </Link>
               </div>
 
               <div className="border rounded-2xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-6" style={{ backgroundColor: ts.cardBg, borderColor: ts.border }}>

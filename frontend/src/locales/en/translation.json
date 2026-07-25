@@ -1041,7 +1041,9 @@
       "title": "Try it right now",
       "caption": "Breathe with the circle — inhale 4s, exhale 6s. No signup, it’s already working.",
       "cta": "Start a full session"
-    }
+    },
+    "viewAllGuides": "All guides →",
+    "browseLibrary": "Browse the full guide library — 30+ free guides"
   },
   "journal": {
     "eyebrow": "Breathe · Emotional Journal",

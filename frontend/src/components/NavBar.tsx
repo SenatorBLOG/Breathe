@@ -105,11 +105,12 @@ export default function NavBar() {
             <NavLink to="/globe">{t("nav.globe")}</NavLink>
             <NavLink to="/music-library">{t("nav.sounds")}</NavLink>
             <NavLink to="/community" dataTour="nav-community">{t("nav.community")}</NavLink>
+            {/* Learn (the guide library) must be reachable by EVERYONE — it used
+                to be gated behind !isAuthenticated, so signed-in users, the
+                site owner included, had no path to the 34 guides at all. */}
+            <NavLink to="/learn">{t("nav.learn")}</NavLink>
             {!isAuthenticated && (
-              <>
-                <NavLink to="/learn">{t("nav.learn")}</NavLink>
-                <NavLink to="/support">{t("nav.support")}</NavLink>
-              </>
+              <NavLink to="/support">{t("nav.support")}</NavLink>
             )}
           </div>
 
@@ -212,8 +213,9 @@ export default function NavBar() {
                 { to: '/globe',        label: `🌍 ${t('nav.globe', 'Globe')}` },
                 { to: '/music-library',label: t('nav.sounds') },
                 { to: '/community',    label: t('nav.community') },
+                { to: '/learn',        label: t('nav.learn') },
                 ...(!isAuthenticated
-                  ? [{ to: '/learn', label: t('nav.learn') }, { to: '/support', label: t('nav.support') }]
+                  ? [{ to: '/support', label: t('nav.support') }]
                   : []
                 ),
               ].map(({ to, label }) => (

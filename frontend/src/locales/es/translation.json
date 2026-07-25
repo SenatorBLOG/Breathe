@@ -1075,7 +1075,9 @@
       "title": "Pruébalo ahora mismo",
       "caption": "Respira con el círculo: inhala 4 s, exhala 6 s. Sin registro, ya está funcionando.",
       "cta": "Iniciar una sesión completa"
-    }
+    },
+    "viewAllGuides": "Todas las guías →",
+    "browseLibrary": "Explora la biblioteca completa — más de 30 guías gratis"
   },
   "journal": {
     "eyebrow": "Breathe · Diario emocional",
