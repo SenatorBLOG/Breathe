@@ -1,6 +1,9 @@
 // App.tsx
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useEffect, lazy, Suspense } from 'react';
+import { useEffect, Suspense } from 'react';
+// Wraps React.lazy with a one-time reload on chunk-load failure — see the
+// helper for why (stale content-hashed chunks after a redeploy).
+import { lazyWithReload as lazy } from './utils/lazyWithReload';
 import { AnimatePresence, motion } from 'framer-motion';
 
 function ScrollToTop() {

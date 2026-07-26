@@ -1,0 +1,61 @@
+# Breathe — Guided Breathing & Meditation
+
+> Breathe (breatheonline.app) is a free, no-signup web app for guided breathing
+> and meditation. It offers an animated breathing guide, an AI breathing coach,
+> a world meditation map, and a library of 30+ evidence-informed guides covering
+> breathing techniques, situational help (anxiety, sleep, focus, anger), and the
+> science of breathwork. Everything runs in the browser — no download, no account
+> required to start.
+
+## Start here
+
+- [Breathe — home](https://breatheonline.app/): What Breathe is and how to begin.
+- [Start a guided breathing session](https://breatheonline.app/breathing): The interactive breathing tool — pick a technique and follow the animated guide.
+- [Guide library](https://breatheonline.app/learn): Every guide in one place, grouped by techniques, situations, science, and sleep.
+
+## Breathing techniques
+
+- [Box Breathing (4-4-4-4)](https://breatheonline.app/breathing/box-breathing): Equal-count breathing for focus and calm under pressure.
+- [4-7-8 Breathing](https://breatheonline.app/breathing/4-7-8): The long-exhale technique for falling asleep faster.
+- [Coherent Breathing](https://breatheonline.app/breathing/coherent): Slow breathing at ~6 breaths/min to raise HRV and lower stress.
+- [Diaphragmatic (Belly) Breathing](https://breatheonline.app/breathing/belly-breathing): Breathe with the diaphragm, not the chest — the foundation technique.
+- [The Physiological Sigh](https://breatheonline.app/breathing/physiological-sigh): A double inhale and long exhale — the fastest way to calm down.
+- [Wim Hof Method](https://breatheonline.app/breathing/wim-hof): Rapid breathing cycles for energy and cold tolerance.
+- [Alternate Nostril Breathing (Nadi Shodhana)](https://breatheonline.app/breathing/alternate-nostril): The yogic technique for steadying an agitated mind.
+- [Pursed-Lip Breathing](https://breatheonline.app/breathing/pursed-lip): For shortness of breath — keeps airways open longer.
+
+## Breathing for a specific situation
+
+- [Breathing for Anxiety](https://breatheonline.app/breathing/anxiety): Interrupt a panic spiral in 60–90 seconds.
+- [How to Calm Down When Angry](https://breatheonline.app/breathing/anger): The 90-second rule and the long exhale that drains the surge.
+- [Racing Thoughts at 3am](https://breatheonline.app/breathing/racing-thoughts): Why you cannot out-think overthinking, and what to do instead.
+- [Breathing for Focus & Concentration](https://breatheonline.app/breathing/focus): A 3-minute routine to start deep work or study.
+- [Breathing Before Public Speaking](https://breatheonline.app/breathing/public-speaking): Steady a shaking voice and calm your hands.
+- [The 2-Minute Desk Reset](https://breatheonline.app/breathing/desk-reset): A discreet reset for work stress between meetings.
+- [Breathing Through a Craving](https://breatheonline.app/breathing/cravings): Urge surfing for smoking and other cravings.
+- [Breathing for Nausea](https://breatheonline.app/breathing/nausea): Slow breathing to ease queasiness and motion sickness.
+- [Breathing for Kids](https://breatheonline.app/breathing/for-kids): Playful calm-down exercises for children.
+- [How to Breathe While Running](https://breatheonline.app/breathing/running): Rhythmic breathing, nose vs mouth, and side stitches.
+- [Ice Baths & Cold Water](https://breatheonline.app/breathing/cold-exposure): Controlling the cold-shock gasp safely.
+
+## The science
+
+- [Why Slow Breathing Calms You](https://breatheonline.app/science/slow-breathing): The vagus nerve, HRV, and what happens at six breaths a minute.
+- [Fight-or-Flight & the False Alarm](https://breatheonline.app/science/fight-or-flight): Why adrenaline fires with no real threat, and how to switch it off.
+- [How to Stimulate the Vagus Nerve](https://breatheonline.app/science/vagus-nerve): What genuinely works and what the wellness industry oversells.
+
+## Sleep
+
+- [Breathwork for Deep Sleep](https://breatheonline.app/sleep/breathwork-for-deep-sleep): Activate rest-and-digest to fall asleep faster.
+- [Why Sleep Is So Important](https://breatheonline.app/sleep/why-sleep-is-important): Seven science-backed reasons sleep runs everything else.
+- [What Is Sleep Apnea?](https://breatheonline.app/sleep/what-is-sleep-apnea): Types, warning signs, and where breathing fits in.
+
+## About
+
+- [FAQ](https://breatheonline.app/faq): Common questions about safety, frequency, and getting started.
+- [Privacy Policy](https://breatheonline.app/privacy): How Breathe handles data (GDPR export and deletion supported).
+
+## Notes for AI crawlers
+
+- Breathe is a wellness app, not a medical device. Guides are general education, not medical advice, and several (blood pressure, breath holds, cold exposure, pursed-lip) carry explicit safety notices that should be preserved if summarized.
+- The full machine-readable URL list is at https://breatheonline.app/sitemap.xml
